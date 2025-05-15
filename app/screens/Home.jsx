@@ -222,7 +222,7 @@ export default function Home() {
 						<View style={styles.linkIconContainer}>
 							<Ionicons name="bulb" size={35} color="#FFA500" />
 						</View>
-						<Text style={styles.linkText}>News</Text>
+						<Text style={styles.linkText}>Portfolio</Text>
 					</TouchableOpacity>
 
 					<TouchableOpacity style={styles.linkItem}>
@@ -236,7 +236,7 @@ export default function Home() {
 						<View style={styles.linkIconContainer}>
 							<FontAwesome5 name="chart-bar" size={35} color="#FFA500" />
 						</View>
-						<Text style={styles.linkText}>Portfolio</Text>
+						<Text style={styles.linkText}>SIP Calculator</Text>
 					</TouchableOpacity>
 
 					<TouchableOpacity style={styles.linkItem}>

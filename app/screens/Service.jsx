@@ -7,6 +7,7 @@ import { COLORS } from '../constants';
 import { service } from '../utils/apiCaller';
 import { navigate } from 'expo-router/build/global-state/routing';
 import { useNavigation } from 'expo-router';
+import Tabs from '../components/Tabs';
 
 const Service = () => {
     const {
@@ -70,6 +71,7 @@ const Service = () => {
                 }}>Skip for now</Text>
                 {/* <Text onPress={() => logout()}>Logout</Text> */}
             </ScrollView>
+            <Tabs />
         </SafeAreaView>
     );
 };

@@ -11,7 +11,7 @@ const Button = ({ label, gradientColor, buttonStye = {}, onClick, isLoading = fa
                 ...util_style.darkShadow
             }}
             onPress={onClick}
-            disabled={isLoading}
+            // disabled={isLoading}
         >
             <LinearGradient
                 start={{ x: 1, y: 0 }}

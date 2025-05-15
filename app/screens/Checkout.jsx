@@ -7,6 +7,8 @@ import { LinearGradient } from "expo-linear-gradient"
 import Button from "../components/Button"
 import { useAuth } from "../auth/useAuth"
 import { applyCouponApi } from "../utils/apiCaller"
+import axios from "axios"
+import { useNavigation } from "expo-router"
 
 export default function Checkout() {
   const [couponCode, setCouponCode] = useState("")
@@ -15,17 +17,43 @@ export default function Checkout() {
   const [showCouponDiscount, setShowCouponDiscount] = useState(false)
   const { selectedService, token } = useAuth();
   const [couponErrorMsg, setCouponErrorMsg] = useState("")
+  const [orderDetails, setOrderDetails] = useState();
+
+  /// order details
+  const [name, setName] = useState("John Doe");
+  const [email, setEmail] = useState("john.doe@example.com");
+  const [phone, setPhone] = useState("9876543210");
+  const [address, setAddress] = useState("123, Demo Street");
+  const [pincode, setPincode] = useState("560001");
+  const [amount, setAmount] = useState("1");
+  const navigation = useNavigation();
+
+  const handlePay = async () => {
+    try {
+      const res = await axios.post("http://192.168.183.251:4000/api/payment/create", {
+        customerId: Date.now().toString(),
+        customerName: name,
+        customerEmail: email,
+        customerPhone: phone,
+        orderAmount: parseFloat(totalPrice),
+        customerAddress: address,
+        customerPincode: pincode,
+      });
+
+      navigation.navigate("checkoutWebView", {
+        sessionId: res.data.payment_session_id,
+        orderId: res.data.order_id,
+      });
+    } catch (error) {
+      console.log("Payment creation failed:", error);
+    }
+  };
 
   const originalPrice = 1800
   const upgradePrice = 7800
   const totalPrice = selectedService.offer_price - discount
 
   const applyCoupon = async () => {
-    // if (couponCode.toUpperCase() === "FIRSTAFTER") {
-    //   setAppliedCoupon("FIRSTAFTER")
-    //   setDiscount(300)
-    //   setShowCouponDiscount(true)
-
     try {
       const payload = {
         coupon_code: couponCode,
@@ -203,7 +231,7 @@ export default function Checkout() {
 
       </ScrollView>
       {/* Payment Button */}
-      <Button onClick={() => navigation.navigate('home')} label={`PAY ₹${totalPrice}`} gradientColor={['#D36C32', '#F68F00']} />
+      <Button onClick={() => handlePay()} label={`PAY ₹${totalPrice}`} gradientColor={['#D36C32', '#F68F00']} />
     </SafeAreaView>
   )
 }

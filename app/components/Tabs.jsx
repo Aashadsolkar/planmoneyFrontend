@@ -15,14 +15,6 @@ export default function Tabs() {
     { name: "Account", icon: "person", href: "profie" },
   ]
 
-  const renderScreen = () => {
-    return (
-      <View style={styles.screenContainer}>
-        <Text style={styles.screenText}>{activeTab} Screen</Text>
-      </View>
-    )
-  }
-
   return (
     <SafeAreaView style={styles.container}>
       {/* {renderScreen()} */}

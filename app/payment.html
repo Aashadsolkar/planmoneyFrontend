@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cashfree Payment</title>
+    <script src="https://sdk.cashfree.com/js/v3/cashfree.js"></script>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f5f7fa;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        color: #333;
+      }
+
+      .container {
+        text-align: center;
+        padding: 20px;
+        max-width: 400px;
+        width: 100%;
+        background-color: #fff;
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+      }
+
+      .spinner {
+        margin: 30px auto;
+        border: 5px solid #eee;
+        border-top: 5px solid #00b386;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        animation: spin 1s linear infinite;
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      .status-icon {
+        font-size: 48px;
+        margin: 20px 0;
+      }
+
+      .success {
+        color: #00b386;
+      }
+
+      .failure {
+        color: #e74c3c;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      h1 {
+        font-size: 1.5rem;
+        margin-bottom: 10px;
+      }
+
+      p {
+        font-size: 1rem;
+        color: #666;
+      }
+
+      button {
+        margin-top: 20px;
+        padding: 10px 20px;
+        background-color: #00b386;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container" id="loader-screen">
+      <h1>Redirecting to Payment</h1>
+      <p>Please wait while we securely process your payment...</p>
+      <div class="spinner"></div>
+    </div>
+
+    <div class="container hidden" id="success-screen">
+      <div class="status-icon success">✅</div>
+      <h1>Payment Successful</h1>
+      <p>Thank you! Your payment was completed.</p>
+      <button onclick="redirectToApp()">Back to App</button>
+    </div>
+
+    <div class="container hidden" id="failure-screen">
+      <div class="status-icon failure">❌</div>
+      <h1>Payment Failed</h1>
+      <p>Something went wrong. Please try again.</p>
+      <button onclick="redirectToApp()">Back to App</button>
+    </div>
+
+    <script>
+      const urlParams = new URLSearchParams(window.location.search);
+      const sessionId = urlParams.get("session_id");
+      // const status = urlParams.get("status");
+      const orderId = urlParams.get("order_id");
+      function redirectToApp() {
+        // Redirect back to your app with optional status param
+        window.location.href = `exp://192.168.183.251:8083/--/screens/checkout?orderId=${orderId || ""}`;
+      }
+
+      // No session or status? Likely error
+      if (!sessionId && !status) {
+        document.getElementById("loader-screen").classList.add("hidden");
+        document.getElementById("failure-screen").classList.remove("hidden");
+        setTimeout(redirectToApp,100);
+      }
+
+      // Show success/failure screen if redirected from payment
+      if (status === "success") {
+        document.getElementById("loader-screen").classList.add("hidden");
+        document.getElementById("success-screen").classList.remove("hidden");
+        setTimeout(redirectToApp,100); // Auto back after 3 seconds
+      }
+
+      if (status === "failure") {
+        document.getElementById("loader-screen").classList.add("hidden");
+        document.getElementById("failure-screen").classList.remove("hidden");
+        setTimeout(redirectToApp,100); // Auto back after 3 seconds
+      }
+
+      // Start Cashfree Checkout if session is present and not a return redirect
+      if (sessionId && !status) {
+        const cashfree = Cashfree({ mode: "sandbox" }); // use "production" later
+
+        setTimeout(() => {
+          cashfree.checkout({
+            paymentSessionId: sessionId,
+            redirectTarget: "_self",
+            redirectUrl: "payment.html?status=success",
+            onFailure: () => {
+              window.location.href = "payment.html?status=failure";
+            },
+          });
+        }, 2000);
+      }
+    </script>
+  </body>
+</html>

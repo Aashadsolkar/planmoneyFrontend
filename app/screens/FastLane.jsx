@@ -66,7 +66,7 @@ const FastLane = () => {
                             <Text style={[styles.boldText, styles.greenText]}>₹700.00</Text>
                         </View>
                     </View>
-                    <View style={[styles.cardSections, { borderColor: COLORS.cardColor }]}>
+                    <View style={[styles.cardSections, { borderBottomColor: COLORS.cardColor }]}>
                         <View>
                             <Text style={styles.lightText}>Stop Loss</Text>
                             <Text style={[styles.boldText, styles.redText, styles.font12]}>₹{data?.stop_loss_price}</Text>
@@ -99,7 +99,7 @@ const FastLane = () => {
             <ScrollView
                 keyboardShouldPersistTaps="handled"
                 showsVerticalScrollIndicator={false}
-                style={{ marginTop: 70}}
+                style={{ paddingHorizontal: 20,marginTop: 80}}
             >
                 <Text style={styles.heading}>Stock updates</Text>
                 {renderCardList()}
@@ -113,16 +113,16 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: COLORS.fontWhite,
         fontWeight: 600,
-        marginBottom: 20
+        marginBottom: 10
     },
     card: {
-        padding: 10,
+        padding: 8,
         borderRadius: 10,
         backgroundColor: COLORS.cardColor,
         marginBottom: 20
     },
     cardSections: {
-        padding: 10,
+        padding: 15,
         borderBottomWidth: 2,
         borderBottomColor: COLORS.primaryColor,
         flexDirection: "row",

@@ -10,6 +10,8 @@ import For3 from '../screens/Forms/Form3';
 import AaddharForm from '../screens/Forms/AaddharForm';
 import FastLane from '../screens/FastLane';
 import SIP from '../screens/SIP';
+import CheckoutWebView from '../screens/CheckoutWebView';
+import OrderConfirm from '../screens/OrderConfirm';
 
 const Stack = createNativeStackNavigator();
 
@@ -17,6 +19,8 @@ const AppNavigator = () => {
     return (
         <Stack.Navigator screenOptions={{ headerShown: false }}>
             <Stack.Screen name='home' component={Home}/>
+            <Stack.Screen name='orderConfirm' component={OrderConfirm}/>
+            <Stack.Screen name='checkoutWebView' component={CheckoutWebView}/>
             <Stack.Screen name='aadharForm' component={AaddharForm}/>
             <Stack.Screen name='service' component={Service}/>
             <Stack.Screen name='checkout' component={Checkout}/>

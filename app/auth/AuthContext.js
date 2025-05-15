@@ -13,7 +13,8 @@ const AuthProvider = ({ children }) => {
   const [allServices, setAllServices] = useState([]);
   const [skipServices, setSkipServices]= useState(false);
   const [serviceSelectedOnHomePage, setServiceSelectedOnHomePage] = useState(null);
-  const [profileData, setProfileData] = useState({})
+  const [profileData, setProfileData] = useState({});
+  const [orderConfirmDetails, setOrderCinfirmDetails] = useState({})
 
   useEffect(() => {
     const loadSession = async () => {
@@ -70,7 +71,9 @@ const AuthProvider = ({ children }) => {
       serviceSelectedOnHomePage,
       setServiceSelectedOnHomePage,
       setProfileData,
-      profileData
+      profileData,
+      setOrderCinfirmDetails,
+      orderConfirmDetails
     }}>
       {children}
     </AuthContext.Provider>
