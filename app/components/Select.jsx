@@ -4,7 +4,7 @@ import { Menu, Button } from 'react-native-paper';
 import { MaterialIcons } from '@expo/vector-icons';
 import { COLORS } from '../constants';
 
-const SelectBox = ({ label, options = [], selected, setSelected, placeHolder }) => {
+const SelectBox = ({ label, options = [], selected, setSelected, placeHolder, error }) => {
   const [visible, setVisible] = useState(false);
 
   const openMenu = () => setVisible(true);
@@ -12,7 +12,7 @@ const SelectBox = ({ label, options = [], selected, setSelected, placeHolder }) 
 
   return (
     <View style={styles.container}>
-      <Text style={{color: COLORS.lightGray, fontWeight: 600, marginTop: 10}}>{label}</Text>
+      <Text style={{ color: COLORS.lightGray, fontWeight: 600, marginTop: 10 }}>{label}</Text>
       <Menu
         visible={visible}
         onDismiss={closeMenu}
@@ -39,6 +39,7 @@ const SelectBox = ({ label, options = [], selected, setSelected, placeHolder }) 
           />
         ))}
       </Menu>
+      <Text style={{ color: "red", marginTop: 5 }}>{error}</Text>
     </View>
   );
 };

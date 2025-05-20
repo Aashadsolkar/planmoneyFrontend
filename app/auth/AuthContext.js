@@ -11,16 +11,17 @@ const AuthProvider = ({ children }) => {
   const [selectedService, setSelectedService] = useState({});
   const [purchesService, setPurchesService] = useState([]);
   const [allServices, setAllServices] = useState([]);
-  const [skipServices, setSkipServices]= useState(false);
+  const [skipServices, setSkipServices] = useState(false);
   const [serviceSelectedOnHomePage, setServiceSelectedOnHomePage] = useState(null);
   const [profileData, setProfileData] = useState({});
   const [orderConfirmDetails, setOrderCinfirmDetails] = useState({})
+  const [questionFormData, setQuestionFormData] = useState(null)
+  const [orderId, setOrderId] = useState(null);
 
   useEffect(() => {
     const loadSession = async () => {
       const storedToken = await AsyncStorage.getItem('token');
       const storedUser = await AsyncStorage.getItem('user');
-
       if (storedToken && storedUser) {
         setToken(storedToken);
         setUser(JSON.parse(storedUser || {}));
@@ -73,7 +74,11 @@ const AuthProvider = ({ children }) => {
       setProfileData,
       profileData,
       setOrderCinfirmDetails,
-      orderConfirmDetails
+      orderConfirmDetails,
+      questionFormData,
+      setQuestionFormData,
+      setOrderId,
+      orderId
     }}>
       {children}
     </AuthContext.Provider>

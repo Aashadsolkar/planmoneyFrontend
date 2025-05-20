@@ -29,9 +29,6 @@ const ServiceCard = ({
     return <MaterialIcons name={icon} size={24} color="#FF9800" />;
   };
 
-  console.log(selectedDuration);
-
-
   return (
     <View style={styles.card}>
       <View style={styles.header}>
@@ -165,7 +162,7 @@ const styles = StyleSheet.create({
   },
   subscriptions: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-evenly',
     marginBottom: 24,
   },
   subscription: {
@@ -197,6 +194,7 @@ const styles = StyleSheet.create({
     color: '#FFF',
     fontSize: 14,
     marginBottom: 8,
+    textTransform: "capitalize"
   },
   original: {
     color: '#AAA',

@@ -125,3 +125,76 @@ export const getProfileData = async (token) => {
     throw error?.response?.data || { message: 'Something went wrong' };
   }
 };
+
+export const countryApi = async (token) => {
+  try {
+    const response = await axios({
+      method: "GET",
+      url : "https://admin.planmoney.in/api/country",
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization' : `Bearer${token}`
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('API Error:', error?.response?.data || error.message);
+    throw error?.response?.data || { message: 'Something went wrong' };
+  }
+};
+
+export const quetionerApi = async (token, data) => {
+  try {
+    const response = await axios({
+      method: "POST",
+      url : "https://admin.planmoney.in/api/customer/questionnaire",
+      data,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization' : `Bearer${token}`
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('API Error:', error?.response?.data || error.message);
+    throw error?.response?.data || { message: 'Something went wrong' };
+  }
+};
+
+export const pgCreateOrder = async (token, data) => {
+  try {
+    const response = await axios({
+      method: "POST",
+      url : "https://admin.planmoney.in/api/cashfree/create-order",
+      data,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization' : `Bearer${token}`
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('API Error:', error?.response?.data || error.message);
+    throw error?.response?.data || { message: 'Something went wrong' };
+  }
+};
+
+
+export const pgVerifyOrder = async (token, data, orderId) => {
+  try {
+    const response = await axios({
+      method: "POST",
+      url : `https://admin.planmoney.in/api/cashfree/order/${orderId}`,
+      data,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization' : `Bearer${token}`
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('API Error:', error?.response?.data || error.message);
+    throw error?.response?.data || { message: 'Something went wrong' };
+  }
+};
+

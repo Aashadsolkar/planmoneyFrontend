@@ -65,7 +65,7 @@ const Service = () => {
                         )
                     })
                 }
-                <Text style={{textAlign: "center", color: COLORS.fontWhite, fontWeight: 500}} onPress={() => {
+                <Text style={{ textAlign: "center", color: COLORS.fontWhite, fontWeight: 500 }} onPress={() => {
                     setSkipServices(true),
                         navigation.navigate("home")
                 }}>Skip for now</Text>
@@ -78,7 +78,7 @@ const Service = () => {
 
 const styles = StyleSheet.create({
     container: { flex: 1, backgroundColor: COLORS.primaryColor },
-    scrollContent: { padding: 16, paddingTop: 60, },
+    scrollContent: { padding: 16, paddingTop: 80, },
     header: { marginBottom: 24 },
     greeting: { fontSize: 18, color: '#FFFFFF' },
     name: { color: '#FF9800', fontWeight: 'bold' },

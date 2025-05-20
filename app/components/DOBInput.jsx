@@ -1,63 +1,114 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Text } from 'react-native';
-import { TextInput } from 'react-native-paper';
+import { View, Text, TouchableOpacity, StyleSheet, Platform } from 'react-native';
+import DateTimePicker, { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
+import { Ionicons } from '@expo/vector-icons';
+import { COLORS } from '../constants';
 
-const DOBInput = ({ day, month, year, setDay, setMonth, setYear, error, label }) => {
- const [isFocused, setIsFocused] = useState(false); 
+const DOBInput = ({ onDateChange, onError }) => {
+  const [dob, setDob] = useState(null);
+  const [showIOSPicker, setShowIOSPicker] = useState(false);
+
+  const handleDateChange = (event, selectedDate) => {
+    if (Platform.OS === 'android') {
+      if (event.type === 'dismissed') return;
+    }
+
+
+    const finalDate = selectedDate || dob;
+    const today = new Date();
+
+    if (finalDate > today) {
+      onError?.('Future dates are not allowed.');
+      return;
+    }
+    setDob(finalDate);
+
+    const age = calculateAge(finalDate);
+    if (age < 18) {
+      onError?.('You must be at least 18 years old.');
+    } else {
+      onError?.('');
+    }
+
+    onDateChange?.(finalDate);
+    if (Platform.OS === 'ios') setShowIOSPicker(false);
+  };
+
+  const showDatePicker = () => {
+    if (Platform.OS === 'android') {
+      DateTimePickerAndroid.open({
+        value: dob || new Date(),
+        mode: 'date',
+        is24Hour: true,
+        maximumDate: new Date(),
+        onChange: handleDateChange,
+      });
+    } else {
+      setShowIOSPicker(true);
+    }
+  };
+
+  const calculateAge = (birthDate) => {
+    const today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const m = today.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    return age;
+  };
+
+  const formatDate = (date) => {
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
+  };
+
   return (
-    <View style={styles.row}>
-      <TextInput
-        mode="outlined"
-        label={<Text style={{ color: error ? "red" :isFocused ? 'orange' : 'white' }}>DD</Text>}
-        value={day}
-        onChangeText={setDay}
-        keyboardType="numeric"
-        maxLength={2}
-        style={styles.input}
-        contentStyle={{ color: 'white' }}
-        outlineColor="#ccc"
-        activeOutlineColor="orange"
-        theme={{ roundness: 10 }}
-      />
-      <TextInput
-        mode="outlined"
-        label={<Text style={{ color: error ? "red" :isFocused ? 'orange' : 'white' }}>MM</Text>}
-        value={month}
-        onChangeText={setMonth}
-        keyboardType="numeric"
-        maxLength={2}
-        style={styles.input}
-        contentStyle={{ color: 'white' }}
-        outlineColor="#ccc"
-        activeOutlineColor="orange"
-        theme={{ roundness: 10 }}
-      />
-      <TextInput
-        mode="outlined"
-        label={<Text style={{ color: error ? "red" :isFocused ? 'orange' : 'white' }}>YYYY</Text>}
-        value={year}
-        onChangeText={setYear}
-        keyboardType="numeric"
-        maxLength={4}
-        style={styles.input}
-        contentStyle={{ color: 'white' }}
-        outlineColor="#ccc"
-        activeOutlineColor="orange"
-        theme={{ roundness: 10 }}
-      />
+    <View style={styles.container}>
+      <Text style={styles.label}>Date of Birth</Text>
+      <TouchableOpacity  onPress={showDatePicker} style={styles.dateButton}>
+        <Ionicons name="calendar-outline" size={20} color={COLORS.lightGray} />
+        <Text style={styles.dateText}>{dob ? formatDate(dob) : 'Select Date of Birth'}</Text>
+      </TouchableOpacity>
+
+      {Platform.OS === 'ios' && showIOSPicker && (
+        <DateTimePicker
+          value={dob || new Date()}
+          mode="date"
+          display="spinner"
+          onChange={handleDateChange}
+          maximumDate={new Date()}
+        />
+      )}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  row: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+  container: {
+    marginVertical: 10,
   },
-  input: {
-    backgroundColor: '#012744',
-    flex: 1,
-    marginHorizontal: 4,
+  label: {
+    marginBottom: 4,
+    fontWeight: 'bold',
+    color: COLORS.fontWhite,
+  },
+  dateButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 18,
+    borderWidth: 1,
+    borderColor: '#e2e8f0',
+    borderRadius: 8,
+    backgroundColor: COLORS.primaryColor,
+  },
+  dateText: {
+    fontSize: 14,
+    color: COLORS.lightGray,
+    marginLeft: 8,
   },
 });
 

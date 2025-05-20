@@ -41,9 +41,9 @@ export default function Home() {
 				const response = await customerService(token)
 				const filterPurchesService = response?.data?.services?.filter((service) => service.is_subscribed)
 				if (filterPurchesService.length > 0) {
-					// if(response?.data?.questionnaire_status == 0){
-					// 	navigation.navigate("form1")
-					// }
+					if(response?.data?.questionnaire_status == 1){
+						navigation.navigate("form1")
+					}
 					setPurchesService(filterPurchesService)
 				} else {
 					if (!skipServices) {

@@ -1,7 +1,6 @@
 import { validationRules } from './validationRules';
 
 export const validateField = (field, value) => {
-  console.log(field, value);
   
   const rules = validationRules[field];
   if (!rules) return null;

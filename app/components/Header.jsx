@@ -24,10 +24,20 @@ const BellIcon = () => (
   </View>
 );
 
-const ProfileIcon = ({ onPress }) => (
+const  getInitials= (fullName) => {
+  const names = fullName?.trim()?.split(/\s+/);
+  if (names?.length === 0) return "";
+
+  const firstInitial = names[0][0].toUpperCase();
+  const lastInitial = names[names?.length - 1][0].toUpperCase();
+
+  return firstInitial + lastInitial;
+}
+
+const ProfileIcon = ({ onPress, name }) => (
   <TouchableOpacity onPress={onPress} style={styles.profileContainer}>
     <View style={styles.profileCircle}>
-      <Text style={styles.profileInitial}>VI</Text>
+      <Text style={styles.profileInitial}>{name && getInitials(name)}</Text>
     </View>
   </TouchableOpacity>
 );
@@ -59,7 +69,7 @@ const Header = ({
   const [showProfileDrawer, setShowProfileDrawer] = useState(false);
   const drawerAnimation = useState(new Animated.Value(Dimensions.get('window').width))[0];
   const navigation = useNavigation();
-  const { logout,profileData  } = useAuth();
+  const { logout, profileData  } = useAuth();
 
 
   // Sample notifications data
@@ -123,7 +133,7 @@ const Header = ({
             <TouchableOpacity onPress={toggleNotifications} style={styles.iconButton}>
               <BellIcon />
             </TouchableOpacity>
-            <ProfileIcon onPress={toggleProfileDrawer} />
+            <ProfileIcon onPress={toggleProfileDrawer} name={profileData?.name}/>
           </View>
         </View>
 

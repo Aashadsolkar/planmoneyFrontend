@@ -6,16 +6,16 @@ import { COLORS } from "../constants"
 import { LinearGradient } from "expo-linear-gradient"
 import Button from "../components/Button"
 import { useAuth } from "../auth/useAuth"
-import { applyCouponApi } from "../utils/apiCaller"
-import axios from "axios"
+import { applyCouponApi, pgCreateOrder } from "../utils/apiCaller"
 import { useNavigation } from "expo-router"
+import * as Linking from "expo-linking";
 
 export default function Checkout() {
   const [couponCode, setCouponCode] = useState("")
   const [appliedCoupon, setAppliedCoupon] = useState("")
   const [discount, setDiscount] = useState(0)
   const [showCouponDiscount, setShowCouponDiscount] = useState(false)
-  const { selectedService, token } = useAuth();
+  const { selectedService, token, profileData, setOrderId } = useAuth();
   const [couponErrorMsg, setCouponErrorMsg] = useState("")
   const [orderDetails, setOrderDetails] = useState();
 
@@ -27,30 +27,37 @@ export default function Checkout() {
   const [pincode, setPincode] = useState("560001");
   const [amount, setAmount] = useState("1");
   const navigation = useNavigation();
+  const userReturnURL = Linking.createURL("orderConfirm");
+
+
+  const generateOrderNumber = () => {
+    const randomSixDigit = Math.floor(100000 + Math.random() * 900000); // Ensures 6 digits
+    return `ORDER_${randomSixDigit}`;
+  }
 
   const handlePay = async () => {
     try {
-      const res = await axios.post("http://192.168.183.251:4000/api/payment/create", {
-        customerId: Date.now().toString(),
-        customerName: name,
-        customerEmail: email,
-        customerPhone: phone,
-        orderAmount: parseFloat(totalPrice),
-        customerAddress: address,
-        customerPincode: pincode,
-      });
+      const orderID = generateOrderNumber();
+      const payload = {
+        "order_id": orderID,
+        "order_amount": parseFloat(totalPrice),
+        "customer_id": profileData?.customer_id,
+        "customer_email": profileData?.email,
+        "customer_phone": profileData?.phone,
+        "app_return_url": `https://hunger.webiknows.in/payment.html?order_id={order_id}&return_url=${userReturnURL}`
+      }
 
+      const response = await pgCreateOrder(token, payload);
+      setOrderId(response?.data?.order_id);
       navigation.navigate("checkoutWebView", {
-        sessionId: res.data.payment_session_id,
-        orderId: res.data.order_id,
+        sessionId: response?.data.payment_session_id,
+        orderId: response?.data?.order_id,
       });
     } catch (error) {
       console.log("Payment creation failed:", error);
     }
   };
 
-  const originalPrice = 1800
-  const upgradePrice = 7800
   const totalPrice = selectedService.offer_price - discount
 
   const applyCoupon = async () => {
@@ -70,12 +77,6 @@ export default function Checkout() {
       setShowCouponDiscount(false)
       setCouponErrorMsg(error?.message)
     }
-    // } else {
-    //   // Reset if invalid coupon
-    //   setAppliedCoupon("")
-    //   setDiscount(0)
-    //   setShowCouponDiscount(false)
-    // }
   }
 
 
@@ -102,7 +103,7 @@ export default function Checkout() {
                 <Text style={styles.applyButtonText}>Apply</Text>
               </TouchableOpacity>
             </View>
-            <Text style={{color: "red", paddingStart: 20}}>{couponErrorMsg}</Text>
+            <Text style={{ color: "red", paddingStart: 20 }}>{couponErrorMsg}</Text>
           </View>
         ) : (
           <View style={styles.appliedCouponContainer}>
