@@ -17,21 +17,27 @@ import {
 } from "react-native"
 import { Ionicons } from "@expo/vector-icons"
 import axios from "axios"
+import { COLORS } from "../constants"
+import { useAuth } from "../auth/useAuth"
+import { LinearGradient } from "expo-linear-gradient"
+import { useNavigation } from "expo-router"
 
 // Get screen dimensions for responsive design
 const { width } = Dimensions.get("window")
 
 export default function KYC() {
   // State management
-  const [currentStep, setCurrentStep] = useState(1)
+  const [currentStep, setCurrentStep] = useState(1);
   const [aadharNumber, setAadharNumber] = useState("")
   const [otp, setOtp] = useState(["", "", "", "", "", ""])
   const [panNumber, setPanNumber] = useState("")
   const [loading, setLoading] = useState(false)
-  const [userName, setUserName] = useState("User")
+  const [userName, setUserName] = useState("User");
   const [isVerified, setIsVerified] = useState(false)
   const [requestId, setRequestId] = useState("")
   const [taskId, setTaskId] = useState("")
+  const { profileData } = useAuth();
+  const navigation = useNavigation();
 
   // Total number of steps in the KYC process
   const TOTAL_STEPS = 6
@@ -262,15 +268,11 @@ const token ='eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL2FkbWluL
   // Render Aadhar input step
   const renderAadharStep = () => (
     <Animated.View style={[styles.stepContainer, { opacity: fadeAnim, transform: [{ translateY: slideAnim }] }]}>
-      <Text style={styles.greeting}>Hey {userName}</Text>
+      <Text style={{ fontSize: 25, fontWeight: 500, color: COLORS.fontWhite }}>Hey <Text style={{ color: COLORS.secondaryColor }}>{profileData?.name}</Text></Text>
       <Text style={styles.subText}>Please complete your KYC</Text>
 
-      <View style={styles.stepIndicator}>
-        <Text style={styles.stepText}>
-          Step {getStepNumber()} to {TOTAL_STEPS}
-        </Text>
-        <Text style={styles.stepTitle}>Verify Your Aadhar Number</Text>
-      </View>
+      <Text style={{ fontSize: 12, fontWeight: 600, color: COLORS.fontWhite, marginTop: 20 }}>Step <Text style={{ color: COLORS.secondaryColor }}>1</Text> to 3</Text>
+      <Text style={{ fontSize: 20, fontWeight: 600, color: COLORS.fontWhite, marginBottom: 10 }}>Verify Your Aadhar Number</Text>
 
       <TextInput
         style={styles.input}
@@ -289,7 +291,15 @@ const token ='eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL2FkbWluL
         onPress={sendAadharOTP}
         disabled={loading || !aadharNumber}
       >
-        {loading ? <ActivityIndicator color="#fff" /> : <Text style={styles.buttonText}>Send OTP</Text>}
+        <LinearGradient
+          start={{ x: 1, y: 0 }}
+          end={{ x: 0, y: 0 }}
+          colors={['#D36C32', '#F68F00']}
+          style={{ padding: 15, borderRadius: 50, width: "100%", textAlign: "center" }}
+        >
+
+          {loading ? <ActivityIndicator color="#fff" /> : <Text style={styles.buttonText}>Send OTP</Text>}
+        </LinearGradient>
       </TouchableOpacity>
     </Animated.View>
   )
@@ -297,16 +307,11 @@ const token ='eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL2FkbWluL
   // Render OTP verification step
   const renderOtpStep = () => (
     <Animated.View style={[styles.stepContainer, { opacity: fadeAnim, transform: [{ translateY: slideAnim }] }]}>
-      <TouchableOpacity style={styles.backButton} onPress={() => setCurrentStep(1)}>
-        <Ionicons name="arrow-back" size={24} color="white" />
+      <TouchableOpacity onPress={() => setCurrentStep(1)} style={styles.backButton}>
+        <Text style={{ fontSize: 20, color: 'white', }}>←</Text>
       </TouchableOpacity>
-
-      <View style={styles.stepIndicator}>
-        <Text style={styles.stepText}>
-          Step {getStepNumber()} to {TOTAL_STEPS}
-        </Text>
-        <Text style={styles.stepTitle}>Enter OTP (Aadhar Verification)</Text>
-      </View>
+      <Text style={{ fontSize: 12, fontWeight: 600, color: COLORS.fontWhite, marginTop: 60 }}>Step <Text style={{ color: COLORS.secondaryColor }}>2</Text> to 3</Text>
+      <Text style={{ fontSize: 20, fontWeight: 600, color: COLORS.fontWhite, marginBottom: 20 }}>Enter OTP (Aadhar Verification)</Text>
 
       <View style={styles.otpContainer}>
         {otp.map((digit, index) => (
@@ -335,7 +340,14 @@ const token ='eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL2FkbWluL
         onPress={verifyAadharOTP}
         disabled={loading || !isOtpComplete().valid}
       >
+        <LinearGradient
+          start={{ x: 1, y: 0 }}
+          end={{ x: 0, y: 0 }}
+          colors={['#D36C32', '#F68F00']}
+          style={{ padding: 15, borderRadius: 50, width: "100%", textAlign: "center" }}
+        >
         {loading ? <ActivityIndicator color="#fff" /> : <Text style={styles.buttonText}>Verify</Text>}
+        </LinearGradient>
       </TouchableOpacity>
     </Animated.View>
   )
@@ -343,17 +355,14 @@ const token ='eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL2FkbWluL
   // Render PAN verification step
   const renderPanStep = () => (
     <Animated.View style={[styles.stepContainer, { opacity: fadeAnim, transform: [{ translateY: slideAnim }] }]}>
-      <TouchableOpacity style={styles.backButton} onPress={() => setCurrentStep(2)}>
-        <Ionicons name="arrow-back" size={24} color="white" />
+      <TouchableOpacity onPress={() => setCurrentStep(2)} style={styles.backButton}>
+        <Text style={{ fontSize: 20, color: 'white', }}>←</Text>
       </TouchableOpacity>
-
-      <View style={styles.stepIndicator}>
-        <Text style={styles.stepText}>
-          Step {getStepNumber()} to {TOTAL_STEPS}
-        </Text>
-        <Text style={styles.stepTitle}>Verify Your PAN Number</Text>
-      </View>
-
+      <Text style={{ fontSize: 12, fontWeight: 600, color: COLORS.fontWhite, marginTop: 60 }}>Step <Text style={{ color: COLORS.secondaryColor }}>3</Text> to 3</Text>
+      <Text style={{ fontSize: 20, fontWeight: 600, color: COLORS.fontWhite, marginBottom: 20 }}>Verify Your PAN Number</Text>
+      {/* <TouchableOpacity style={styles.backButton} onPress={() => setCurrentStep(2)}>
+        <Ionicons name="arrow-back" size={24} color="white" />
+      </TouchableOpacity> */}
       <TextInput
         style={styles.input}
         placeholder="Enter Your PAN Number"
@@ -371,7 +380,14 @@ const token ='eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL2FkbWluL
         onPress={verifyPAN}
         disabled={loading || !panNumber}
       >
+        <LinearGradient
+          start={{ x: 1, y: 0 }}
+          end={{ x: 0, y: 0 }}
+          colors={['#D36C32', '#F68F00']}
+          style={{ padding: 15, borderRadius: 50, width: "100%", textAlign: "center" }}
+        >
         {loading ? <ActivityIndicator color="#fff" /> : <Text style={styles.buttonText}>Verify</Text>}
+        </LinearGradient>
       </TouchableOpacity>
     </Animated.View>
   )
@@ -391,10 +407,19 @@ const token ='eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL2FkbWluL
           setPanNumber("")
           setIsVerified(false)
           setRequestId("")
-          setTaskId("")
+          setTaskId("");
+          navigation.navigate("home")
+
         }}
       >
-        <Text style={styles.buttonText}>Start Over</Text>
+        <LinearGradient
+          start={{ x: 1, y: 0 }}
+          end={{ x: 0, y: 0 }}
+          colors={['#D36C32', '#F68F00']}
+          style={{ padding: 15, borderRadius: 50, width: "100%", textAlign: "center" }}
+        >
+        <Text style={styles.buttonText}>GO To Home</Text>
+        </LinearGradient>
       </TouchableOpacity>
     </Animated.View>
   )
@@ -419,7 +444,7 @@ const token ='eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL2FkbWluL
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#002147",
+    backgroundColor: COLORS.primaryColor,
   },
   keyboardAvoid: {
     flex: 1,
@@ -461,9 +486,9 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
   },
   input: {
-    height: 50,
+    height: 60,
     borderWidth: 1,
-    borderColor: "#FFFFFF40",
+    borderColor: COLORS.lightGray,
     borderRadius: 8,
     paddingHorizontal: 15,
     fontSize: 16,
@@ -483,6 +508,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginTop: "auto",
     marginBottom: 20,
+    width: "100%"
   },
   buttonDisabled: {
     backgroundColor: "#FFA50080", // Semi-transparent orange
@@ -491,6 +517,7 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
     fontSize: 16,
     fontWeight: "bold",
+    textAlign: "center"
   },
   otpContainer: {
     flexDirection: "row",

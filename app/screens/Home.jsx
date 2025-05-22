@@ -42,7 +42,9 @@ export default function Home() {
 				setCustomerServiceData(response?.data)
 				const filterPurchesService = response?.data?.services?.filter((service) => service.is_subscribed)
 				if (filterPurchesService.length > 0) {
-					if(response?.data?.questionnaire_status > 1){
+					if(response?.data?.kyc_status == 0){
+						navigation.navigate("kyc");
+					}else if(response?.data?.questionnaire_status == 0){
 						navigation.navigate("form1");
 					}
 					setPurchesService(filterPurchesService)
