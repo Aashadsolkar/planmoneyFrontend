@@ -1,11 +1,12 @@
 {
   "expo": {
-    "name": "LoginSystem",
-    "slug": "LoginSystem",
+    "name": "Plan Money",
+    "slug": "PlanMoney",
     "version": "1.0.0",
+    "deepLinking": true,
     "orientation": "portrait",
     "icon": "./assets/images/logo.png",
-    "scheme": "myapp",
+    "scheme": "PlanMoney",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "splash": {

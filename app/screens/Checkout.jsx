@@ -27,7 +27,7 @@ export default function Checkout() {
   const [pincode, setPincode] = useState("560001");
   const [amount, setAmount] = useState("1");
   const navigation = useNavigation();
-  const userReturnURL = Linking.createURL("orderConfirm");
+  const userReturnURL = Linking.createURL("/screens/orderConfirm");
 
 
   const generateOrderNumber = () => {

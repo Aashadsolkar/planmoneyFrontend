@@ -15,6 +15,4 @@ const RootLayout = () => {
     );
 }
 
-const styles = StyleSheet.create({})
-
 export default RootLayout;

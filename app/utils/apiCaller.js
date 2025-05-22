@@ -180,12 +180,11 @@ export const pgCreateOrder = async (token, data) => {
 };
 
 
-export const pgVerifyOrder = async (token, data, orderId) => {
+export const pgVerifyOrder = async (token,orderId) => {
   try {
     const response = await axios({
-      method: "POST",
+      method: "GET",
       url : `https://admin.planmoney.in/api/cashfree/order/${orderId}`,
-      data,
       headers: {
         'Content-Type': 'application/json',
         'Authorization' : `Bearer${token}`
