@@ -38,7 +38,7 @@ export default function SIP() {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.primaryColor }}>
-      <Header />
+      <Header showBackButton={true}/>
       <ScrollView contentContainerStyle={styles.container}>
         <Text style={styles.title}>SIP Calculator</Text>
 

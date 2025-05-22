@@ -1,30 +1,24 @@
-import { View, Text, SafeAreaView, TouchableOpacity, StyleSheet } from 'react-native'
+import { View, Text, SafeAreaView, TouchableOpacity, StyleSheet, ScrollView } from 'react-native'
 import React, { useState } from 'react'
 import { COLORS } from '../../constants'
-import Button from '../../components/Button';
-import { ScrollView } from 'react-native-web';
-import Input from '../../components/Input';
-import { useNavigation } from 'expo-router';
+import Button from '../../components/Button'
+import Input from '../../components/Input'
+import { useNavigation } from 'expo-router'
 
 const ResidentDetails = () => {
     const [selected, setSelected] = useState("yes");
-    const [fatcaSeclect, setFatcaSelect] = useState(null);
+    const [fatcaSelect, setFatcaSelect] = useState(null);
+    const [country, setCountry] = useState("");
     const navigation = useNavigation();
+
     const handleSubmit = () => {
-        // if (DOB) {
-        //     if (dobError) return
-        // }
-        navigation.navigate('agreementForm')
+        navigation.navigate('agreementForm');
     }
 
     const renderCheckbox = (label) => {
         const isChecked = selected === label;
-
         return (
-            <TouchableOpacity
-                onPress={() => setSelected(label)}
-                style={styles.option}
-            >
+            <TouchableOpacity onPress={() => setSelected(label)} style={styles.option}>
                 <View style={[styles.checkbox, isChecked && styles.checkedBox]}>
                     {isChecked && <View style={styles.innerCheck} />}
                 </View>
@@ -34,13 +28,9 @@ const ResidentDetails = () => {
     };
 
     const renderFatcaCheckbox = (label) => {
-        const isChecked = fatcaSeclect === label;
-
+        const isChecked = fatcaSelect === label;
         return (
-            <TouchableOpacity
-                onPress={() => setFatcaSelect(label)}
-                style={styles.option}
-            >
+            <TouchableOpacity onPress={() => setFatcaSelect(label)} style={styles.option}>
                 <View style={[styles.checkbox, isChecked && styles.checkedBox]}>
                     {isChecked && <View style={styles.innerCheck} />}
                 </View>
@@ -51,41 +41,43 @@ const ResidentDetails = () => {
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.primaryColor, padding: 20 }}>
-            <ScrollView
-                keyboardShouldPersistTaps="handled"
-                showsVerticalScrollIndicator={false}
-                scrollEnabled
-            >
+            <ScrollView keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false} style={{padding: 20}}>
                 <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-                    <Text style={{ fontSize: 20, color: 'white', }}>←</Text>
+                    <Text style={{ fontSize: 20, color: 'white' }}>←</Text>
                 </TouchableOpacity>
-                <Text style={{ fontSize: 12, fontWeight: 600, color: COLORS.fontWhite, marginTop: 20 }}>Step <Text style={{ color: COLORS.secondaryColor }}>1</Text> to 6</Text>
-                <Text style={{ fontSize: 20, fontWeight: 600, color: COLORS.fontWhite, marginBottom: 20 }}>Tax Residence Details</Text>
+                <Text style={{ fontSize: 12, fontWeight: "600", color: COLORS.fontWhite, marginTop: 20 }}>
+                    Step <Text style={{ color: COLORS.secondaryColor }}>1</Text> to 6
+                </Text>
+                <Text style={{ fontSize: 20, fontWeight: "600", color: COLORS.fontWhite, marginBottom: 20 }}>
+                    Tax Residence Details
+                </Text>
 
-
-                <Text style={{ fontSize: 16, fontWeight: 400, color: COLORS.fontWhite, marginBottom: 10 }}>Are you Resident of India?</Text>
+                <Text style={{ fontSize: 16, fontWeight: "400", color: COLORS.fontWhite, marginBottom: 10 }}>
+                    Are you Resident of India?
+                </Text>
                 <View style={{ flexDirection: "row", gap: 15, marginBottom: 20 }}>
                     {renderCheckbox('yes')}
                     {renderCheckbox('no')}
                 </View>
-                {selected == "no" && <>
-                    <Input label={"country"} value={"inida"} />
-                    <View style={{ flexDirection: "row", gap: 5, marginBottom: 20, alignItems: "flex-start", marginTop: 30 }}>
-                        {renderFatcaCheckbox('yes')}
-                        <Text style={{ fontSize: 16, fontWeight: 400, color: COLORS.fontWhite }}>If yes, provide FATCA Declaration and Compliance Documents (as applicable).</Text>
-                    </View>
-                </>}
+
+                {selected === "no" && (
+                    <>
+                        <Input label="Country" value={"Inida"} onChangeText={setCountry} />
+                        <View style={{ flexDirection: "row", gap: 5, marginBottom: 20, alignItems: "flex-start", marginTop: 30 }}>
+                            {renderFatcaCheckbox('yes')}
+                            <Text style={{ fontSize: 16, fontWeight: "400", color: COLORS.fontWhite }}>
+                                If yes, provide FATCA Declaration and Compliance Documents (as applicable).
+                            </Text>
+                        </View>
+                    </>
+                )}
             </ScrollView>
-            <Button onClick={() => handleSubmit()} label={"Next"} gradientColor={['#D36C32', '#F68F00']} />
+            <Button onClick={handleSubmit} label="Next" gradientColor={['#D36C32', '#F68F00']} buttonStye={{marginHorizontal: 20}} />
         </SafeAreaView>
     )
 }
+
 const styles = StyleSheet.create({
-    container: {
-        flexDirection: 'row',
-        gap: 20,
-        padding: 10,
-    },
     option: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -113,6 +105,9 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: COLORS.fontWhite
     },
+    backButton: {
+        marginBottom: 10,
+    }
 });
 
-export default ResidentDetails
+export default ResidentDetails;

@@ -16,7 +16,8 @@ const Service = () => {
         allServices,
         setSkipServices,
         serviceSelectedOnHomePage,
-        setServiceSelectedOnHomePage
+        setServiceSelectedOnHomePage,
+        purchesService
     } = useAuth();
     const navigation = useNavigation();
     const [expandedService, setExpandedService] = useState();
@@ -24,14 +25,21 @@ const Service = () => {
     useEffect(() => {
         const getServiceData = async () => {
             const serviceResponse = await service();
-            setAllServices(serviceResponse?.data?.services);
+            const services = serviceResponse?.data?.services
+            if (purchesService?.length > 0) {
+                const purchesServiceId = purchesService.map(item => item.id);
+                const filteredArray = services.filter(item => !purchesServiceId.includes(item.id));
+                setAllServices(filteredArray);
+            } else {
+                setAllServices(services);
+            }
         }
         getServiceData()
         if (serviceSelectedOnHomePage) {
             setExpandedService(serviceSelectedOnHomePage);
             setServiceSelectedOnHomePage(null);
         }
-    }, [])
+    }, [purchesService])
 
     const toggleExpand = (name) => {
         setExpandedService(prev => (prev === name ? null : name));
@@ -41,8 +49,7 @@ const Service = () => {
         <SafeAreaView style={styles.container}>
             <StatusBar barStyle="light-content" backgroundColor={COLORS.cardColor} />
             <Header
-                title="Hi Vignesh"
-                showBackButton={false}
+                showBackButton={true}
             />
             <ScrollView contentContainerStyle={styles.scrollContent}>
                 <Text style={styles.sectionTitle}>Select the Services</Text>

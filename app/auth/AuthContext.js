@@ -17,6 +17,9 @@ const AuthProvider = ({ children }) => {
   const [orderConfirmDetails, setOrderCinfirmDetails] = useState({})
   const [questionFormData, setQuestionFormData] = useState(null)
   const [orderId, setOrderId] = useState(null);
+  const [customerServiceData, setCustomerServiceData] = useState("")
+  const [riskData, setRiskData] = useState("")
+  const [reportData, setReportData] = useState({})
 
   useEffect(() => {
     const loadSession = async () => {
@@ -78,7 +81,13 @@ const AuthProvider = ({ children }) => {
       questionFormData,
       setQuestionFormData,
       setOrderId,
-      orderId
+      orderId,
+      customerServiceData,
+      setCustomerServiceData,
+      riskData,
+      setRiskData,
+      setReportData,
+      reportData
     }}>
       {children}
     </AuthContext.Provider>

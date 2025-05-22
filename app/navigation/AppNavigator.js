@@ -16,6 +16,11 @@ import AgreementForm from '../screens/Forms/AgreementForm';
 import ResidentDetails from '../screens/Forms/ResidentDetails';
 import RiskForm1 from '../screens/Forms/RiskForm1';
 import RiskForm from '../screens/Forms/RiskForm';
+import Address from '../screens/Forms/Address';
+import KYC from '../screens/KYC';
+import RiskResult from '../screens/RiskResult';
+import ConfirmQuestioner from '../screens/ConfirmQuestioner';
+import FastLaneReport from '../screens/FastLaneReport';
 
 const Stack = createNativeStackNavigator();
 
@@ -23,6 +28,11 @@ const AppNavigator = () => {
     return (
         <Stack.Navigator screenOptions={{ headerShown: false }}>
             <Stack.Screen name='home' component={Home}/>
+            <Stack.Screen name='fastlaneReport' component={FastLaneReport}/>
+            <Stack.Screen name='riskResult' component={RiskResult}/>
+            <Stack.Screen name='confrimQuestioner' component={ConfirmQuestioner}/>
+            <Stack.Screen name='kyc' component={KYC}/>
+            <Stack.Screen name='addressForm' component={Address}/>
             <Stack.Screen name='orderConfirm' component={OrderConfirm}/>
             <Stack.Screen name='checkoutWebView' component={CheckoutWebView}/>
             <Stack.Screen name='aadharForm' component={AaddharForm}/>

@@ -143,6 +143,41 @@ export const countryApi = async (token) => {
   }
 };
 
+export const stateApi = async (stateId) => {
+  try {
+    const response = await axios({
+      method: "GET",
+      url : `https://admin.planmoney.in/api/state/${stateId}`,
+      headers: {
+        'Content-Type': 'application/json',
+        // 'Authorization' : `Bearer${token}`
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('API Error:', error?.response?.data || error.message);
+    throw error?.response?.data || { message: 'Something went wrong' };
+  }
+};
+
+export const cityApi = async (token) => {
+  try {
+    const response = await axios({
+      method: "GET",
+      url : "https://admin.planmoney.in/api/cities",
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization' : `Bearer${token}`
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('API Error:', error?.response?.data || error.message);
+    throw error?.response?.data || { message: 'Something went wrong' };
+  }
+};
+
+
 export const quetionerApi = async (token, data) => {
   try {
     const response = await axios({

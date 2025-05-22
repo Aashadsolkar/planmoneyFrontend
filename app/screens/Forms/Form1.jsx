@@ -72,9 +72,9 @@ const Form1 = () => {
                         value={country}
                         onSelect={(val) => setCountry(val)}
                     /> */}
-                    <Input label={"country"} value={"1"}/>
-                    <Input label={"state"} value={"1"}/>
-                    <Input label={"city"} value={"1"}/>
+                    <Input label={"country"} value={"india"}/>
+                    <Input label={"state"} value={"Maharashtra"}/>
+                    <Input label={"city"} value={"mumbai"}/>
                     <Input label={"zip code"} value={"123456"}/>
                 </ScrollView>
             </KeyboardAvoidingView>

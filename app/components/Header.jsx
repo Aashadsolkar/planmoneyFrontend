@@ -59,17 +59,18 @@ const NotificationItem = ({ item }) => (
 );
 
 const Header = ({
-  title = 'Hi',
+  title,
   highlightedName = 'Vignesh',
   showBackButton = false,
   onBackPress,
+  backButtonText = () => {}
 }) => {
   const insets = useSafeAreaInsets();
   const [showNotifications, setShowNotifications] = useState(false);
   const [showProfileDrawer, setShowProfileDrawer] = useState(false);
   const drawerAnimation = useState(new Animated.Value(Dimensions.get('window').width))[0];
   const navigation = useNavigation();
-  const { logout, profileData  } = useAuth();
+  const { logout, profileData } = useAuth();
 
 
   // Sample notifications data
@@ -122,7 +123,10 @@ const Header = ({
         <View style={styles.header}>
           <View style={styles.leftSection}>
             {showBackButton ? (
+              <View style={{flexDirection: "row", alignItems: "center", gap: 20}}>
               <BackButton onPress={() => navigation.goBack()} />
+                <View>{backButtonText()}</View>
+              </View>
             ) : (
               <Text style={styles.title}>
                 Hi <Text style={styles.highlightedName}>{profileData?.name}</Text>
@@ -130,10 +134,10 @@ const Header = ({
             )}
           </View>
           <View style={styles.rightSection}>
-            <TouchableOpacity onPress={toggleNotifications} style={styles.iconButton}>
+            {/* <TouchableOpacity onPress={toggleNotifications} style={styles.iconButton}>
               <BellIcon />
-            </TouchableOpacity>
-            <ProfileIcon onPress={toggleProfileDrawer} name={profileData?.name}/>
+            </TouchableOpacity> */}
+            <ProfileIcon onPress={toggleProfileDrawer} name={profileData?.name} />
           </View>
         </View>
 
@@ -162,7 +166,7 @@ const Header = ({
           onPress={closeProfileDrawer}
         />
       )}
-      
+
       <Animated.View
         style={[
           styles.profileDrawer,

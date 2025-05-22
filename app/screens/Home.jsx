@@ -30,7 +30,7 @@ import Tabs from '../components/Tabs';
 const { width } = Dimensions.get('window');
 
 export default function Home() {
-	const { token, setPurchesService, purchesService, skipServices, allServices, setServiceSelectedOnHomePage } = useAuth();
+	const { token, setPurchesService, purchesService, skipServices, allServices, setServiceSelectedOnHomePage,setCustomerServiceData } = useAuth();
 	const [activeAccordion, setActiveAccordion] = useState(null);
 	const navigation = useNavigation();
 	const [isLoading, setIsLoading] = useState(true);
@@ -39,17 +39,17 @@ export default function Home() {
 		const getCustomerServiceAPi = async () => {
 			try {
 				const response = await customerService(token)
+				setCustomerServiceData(response?.data)
 				const filterPurchesService = response?.data?.services?.filter((service) => service.is_subscribed)
 				if (filterPurchesService.length > 0) {
-					if(response?.data?.questionnaire_status == 1){
-						navigation.navigate("form1")
+					if(response?.data?.questionnaire_status > 1){
+						navigation.navigate("form1");
 					}
 					setPurchesService(filterPurchesService)
 				} else {
 					if (!skipServices) {
 						navigation.navigate("service");
 					}
-
 				}
 				setIsLoading(false);
 			} catch (error) {

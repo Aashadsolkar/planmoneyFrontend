@@ -52,6 +52,7 @@ const RiskForm = () => {
                 <ScrollView
                     keyboardShouldPersistTaps="handled"
                     showsVerticalScrollIndicator={false}
+                    style={{padding: 20}}
                 >
                     <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
                         <Text style={{ fontSize: 20, color: 'white', }}>←</Text>
@@ -95,7 +96,7 @@ const RiskForm = () => {
                         selected={questionFormData?.knowledge_of_investment}
                         setSelected={(option) => handleSelect("knowledge_of_investment", option)}
                         error={errors.knowledge_of_investment}
-                        options={["No experience ", "Some knowledge, little experience", "Good knowledge and some active investment", "Very experienced investor"]}
+                        options={["No experience", "Some knowledge, little experience", "Good knowledge and some active investment", "Very experienced investor"]}
                         label={"How familiar are you with investment products like stocks, bonds, mutual funds, derivatives?"}
                         placeHolder={"Select Your experience"}
                     />

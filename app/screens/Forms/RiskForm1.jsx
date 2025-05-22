@@ -39,7 +39,7 @@ const RiskForm1 = () => {
 
     }
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.primaryColor, padding: 20 }}>
+        <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.primaryColor}}>
             <KeyboardAvoidingView
                 style={{ flex: 1 }}
                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -48,6 +48,7 @@ const RiskForm1 = () => {
                 <ScrollView
                     keyboardShouldPersistTaps="handled"
                     showsVerticalScrollIndicator={false}
+                    style={{padding: 20}}
                 >
                     <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
                         <Text style={{ fontSize: 20, color: 'white', }}>←</Text>
@@ -71,7 +72,7 @@ const RiskForm1 = () => {
                     />
                 </ScrollView>
             </KeyboardAvoidingView>
-            <Button onClick={handleSubmit} label={"Next"} gradientColor={['#D36C32', '#F68F00']} />
+            <Button onClick={handleSubmit} label={"Next"} gradientColor={['#D36C32', '#F68F00']} buttonStye={{marginHorizontal: 20}} />
         </SafeAreaView>
     );
 }
