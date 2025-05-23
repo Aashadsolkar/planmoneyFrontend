@@ -36,7 +36,7 @@ export default function KYC() {
   const [isVerified, setIsVerified] = useState(false)
   const [requestId, setRequestId] = useState("")
   const [taskId, setTaskId] = useState("")
-  const { profileData } = useAuth();
+  const { profileData, token } = useAuth();
   const navigation = useNavigation();
 
   // Total number of steps in the KYC process
@@ -73,7 +73,6 @@ export default function KYC() {
     }
     return { valid: true, message: "" }
   }
-const token ='eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL2FkbWluLnBsYW5tb25leS5pbi9hcGkvY3VzdG9tZXIvbG9naW4iLCJpYXQiOjE3NDc4MjA4MTYsImV4cCI6MTc1MDQxMjgxNiwibmJmIjoxNzQ3ODIwODE2LCJqdGkiOiJLamlmWFJGMnJzcUp3NGRsIiwic3ViIjoiMiIsInBydiI6IjFkMGEwMjBhY2Y1YzRiNmM0OTc5ODlkZjFhYmYwZmJkNGU4YzhkNjMifQ.wOnzzUNCweM3OLTx74N_tKTjWpL0DElgxfQdAV49k0k'
   const isOtpComplete = () => {
     const emptyFields = otp.filter((digit) => digit === "").length
     if (emptyFields > 0) {

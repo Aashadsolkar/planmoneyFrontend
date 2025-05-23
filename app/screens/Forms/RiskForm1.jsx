@@ -28,7 +28,7 @@ const RiskForm1 = () => {
 
     const handleSubmit = () => {
         const newErrors = {};
-        if (!questionFormData?.Occupation) newErrors.Occupation = 'Please select an occupation';
+        if (!questionFormData?.occupation) newErrors.occupation = 'Please select an occupation';
         if (!questionFormData?.income_range) newErrors.income_range = 'Please select an income range';
 
         if (Object.keys(newErrors).length > 0) {
@@ -56,11 +56,11 @@ const RiskForm1 = () => {
                     <Text style={{ fontSize: 12, fontWeight: 600, color: COLORS.fontWhite, marginTop: 20 }}>Step <Text style={{ color: COLORS.secondaryColor }}>1</Text> to 6</Text>
                     <Text style={{ fontSize: 20, fontWeight: 600, color: COLORS.fontWhite }}>Income & Earnings Profile</Text>
                     <SelectBox
-                        selected={questionFormData?.Occupation}
-                        setSelected={(option) => handleSelect("Occupation", option)}
+                        selected={questionFormData?.occupation}
+                        setSelected={(option) => handleSelect("occupation", option)}
                         options={["Business owner / Entrepreneur", "Salaried – Private sector", "Salaried – Government sector", "Retired / Homemaker"]}
-                        label={"Occupation"} placeHolder={"Select Occupation"}
-                        error={errors?.Occupation}
+                        label={"occupation"} placeHolder={"Select occupation"}
+                        error={errors?.occupation}
                     />
                     <SelectBox
                         selected={questionFormData?.income_range}

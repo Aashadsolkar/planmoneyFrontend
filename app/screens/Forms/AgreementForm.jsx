@@ -11,7 +11,7 @@ import { useAuth } from '../../auth/useAuth';
 const AgreementForm = () => {
     const [fatcaSeclect, setFatcaSelect] = useState(null);
     const navigation = useNavigation();
-    const { token, setRiskData } = useAuth();
+    const { token, setRiskData, questionFormData } = useAuth();
     const [fatcaError, setFatcaError] = useState("")
     console.log(fatcaError,"fatcaError...........-----------------");
     
@@ -26,16 +26,16 @@ const AgreementForm = () => {
             "country_id": 1,
             "zip_code": "123456",
             "dob": "2002-12-01",
-            "occupation": "Salaried-Government sector",
-            "income_range": "10 lakh - 25 lakh",
-            "investment_experience": "More than 5 years",
-            "investment_goal": "aggressive growth",
-            "investment_horizon": "1-3 years",
-            "reaction_of_market_volatility": "Wait for some recovery, but might sell if losses worsen",
-            "investment_represent": "More than 75%",
-            "knowledge_of_investment": "Very experienced investor",
-            "investment_return": "16%+ annualized (very aggressive growth)",
-            "attitude_towards_risk": "i am willing to take minor risks for modest returns",
+            "occupation": questionFormData?.occupation,
+            "income_range": questionFormData?.income_range,
+            "investment_experience": questionFormData?.investment_experience,
+            "investment_goal": questionFormData?.investment_goal,
+            "investment_horizon": questionFormData?.investment_horizon,
+            "reaction_of_market_volatility": questionFormData?.reaction_of_market_volatility,
+            "investment_represent": questionFormData?.investment_represent,
+            "knowledge_of_investment": questionFormData?.knowledge_of_investment,
+            "investment_return": questionFormData?.investment_return,
+            "attitude_towards_risk": questionFormData?.attitude_towards_risk,
             "resident_of_india": "yes",
             "resident_of": "India",
             "fatca_declaration": "yes",

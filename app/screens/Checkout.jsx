@@ -91,15 +91,15 @@ export default function Checkout() {
         {/* Coupon Section */}
         {!showCouponDiscount ? (
           <View>
-            <View style={styles.couponContainer}>
+            <View style={[styles.couponContainer, {marginTop: 100}]}>
               <TextInput
                 style={styles.couponInput}
-                placeholder="Apply Coupon"
+                placeholder="Apply Referral"
                 placeholderTextColor="#888"
                 value={couponCode}
-                onChangeText={setCouponCode}
+                // onChangeText={setCouponCode}
               />
-              <TouchableOpacity style={styles.applyButton} onPress={applyCoupon}>
+              <TouchableOpacity style={styles.applyButton} >
                 <Text style={styles.applyButtonText}>Apply</Text>
               </TouchableOpacity>
             </View>
@@ -117,6 +117,22 @@ export default function Checkout() {
             </View>
           </View>
         )}
+
+        <View>
+            <View style={styles.couponContainer}>
+              <TextInput
+                style={styles.couponInput}
+                placeholder="Apply Coupon"
+                placeholderTextColor="#888"
+                value={couponCode}
+                onChangeText={setCouponCode}
+              />
+              <TouchableOpacity style={styles.applyButton} onPress={applyCoupon}>
+                <Text style={styles.applyButtonText}>Apply</Text>
+              </TouchableOpacity>
+            </View>
+            <Text style={{ color: "red", paddingStart: 20 }}>{couponErrorMsg}</Text>
+          </View>
 
         {/* Subscription Details */}
         <View style={styles.subscriptionCard}>
@@ -155,32 +171,7 @@ export default function Checkout() {
 
 
         {/* Upgrade Option */}
-        <LinearGradient
-          start={{ x: 1, y: 0 }}
-          end={{ x: 0, y: 0 }}
-          colors={['#02080C', '#012744',]}
-          style={styles.upgradeCard}
-        >
-
-          {/* <View style={styles.upgradeCard}> */}
-          <View style={styles.upgradeHeader}>
-            <View>
-              <Text style={styles.upgradeTitle}>Get Fasttone + Premium Research</Text>
-              <Text style={[styles.expiryText, { marginTop: 5 }]}>Get Best Recommended & well Research Stocks</Text>
-            </View>
-            <Text style={styles.expiryText}>(3 Months)</Text>
-          </View>
-          <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <Text style={{ color: COLORS.secondaryColor, fontSize: 18, fontWeight: "bold", marginRight: 5 }}>@7,800</Text>
-              <Text style={{ fontWeight: 400, color: COLORS.lightGray, textDecorationLine: "line-through" }}>$8,000</Text>
-            </View>
-            <TouchableOpacity style={styles.upgradeButton}>
-              <Text style={styles.upgradeButtonText}>Upgrade</Text>
-            </TouchableOpacity>
-          </View>
-          {/* </View> */}
-        </LinearGradient>
+        
 
         {/* Please Note Section */}
         <View style={styles.notesSection}>
@@ -267,7 +258,6 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     borderWidth: 1,
     borderColor: "#333",
-    marginTop: 100
   },
   couponInput: {
     flex: 1,
