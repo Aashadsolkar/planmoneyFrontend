@@ -49,9 +49,9 @@ export default function App() {
         showsVerticalScrollIndicator={false}
         style={{ paddingHorizontal: 20, marginTop: 10 }}
       >
-        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+        {/* <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
           <Text style={{ fontSize: 20, color: 'white', }}>←</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
         <View style={{ alignItems: 'center', width: "100%", marginTop: 100 }}>
           <Text style={styles.headerText}>Your got</Text>
 

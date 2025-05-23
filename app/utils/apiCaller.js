@@ -5,7 +5,7 @@ export const login = async (data = null) => {
   try {
     const response = await axios({
       method: "POST",
-      url : "https://admin.planmoney.in/api/customer/login",
+      url: "https://admin.planmoney.in/api/customer/login",
       data,
       headers: {
         'Content-Type': 'application/json',
@@ -22,7 +22,7 @@ export const registor = async (data = null) => {
   try {
     const response = await axios({
       method: "POST",
-      url : "https://admin.planmoney.in/api/customer/register",
+      url: "https://admin.planmoney.in/api/customer/register",
       data,
       headers: {
         'Content-Type': 'application/json',
@@ -40,7 +40,7 @@ export const service = async () => {
   try {
     const response = await axios({
       method: "GET",
-      url : "https://admin.planmoney.in/api/services",
+      url: "https://admin.planmoney.in/api/services",
       // data,
       headers: {
         'Content-Type': 'application/json',
@@ -57,11 +57,11 @@ export const customerService = async (token) => {
   try {
     const response = await axios({
       method: "GET",
-      url : "https://admin.planmoney.in/api/customer/customer-details",
+      url: "https://admin.planmoney.in/api/customer/customer-details",
       // data,
       headers: {
         'Content-Type': 'application/json',
-        'Authorization' : `Bearer${token}`
+        'Authorization': `Bearer${token}`
       },
     });
     return response.data;
@@ -75,11 +75,11 @@ export const applyCouponApi = async (token, data) => {
   try {
     const response = await axios({
       method: "POST",
-      url : "https://admin.planmoney.in/api/customer/apply-coupon",
+      url: "https://admin.planmoney.in/api/customer/apply-coupon",
       data,
       headers: {
         'Content-Type': 'application/json',
-        'Authorization' : `Bearer${token}`
+        'Authorization': `Bearer${token}`
       },
     });
     return response.data;
@@ -94,11 +94,11 @@ export const getFastlaneData = async (token) => {
   try {
     const response = await axios({
       method: "GET",
-      url : "https://admin.planmoney.in/api/customer/services/1",
+      url: "https://admin.planmoney.in/api/customer/services/1",
       // data,
       headers: {
         'Content-Type': 'application/json',
-        'Authorization' : `Bearer${token}`
+        'Authorization': `Bearer${token}`
       },
     });
     return response.data;
@@ -113,10 +113,10 @@ export const getProfileData = async (token) => {
   try {
     const response = await axios({
       method: "GET",
-      url : "https://admin.planmoney.in/api/customer/profile",
+      url: "https://admin.planmoney.in/api/customer/profile",
       headers: {
         'Content-Type': 'application/json',
-        'Authorization' : `Bearer${token}`
+        'Authorization': `Bearer${token}`
       },
     });
     return response.data;
@@ -130,10 +130,10 @@ export const countryApi = async (token) => {
   try {
     const response = await axios({
       method: "GET",
-      url : "https://admin.planmoney.in/api/country",
+      url: "https://admin.planmoney.in/api/country",
       headers: {
         'Content-Type': 'application/json',
-        'Authorization' : `Bearer${token}`
+        'Authorization': `Bearer${token}`
       },
     });
     return response.data;
@@ -147,7 +147,7 @@ export const stateApi = async (stateId) => {
   try {
     const response = await axios({
       method: "GET",
-      url : `https://admin.planmoney.in/api/state/${stateId}`,
+      url: `https://admin.planmoney.in/api/state/${stateId}`,
       headers: {
         'Content-Type': 'application/json',
         // 'Authorization' : `Bearer${token}`
@@ -164,10 +164,10 @@ export const cityApi = async (token) => {
   try {
     const response = await axios({
       method: "GET",
-      url : "https://admin.planmoney.in/api/cities",
+      url: "https://admin.planmoney.in/api/cities",
       headers: {
         'Content-Type': 'application/json',
-        'Authorization' : `Bearer${token}`
+        'Authorization': `Bearer${token}`
       },
     });
     return response.data;
@@ -182,11 +182,11 @@ export const quetionerApi = async (token, data) => {
   try {
     const response = await axios({
       method: "POST",
-      url : "https://admin.planmoney.in/api/customer/questionnaire",
+      url: "https://admin.planmoney.in/api/customer/questionnaire",
       data,
       headers: {
         'Content-Type': 'application/json',
-        'Authorization' : `Bearer${token}`
+        'Authorization': `Bearer${token}`
       },
     });
     return response.data;
@@ -200,11 +200,11 @@ export const pgCreateOrder = async (token, data) => {
   try {
     const response = await axios({
       method: "POST",
-      url : "https://admin.planmoney.in/api/cashfree/create-order",
+      url: "https://admin.planmoney.in/api/cashfree/create-order",
       data,
       headers: {
         'Content-Type': 'application/json',
-        'Authorization' : `Bearer${token}`
+        'Authorization': `Bearer${token}`
       },
     });
     return response.data;
@@ -215,15 +215,32 @@ export const pgCreateOrder = async (token, data) => {
 };
 
 
-export const pgVerifyOrder = async (token, data, orderId) => {
+export const pgVerifyOrder = async (token, orderId) => {
+  try {
+    const response = await axios({
+      method: "GET",
+      url: `https://admin.planmoney.in/api/cashfree/verify/${orderId}`,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer${token}`
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('API Error:', error?.response?.data || error.message);
+    throw error?.response?.data || { message: 'Something went wrong' };
+  }
+};
+
+export const buySubscription = async (token, data) => {
   try {
     const response = await axios({
       method: "POST",
-      url : `https://admin.planmoney.in/api/cashfree/order/${orderId}`,
+      url: `https://admin.planmoney.in/api/customer/subscribe`,
       data,
       headers: {
         'Content-Type': 'application/json',
-        'Authorization' : `Bearer${token}`
+        'Authorization': `Bearer${token}`
       },
     });
     return response.data;
@@ -232,4 +249,3 @@ export const pgVerifyOrder = async (token, data, orderId) => {
     throw error?.response?.data || { message: 'Something went wrong' };
   }
 };
-

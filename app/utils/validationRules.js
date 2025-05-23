@@ -1,4 +1,10 @@
 export const validationRules = {
+    email_or_phone : [
+        {
+            rule: (val) => val.trim() !== '',
+            message: 'Email or Mobile is required',
+        },
+    ],
     name: [
         {
             rule: (val) => val.trim() !== '',
@@ -34,26 +40,26 @@ export const validationRules = {
             rule: (val) => val.trim() !== '',
             message: 'Password is required',
         },
-        // {
-        //     rule: (val) => val.length >= 6,
-        //     message: 'Password must be at least 6 characters',
-        // },
-        // {
-        //     rule: (val) => /[A-Z]/.test(val),
-        //     message: 'Password must include at least one uppercase letter',
-        // },
-        // {
-        //     rule: (val) => /[a-z]/.test(val),
-        //     message: 'Password must include at least one lowercase letter',
-        // },
-        // {
-        //     rule: (val) => /\d/.test(val),
-        //     message: 'Password must include at least one number',
-        // },
-        // {
-        //     rule: (val) => /[@$!%*?&#]/.test(val),
-        //     message: 'Password must include at least one special character',
-        // },
+        {
+            rule: (val) => val.length >= 6,
+            message: 'Password must be at least 6 characters',
+        },
+        {
+            rule: (val) => /[A-Z]/.test(val),
+            message: 'Password must include at least one uppercase letter',
+        },
+        {
+            rule: (val) => /[a-z]/.test(val),
+            message: 'Password must include at least one lowercase letter',
+        },
+        {
+            rule: (val) => /\d/.test(val),
+            message: 'Password must include at least one number',
+        },
+        {
+            rule: (val) => /[@$!%*?&#]/.test(val),
+            message: 'Password must include at least one special character',
+        },
     ],
     confirmPassword : [
         {

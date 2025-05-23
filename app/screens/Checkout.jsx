@@ -27,7 +27,7 @@ export default function Checkout() {
   const [pincode, setPincode] = useState("560001");
   const [amount, setAmount] = useState("1");
   const navigation = useNavigation();
-  const userReturnURL = Linking.createURL("orderConfirm");
+  const userReturnURL = Linking.createURL("/screens/orderConfirm");
 
 
   const generateOrderNumber = () => {
@@ -91,15 +91,15 @@ export default function Checkout() {
         {/* Coupon Section */}
         {!showCouponDiscount ? (
           <View>
-            <View style={[styles.couponContainer, {marginTop: 100}]}>
+            <View style={styles.couponContainer}>
               <TextInput
                 style={styles.couponInput}
-                placeholder="Apply Referral"
+                placeholder="Apply Coupon"
                 placeholderTextColor="#888"
                 value={couponCode}
-                // onChangeText={setCouponCode}
+                onChangeText={setCouponCode}
               />
-              <TouchableOpacity style={styles.applyButton} >
+              <TouchableOpacity style={styles.applyButton} onPress={applyCoupon}>
                 <Text style={styles.applyButtonText}>Apply</Text>
               </TouchableOpacity>
             </View>
@@ -118,21 +118,7 @@ export default function Checkout() {
           </View>
         )}
 
-        <View>
-            <View style={styles.couponContainer}>
-              <TextInput
-                style={styles.couponInput}
-                placeholder="Apply Coupon"
-                placeholderTextColor="#888"
-                value={couponCode}
-                onChangeText={setCouponCode}
-              />
-              <TouchableOpacity style={styles.applyButton} onPress={applyCoupon}>
-                <Text style={styles.applyButtonText}>Apply</Text>
-              </TouchableOpacity>
-            </View>
-            <Text style={{ color: "red", paddingStart: 20 }}>{couponErrorMsg}</Text>
-          </View>
+        
 
         {/* Subscription Details */}
         <View style={styles.subscriptionCard}>
@@ -258,6 +244,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     borderWidth: 1,
     borderColor: "#333",
+    marginTop: 100
   },
   couponInput: {
     flex: 1,

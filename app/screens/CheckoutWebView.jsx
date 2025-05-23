@@ -3,8 +3,9 @@ import { WebView } from "react-native-webview";
 import { Alert } from "react-native";
 import { useAuth } from "../auth/useAuth";
 import { router } from "expo-router";
+import { useNavigation } from "@react-navigation/native";
 
-export default function CheckoutWebView({ route, navigation }) {
+export default function CheckoutWebView({ route }) {
   const { sessionId, orderId } = route.params;
 //  console.log(sessionId, orderId);
  const { setOrderCinfirmDetails } = useAuth();
@@ -37,34 +38,39 @@ export default function CheckoutWebView({ route, navigation }) {
   //   return true; // Allow WebView to load the URL
   // };
 
+ const navigation = useNavigation();
+
   const handleRedirect = (url) => {
-  console.log(url, "urlllll,,,,-----------------");
-  // Handle redirect URLs from Expo (local dev)
-  // if (url.startsWith("exp://") || url.startsWith("myapp://")) {
-  //   const parsedUrl = new URL(url);
-  //   const pathname = parsedUrl.pathname;
-  //   const params = parsedUrl.searchParams;
+    // Parse URL params
+    console.log(url,"_______url");
+    
+    const parsed = new URL(url);
+    const returnUrl = parsed.searchParams.get("return_url");
+    const orderId = parsed.searchParams.get("order_id");
 
-  //   const orderId = params.get("order_id") || params.get("orderId"); // handle both cases
-  //   const status = params.get("status");
+    if (returnUrl) {
+      // Parse screen path from return_url
+      const returnParsed = new URL(returnUrl);
+      const path = returnParsed.pathname; // "/--/screens/orderConfirm"
+      const pathParts = path.split("/--/");
 
-  //   console.log(pathname, "pathname from redirect");
-  //   console.log(orderId, "orderId from redirect");
+      if (pathParts.length === 2) {
+        const screen = pathParts[1]; // "screens/orderConfirm"
+        const screenParts = screen.split("/");
 
-  //   if (status === "success" || pathname.includes("orderConfirm")) {
-  //     router.replace({
-  //       pathname: "/orderConfirm",
-  //       params: { orderId },
-  //     });
-  //   } else {
-  //     Alert.alert("Payment Failed", "There was an issue with your payment.");
-  //   }
+        if (screenParts.length === 2) {
+          const screenName = screenParts[1]; // "orderConfirm"
 
-  //   return false; // prevent WebView from loading the URL
-  // }
+          // Navigate to that screen and pass orderId
+          navigation.navigate(screenName, { orderId });
 
-  return true; // allow WebView to continue loading
-};
+          return false; // prevent WebView from loading the URL
+        }
+      }
+    }
+
+    return true; // otherwise, allow WebView to load normally
+  }; 
 
   return (
     <WebView

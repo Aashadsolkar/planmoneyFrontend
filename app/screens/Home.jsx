@@ -40,6 +40,8 @@ export default function Home() {
 			try {
 				const response = await customerService(token)
 				setCustomerServiceData(response?.data)
+				console.log(response);
+				
 				const filterPurchesService = response?.data?.services?.filter((service) => service.is_subscribed)
 				if (filterPurchesService.length > 0) {
 					if(response?.data?.kyc_status == 0){

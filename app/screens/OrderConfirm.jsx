@@ -1,55 +1,291 @@
-import { View, Text, Image, SafeAreaView } from 'react-native'
-import React, { useEffect } from 'react'
-import Button from '../components/Button'
-import { COLORS } from '../constants'
-import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useAuth } from '../auth/useAuth';
-import { pgVerifyOrder } from '../utils/apiCaller';
+
+import { View, Text, Image, SafeAreaView, ActivityIndicator, StyleSheet, ScrollView } from "react-native"
+import { useEffect, useState } from "react"
+import Button from "../components/Button"
+import { COLORS } from "../constants"
+import { useAuth } from "../auth/useAuth"
+import { buySubscription, pgVerifyOrder } from "../utils/apiCaller"
+import { useNavigation, useRoute } from "@react-navigation/native"
+import { CheckCircle, Clock } from "lucide-react-native"
+import * as Animatable from "react-native-animatable"
 
 const OrderConfirm = () => {
-  const { orderId } = useLocalSearchParams();
-  console.log(orderId, "orderId..........");
-  
-  const { orderConfirmDetails, token, profileData } = useAuth();
+  const route = useRoute()
+  const { orderId } = route.params || {}
+  const { orderConfirmDetails, token, profileData, selectedService } = useAuth()
+  const [orderDetails, setOrderDetails] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [verifyComplete, setVerifyComplete] = useState(false)
+  const [subscriptionComplete, setSubscriptionComplete] = useState(false)
+  const [error, setError] = useState(null)
+  const navigation = useNavigation();
+
+  const { id, billing_cycle } = selectedService || {}
+
   useEffect(() => {
     const verifyOrder = async () => {
+      setLoading(true)
       try {
-        const payload = {
-          "order_id": orderId,
-          "order_amount": 250.00,
-          "customer_id": profileData?.customer_id,
-          "customer_email": profileData?.email,
-          "customer_phone": profileData?.phone
-        }
-        const response = await pgVerifyOrder(token, payload, orderId);
-      } catch (error) {
+        const response = await pgVerifyOrder(token, orderId)
+        if (response?.data) {
+          setOrderDetails(response.data)
+          setVerifyComplete(true)
 
+          // Wait 2 seconds before calling the subscription API
+          setTimeout(() => {
+            buyService(response.data)
+          }, 2000)
+        }
+      } catch (error) {
+        console.log("Verify order error:", error)
+        setError("Failed to verify your payment. Please contact support.")
+      } finally {
+        setLoading(false)
       }
     }
-    verifyOrder();
-  }, [])
+    const buyService = async (orderData) => {
+      if (!orderData || !orderData[0]) return
+      setLoading(true)
+      try {
+        const payload = {
+          service_id: 1,
+          plan_id: id,
+          payment_method: orderData[0]?.payment_group,
+          amount: orderData[0].order_amount,
+          currency: orderData[0]?.payment_currency,
+          billing_cycle: billing_cycle,
+          payment_status: "paid",
+          transaction_id:"123456"
+        }
+
+        const response = await buySubscription(token, payload)
+        console.log(response.message)
+        setSubscriptionComplete(true)
+      } catch (error) {
+        console.log("Buy subscription error:", error)
+        setError(
+          "Your payment was successful, but we couldn't activate your subscription. Our team will resolve this shortly.",
+        )
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    if (orderId) {
+      verifyOrder()
+    }
+  }, [orderId])
+
+  const renderLoadingState = () => (
+    <Animatable.View animation="fadeIn" style={styles.centerContent}>
+      <ActivityIndicator size="large" color="#D87129" />
+      <Text style={styles.loadingText}>Verifying your payment...</Text>
+      <Text style={styles.subText}>Please wait while we confirm your order</Text>
+    </Animatable.View>
+  )
+
+  const renderVerifyComplete = () => (
+    <Animatable.View animation="fadeIn" style={styles.centerContent}>
+      <Animatable.View animation="bounceIn">
+        <CheckCircle color="#D87129" size={60} />
+      </Animatable.View>
+      <Text style={styles.successTitle}>Payment Verified!</Text>
+      <Text style={styles.subText}>Now activating your subscription...</Text>
+      <ActivityIndicator size="small" color="#D87129" style={styles.smallLoader} />
+    </Animatable.View>
+  )
+
+  const renderSubscriptionComplete = () => (
+    <Animatable.View animation="fadeIn" style={styles.centerContent}>
+      <ScrollView contentContainerStyle={styles.scrollContent}>
+        <Animatable.View animation="bounceIn">
+          <CheckCircle color="#D87129" size={80} />
+        </Animatable.View>
+        <Text style={styles.successTitle}>Payment Successful!</Text>
+        <Text style={styles.subText}>Your subscription has been activated</Text>
+
+        <View style={styles.orderDetailsCard}>
+          <Text style={styles.orderDetailsTitle}>Order Details</Text>
+
+          <View style={styles.detailRow}>
+            <Text style={styles.detailLabel}>Order ID:</Text>
+            <Text style={styles.detailValue}>{orderDetails?.[0]?.order_id}</Text>
+          </View>
+
+          <View style={styles.detailRow}>
+            <Text style={styles.detailLabel}>Status:</Text>
+            <Text style={[styles.detailValue, styles.statusText]}>{orderDetails?.[0]?.payment_status}</Text>
+          </View>
+
+          <View style={styles.detailRow}>
+            <Text style={styles.detailLabel}>Amount:</Text>
+            <Text style={styles.detailValue}>₹{orderDetails?.[0]?.payment_amount}</Text>
+          </View>
+
+          <View style={styles.detailRow}>
+            <Text style={styles.detailLabel}>Payment Method:</Text>
+            <Text style={styles.detailValue}>{orderDetails?.[0]?.payment_group}</Text>
+          </View>
+
+          <View style={styles.detailRow}>
+            <Text style={styles.detailLabel}>Billing Cycle:</Text>
+            <Text style={styles.detailValue}>{billing_cycle}</Text>
+          </View>
+        </View>
+      </ScrollView>
+    </Animatable.View>
+  )
+
+  const renderErrorState = () => (
+    <Animatable.View animation="fadeIn" style={styles.centerContent}>
+      <Clock color="#D87129" size={60} />
+      <Text style={styles.errorTitle}>Something went wrong</Text>
+      <Text style={styles.errorText}>{error}</Text>
+    </Animatable.View>
+  )
+
+  const renderContent = () => {
+    if (loading && !verifyComplete && !subscriptionComplete) {
+      return renderLoadingState()
+    } else if (error) {
+      return renderErrorState()
+    } else if (verifyComplete && !subscriptionComplete) {
+      return renderVerifyComplete()
+    } else if (subscriptionComplete) {
+      return renderSubscriptionComplete()
+    }
+    return renderLoadingState()
+  }
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.primaryColor }}>
-      <View style={{ flexDirection: "row", justifyContent: "center", marginTop: 100 }}>
-        <Image
-          source={require('../../assets/images/logo.png')}
-          style={{ alignItems: "center" }}
-          resizeMode="contain"
-        />
-      </View>
-      <View style={{ paddingHorizontal: 20, width: "100%", position: "absolute", bottom: 0, paddingBottom: 30, backgroundColor: COLORS.primaryColor }}>
-        {/* <Text style={{ color: "#fff", textAlign: "center", marginBottom: 10 }}>Already have an account? <Text onPress={() => navigation.navigate('login')} style={{ color: "#D87129" }}> Sign in</Text></Text> */}
-        <Button label={"Done"} gradientColor={['#D36C32', '#F68F00']} />
-      </View>
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <Text style={{ fontSize: 30, fontWeight: 600, color: COLORS.fontWhite }}>Payment Confirm</Text>
-        <Text style={{ fontWeight: 400, color: COLORS.fontWhite }}>Your Payment Has Succesfully Done</Text>
-        <Text style={{ fontWeight: 400, color: COLORS.fontWhite }}>Order ID: {orderConfirmDetails?.orderId}</Text>
+    <SafeAreaView style={styles.container}>
+      <View style={styles.logoContainer}>
+        <Image source={require("../../assets/images/logo.png")} style={styles.logo} resizeMode="contain" />
       </View>
 
+      {renderContent()}
+
+      <View style={styles.buttonContainer}>
+        <Button
+          label={subscriptionComplete ? "Done" : "Back to Home"}
+          gradientColor={["#D36C32", "#F68F00"]}
+          // onPress={() => navigation.navigate("/screens/home")}
+          onClick={() => navigation.navigate("home")}
+        />
+      </View>
     </SafeAreaView>
   )
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: COLORS.primaryColor,
+  },
+  logoContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    marginTop: 40,
+    marginBottom: 20,
+  },
+  logo: {
+    height: 60,
+    alignSelf: "center",
+  },
+  centerContent: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 20,
+  },
+  scrollContent: {
+    flexGrow: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingVertical: 20,
+  },
+  loadingText: {
+    fontSize: 22,
+    fontWeight: "600",
+    color: COLORS.fontWhite,
+    marginTop: 20,
+    textAlign: "center",
+  },
+  successTitle: {
+    fontSize: 28,
+    fontWeight: "700",
+    color: COLORS.fontWhite,
+    marginTop: 20,
+    textAlign: "center",
+  },
+  subText: {
+    fontSize: 16,
+    fontWeight: "400",
+    color: COLORS.fontWhite,
+    marginTop: 10,
+    textAlign: "center",
+    opacity: 0.8,
+  },
+  smallLoader: {
+    marginTop: 20,
+  },
+  orderDetailsCard: {
+    backgroundColor: "rgba(255, 255, 255, 0.1)",
+    borderRadius: 12,
+    padding: 20,
+    marginTop: 30,
+    width: "100%",
+    maxWidth: 350,
+  },
+  orderDetailsTitle: {
+    fontSize: 18,
+    fontWeight: "600",
+    color: COLORS.fontWhite,
+    marginBottom: 15,
+    textAlign: "center",
+  },
+  detailRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "rgba(255, 255, 255, 0.1)",
+  },
+  detailLabel: {
+    fontSize: 16,
+    color: COLORS.fontWhite,
+    opacity: 0.8,
+  },
+  detailValue: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: COLORS.fontWhite,
+  },
+  statusText: {
+    color: "#D87129",
+    textTransform: "capitalize",
+  },
+  buttonContainer: {
+    paddingHorizontal: 20,
+    width: "100%",
+    paddingBottom: 30,
+    backgroundColor: COLORS.primaryColor,
+  },
+  errorTitle: {
+    fontSize: 24,
+    fontWeight: "600",
+    color: COLORS.fontWhite,
+    marginTop: 20,
+    textAlign: "center",
+  },
+  errorText: {
+    fontSize: 16,
+    color: COLORS.fontWhite,
+    marginTop: 10,
+    textAlign: "center",
+    opacity: 0.8,
+    maxWidth: 300,
+  },
+})
 
 export default OrderConfirm
