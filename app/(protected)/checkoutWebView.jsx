@@ -1,12 +1,14 @@
 import React from "react";
 import { WebView } from "react-native-webview";
 import { Alert } from "react-native";
-import { useAuth } from "../auth/useAuth";
-import { router } from "expo-router";
+import { useAuth } from '../context/useAuth';
+import { router, useLocalSearchParams } from "expo-router";
 import { useNavigation } from "@react-navigation/native";
 
-export default function CheckoutWebView({ route }) {
-  const { sessionId, orderId } = route.params;
+export default function CheckoutWebView( props) {
+  console.log(props,":::::::::::::::::::::::::");
+  
+  const { sessionId, orderId } = useLocalSearchParams();
 //  console.log(sessionId, orderId);
  const { setOrderCinfirmDetails } = useAuth();
   
@@ -42,32 +44,31 @@ export default function CheckoutWebView({ route }) {
 
   const handleRedirect = (url) => {
     // Parse URL params
-    console.log(url,"_______url");
     
-    const parsed = new URL(url);
-    const returnUrl = parsed.searchParams.get("return_url");
-    const orderId = parsed.searchParams.get("order_id");
+    // const parsed = new URL(url);
+    // const returnUrl = parsed.searchParams.get("return_url");
+    // const orderId = parsed.searchParams.get("order_id");
 
-    if (returnUrl) {
-      // Parse screen path from return_url
-      const returnParsed = new URL(returnUrl);
-      const path = returnParsed.pathname; // "/--/screens/orderConfirm"
-      const pathParts = path.split("/--/");
+    // if (returnUrl) {
+    //   // Parse screen path from return_url
+    //   const returnParsed = new URL(returnUrl);
+    //   const path = returnParsed.pathname; // "/--/screens/orderConfirm"
+    //   const pathParts = path.split("/--/");
 
-      if (pathParts.length === 2) {
-        const screen = pathParts[1]; // "screens/orderConfirm"
-        const screenParts = screen.split("/");
+    //   if (pathParts.length === 2) {
+    //     const screen = pathParts[1]; // "screens/orderConfirm"
+    //     const screenParts = screen.split("/");
 
-        if (screenParts.length === 2) {
-          const screenName = screenParts[1]; // "orderConfirm"
+    //     if (screenParts.length === 2) {
+    //       const screenName = screenParts[1]; // "orderConfirm"
 
-          // Navigate to that screen and pass orderId
-          navigation.navigate(screenName, { orderId });
+    //       // Navigate to that screen and pass orderId
+    //       navigation.navigate(screenName, { orderId });
 
-          return false; // prevent WebView from loading the URL
-        }
-      }
-    }
+    //       return false; // prevent WebView from loading the URL
+    //     }
+    //   }
+    // }
 
     return true; // otherwise, allow WebView to load normally
   }; 

@@ -147,7 +147,7 @@ export const stateApi = async (stateId) => {
   try {
     const response = await axios({
       method: "GET",
-      url: `https://admin.planmoney.in/api/state/${stateId}`,
+      url: `https://admin.planmoney.in/api/state/${1}`,
       headers: {
         'Content-Type': 'application/json',
         // 'Authorization' : `Bearer${token}`

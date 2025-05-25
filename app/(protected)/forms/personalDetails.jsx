@@ -1,0 +1,465 @@
+
+import { useState } from "react"
+import {
+    View,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    StyleSheet,
+    ScrollView,
+    Modal,
+    FlatList,
+    Platform,
+    Dimensions,
+    SafeAreaView,
+} from "react-native"
+import DateTimePicker from "@react-native-community/datetimepicker"
+import { Ionicons } from "@expo/vector-icons"
+import { LinearGradient } from "expo-linear-gradient"
+import { COLORS } from '../../constants'
+import Header from "../../components/Header"
+import Button from "../../components/Button"
+
+const { width, height } = Dimensions.get("window")
+
+// Sample data - replace with your actual data source
+const countries = [
+    { id: "1", name: "India", code: "IN" },
+    { id: "2", name: "United States", code: "US" },
+    { id: "3", name: "United Kingdom", code: "UK" },
+    { id: "4", name: "Canada", code: "CA" },
+    { id: "5", name: "Australia", code: "AU" },
+]
+
+const states = {
+    "1": [
+        { id: "1", name: "Maharashtra" },
+        { id: "2", name: "Karnataka" },
+        { id: "3", name: "Tamil Nadu" },
+        { id: "4", name: "Gujarat" },
+        { id: "5", name: "Rajasthan" },
+    ],
+    "2": [
+        { id: "6", name: "California" },
+        { id: "7", name: "New York" },
+        { id: "8", name: "Texas" },
+        { id: "9", name: "Florida" },
+    ],
+}
+
+const cities = {
+    "1": [
+        { id: "1", name: "Mumbai" },
+        { id: "2", name: "Pune" },
+        { id: "3", name: "Nashik" },
+    ],
+    "2": [
+        { id: "4", name: "Bangalore" },
+        { id: "5", name: "Mysore" },
+    ],
+    "6": [
+        { id: "6", name: "Los Angeles" },
+        { id: "7", name: "San Francisco" },
+    ],
+}
+
+
+
+const SearchableDropdown = ({ data, value, placeholder, onSelect, searchKey, displayKey }) => {
+    const [isVisible, setIsVisible] = useState(false)
+    const [searchText, setSearchText] = useState("")
+
+    const filteredData = data.filter((item) => item[searchKey].toLowerCase().includes(searchText.toLowerCase()))
+
+    const handleSelect = (item) => {
+        onSelect(item)
+        setIsVisible(false)
+        setSearchText("")
+    }
+
+    return (
+        <>
+            <TouchableOpacity style={styles.dropdown} onPress={() => setIsVisible(true)}>
+                <Text style={[styles.dropdownText, !value && styles.placeholder]}>{value || placeholder}</Text>
+                <Ionicons name="chevron-down" size={20} color="#8B9DC3" />
+            </TouchableOpacity>
+
+            <Modal visible={isVisible} transparent animationType="slide">
+                <View style={styles.modalOverlay}>
+                    <View style={styles.modalContent}>
+                        <View style={styles.modalHeader}>
+                            <Text style={styles.modalTitle}>{placeholder}</Text>
+                            <TouchableOpacity onPress={() => setIsVisible(false)}>
+                                <Ionicons name="close" size={24} color="#fff" />
+                            </TouchableOpacity>
+                        </View>
+
+                        <TextInput
+                            style={styles.searchInput}
+                            placeholder="Search..."
+                            placeholderTextColor="#8B9DC3"
+                            value={searchText}
+                            onChangeText={setSearchText}
+                        />
+
+                        <FlatList
+                            data={filteredData}
+                            keyExtractor={(item) => item.id}
+                            renderItem={({ item }) => (
+                                <TouchableOpacity style={styles.dropdownItem} onPress={() => handleSelect(item)}>
+                                    <Text style={styles.dropdownItemText}>{item[displayKey]}</Text>
+                                </TouchableOpacity>
+                            )}
+                            showsVerticalScrollIndicator={false}
+                        />
+                    </View>
+                </View>
+            </Modal>
+        </>
+    )
+}
+
+export default function PersonalDetailsForm() {
+    const [formData, setFormData] = useState({
+        dateOfBirth: new Date(),
+        address: "",
+        city: "",
+        state: "",
+        pincode: "",
+        country: "",
+    })
+
+    const [selectedCountry, setSelectedCountry] = useState(null)
+    const [selectedState, setSelectedState] = useState(null)
+    const [selectedCity, setSelectedCity] = useState(null)
+    const [showDatePicker, setShowDatePicker] = useState(false)
+
+    const handleCountrySelect = (country) => {
+        setSelectedCountry(country)
+        setSelectedState(null)
+        setSelectedCity(null)
+        setFormData((prev) => ({
+            ...prev,
+            country: country.name,
+            state: "",
+            city: "",
+        }))
+    }
+
+    const handleStateSelect = (state) => {
+        setSelectedState(state)
+        setSelectedCity(null)
+        setFormData((prev) => ({
+            ...prev,
+            state: state.name,
+            city: "",
+        }))
+    }
+
+    const handleCitySelect = (city) => {
+        setSelectedCity(city)
+        setFormData((prev) => ({
+            ...prev,
+            city: city.name,
+        }))
+    }
+
+    const handleDateChange = (event, selectedDate) => {
+        setShowDatePicker(Platform.OS === "ios")
+        if (selectedDate) {
+            setFormData((prev) => ({
+                ...prev,
+                dateOfBirth: selectedDate,
+            }))
+        }
+    }
+
+    const formatDate = (date) => {
+        return date.toLocaleDateString("en-US", {
+            month: "short",
+            day: "2-digit",
+            year: "numeric",
+        })
+    }
+
+    const handleNext = () => {
+        // Add your form submission logic here
+        console.log("Form Data:", formData)
+    }
+
+    return (
+        <SafeAreaView style={styles.container}>
+            <Header />
+            <ScrollView
+                style={styles.scrollView}
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={styles.scrollContent}
+            >
+                <View style={styles.header}>
+                    <Text style={styles.subtitle}>Need some details before you proceed with our Services</Text>
+                    <Text style={styles.stepText}>Step 1 to 5</Text>
+                    <Text style={styles.title}>Personal Details</Text>
+                </View>
+
+                <View style={styles.form}>
+                    {/* Date of Birth */}
+                    <View style={styles.inputContainer}>
+                        <Text style={styles.label}>Date of Birth</Text>
+                        <TouchableOpacity style={styles.dateInput} onPress={() => setShowDatePicker(true)}>
+                            <Ionicons name="calendar-outline" size={20} color="#8B9DC3" />
+                            <Text style={styles.dateText}>{formatDate(formData.dateOfBirth)}</Text>
+                        </TouchableOpacity>
+                    </View>
+
+                    {showDatePicker && (
+                        <DateTimePicker
+                            value={formData.dateOfBirth}
+                            mode="date"
+                            display={Platform.OS === "ios" ? "spinner" : "default"}
+                            onChange={handleDateChange}
+                            maximumDate={new Date()}
+                        />
+                    )}
+
+
+                    {/* Country */}
+                    <View style={styles.inputContainer}>
+                        <SearchableDropdown
+                            data={countries}
+                            value={formData.country}
+                            placeholder="Country"
+                            onSelect={handleCountrySelect}
+                            searchKey="name"
+                            displayKey="name"
+                        />
+                    </View>
+
+                    {/* State */}
+                    <View style={styles.inputContainer}>
+                        <SearchableDropdown
+                            data={selectedCountry ? states[selectedCountry.id] || [] : []}
+                            value={formData.state}
+                            placeholder="State"
+                            onSelect={handleStateSelect}
+                            searchKey="name"
+                            displayKey="name"
+                        />
+                    </View>
+
+                    {/* City */}
+                    <View style={styles.inputContainer}>
+                        <SearchableDropdown
+                            data={selectedState ? cities[selectedState.id] || [] : []}
+                            value={formData.city}
+                            placeholder="City"
+                            onSelect={handleCitySelect}
+                            searchKey="name"
+                            displayKey="name"
+                        />
+                    </View>
+
+
+                    {/* Pincode */}
+                    <View style={styles.inputContainer}>
+                        <TextInput
+                            style={styles.textInput}
+                            placeholder="Pincode"
+                            placeholderTextColor="#8B9DC3"
+                            value={formData.pincode}
+                            onChangeText={(text) => setFormData((prev) => ({ ...prev, pincode: text }))}
+                            keyboardType="numeric"
+                            maxLength={6}
+                        />
+                    </View>
+                    {/* Address */}
+                    <View style={styles.inputContainer}>
+                        <TextInput
+                            style={styles.textInput}
+                            placeholder="Enter your Address"
+                            placeholderTextColor="#8B9DC3"
+                            value={formData.address}
+                            onChangeText={(text) => setFormData((prev) => ({ ...prev, address: text }))}
+                            multiline
+                            numberOfLines={3}
+                        />
+                    </View>
+                </View>
+
+                
+            </ScrollView>
+                    <TouchableOpacity style={styles.skipButton}>
+                        <Text style={styles.skipText}>Skip for now</Text>
+                    </TouchableOpacity>
+            <Button onClick={() => {}} label={"Next"} gradientColor={['#D36C32', '#F68F00']} buttonStye={{marginHorizontal: 20}} />
+
+        </SafeAreaView>
+    )
+}
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: COLORS.primaryColor
+    },
+    gradient: {
+        flex: 1,
+    },
+    scrollView: {
+        flex: 1,
+        marginTop: 70
+    },
+    scrollContent: {
+        flexGrow: 1,
+        paddingHorizontal: 20,
+        paddingTop: 20,
+        paddingBottom: 40,
+    },
+    header: {
+        marginBottom: 30,
+    },
+    subtitle: {
+        color: "#B8C5D6",
+        fontSize: 14,
+        marginBottom: 8,
+        lineHeight: 20,
+    },
+    stepText: {
+        color: "#8B9DC3",
+        fontSize: 12,
+        marginBottom: 8,
+    },
+    title: {
+        color: "#FFFFFF",
+        fontSize: 24,
+        fontWeight: "bold",
+    },
+    form: {
+        flex: 1,
+    },
+    inputContainer: {
+        marginBottom: 20,
+    },
+    label: {
+        color: "#8B9DC3",
+        fontSize: 14,
+        marginBottom: 8,
+    },
+    textInput: {
+        backgroundColor: COLORS.primaryColor,
+        borderWidth: 1,
+        borderColor: COLORS.fontWhite,
+        borderRadius: 12,
+        padding: 16,
+        color: "#FFFFFF",
+        fontSize: 16,
+        minHeight: 56,
+        textAlignVertical: "top",
+    },
+    dateInput: {
+        backgroundColor: COLORS.primaryColor,
+        borderWidth: 1,
+        borderColor: COLORS.fontWhite,
+        borderRadius: 12,
+        padding: 16,
+        flexDirection: "row",
+        alignItems: "center",
+        minHeight: 56,
+    },
+    dateText: {
+        color: "#FFFFFF",
+        fontSize: 16,
+        marginLeft: 12,
+    },
+    dropdown: {
+         backgroundColor: COLORS.primaryColor,
+        borderWidth: 1,
+        borderColor: COLORS.fontWhite,
+        borderRadius: 12,
+        padding: 16,
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+        minHeight: 56,
+    },
+    dropdownText: {
+        color: "#FFFFFF",
+        fontSize: 16,
+    },
+    placeholder: {
+        color: "#8B9DC3",
+    },
+    modalOverlay: {
+        flex: 1,
+        backgroundColor: "rgba(0, 0, 0, 0.5)",
+        justifyContent: "center",
+    },
+    modalContent: {
+        backgroundColor: COLORS.cardColor,
+        borderRadius: 20,
+        borderTopRightRadius: 20,
+        maxHeight: height * 0.7,
+        paddingBottom: 20,
+    },
+    modalHeader: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+        padding: 20,
+        borderBottomWidth: 1,
+        borderBottomColor: "rgba(255, 255, 255, 0.1)",
+    },
+    modalTitle: {
+        color: "#FFFFFF",
+        fontSize: 18,
+        fontWeight: "bold",
+    },
+    searchInput: {
+        backgroundColor: COLORS.primaryColor,
+        borderWidth: 1,
+        borderColor: COLORS.fontWhite,
+        borderRadius: 12,
+        padding: 16,
+        margin: 20,
+        color: "#FFFFFF",
+        fontSize: 16,
+    },
+    dropdownItem: {
+        padding: 16,
+        borderBottomWidth: 1,
+        borderBottomColor: "rgba(255, 255, 255, 0.1)",
+    },
+    dropdownItemText: {
+        color: "#FFFFFF",
+        fontSize: 16,
+    },
+    footer: {
+        marginTop: 30,
+    },
+    skipButton: {
+        alignItems: "center",
+        marginBottom: 20,
+    },
+    skipText: {
+        color: "#8B9DC3",
+        fontSize: 16,
+    },
+    nextButton: {
+        backgroundColor: "#FF8C42",
+        borderRadius: 25,
+        padding: 18,
+        alignItems: "center",
+        shadowColor: "#FF8C42",
+        shadowOffset: {
+            width: 0,
+            height: 4,
+        },
+        shadowOpacity: 0.3,
+        shadowRadius: 8,
+        elevation: 8,
+    },
+    nextButtonText: {
+        color: "#FFFFFF",
+        fontSize: 18,
+        fontWeight: "bold",
+    },
+})

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
@@ -10,7 +10,7 @@ import {
 import Slider from '@react-native-community/slider';
 import { COLORS } from '../constants';
 import Header from '../components/Header';
-import Tabs from '../components/Tabs';
+import { useFocusEffect } from '@react-navigation/native';
 
 export default function SIP() {
   const [monthlyInvestment, setMonthlyInvestment] = useState(5000);
@@ -32,9 +32,11 @@ export default function SIP() {
     setMaturityAmount(FV.toFixed(2));
   };
 
-  useEffect(() => {
-    calculateSIP();
-  }, [monthlyInvestment, annualReturnRate, years]);
+  useFocusEffect(
+    useCallback(() => {
+      calculateSIP();
+    }, [monthlyInvestment, annualReturnRate, years])
+  );
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.primaryColor }}>
@@ -105,7 +107,6 @@ export default function SIP() {
           </Text>
         )}
       </ScrollView>
-      <Tabs />
     </SafeAreaView>
   );
 }

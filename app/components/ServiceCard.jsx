@@ -3,8 +3,8 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import { useAuth } from '../auth/useAuth';
-import { useNavigation } from 'expo-router';
+import { useAuth } from '../context/useAuth';
+import { router, useNavigation } from 'expo-router';
 import { COLORS } from '../constants';
 
 const ServiceCard = ({
@@ -88,7 +88,7 @@ const ServiceCard = ({
           </View>
           <TouchableOpacity  disabled={!selectedDuration} onPress={() => {
             setSelectedService(selectedDuration),
-            navigation.navigate('checkout')
+            router.push('checkout')
           }} style={[styles.payNowBtn, {backgroundColor: selectedDuration ? "#FF9800": "#ccc"}]}>
             <Text style={styles.payNowText}>PAY NOW</Text>
           </TouchableOpacity>

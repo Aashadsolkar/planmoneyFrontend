@@ -14,12 +14,12 @@ import FloatingLabelInput from '../components/FloatingLabelInput';
 import PasswordInput from '../components/PasswordInput ';
 import Button from '../components/Button';
 import { COLORS } from '../constants';
-import { useNavigation } from 'expo-router';
+import { router, useNavigation } from 'expo-router';
 import PassWordInput from '../components/Password';
 import Input from '../components/Input';
 import { validateField, validateForm } from '../utils/validator';
 import { registor } from '../utils/apiCaller';
-import { useAuth } from '../auth/useAuth';
+import { useAuth } from '../context/useAuth';
 
 const { height, width } = Dimensions.get('window');
 
@@ -193,7 +193,7 @@ const Registor = () => {
         </View>
       </KeyboardAvoidingView>
       <View style={{ paddingHorizontal: 20, width: "100%", position: "absolute", bottom: 0, paddingBottom: 30, backgroundColor: COLORS.primaryColor }}>
-        <Text style={{ color: "#fff", textAlign: "center", marginBottom: 10 }}>Already have an account? <Text onPress={() => navigation.navigate('login')} style={{ color: "#D87129" }}> Sign in</Text></Text>
+        <Text style={{ color: "#fff", textAlign: "center", marginBottom: 10 }}>Already have an account? <Text onPress={() => router.push('/login')} style={{ color: "#D87129" }}> Sign in</Text></Text>
         <Button onClick={handleSubmit} isLoading={isLoading} label={"SIGN IN"} gradientColor={['#D36C32', '#F68F00']} />
       </View>
     </SafeAreaView>

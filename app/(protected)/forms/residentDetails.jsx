@@ -1,9 +1,9 @@
 import { View, Text, SafeAreaView, TouchableOpacity, StyleSheet, ScrollView } from 'react-native'
 import React, { useState } from 'react'
-import { COLORS } from '../../constants'
+import { COLORS } from "../../constants"
 import Button from '../../components/Button'
 import Input from '../../components/Input'
-import { useNavigation } from 'expo-router'
+import { router, useNavigation } from 'expo-router'
 
 const ResidentDetails = () => {
     const [selected, setSelected] = useState("yes");
@@ -12,7 +12,7 @@ const ResidentDetails = () => {
     const navigation = useNavigation();
 
     const handleSubmit = () => {
-        navigation.navigate('agreementForm');
+        router.push('forms/agreementForm');
     }
 
     const renderCheckbox = (label) => {

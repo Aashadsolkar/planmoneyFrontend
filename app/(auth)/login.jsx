@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Text, Image, Dimensions } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useNavigation } from 'expo-router';
-import { useAuth } from '../auth/useAuth';
+import { router, useNavigation } from 'expo-router';
+import { useAuth } from '../context/useAuth';
 import PassWordInput from '../components/Password';
 import Input from '../components/Input';
 import Button from '../components/Button';
@@ -113,7 +113,7 @@ const Login = () => {
             <View style={{ paddingHorizontal: 20, width: '100%', position: 'absolute', bottom: '5%' }}>
                 <Text style={{ color: '#fff', textAlign: 'center', marginBottom: 10 }}>
                     Don’t have an account?{' '}
-                    <Text onPress={() => navigation.navigate('registor')} style={{ color: '#D87129' }}>
+                    <Text onPress={() => router.push('/')} style={{ color: '#D87129' }}>
                         Sign up
                     </Text>
                 </Text>

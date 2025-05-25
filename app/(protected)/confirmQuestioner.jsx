@@ -1,11 +1,26 @@
 
-import { View, Text, StyleSheet, SafeAreaView, ScrollView, TouchableOpacity, Image } from "react-native"
+import { View, Text, StyleSheet, SafeAreaView, ScrollView, TouchableOpacity, Image, BackHandler } from "react-native"
 import { COLORS } from "../constants";
 import Button from "../components/Button";
-import { useNavigation } from "expo-router";
+import { router, useNavigation } from "expo-router";
+import { useEffect } from "react";
 
 export default function App() {
     const navigation = useNavigation();
+
+    // 🚫 Prevent back button and swipe gestures
+        useEffect(() => {
+          const unsubscribe = navigation.addListener('beforeRemove', (e) => {
+            e.preventDefault(); // Block back navigation
+          });
+      
+          const backHandler = BackHandler.addEventListener('hardwareBackPress', () => true); // Block Android hardware back
+      
+          return () => {
+            unsubscribe();
+            backHandler.remove();
+          };
+        }, [navigation]);
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.primaryColor, padding: 20 }}>
@@ -24,7 +39,7 @@ export default function App() {
                     <Text style={{ fontSize: 14, fontWeight: 400, color: COLORS.fontWhite, paddingVertical: 20, textAlign: "center", width: 250 }}>Please wait until our Advisor Approves your Profile</Text>
                 </View>
             </ScrollView>
-            <Button onClick={() => navigation.navigate("home")} label={"Done"} gradientColor={['#D36C32', '#F68F00']} buttonStye={{ marginHorizontal: 20 }} />
+            <Button onClick={() => router.push("home")} label={"Done"} gradientColor={['#D36C32', '#F68F00']} buttonStye={{ marginHorizontal: 20 }} />
         </SafeAreaView>
     )
 }

@@ -3,11 +3,12 @@ import { View, Text, Image, SafeAreaView, ActivityIndicator, StyleSheet, ScrollV
 import { useEffect, useState } from "react"
 import Button from "../components/Button"
 import { COLORS } from "../constants"
-import { useAuth } from "../auth/useAuth"
+import { useAuth } from '../context/useAuth';
 import { buySubscription, pgVerifyOrder } from "../utils/apiCaller"
 import { useNavigation, useRoute } from "@react-navigation/native"
 import { CheckCircle, Clock } from "lucide-react-native"
 import * as Animatable from "react-native-animatable"
+import { router } from "expo-router";
 
 const OrderConfirm = () => {
   const route = useRoute()
@@ -27,7 +28,9 @@ const OrderConfirm = () => {
       setLoading(true)
       try {
         const response = await pgVerifyOrder(token, orderId)
-        if (response?.data) {
+        console.log(response);
+        
+        if (response?.data?.length > 0) {
           setOrderDetails(response.data)
           setVerifyComplete(true)
 
@@ -35,6 +38,8 @@ const OrderConfirm = () => {
           setTimeout(() => {
             buyService(response.data)
           }, 2000)
+        }else{
+          setError("Failed to verify your payment. Please contact support.")
         }
       } catch (error) {
         console.log("Verify order error:", error)
@@ -48,7 +53,7 @@ const OrderConfirm = () => {
       setLoading(true)
       try {
         const payload = {
-          service_id: 1,
+          service_id: 2,
           plan_id: id,
           payment_method: orderData[0]?.payment_group,
           amount: orderData[0].order_amount,
@@ -59,7 +64,6 @@ const OrderConfirm = () => {
         }
 
         const response = await buySubscription(token, payload)
-        console.log(response.message)
         setSubscriptionComplete(true)
       } catch (error) {
         console.log("Buy subscription error:", error)
@@ -71,6 +75,8 @@ const OrderConfirm = () => {
       }
     }
 
+    console.log(orderId);
+    
     if (orderId) {
       verifyOrder()
     }
@@ -170,7 +176,7 @@ const OrderConfirm = () => {
           label={subscriptionComplete ? "Done" : "Back to Home"}
           gradientColor={["#D36C32", "#F68F00"]}
           // onPress={() => navigation.navigate("/screens/home")}
-          onClick={() => navigation.navigate("home")}
+          onClick={() => router.push("home")}
         />
       </View>
     </SafeAreaView>

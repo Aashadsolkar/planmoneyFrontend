@@ -5,9 +5,9 @@ import Header from "../components/Header"
 import { COLORS } from "../constants"
 import { LinearGradient } from "expo-linear-gradient"
 import Button from "../components/Button"
-import { useAuth } from "../auth/useAuth"
-import { applyCouponApi, pgCreateOrder } from "../utils/apiCaller"
-import { useNavigation } from "expo-router"
+import { useAuth } from '../context/useAuth';
+import { applyCouponApi, buySubscription, pgCreateOrder } from "../utils/apiCaller"
+import { router, useNavigation } from "expo-router"
 import * as Linking from "expo-linking";
 
 export default function Checkout() {
@@ -27,7 +27,9 @@ export default function Checkout() {
   const [pincode, setPincode] = useState("560001");
   const [amount, setAmount] = useState("1");
   const navigation = useNavigation();
-  const userReturnURL = Linking.createURL("/screens/orderConfirm");
+  const userReturnURL = Linking.createURL("/orderConfirm");
+  console.log(userReturnURL);
+
 
 
   const generateOrderNumber = () => {
@@ -48,15 +50,46 @@ export default function Checkout() {
       }
 
       const response = await pgCreateOrder(token, payload);
+      console.log(response, "______________jhshjshjas");
+
       setOrderId(response?.data?.order_id);
-      navigation.navigate("checkoutWebView", {
-        sessionId: response?.data.payment_session_id,
-        orderId: response?.data?.order_id,
+      router.push({
+        pathname: "/checkoutWebView",
+        params: {
+          sessionId: response?.data?.payment_session_id,
+          orderId: response?.data?.order_id,
+        },
       });
+
     } catch (error) {
       console.log("Payment creation failed:", error);
     }
   };
+
+  // const handlePay = async () => {
+  //   try {
+  //     // const orderID = generateOrderNumber();
+  //     const payload = {
+  //       "service_id": 2,
+  //       "plan_id": 1,
+  //       "payment_method": "upi",
+  //       "amount": "199",
+  //       "currency": "IND",
+  //       "billing_cycle": "monthly",
+  //       "payment_status": "paid",
+  //       "coupon_code": "Save20%",
+  //       "referral_code": "",
+  //       "transaction_id": "1233424"
+  //     }
+
+  //     const response = await buySubscription(token, payload);
+  //     router.replace("home")
+
+
+  //   } catch (error) {
+  //     console.log("Payment creation failed:", error);
+  //   }
+  // }
 
   const totalPrice = selectedService.offer_price - discount
 
@@ -69,7 +102,6 @@ export default function Checkout() {
       const couponResponse = await applyCouponApi(token, payload)
       setDiscount(couponResponse?.data?.discount)
       setShowCouponDiscount(true)
-      console.log(couponResponse);
 
     } catch (error) {
       setAppliedCoupon("")
@@ -118,7 +150,7 @@ export default function Checkout() {
           </View>
         )}
 
-        
+
 
         {/* Subscription Details */}
         <View style={styles.subscriptionCard}>
@@ -157,7 +189,7 @@ export default function Checkout() {
 
 
         {/* Upgrade Option */}
-        
+
 
         {/* Please Note Section */}
         <View style={styles.notesSection}>

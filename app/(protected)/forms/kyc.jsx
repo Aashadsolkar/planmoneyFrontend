@@ -17,10 +17,10 @@ import {
 } from "react-native"
 import { Ionicons } from "@expo/vector-icons"
 import axios from "axios"
-import { COLORS } from "../constants"
-import { useAuth } from "../auth/useAuth"
+import { COLORS } from "../../constants"
+import { useAuth } from '../../context/useAuth';
 import { LinearGradient } from "expo-linear-gradient"
-import { useNavigation } from "expo-router"
+import { router, useNavigation } from "expo-router"
 
 // Get screen dimensions for responsive design
 const { width } = Dimensions.get("window")
@@ -269,10 +269,8 @@ export default function KYC() {
     <Animated.View style={[styles.stepContainer, { opacity: fadeAnim, transform: [{ translateY: slideAnim }] }]}>
       <Text style={{ fontSize: 25, fontWeight: 500, color: COLORS.fontWhite }}>Hey <Text style={{ color: COLORS.secondaryColor }}>{profileData?.name}</Text></Text>
       <Text style={styles.subText}>Please complete your KYC</Text>
-
       <Text style={{ fontSize: 12, fontWeight: 600, color: COLORS.fontWhite, marginTop: 20 }}>Step <Text style={{ color: COLORS.secondaryColor }}>1</Text> to 3</Text>
       <Text style={{ fontSize: 20, fontWeight: 600, color: COLORS.fontWhite, marginBottom: 10 }}>Verify Your Aadhar Number</Text>
-
       <TextInput
         style={styles.input}
         placeholder="Enter Your Aadhar Number"
@@ -407,7 +405,7 @@ export default function KYC() {
           setIsVerified(false)
           setRequestId("")
           setTaskId("");
-          navigation.navigate("home")
+          router.replace("forms/personalDetails")
 
         }}
       >

@@ -1,16 +1,31 @@
-"use client"
 
 import { useState, useEffect } from "react"
-import { View, Text, StyleSheet, SafeAreaView, ScrollView, TouchableOpacity } from "react-native"
-import { useAuth } from "../auth/useAuth";
+import { View, Text, StyleSheet, SafeAreaView, ScrollView, TouchableOpacity, BackHandler } from "react-native"
+import { useAuth } from '../context/useAuth';
 import { COLORS } from "../constants";
 import Header from "../components/Header";
 import Button from "../components/Button";
-import { useNavigation } from "expo-router";
+import { router, useNavigation } from "expo-router";
 
 
 export default function App() {
   const navigation = useNavigation();
+
+
+  // 🚫 Prevent back button and swipe gestures
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('beforeRemove', (e) => {
+      e.preventDefault(); // Block back navigation
+    });
+
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', () => true); // Block Android hardware back
+
+    return () => {
+      unsubscribe();
+      backHandler.remove();
+    };
+  }, [navigation]);
+
   // In a real app, you would fetch this data
   const { riskData } = useAuth();
   const [response, setResponse] = useState({
@@ -68,7 +83,7 @@ export default function App() {
           <Text style={[styles.riskLevel, { color: riskColor }]}>{riskLevelText}</Text>
         </View>
       </ScrollView>
-      <Button onClick={() => navigation.navigate("confrimQuestioner")} label={"Next"} gradientColor={['#D36C32', '#F68F00']} buttonStye={{ marginHorizontal: 20 }} />
+      <Button onClick={() => router.push("confirmQuestioner")} label={"Next"} gradientColor={['#D36C32', '#F68F00']} buttonStye={{ marginHorizontal: 20 }} />
     </SafeAreaView>
   )
 }

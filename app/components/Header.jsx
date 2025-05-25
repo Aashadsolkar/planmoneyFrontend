@@ -13,8 +13,8 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { COLORS } from '../constants';
-import { useNavigation } from 'expo-router';
-import { useAuth } from '../auth/useAuth';
+import { router, useNavigation } from 'expo-router';
+import { useAuth } from '../context/useAuth';
 
 // Icons - you'll need to install a library like react-native-vector-icons
 // or use your own image assets
@@ -65,14 +65,13 @@ const Header = ({
   onBackPress,
   backButtonText = () => {}
 }) => {
+  
   const insets = useSafeAreaInsets();
   const [showNotifications, setShowNotifications] = useState(false);
   const [showProfileDrawer, setShowProfileDrawer] = useState(false);
   const drawerAnimation = useState(new Animated.Value(Dimensions.get('window').width))[0];
   const navigation = useNavigation();
   const { logout, profileData } = useAuth();
-
-
   // Sample notifications data
   const notifications = [
     { id: '1', title: 'Your order has been shipped', time: '5 min ago' },
@@ -124,7 +123,7 @@ const Header = ({
           <View style={styles.leftSection}>
             {showBackButton ? (
               <View style={{flexDirection: "row", alignItems: "center", gap: 20}}>
-              <BackButton onPress={() => navigation.goBack()} />
+              <BackButton onPress={() => router.back()} />
                 <View>{backButtonText()}</View>
               </View>
             ) : (
@@ -140,6 +139,7 @@ const Header = ({
             <ProfileIcon onPress={toggleProfileDrawer} name={profileData?.name} />
           </View>
         </View>
+        
 
         {/* Notifications dropdown */}
         {showNotifications && (
@@ -178,7 +178,7 @@ const Header = ({
         <View style={styles.drawerHeader}>
           <View style={styles.drawerProfileSection}>
             <View style={styles.drawerProfileImage}>
-              <Text style={styles.drawerProfileInitial}>VI</Text>
+              <Text style={styles.drawerProfileInitial}>{profileData?.name && getInitials(profileData?.name)}</Text>
             </View>
             <View style={styles.drawerProfileInfo}>
               <Text style={styles.drawerProfileName}>{profileData?.name}</Text>

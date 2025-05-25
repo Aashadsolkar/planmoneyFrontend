@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { KeyboardAvoidingView, Platform, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Button from '../../components/Button';
-import { useNavigation } from 'expo-router';
+import { router, useNavigation } from 'expo-router';
 import SelectBox from '../../components/Select';
 import { COLORS } from '../../constants';
-import { useAuth } from '../../auth/useAuth';
+import { useAuth } from '../../context/useAuth';
 
-const RiskForm1 = () => {
+const RiskCalculate1 = () => {
     const navigation = useNavigation();
     const { questionFormData, setQuestionFormData } = useAuth();
     const [errors, setErrors] = useState({});
@@ -27,6 +27,7 @@ const RiskForm1 = () => {
     }
 
     const handleSubmit = () => {
+        
         const newErrors = {};
         if (!questionFormData?.occupation) newErrors.occupation = 'Please select an occupation';
         if (!questionFormData?.income_range) newErrors.income_range = 'Please select an income range';
@@ -35,7 +36,7 @@ const RiskForm1 = () => {
             setErrors(newErrors);
             return;
         }
-        navigation.navigate('riskForm');
+        router.push('forms/riskCalculate2');
 
     }
     return (
@@ -79,4 +80,4 @@ const RiskForm1 = () => {
 
 const styles = StyleSheet.create({})
 
-export default RiskForm1;
+export default RiskCalculate1;

@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { Image, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { COLORS } from '../constants';
 import { getFastlaneData } from '../utils/apiCaller';
-import { useAuth } from '../auth/useAuth';
+import { useAuth } from '../context/useAuth';
 import { MaterialIcons } from '@expo/vector-icons';
-import { useNavigation } from 'expo-router';
+import { router, useNavigation } from 'expo-router';
 import Header from '../components/Header';
 import Button from '../components/Button';
 
@@ -90,12 +90,12 @@ const FastLane = () => {
                         <View style={{ alignSelf: "center", flexDirection: "row", alignItems: "center", gap: 2 }}>
                             <Text onPress={() => {
                                 setReportData(data);
-                                navigation.navigate("fastlaneReport")
+                                router.push("fastLaneReport")
 
                             }} style={[styles.lightText, { color: COLORS.secondaryColor }]}>REPORT ANALYSIS</Text>
                             <MaterialIcons onPress={() => {
                                 setReportData(data);
-                                navigation.navigate("fastlaneReport")
+                                router.push("fastLaneReport")
 
                             }} name="chevron-right" size={18} color={COLORS.secondaryColor} />
                             {/* <Text style={styles.boldText}>₹700.00</Text> */}

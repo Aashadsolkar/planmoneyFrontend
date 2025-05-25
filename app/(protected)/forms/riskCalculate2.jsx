@@ -4,9 +4,9 @@ import Button from '../../components/Button';
 import { useNavigation } from 'expo-router';
 import SelectBox from '../../components/Select';
 import { COLORS } from '../../constants';
-import { useAuth } from '../../auth/useAuth';
+import { useAuth } from '../../context/useAuth';
 
-const RiskForm = () => {
+const riskCalculate2 = () => {
     const navigation = useNavigation();
     const [errors, setErrors] = useState({});
     const { questionFormData, setQuestionFormData } = useAuth();
@@ -39,7 +39,7 @@ const RiskForm = () => {
             setErrors(newErrors);
             return;
         }
-        navigation.navigate('residentDetails');
+        navigation.navigate('forms/residentDetails');
 
     }
     return (
@@ -125,4 +125,4 @@ const RiskForm = () => {
 
 const styles = StyleSheet.create({})
 
-export default RiskForm;
+export default riskCalculate2;

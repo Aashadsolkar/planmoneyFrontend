@@ -1,6 +1,8 @@
 import React, { createContext, useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { customerService } from '../utils/apiCaller';
+import { router } from 'expo-router';
 
 export const AuthContext = createContext();
 
@@ -20,6 +22,7 @@ const AuthProvider = ({ children }) => {
   const [customerServiceData, setCustomerServiceData] = useState("")
   const [riskData, setRiskData] = useState("")
   const [reportData, setReportData] = useState({})
+  const [isCustomerApiLoading, setIsCustomerApiLoading] = useState(true);
 
   useEffect(() => {
     const loadSession = async () => {
@@ -52,10 +55,35 @@ const AuthProvider = ({ children }) => {
 
 
   const logout = async () => {
+    console.log("logout called")
     setToken(null);
     setUser(null);
     await AsyncStorage.clear();
   };
+
+  const getCustomerServiceAPi = async () => {
+              try {
+                  const response = await customerService(token)
+                  setCustomerServiceData(response?.data)
+                  console.log(response);
+                  const filterPurchesService = response?.data?.services?.filter((service) => service.is_subscribed)
+                  if (filterPurchesService.length > 0) {
+                       if(response?.data?.questionnaire_status == 0){
+                          router.replace("forms/personalDetails");
+                      }
+                      setPurchesService(filterPurchesService);
+                  } else {
+                      if (!skipServices) {
+                          router.push("service");
+                      }
+                  }
+                  setIsCustomerApiLoading(false);
+              } catch (error) {
+                  console.log(error);
+                  setIsCustomerApiLoading(false)
+  
+              }
+          }
 
   return (
     <AuthContext.Provider value={{
@@ -87,7 +115,9 @@ const AuthProvider = ({ children }) => {
       riskData,
       setRiskData,
       setReportData,
-      reportData
+      reportData,
+      isCustomerApiLoading,
+      getCustomerServiceAPi
     }}>
       {children}
     </AuthContext.Provider>

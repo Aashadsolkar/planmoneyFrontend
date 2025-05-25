@@ -1,112 +1,83 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
-import { COLORS } from '../constants';
+import React, { useState } from "react";
+import {
+  View,
+  TextInput,
+  TouchableOpacity,
+  Text,
+  FlatList,
+} from "react-native";
+import { COLORS } from "../constants";
 
-const CountryAutocompleteInput = ({ data = [], value, onSelect }) => {
-  const [query, setQuery] = useState(value || '');
-  const [showResults, setShowResults] = useState(false);
-  const inputRef = useRef(null);
+const Dropdown = ({ options, onOptionSelected, label }) => {
+  const [searchText, setSearchText] = useState("");
+  const [filteredOptions, setFilteredOptions] = useState([]);
 
-  // Sync internal query if value changes from outside
-  useEffect(() => {
-    setQuery(value || '');
-  }, [value]);
+  const filterOptions = (text) => {
+    setSearchText(text);
+    if (text.length > 0) {
+      setFilteredOptions(
+        options.filter((option) =>
+          option.toLowerCase().includes(text.toLowerCase())
+        )
+      );
+    } else {
+      setFilteredOptions([]);
+    }
+  };
 
-  // Filter countries based on query
-  const filteredCountries = data.filter(country =>
-    country.toLowerCase().includes(query.toLowerCase())
-  );
-
-  const handleSelect = (country) => {
-    onSelect(country);
-    setShowResults(false);
+  const onOptionPress = (option) => {
+    setSearchText(option);
+    setFilteredOptions([]);
+    onOptionSelected(option);
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.label}>Country</Text>
+    <View>
+      {label && (
+        <Text style={{ color: COLORS.fontWhite, marginBottom: 5 }}>{label}</Text>
+      )}
       <TextInput
-        ref={inputRef}
-        style={styles.input}
-        placeholder="Enter country"
-        placeholderTextColor="#8b9cb5"
-        value={query}
-        onChangeText={(text) => {
-          setQuery(text);
-          setShowResults(true);
+        value={searchText}
+        onChangeText={filterOptions}
+        placeholder="Search..."
+        placeholderTextColor={COLORS.lightGray}
+        style={{
+          borderWidth: 1,
+          height: 60,
+          borderRadius: 10,
+          borderColor: COLORS.fontWhite,
+          padding: 20,
+          color: COLORS.fontWhite,
         }}
-        onFocus={() => setShowResults(true)}
       />
 
-      {showResults && query.length > 0 && (
-        <View style={styles.resultsContainer}>
-          <ScrollView >
-            {filteredCountries.length === 0 ? (
-              <Text style={styles.noResults}>No countries found</Text>
-            ) : (
-              filteredCountries.map((item, index) => (
-                <TouchableOpacity
-                  key={index.toString()}
-                  style={styles.resultItem}
-                  onPress={() => handleSelect(item)}
-                >
-                  <Text style={styles.resultText}>{item}</Text>
-                </TouchableOpacity>
-              ))
-            )}
-          </ScrollView>
-        </View>
+      {/* Only show dropdown when there is input */}
+      {searchText.length > 0 && (
+        <FlatList
+          data={filteredOptions}
+          renderItem={({ item }) => (
+            <TouchableOpacity
+              onPress={() => onOptionPress(item)}
+              style={{
+                padding: 15,
+                borderBottomWidth: 1,
+                borderBottomColor: COLORS.lightGray,
+              }}
+            >
+              <Text style={{ color: COLORS.fontWhite }}>{item}</Text>
+            </TouchableOpacity>
+          )}
+          keyExtractor={(item) => item}
+          style={{
+            backgroundColor: COLORS.primaryColor,
+            borderRadius: 8,
+            marginTop: 5,
+            maxHeight: 150,
+          }}
+        />
       )}
     </View>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    width: '100%',
-    marginBottom: 15,
-    zIndex: 10,  // Ensure dropdown is above other components
-  },
-  label: {
-    color: 'white',
-    fontSize: 16,
-    marginBottom: 8,
-  },
-  input: {
-    height: 60,
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: COLORS.fontWhite,
-    backgroundColor: COLORS.primaryColor,
-    color: 'white',
-    paddingHorizontal: 15,
-    fontSize: 16,
-  },
-  resultsContainer: {
-    position: 'absolute',
-    top: 85,
-    left: 0,
-    right: 0,
-    backgroundColor: '#002147',
-    borderRadius: 10,
-    maxHeight: 200,
-    borderWidth: 1,
-    borderColor: '#2c4c7c',
-  },
-  resultItem: {
-    padding: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: '#2c4c7c',
-  },
-  resultText: {
-    color: 'white',
-    fontSize: 16,
-  },
-  noResults: {
-    padding: 15,
-    color: '#8b9cb5',
-    textAlign: 'center',
-  },
-});
-
-export default CountryAutocompleteInput;
+export default Dropdown;
