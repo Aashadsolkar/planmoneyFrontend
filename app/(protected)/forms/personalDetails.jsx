@@ -1,5 +1,5 @@
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import {
     View,
     Text,
@@ -19,6 +19,10 @@ import { LinearGradient } from "expo-linear-gradient"
 import { COLORS } from '../../constants'
 import Header from "../../components/Header"
 import Button from "../../components/Button"
+import { router } from "expo-router"
+import { cityApi, countryApi, stateApi } from "../../utils/apiCaller"
+import { useAuth } from "../../context/useAuth"
+
 
 const { width, height } = Dimensions.get("window")
 
@@ -62,6 +66,7 @@ const cities = {
         { id: "7", name: "San Francisco" },
     ],
 }
+
 
 
 
@@ -120,19 +125,80 @@ const SearchableDropdown = ({ data, value, placeholder, onSelect, searchKey, dis
 }
 
 export default function PersonalDetailsForm() {
+    const today = new Date();
+    const eighteenYearsAgo = new Date(
+        today.getFullYear() - 18,
+        today.getMonth(),
+        today.getDate()
+    );
     const [formData, setFormData] = useState({
-        dateOfBirth: new Date(),
+        dateOfBirth: eighteenYearsAgo,
         address: "",
         city: "",
         state: "",
         pincode: "",
         country: "",
     })
+    const { profileData, token, setQuestionFormData } = useAuth();
 
     const [selectedCountry, setSelectedCountry] = useState(null)
     const [selectedState, setSelectedState] = useState(null)
     const [selectedCity, setSelectedCity] = useState(null)
     const [showDatePicker, setShowDatePicker] = useState(false)
+    const [coutryData, setCountryData] = useState([])
+    const [stateData, setStateData] = useState([])
+    const [cityData, setCityData] = useState([])
+    const [errors, setErrors] = useState({});
+
+
+    useEffect(() => {
+        const getState = async () => {
+            try {
+                const response = await countryApi(token);
+                setCountryData(response?.data?.country)
+                console.log(response);
+
+
+            } catch (error) {
+                console.log(error);
+
+            }
+        }
+        getState()
+    }, [])
+
+    useEffect(() => {
+        const getState = async (id) => {
+            try {
+                const response = await stateApi(id);
+                setStateData(response?.data?.state)
+                console.log(response);
+            } catch (error) {
+                console.log(error);
+
+            }
+        }
+        if (selectedCountry) {
+            getState(selectedCountry?.id);
+        }
+    }, [selectedCountry])
+
+
+    useEffect(() => {
+        const getCity = async (id) => {
+            try {
+                const response = await cityApi(id);
+                setCityData(response?.data?.cities)
+                console.log(response);
+            } catch (error) {
+                console.log(error);
+
+            }
+        }
+        if (selectedState) {
+            getCity(selectedState?.id);
+        }
+    }, [selectedState])
 
     const handleCountrySelect = (country) => {
         setSelectedCountry(country)
@@ -144,6 +210,12 @@ export default function PersonalDetailsForm() {
             state: "",
             city: "",
         }))
+        setErrors((prev) => {
+            return {
+                ...prev,
+                "country": ""
+            }
+        })
     }
 
     const handleStateSelect = (state) => {
@@ -154,14 +226,26 @@ export default function PersonalDetailsForm() {
             state: state.name,
             city: "",
         }))
+        setErrors((prev) => {
+            return {
+                ...prev,
+                "state": ""
+            }
+        })
     }
 
     const handleCitySelect = (city) => {
-        setSelectedCity(city)
+        setSelectedCity(city);
         setFormData((prev) => ({
             ...prev,
             city: city.name,
         }))
+        setErrors((prev) => {
+            return {
+                ...prev,
+                "city": ""
+            }
+        })
     }
 
     const handleDateChange = (event, selectedDate) => {
@@ -183,9 +267,51 @@ export default function PersonalDetailsForm() {
     }
 
     const handleNext = () => {
-        // Add your form submission logic here
-        console.log("Form Data:", formData)
-    }
+        const newErrors = {};
+
+        // Age validation (at least 18 years old)
+        if (!formData.dateOfBirth) {
+            newErrors.dateOfBirth = "Date of birth is required.";
+        } else {
+            const today = new Date();
+            const eighteenYearsAgo = new Date(
+                today.getFullYear() - 18,
+                today.getMonth(),
+                today.getDate()
+            );
+            const dob = new Date(formData.dateOfBirth);
+            if (dob > eighteenYearsAgo) {
+                newErrors.dateOfBirth = "You must be at least 18 years old.";
+            }
+        }
+
+        if (!formData.country) newErrors.country = "Please select a country.";
+        if (!formData.state) newErrors.state = "Please select a state.";
+        if (!formData.city) newErrors.city = "Please select a city.";
+        if (!formData.pincode || formData.pincode.length !== 6) {
+            newErrors.pincode = "Enter a valid 6-digit pincode.";
+        }
+        if (!formData.address.trim()) newErrors.address = "Address is required.";
+
+        setErrors(newErrors);
+
+        if (Object.keys(newErrors).length === 0) {
+            console.log("Form Data:", formData);
+            router.push("forms/riskCalculate1");
+            setQuestionFormData((prev) => {
+                return {
+                    ...prev,
+                    "dob": formData?.dateOfBirth,
+                    "country": selectedCountry?.id,
+                    "state": selectedState?.id,
+                    "city": selectedCity?.id,
+                    "pincode": formData?.pincode,
+                    "address": formData?.address,
+                }
+            })
+        }
+    };
+
 
     return (
         <SafeAreaView style={styles.container}>
@@ -197,8 +323,8 @@ export default function PersonalDetailsForm() {
             >
                 <View style={styles.header}>
                     <Text style={styles.subtitle}>Need some details before you proceed with our Services</Text>
-                    <Text style={styles.stepText}>Step 1 to 5</Text>
-                    <Text style={styles.title}>Personal Details</Text>
+                    <Text style={{ fontSize: 12, fontWeight: 600, color: COLORS.fontWhite, marginTop: 20 }}>Step <Text style={{ color: COLORS.secondaryColor }}>1</Text> to 6</Text>
+                                        <Text style={{ fontSize: 20, fontWeight: 600, color: COLORS.fontWhite }}>Income & Earnings Profile</Text>
                 </View>
 
                 <View style={styles.form}>
@@ -220,12 +346,11 @@ export default function PersonalDetailsForm() {
                             maximumDate={new Date()}
                         />
                     )}
-
-
+                    {errors.dateOfBirth && <Text style={styles.errorText}>{errors.dateOfBirth}</Text>}
                     {/* Country */}
                     <View style={styles.inputContainer}>
                         <SearchableDropdown
-                            data={countries}
+                            data={coutryData}
                             value={formData.country}
                             placeholder="Country"
                             onSelect={handleCountrySelect}
@@ -234,10 +359,13 @@ export default function PersonalDetailsForm() {
                         />
                     </View>
 
+                    {errors.country && <Text style={styles.errorText}>{errors.country}</Text>}
+
+
                     {/* State */}
                     <View style={styles.inputContainer}>
                         <SearchableDropdown
-                            data={selectedCountry ? states[selectedCountry.id] || [] : []}
+                            data={stateData}
                             value={formData.state}
                             placeholder="State"
                             onSelect={handleStateSelect}
@@ -245,11 +373,13 @@ export default function PersonalDetailsForm() {
                             displayKey="name"
                         />
                     </View>
+                    {errors.state && <Text style={styles.errorText}>{errors.state}</Text>}
+
 
                     {/* City */}
                     <View style={styles.inputContainer}>
                         <SearchableDropdown
-                            data={selectedState ? cities[selectedState.id] || [] : []}
+                            data={cityData}
                             value={formData.city}
                             placeholder="City"
                             onSelect={handleCitySelect}
@@ -257,6 +387,8 @@ export default function PersonalDetailsForm() {
                             displayKey="name"
                         />
                     </View>
+                    {errors.city && <Text style={styles.errorText}>{errors.city}</Text>}
+
 
 
                     {/* Pincode */}
@@ -266,11 +398,21 @@ export default function PersonalDetailsForm() {
                             placeholder="Pincode"
                             placeholderTextColor="#8B9DC3"
                             value={formData.pincode}
-                            onChangeText={(text) => setFormData((prev) => ({ ...prev, pincode: text }))}
+                            onChangeText={(text) => {
+                                setFormData((prev) => ({ ...prev, pincode: text }))
+                                setErrors((prev) => {
+                                    return {
+                                        ...prev,
+                                        "pincode": ""
+                                    }
+                                })
+                            }}
                             keyboardType="numeric"
                             maxLength={6}
                         />
                     </View>
+                    {errors.pincode && <Text style={styles.errorText}>{errors.pincode}</Text>}
+
                     {/* Address */}
                     <View style={styles.inputContainer}>
                         <TextInput
@@ -278,19 +420,29 @@ export default function PersonalDetailsForm() {
                             placeholder="Enter your Address"
                             placeholderTextColor="#8B9DC3"
                             value={formData.address}
-                            onChangeText={(text) => setFormData((prev) => ({ ...prev, address: text }))}
+                            onChangeText={(text) => {
+                                setFormData((prev) => ({ ...prev, address: text }))
+                                setErrors((prev) => {
+                                    return {
+                                        ...prev,
+                                        "address": ""
+                                    }
+                                })
+                            }}
                             multiline
                             numberOfLines={3}
                         />
                     </View>
+                    {errors.address && <Text style={styles.errorText}>{errors.address}</Text>}
+
                 </View>
 
-                
+
             </ScrollView>
-                    <TouchableOpacity style={styles.skipButton}>
-                        <Text style={styles.skipText}>Skip for now</Text>
-                    </TouchableOpacity>
-            <Button onClick={() => {}} label={"Next"} gradientColor={['#D36C32', '#F68F00']} buttonStye={{marginHorizontal: 20}} />
+            <TouchableOpacity style={styles.skipButton}>
+                <Text style={styles.skipText}>Skip for now</Text>
+            </TouchableOpacity>
+            <Button onClick={() => handleNext()} label={"Next"} gradientColor={['#D36C32', '#F68F00']} buttonStye={{ marginHorizontal: 20 }} />
 
         </SafeAreaView>
     )
@@ -337,7 +489,7 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     inputContainer: {
-        marginBottom: 20,
+        marginBottom: 10,
     },
     label: {
         color: "#8B9DC3",
@@ -371,7 +523,7 @@ const styles = StyleSheet.create({
         marginLeft: 12,
     },
     dropdown: {
-         backgroundColor: COLORS.primaryColor,
+        backgroundColor: COLORS.primaryColor,
         borderWidth: 1,
         borderColor: COLORS.fontWhite,
         borderRadius: 12,
@@ -462,4 +614,12 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: "bold",
     },
+    errorText: {
+        color: "red",
+        fontSize: 12,
+        // marginTop: 4,
+        marginBottom: 10
+
+    },
+
 })

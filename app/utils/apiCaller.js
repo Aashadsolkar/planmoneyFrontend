@@ -133,7 +133,7 @@ export const countryApi = async (token) => {
       url: "https://admin.planmoney.in/api/country",
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer${token}`
+        // 'Authorization': `Bearer${token}`
       },
     });
     return response.data;
@@ -147,7 +147,7 @@ export const stateApi = async (stateId) => {
   try {
     const response = await axios({
       method: "GET",
-      url: `https://admin.planmoney.in/api/state/${1}`,
+      url: `https://admin.planmoney.in/api/state/${stateId}`,
       headers: {
         'Content-Type': 'application/json',
         // 'Authorization' : `Bearer${token}`
@@ -160,14 +160,14 @@ export const stateApi = async (stateId) => {
   }
 };
 
-export const cityApi = async (token) => {
+export const cityApi = async (id) => {
   try {
     const response = await axios({
       method: "GET",
-      url: "https://admin.planmoney.in/api/cities",
+      url: `https://admin.planmoney.in/api/cities/${id}`,
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer${token}`
+        // 'Authorization': `Bearer${token}`
       },
     });
     return response.data;
@@ -237,6 +237,25 @@ export const buySubscription = async (token, data) => {
     const response = await axios({
       method: "POST",
       url: `https://admin.planmoney.in/api/customer/subscribe`,
+      data,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer${token}`
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('API Error:', error?.response?.data || error.message);
+    throw error?.response?.data || { message: 'Something went wrong' };
+  }
+};
+
+
+export const leads = async (token, data) => {
+  try {
+    const response = await axios({
+      method: "POST",
+      url: `https://admin.planmoney.in/api/customer/lead`,
       data,
       headers: {
         'Content-Type': 'application/json',

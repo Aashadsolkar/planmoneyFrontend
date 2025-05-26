@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { KeyboardAvoidingView, Platform, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Button from '../../components/Button';
-import { useNavigation } from 'expo-router';
+import { router, useNavigation } from 'expo-router';
 import SelectBox from '../../components/Select';
 import { COLORS } from '../../constants';
 import { useAuth } from '../../context/useAuth';
@@ -29,6 +29,7 @@ const riskCalculate2 = () => {
         const newErrors = {};
         if (!questionFormData?.investment_experience) newErrors.investment_experience = 'Please select';
         if (!questionFormData?.plan_investment_horizon) newErrors.plan_investment_horizon = 'Please select';
+        if (!questionFormData?.investment_goal) newErrors.investment_goal = 'Please select';
         if (!questionFormData?.investment_represent) newErrors.investment_represent = 'Please select';
         if (!questionFormData?.knowledge_of_investment) newErrors.knowledge_of_investment = 'Please select';
         if (!questionFormData?.investment_return) newErrors.investment_return = 'Please select';
@@ -39,7 +40,7 @@ const riskCalculate2 = () => {
             setErrors(newErrors);
             return;
         }
-        navigation.navigate('forms/residentDetails');
+        router.push('forms/residentDetails');
 
     }
     return (
@@ -63,9 +64,18 @@ const riskCalculate2 = () => {
                         selected={questionFormData?.investment_experience}
                         setSelected={(option) => handleSelect("investment_experience", option)}
                         error={errors.investment_experience}
-                        options={["More than 5 years ", "3 – 5 years", "1 – 3 years", "Less than 1 year"]}
+                        options={["More than 5 years", "3 – 5 years", "1 – 3 years", "Less than 1 year"]}
                         label={"Investment experience (years)"}
                         placeHolder={"Select Investment Experience"}
+
+                    />
+                    <SelectBox
+                        selected={questionFormData?.investment_goal}
+                        setSelected={(option) => handleSelect("investment_goal", option)}
+                        error={errors.investment_goal}
+                        options={["Capital preservation", "Regular income", "Capital appreciation", "Aggressive growth"]}
+                        label={"What is your primary investment goal?"}
+                        placeHolder={"Select Investment Goal."}
 
                     />
                     <SelectBox
@@ -73,7 +83,7 @@ const riskCalculate2 = () => {
                         setSelected={(option) => handleSelect("plan_investment_horizon", option)}
                         error={errors.plan_investment_horizon}
                         options={["Less than 1 year", "1-3 years", "3-5 years", "More than 5 years"]}
-                        label={"Planned Investment Horizon"}
+                        label={"What is your investment horizon?"}
                         placeHolder={"Select Planned Investment Horizon"}
                     />
                     <SelectBox

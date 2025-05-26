@@ -48,6 +48,8 @@ export default function Home() {
             try {
                 const response = await getProfileData(token);
                 setProfileData(response?.data?.data);
+                console.log(response?.data?.data,"profiel Data");
+                
             } catch (error) {
                 console.log(error);
             }

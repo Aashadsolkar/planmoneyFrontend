@@ -1,11 +1,10 @@
 import React, { use, useCallback, useEffect, useState } from 'react';
-import { SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { SafeAreaView, ScrollView, StatusBar, StyleSheet, Text } from 'react-native';
 import ServiceCard from '../components/ServiceCard';
 import { useAuth } from '../context/useAuth';
 import Header from '../components/Header';
 import { COLORS } from '../constants';
 import { service } from '../utils/apiCaller';
-import { navigate } from 'expo-router/build/global-state/routing';
 import { router, useNavigation } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
 
@@ -56,7 +55,7 @@ const Service = () => {
     };
 
     const renderService = () => {
-        if(isLoading){
+        if (isLoading) {
             return <Text>Loading</Text>
         }
         return allServices.map((service) => {
@@ -71,7 +70,8 @@ const Service = () => {
                     plans={service?.plans}
                     showDetails
                     showSubscriptions
-                    key={service.id}
+                    key={service?.id}
+                    serviceId={service?.id}
                 />
             )
         })
