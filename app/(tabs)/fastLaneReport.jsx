@@ -11,6 +11,8 @@ import RenderHTML from 'react-native-render-html';
 
 const FastLane = () => {
     const { reportData } = useAuth();
+    const {serviceData, serviceID} = reportData;
+    
     const { width } = useWindowDimensions();
     const renderCardList = (data) => {
         return (
@@ -55,8 +57,8 @@ const FastLane = () => {
     const backButtonText =() =>{
             return (
                 <>
-                <Text style={{color: COLORS.fontWhite, fontSize: 18, fontWeight: 600}}>FastLane</Text>
-                <Text style={{color: COLORS.fontWhite, fontSize: 12, fontWeight: 400}}>CMP ₹{reportData?.cmp}</Text>
+                <Text style={{color: COLORS.fontWhite, fontSize: 18, fontWeight: 600}}>{serviceID == 1 ? "FastLane" : "PMS"}</Text>
+                <Text style={{color: COLORS.fontWhite, fontSize: 12, fontWeight: 400}}>CMP ₹{serviceData?.cmp}</Text>
                 </>
             )
         } 
@@ -72,11 +74,11 @@ const FastLane = () => {
                 showsVerticalScrollIndicator={false}
                 style={{ paddingHorizontal: 20, marginTop: 80 }}
             >
-                {renderCardList(reportData)}
+                {renderCardList(serviceData)}
 
                 <RenderHTML
                     contentWidth={width}
-                    source={{ html: reportData.report }}
+                    source={{ html: serviceData.report }}
                     baseStyle={{ color: COLORS.fontWhite, fontSize: 14 }}
                 />
             </ScrollView>

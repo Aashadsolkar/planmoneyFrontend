@@ -6,8 +6,9 @@ import { COLORS } from "../constants"
 import { LinearGradient } from "expo-linear-gradient"
 import Button from "../components/Button"
 import { useAuth } from '../context/useAuth';
-import { applyCouponApi, buySubscription, pgCreateOrder } from "../utils/apiCaller"
+import { applyCouponApi, applyReferralApi, buySubscription, pgCreateOrder } from "../utils/apiCaller"
 import { router, useNavigation } from "expo-router"
+import Input from '../components/Input';
 import * as Linking from "expo-linking";
 
 export default function Checkout() {
@@ -26,6 +27,8 @@ export default function Checkout() {
   const [address, setAddress] = useState("123, Demo Street");
   const [pincode, setPincode] = useState("560001");
   const [amount, setAmount] = useState("1");
+  const [referralError, setReferralError] = useState(null);
+  const [referral, setReferral] = useState("");
   const navigation = useNavigation();
   const userReturnURL = Linking.createURL("/orderConfirm");
   console.log(userReturnURL);
@@ -37,59 +40,59 @@ export default function Checkout() {
     return `ORDER_${randomSixDigit}`;
   }
 
-  const handlePay = async () => {
-    try {
-      const orderID = generateOrderNumber();
-      const payload = {
-        "order_id": orderID,
-        "order_amount": parseFloat(totalPrice),
-        "customer_id": profileData?.customer_id,
-        "customer_email": profileData?.email,
-        "customer_phone": profileData?.phone,
-        "app_return_url": `https://hunger.webiknows.in/payment.html?order_id={order_id}&return_url=${userReturnURL}`
-      }
-
-      const response = await pgCreateOrder(token, payload);
-      console.log(response, "______________jhshjshjas");
-
-      setOrderId(response?.data?.order_id);
-      router.push({
-        pathname: "/checkoutWebView",
-        params: {
-          sessionId: response?.data?.payment_session_id,
-          orderId: response?.data?.order_id,
-        },
-      });
-
-    } catch (error) {
-      console.log("Payment creation failed:", error);
-    }
-  };
-
   // const handlePay = async () => {
   //   try {
-  //     // const orderID = generateOrderNumber();
+  //     const orderID = generateOrderNumber();
   //     const payload = {
-  //       "service_id": 2,
-  //       "plan_id": 1,
-  //       "payment_method": "upi",
-  //       "amount": "199",
-  //       "currency": "IND",
-  //       "billing_cycle": "monthly",
-  //       "payment_status": "paid",
-  //       "coupon_code": "Save20%",
-  //       "referral_code": "",
-  //       "transaction_id": "1233424"
+  //       "order_id": orderID,
+  //       "order_amount": parseFloat(totalPrice),
+  //       "customer_id": profileData?.customer_id,
+  //       "customer_email": profileData?.email,
+  //       "customer_phone": profileData?.phone,
+  //       "app_return_url": `https://hunger.webiknows.in/payment.html?order_id={order_id}&return_url=${userReturnURL}`
   //     }
 
-  //     const response = await buySubscription(token, payload);
-  //     router.replace("home")
+  //     const response = await pgCreateOrder(token, payload);
+  //     console.log(response, "______________jhshjshjas");
 
+  //     setOrderId(response?.data?.order_id);
+  //     router.push({
+  //       pathname: "/checkoutWebView",
+  //       params: {
+  //         sessionId: response?.data?.payment_session_id,
+  //         orderId: response?.data?.order_id,
+  //       },
+  //     });
 
   //   } catch (error) {
   //     console.log("Payment creation failed:", error);
   //   }
-  // }
+  // };
+
+
+
+  const handlePay = async () => {
+    try {
+      // const orderID = generateOrderNumber();
+      const payload = {
+        "service_id": 2,
+        "plan_id": 1,
+        "payment_method": "upi",
+        "amount": "199",
+        "currency": "IND",
+        "billing_cycle": "monthly",
+        "payment_status": "paid",
+        "coupon_code": "Save20%",
+        "referral_code": "",
+        "transaction_id": "1233424"
+      }
+
+      const response = await buySubscription(token, payload);
+      router.replace("home")
+    } catch (error) {
+      console.log("Payment creation failed:", error);
+    }
+  }
 
   const totalPrice = selectedService.offer_price - discount
 
@@ -111,6 +114,27 @@ export default function Checkout() {
     }
   }
 
+  const applyReferral = async () => {
+    try {
+      const payload = {
+        "referral_code": "asdaskjh"
+      }
+      const ReferralResponse = await applyReferralApi(token, payload);
+      console.log(ReferralResponse, "referaal");
+      handlePay()
+
+    } catch (error) {
+      setReferralError(error?.errors?.referral_code[0]);
+    }
+  }
+
+  const handleSubmit = () => {
+    if (referral) {
+      applyReferral()
+    } else {
+      handlePay()
+    }
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -129,23 +153,32 @@ export default function Checkout() {
                 placeholder="Apply Coupon"
                 placeholderTextColor="#888"
                 value={couponCode}
-                onChangeText={setCouponCode}
+                onChangeText={(val) => {
+                  setCouponCode(val);
+                  setCouponErrorMsg("")
+                }}
               />
               <TouchableOpacity style={styles.applyButton} onPress={applyCoupon}>
                 <Text style={styles.applyButtonText}>Apply</Text>
               </TouchableOpacity>
             </View>
-            <Text style={{ color: "red", paddingStart: 20 }}>{couponErrorMsg}</Text>
+            <Text style={{ color: "red", paddingStart: 20, marginBottom: 5 }}>{couponErrorMsg}</Text>
           </View>
         ) : (
           <View style={styles.appliedCouponContainer}>
             <View style={styles.savedContainer}>
-              <Text style={styles.savedText}>Saved-₹{discount}</Text>
-              <Text style={styles.discountAmount}>{couponCode}</Text>
+              <Text style={styles.discountAmount}>Coupon applied.</Text>
+              <Text style={[styles.discountAmount, { fontSize: 17 }]}>CODE: {couponCode}</Text>
+              <Text style={styles.savedText}>Saved: ₹{discount}</Text>
             </View>
             {/* <Text style={styles.withCouponText}>with {appliedCoupon}</Text> */}
             <View style={styles.appliedBadge}>
-              <Text style={styles.appliedText}>Applied</Text>
+              <Text style={styles.appliedText} onPress={() => {
+                setAppliedCoupon("")
+                setDiscount(0)
+                setShowCouponDiscount(false)
+                setCouponCode("")
+              }}>Remove</Text>
             </View>
           </View>
         )}
@@ -188,13 +221,23 @@ export default function Checkout() {
         </View>
 
 
-        {/* Upgrade Option */}
-
+        {/* Referral section */}
+        <View style={{ marginHorizontal: 20 }}>
+          <Input
+            label={"Refferal Code"}
+            value={referral}
+            onChangeText={(val) => {
+              setReferral(val);
+              setReferralError("")
+            }}
+            error={!!referralError}
+            errorMessage={referralError}
+          />
+        </View>
 
         {/* Please Note Section */}
         <View style={styles.notesSection}>
           <Text style={styles.notesTitle}>Please Note</Text>
-
           <View style={styles.noteItem}>
             <View style={styles.bulletPoint} />
             <View style={styles.noteContent}>
@@ -241,7 +284,7 @@ export default function Checkout() {
 
       </ScrollView>
       {/* Payment Button */}
-      <Button onClick={() => handlePay()} label={`PAY ₹${totalPrice}`} gradientColor={['#D36C32', '#F68F00']} />
+      <Button onClick={() => handleSubmit()} label={`PAY ₹${totalPrice}`} gradientColor={['#D36C32', '#F68F00']} />
     </SafeAreaView>
   )
 }
@@ -269,7 +312,8 @@ const styles = StyleSheet.create({
   },
   couponContainer: {
     flexDirection: "row",
-    margin: 12,
+    // margin: 12,
+    marginHorizontal: 12,
     marginTop: 0,
     backgroundColor: "#1E1E1E",
     borderRadius: 25,
@@ -283,12 +327,16 @@ const styles = StyleSheet.create({
     color: "white",
     paddingHorizontal: 16,
     paddingVertical: 12,
+    height: 60
   },
   applyButton: {
     backgroundColor: "#FF9500",
     paddingHorizontal: 20,
     justifyContent: "center",
     borderRadius: 25,
+    height: 40,
+    marginTop: 10,
+    marginEnd: 10
   },
   applyButtonText: {
     color: "white",
@@ -315,6 +363,7 @@ const styles = StyleSheet.create({
     marginRight: 4,
   },
   discountAmount: {
+    fontSize: 14,
     color: "#4CAF50",
     fontWeight: "bold",
   },
@@ -323,7 +372,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   appliedBadge: {
-    backgroundColor: "#FF9500",
+    backgroundColor: "red",
     paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: 12,

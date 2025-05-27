@@ -48,7 +48,6 @@ export default function Home() {
             try {
                 const response = await getProfileData(token);
                 setProfileData(response?.data?.data);
-                console.log(response?.data?.data,"profiel Data");
                 
             } catch (error) {
                 console.log(error);
@@ -102,6 +101,7 @@ export default function Home() {
 
     // Render services carousel item
     const renderServiceItem = ({ item }) => {
+        
         const is__not_subscribed = !item.is_subscribed;
 
         return (
@@ -140,7 +140,7 @@ export default function Home() {
                                 <Text style={styles.updateText}>Expire On</Text>
                                 <Text style={styles.dateText}>{item?.subscription?.end_at}</Text>
                             </View>
-                            <MaterialIcons onPress={() => router.push("fastLane")} name="chevron-right" size={25} color="#fff" />
+                            <MaterialIcons onPress={() => router.push(`fastlane/${item?.id}`)} name="chevron-right" size={25} color="#fff" />
                         </>
                     }
                 </View>

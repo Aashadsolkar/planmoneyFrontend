@@ -1,33 +1,45 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Image, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { COLORS } from '../constants';
-import { getFastlaneData } from '../utils/apiCaller';
-import { useAuth } from '../context/useAuth';
+import { COLORS } from '../../constants';
+import { getFastlaneData } from '../../utils/apiCaller';
+import { useAuth } from '../../context/useAuth';
 import { MaterialIcons } from '@expo/vector-icons';
 import { router, useNavigation } from 'expo-router';
-import Header from '../components/Header';
-import Button from '../components/Button';
+import Header from '../../components/Header';
+import Button from '../../components/Button';
+import { useLocalSearchParams } from 'expo-router';
+import { useFocusEffect } from '@react-navigation/native';
+import FullScreenLoader from '../../components/FullScreenLoader';
 
 const FastLane = () => {
     const { token, customerServiceData, setReportData } = useAuth();
-    const [isLoading, setIsloadin] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
     const [fastlaneData, setFastlaneData] = useState([]);
     const navigation = useNavigation();
+    const { id } = useLocalSearchParams();
 
-    useEffect(() => {
-        const callFastlaneApi = async () => {
-            try {
-                const response = await getFastlaneData(token);
-                setFastlaneData(response?.data?.services)
 
-            } catch (error) {
-                console.log(error);
+    useFocusEffect(
+        useCallback(() => {
+            const callFastlaneApi = async () => {
+                try {
+                    setIsLoading(true);
+                    const response = await getFastlaneData(token, id);
+                    setFastlaneData(response?.data?.services)
+
+                } catch (error) {
+                    console.log(error);
+                }
+                finally {
+                    setIsLoading(false);
+                }
             }
-        }
-        if (customerServiceData?.questionnaire_status == 1 && customerServiceData?.verification_status == 1) {
+            if (customerServiceData?.questionnaire_status == 1 && customerServiceData?.verification_status == 1) {
+            }
             callFastlaneApi()
-        }
-    }, [])
+        }, [id])
+    );
+
 
     const renderCardList = (data) => {
         return fastlaneData?.map((data) => {
@@ -48,7 +60,7 @@ const FastLane = () => {
                             </View>
                             <View>
                                 <Text style={[styles.boldText, { fontSize: 12 }]}>{data?.stock?.name}</Text>
-                                <Text style={styles.boldText}><Text style={styles.lightText}>CMP</Text> ₹670.00 </Text>
+                                <Text style={styles.boldText}><Text style={styles.lightText}>CMP</Text> ₹{data?.cmp} </Text>
                             </View>
                         </View>
                         <View style={{ flexDirection: "row", gap: 10, alignItems: "center" }}>
@@ -89,7 +101,7 @@ const FastLane = () => {
                         </View>
                         <View style={{ alignSelf: "center", flexDirection: "row", alignItems: "center", gap: 2 }}>
                             <Text onPress={() => {
-                                setReportData(data);
+                                setReportData({ "serviceData": data, "serviceID": id });
                                 router.push("fastLaneReport")
 
                             }} style={[styles.lightText, { color: COLORS.secondaryColor }]}>REPORT ANALYSIS</Text>
@@ -106,7 +118,11 @@ const FastLane = () => {
         });
     };
 
-
+    if (isLoading) {
+        return (
+            <FullScreenLoader visible={isLoading}/>
+        )
+    }
     if (customerServiceData?.questionnaire_status == 0) {
         return (
             <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.primaryColor, padding: 20 }}>
@@ -123,7 +139,7 @@ const FastLane = () => {
                     {/* {renderCardList()} */}
                     <View style={{ alignItems: 'center', width: "100%", marginTop: 100 }}>
                         <Image
-                            source={require('../../assets/images/questionCirlce.png')}
+                            source={require('../../../assets/images/questionCirlce.png')}
                             style={styles.logo}
                             resizeMode="contain"
                         />
@@ -135,8 +151,7 @@ const FastLane = () => {
             </SafeAreaView>
         )
     }
-
-    if (customerServiceData?.verification_status == 0) {
+    if (customerServiceData?.verification_status == 1) {
         return (
             <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.primaryColor, padding: 20 }}>
                 <Header
@@ -152,7 +167,7 @@ const FastLane = () => {
                     {/* {renderCardList()} */}
                     <View style={{ alignItems: 'center', width: "100%", marginTop: 100 }}>
                         <Image
-                            source={require('../../assets/images/rightCircle.png')}
+                            source={require('../../../assets/images/rightCircle.png')}
                             style={styles.logo}
                             resizeMode="contain"
                         />
@@ -163,15 +178,11 @@ const FastLane = () => {
             </SafeAreaView>
         )
     }
-
-    const backButtonText =() =>{
+    const backButtonText = () => {
         return (
-            <Text style={{color: COLORS.fontWhite, fontSize: 18, fontWeight: 600}}>FastLane</Text>
+            <Text style={{ color: COLORS.fontWhite, fontSize: 18, fontWeight: 600 }}>{id == 1 ? "FastLane" : "PMS"}</Text>
         )
-    } 
-
-
-
+    }
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.primaryColor, padding: 20 }}>
             <Header

@@ -31,13 +31,14 @@ export default function ProtectedTabs() {
         options={{ title: 'SIP', href: null }}
       />
       <Tabs.Screen
-        name="fastLane"
+        name="fastlane/[id]"
         options={{ title: 'FastLane', href: null }}
       />
       <Tabs.Screen
         name="fastLaneReport"
         options={{ title: 'FastLaneReport', href: null }}
       />
+      
     </Tabs>
   );
 }

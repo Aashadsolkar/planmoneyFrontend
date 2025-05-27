@@ -89,12 +89,12 @@ export const applyCouponApi = async (token, data) => {
   }
 };
 
-export const getFastlaneData = async (token) => {
+export const getFastlaneData = async (token,id) => {
   // url https://admin.planmoney.in/api/customer/services/1
   try {
     const response = await axios({
       method: "GET",
-      url: "https://admin.planmoney.in/api/customer/services/1",
+      url: `https://admin.planmoney.in/api/customer/services/${id}`,
       // data,
       headers: {
         'Content-Type': 'application/json',
@@ -256,6 +256,24 @@ export const leads = async (token, data) => {
     const response = await axios({
       method: "POST",
       url: `https://admin.planmoney.in/api/customer/lead`,
+      data,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer${token}`
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('API Error:', error?.response?.data || error.message);
+    throw error?.response?.data || { message: 'Something went wrong' };
+  }
+};
+
+export const applyReferralApi = async (token, data) => {
+  try {
+    const response = await axios({
+      method: "POST",
+      url: "https://admin.planmoney.in/api/customer/apply-referral",
       data,
       headers: {
         'Content-Type': 'application/json',

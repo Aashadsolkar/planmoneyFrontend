@@ -68,7 +68,7 @@ const AuthProvider = ({ children }) => {
                   console.log(response);
                   const filterPurchesService = response?.data?.services?.filter((service) => service.is_subscribed)
                   if (filterPurchesService.length > 0) {
-                       if(response?.data?.questionnaire_status == 1){
+                       if(response?.data?.questionnaire_status == 0){
                           router.replace("forms/personalDetails");
                       }
                       setPurchesService(filterPurchesService);

@@ -53,7 +53,7 @@ const OrderConfirm = () => {
       setLoading(true)
       try {
         const payload = {
-          service_id: 1,
+          service_id: 2,
           plan_id: id,
           payment_method: orderData[0]?.payment_group,
           amount: orderData[0].order_amount,
