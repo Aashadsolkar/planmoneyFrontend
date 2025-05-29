@@ -1,18 +1,20 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Image, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Image, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { COLORS } from '../../constants';
 import { getFastlaneData } from '../../utils/apiCaller';
 import { useAuth } from '../../context/useAuth';
-import { MaterialIcons } from '@expo/vector-icons';
+import { FontAwesome, MaterialIcons } from '@expo/vector-icons';
 import { router, useNavigation } from 'expo-router';
 import Header from '../../components/Header';
 import Button from '../../components/Button';
 import { useLocalSearchParams } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
 import FullScreenLoader from '../../components/FullScreenLoader';
+import { LinearGradient } from 'expo-linear-gradient';
 
-const FastLane = () => {
+const PmsAndQuantom = () => {
     const { token, customerServiceData, setReportData } = useAuth();
+    const { } = useLocalSearchParams();
     const [isLoading, setIsLoading] = useState(true);
     const [fastlaneData, setFastlaneData] = useState([]);
     const navigation = useNavigation();
@@ -45,7 +47,6 @@ const FastLane = () => {
         return fastlaneData?.map((data) => {
             const dateStr = data?.created_at;
             const date = new Date(dateStr);
-
             const options = { day: '2-digit', month: 'short' }; // e.g., "22 May"
             const formattedDate = date.toLocaleDateString('en-GB', options);
             return (
@@ -53,10 +54,10 @@ const FastLane = () => {
                     <View style={styles.cardSections}>
                         <View style={{ flexDirection: "row", gap: 3 }}>
                             <View style={{ marginRight: 10 }}>
-                                <Image
+                                {!data?.stock?.company_logo ? <FontAwesome size={28} name="signal" color={"white"} /> : <Image
                                     source={{ uri: data?.stock?.company_logo }}
                                     style={{ width: 30, height: 30, borderRadius: 50 }}
-                                />
+                                />}
                             </View>
                             <View>
                                 <Text style={[styles.boldText, { fontSize: 12 }]}>{data?.stock?.name}</Text>
@@ -86,7 +87,7 @@ const FastLane = () => {
                             <Text style={[styles.boldText, styles.greenText]}>{data?.upside}%</Text>
                         </View>
                     </View>
-                    <View style={[styles.cardSections, { borderBottomColor: COLORS.cardColor }]}>
+                    <View style={[styles.cardSections]}>
                         <View>
                             <Text style={styles.lightText}>Stop Loss</Text>
                             <Text style={[styles.boldText, styles.redText, styles.font12]}>₹{data?.stop_loss_price}</Text>
@@ -99,6 +100,33 @@ const FastLane = () => {
                             <Text style={styles.lightText}>Target 2</Text>
                             <Text style={[styles.boldText, styles.greenText, styles.font12]}>₹{data?.target_2}</Text>
                         </View>
+                        {/* <View style={{ alignSelf: "center", flexDirection: "row", alignItems: "center", gap: 2 }}>
+                            <Text onPress={() => {
+                                setReportData({ "serviceData": data, "serviceID": id });
+                                router.push("fastLaneReport")
+
+                            }} style={[styles.lightText, { color: COLORS.secondaryColor }]}>REPORT ANALYSIS</Text>
+                            <MaterialIcons onPress={() => {
+                                setReportData(data);
+                                router.push("fastLaneReport")
+
+                            }} name="chevron-right" size={18} color={COLORS.secondaryColor} />
+                        </View> */}
+                    </View>
+
+                    <View style={[styles.cardSections, { borderBottomColor: COLORS.cardColor }]}>
+                        {/* <View>
+                            <Text style={styles.lightText}>Stop Loss</Text>
+                            <Text style={[styles.boldText, styles.redText, styles.font12]}>₹{data?.stop_loss_price}</Text>
+                        </View>
+                        <View>
+                            <Text style={styles.lightText}>Target 1</Text>
+                            <Text style={[styles.boldText, styles.greenText, styles.font12]}>₹{data?.target_1}</Text>
+                        </View>
+                        <View>
+                            <Text style={styles.lightText}>Target 2</Text>
+                            <Text style={[styles.boldText, styles.greenText, styles.font12]}>₹{data?.target_2}</Text>
+                        </View> */}
                         <View style={{ alignSelf: "center", flexDirection: "row", alignItems: "center", gap: 2 }}>
                             <Text onPress={() => {
                                 setReportData({ "serviceData": data, "serviceID": id });
@@ -110,7 +138,19 @@ const FastLane = () => {
                                 router.push("fastLaneReport")
 
                             }} name="chevron-right" size={18} color={COLORS.secondaryColor} />
-                            {/* <Text style={styles.boldText}>₹700.00</Text> */}
+                        </View>
+                        <View>
+                            <TouchableOpacity style={styles.buttonWrapper} onPress={() => router.push({
+                                pathname: "/buy_stock",
+                                params: {
+                                    stockId: data?.stock_id,
+                                    serviceID: id,
+                                    type: "BUY",
+                                    price: data?.buy_price
+                                },
+                            })}>
+                                <Text style={styles.buttonText}>Buy</Text>
+                            </TouchableOpacity>
                         </View>
                     </View>
                 </View>
@@ -118,7 +158,7 @@ const FastLane = () => {
         });
     };
 
-    
+
     if (customerServiceData?.questionnaire_status == 0) {
         return (
             <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.primaryColor, padding: 20 }}>
@@ -176,12 +216,12 @@ const FastLane = () => {
     }
     if (isLoading) {
         return (
-            <FullScreenLoader visible={isLoading}/>
+            <FullScreenLoader visible={isLoading} />
         )
     }
     const backButtonText = () => {
         return (
-            <Text style={{ color: COLORS.fontWhite, fontSize: 18, fontWeight: 600 }}>{id == 1 ? "FastLane" : "Premium Research"}</Text>
+            <Text style={{ color: COLORS.fontWhite, fontSize: 18, fontWeight: 600 }}>{id == 3 ? "PMS" : "Quantum Voltz"}</Text>
         )
     }
     return (
@@ -196,6 +236,26 @@ const FastLane = () => {
                 showsVerticalScrollIndicator={false}
                 style={{ paddingHorizontal: 20, marginTop: 80 }}
             >
+                <View style={{ marginVertical: 10 }}>
+                    <LinearGradient
+                        start={{ x: 1, y: 0 }}
+                        end={{ x: 0, y: 0 }}
+                        colors={['#AF125D', '#F68F00']}
+                        style={{ padding: 15, borderRadius: 10, width: "100%", textAlign: "center", flexDirection: "row", justifyContent: "space-between" }}
+                    >
+                        <View>
+                            <Text style={{ fontSize: 12, color: COLORS.fontWhite }}>Call our Advisor</Text>
+                            <Text style={{ fontSize: 16, color: COLORS.fontWhite, fontWeight: 600 }}>Gaurav Sadvelkar</Text>
+                        </View>
+                        <View>
+                            <Image
+                                source={require('../../../assets/images/phone-call.png')}
+                                style={styles.logo}
+                                resizeMode="contain"
+                            />
+                        </View>
+                    </LinearGradient>
+                </View>
                 <Text style={styles.heading}>Stock updates</Text>
                 {renderCardList()}
             </ScrollView>
@@ -241,7 +301,17 @@ const styles = StyleSheet.create({
     },
     font12: {
         fontSize: 12
+    },
+    buttonWrapper: {
+        backgroundColor: "#04B719",
+        paddingHorizontal: 10,
+        paddingVertical: 3,
+        borderRadius: 10,
+    },
+    buttonText: {
+        color: COLORS.fontWhite,
+        fontWeight: 600
     }
 })
 
-export default FastLane;
+export default PmsAndQuantom;

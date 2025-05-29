@@ -25,6 +25,7 @@ import { customerService, getProfileData, service } from '../utils/apiCaller';
 import { router, useNavigation } from 'expo-router';
 import Button from '../components/Button';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import { StatusBar } from 'react-native-web';
 // import Tabs from '../components/Tabs';
 
 const { width } = Dimensions.get('window');
@@ -48,7 +49,7 @@ export default function Home() {
             try {
                 const response = await getProfileData(token);
                 setProfileData(response?.data?.data);
-                
+
             } catch (error) {
                 console.log(error);
             }
@@ -99,9 +100,18 @@ export default function Home() {
         },
     ];
 
+    const handleClick = (id) => {
+        if ([1, 2].includes(id)) {
+            router.push(`fastlane/${id}`)
+        } else {
+            router.push(`pmsAndQuantom/${id}`)
+
+        }
+    }
+
     // Render services carousel item
     const renderServiceItem = ({ item }) => {
-        
+
         const is__not_subscribed = !item.is_subscribed;
 
         return (
@@ -140,7 +150,7 @@ export default function Home() {
                                 <Text style={styles.updateText}>Expire On</Text>
                                 <Text style={styles.dateText}>{item?.subscription?.end_at}</Text>
                             </View>
-                            <MaterialIcons onPress={() => router.push(`fastlane/${item?.id}`)} name="chevron-right" size={25} color="#fff" />
+                            <MaterialIcons onPress={() => handleClick(item?.id)} name="chevron-right" size={25} color="#fff" />
                         </>
                     }
                 </View>
@@ -178,6 +188,7 @@ export default function Home() {
     return (
         <SafeAreaView style={styles.container}>
             {/* Header */}
+            <StatusBar barStyle="light-content" backgroundColor={COLORS.cardColor} />
             <Header
                 title="Hi Vignesh"
                 showBackButton={false}

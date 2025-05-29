@@ -11,8 +11,8 @@ import RenderHTML from 'react-native-render-html';
 
 const FastLane = () => {
     const { reportData } = useAuth();
-    const {serviceData, serviceID} = reportData;
-    
+    const { serviceData, serviceID } = reportData;
+
     const { width } = useWindowDimensions();
     const renderCardList = (data) => {
         return (
@@ -54,14 +54,37 @@ const FastLane = () => {
         )
     };
 
-    const backButtonText =() =>{
-            return (
-                <>
-                <Text style={{color: COLORS.fontWhite, fontSize: 18, fontWeight: 600}}>{serviceID == 1 ? "FastLane" : "PMS"}</Text>
-                <Text style={{color: COLORS.fontWhite, fontSize: 12, fontWeight: 400}}>CMP ₹{serviceData?.cmp}</Text>
-                </>
-            )
-        } 
+    const getServiceName = (id) => {
+        // serviceID == 1 ? "FastLane" : "PMS"
+        let serviceName = "";
+        switch (id) {
+            case 1:
+                serviceName = "Fastlane"
+                break;
+            case 2:
+                serviceName = "Premium Research"
+                break;
+            case 3:
+                serviceName = "Portfolio Management"
+                break;
+            case 4:
+                serviceName = "Quantum Voltz"
+                break;
+
+            default:
+                serviceName = "Service Name"
+                break;
+        }
+    }
+
+    const backButtonText = () => {
+        return (
+            <>
+                <Text style={{ color: COLORS.fontWhite, fontSize: 18, fontWeight: 600 }}>{getServiceName(serviceID)}</Text>
+                <Text style={{ color: COLORS.fontWhite, fontSize: 12, fontWeight: 400 }}>CMP ₹{serviceData?.cmp}</Text>
+            </>
+        )
+    }
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.primaryColor, padding: 20 }}>

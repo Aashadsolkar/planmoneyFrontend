@@ -4,9 +4,11 @@ import { COLORS } from '../constants';
 
 export default function ProtectedTabs() {
   return (
-    <Tabs screenOptions={{ headerShown: false, tabBarActiveTintColor: `${COLORS.secondaryColor}`,tabBarStyle:{
-      backgroundColor: COLORS.primaryColor
-    } }} >
+    <Tabs screenOptions={{
+      headerShown: false, tabBarActiveTintColor: `${COLORS.secondaryColor}`, tabBarStyle: {
+        backgroundColor: COLORS.primaryColor
+      }
+    }} >
       <Tabs.Screen
         name="home"
         options={{
@@ -17,14 +19,14 @@ export default function ProtectedTabs() {
       />
       <Tabs.Screen
         name="service"
-        options={{ 
+        options={{
           title: 'Service',
           tabBarIcon: ({ color }) => <FontAwesome size={28} name="cog" color={color} />,
         }}
       />
       <Tabs.Screen
         name="profile"
-        options={{ title: 'Account' }}
+        options={{ title: 'Account', tabBarIcon: ({ color }) => <FontAwesome size={28} name="user-circle-o" color={color} />, }}
       />
       <Tabs.Screen
         name="sip"
@@ -38,7 +40,7 @@ export default function ProtectedTabs() {
         name="fastLaneReport"
         options={{ title: 'FastLaneReport', href: null }}
       />
-      
+
     </Tabs>
   );
 }

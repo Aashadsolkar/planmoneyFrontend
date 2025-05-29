@@ -286,3 +286,40 @@ export const applyReferralApi = async (token, data) => {
     throw error?.response?.data || { message: 'Something went wrong' };
   }
 };
+
+export const BuyPmsStock = async (token, data) => {
+  try {
+    const response = await axios({
+      method: "POST",
+      url: "https://admin.planmoney.in/api/pms-data",
+      data,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer${token}`
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('API Error:', error?.response?.data || error.message);
+    throw error?.response?.data || { message: 'Something went wrong' };
+  }
+};
+
+
+export const uzairGnadu = async (token, data) => {
+  try {
+    const response = await axios({
+      method: "GET",
+      url: "http://192.168.1.36:8000/api/cities/1",
+      // data,
+      headers: {
+        'Content-Type': 'application/json',
+        // 'Authorization': `Bearer${token}`
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('API Error:', error?.response?.data || error.message);
+    throw error?.response?.data || { message: 'Something went wrong' };
+  }
+};

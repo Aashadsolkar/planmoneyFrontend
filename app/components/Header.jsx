@@ -24,7 +24,7 @@ const BellIcon = () => (
   </View>
 );
 
-const  getInitials= (fullName) => {
+const getInitials = (fullName) => {
   const names = fullName?.trim()?.split(/\s+/);
   if (names?.length === 0) return "";
 
@@ -63,9 +63,9 @@ const Header = ({
   highlightedName = 'Vignesh',
   showBackButton = false,
   onBackPress,
-  backButtonText = () => {}
+  backButtonText = () => { }
 }) => {
-  
+
   const insets = useSafeAreaInsets();
   const [showNotifications, setShowNotifications] = useState(false);
   const [showProfileDrawer, setShowProfileDrawer] = useState(false);
@@ -122,8 +122,8 @@ const Header = ({
         <View style={styles.header}>
           <View style={styles.leftSection}>
             {showBackButton ? (
-              <View style={{flexDirection: "row", alignItems: "center", gap: 20}}>
-              <BackButton onPress={() => router.back()} />
+              <View style={{ flexDirection: "row", alignItems: "center", gap: 20 }}>
+                <BackButton onPress={() => router.back()} />
                 <View>{backButtonText()}</View>
               </View>
             ) : (
@@ -139,7 +139,7 @@ const Header = ({
             <ProfileIcon onPress={toggleProfileDrawer} name={profileData?.name} />
           </View>
         </View>
-        
+
 
         {/* Notifications dropdown */}
         {showNotifications && (

@@ -9,7 +9,7 @@ export default function CheckoutWebView( props) {
   console.log(props,":::::::::::::::::::::::::");
   
   const { sessionId, orderId } = useLocalSearchParams();
-//  console.log(sessionId, orderId);
+ console.log(sessionId, orderId, "asdsadasdasdsdasdsasfdfdadfd____________Adas");
  const { setOrderCinfirmDetails } = useAuth();
   
 

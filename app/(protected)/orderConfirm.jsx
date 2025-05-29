@@ -60,7 +60,7 @@ const OrderConfirm = () => {
           currency: orderData[0]?.payment_currency,
           billing_cycle: billing_cycle,
           payment_status: "paid",
-          transaction_id:"123456"
+          transaction_id: orderId
         }
 
         const response = await buySubscription(token, payload)
