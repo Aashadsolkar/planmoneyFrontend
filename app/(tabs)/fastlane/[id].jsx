@@ -35,8 +35,8 @@ const FastLane = () => {
                 }
             }
             if (customerServiceData?.questionnaire_status == 1 && customerServiceData?.verification_status == 1) {
+                callFastlaneApi()
             }
-            callFastlaneApi()
         }, [id])
     );
 
@@ -151,7 +151,7 @@ const FastLane = () => {
             </SafeAreaView>
         )
     }
-    if (customerServiceData?.verification_status == 1) {
+    if (customerServiceData?.verification_status == 0) {
         return (
             <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.primaryColor, padding: 20 }}>
                 <Header

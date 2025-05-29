@@ -62,28 +62,30 @@ const AuthProvider = ({ children }) => {
   };
 
   const getCustomerServiceAPi = async () => {
-              try {
-                  const response = await customerService(token)
-                  setCustomerServiceData(response?.data)
-                  console.log(response);
-                  const filterPurchesService = response?.data?.services?.filter((service) => service.is_subscribed)
-                  if (filterPurchesService.length > 0) {
-                       if(response?.data?.questionnaire_status == 0){
-                          router.replace("forms/personalDetails");
-                      }
-                      setPurchesService(filterPurchesService);
-                  } else {
-                      if (!skipServices) {
-                          router.push("service");
-                      }
-                  }
-                  setIsCustomerApiLoading(false);
-              } catch (error) {
-                  console.log(error);
-                  setIsCustomerApiLoading(false)
-  
-              }
-          }
+    try {
+      const response = await customerService(token)
+      setCustomerServiceData(response?.data)
+      console.log(response);
+      const filterPurchesService = response?.data?.services?.filter((service) => service.is_subscribed)
+      if (filterPurchesService.length > 0) {
+        if (response?.data?.kyc_status == 0) {
+          router.replace("forms/kyc");
+        } else if (response?.data?.questionnaire_status == 0) {
+          router.replace("forms/personalDetails");
+        }
+        setPurchesService(filterPurchesService);
+      } else {
+        if (!skipServices) {
+          router.push("service");
+        }
+      }
+      setIsCustomerApiLoading(false);
+    } catch (error) {
+      console.log(error);
+      setIsCustomerApiLoading(false)
+
+    }
+  }
 
   return (
     <AuthContext.Provider value={{

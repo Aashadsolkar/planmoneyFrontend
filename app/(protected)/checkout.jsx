@@ -40,59 +40,59 @@ export default function Checkout() {
     return `ORDER_${randomSixDigit}`;
   }
 
-  // const handlePay = async () => {
-  //   try {
-  //     const orderID = generateOrderNumber();
-  //     const payload = {
-  //       "order_id": orderID,
-  //       "order_amount": parseFloat(totalPrice),
-  //       "customer_id": profileData?.customer_id,
-  //       "customer_email": profileData?.email,
-  //       "customer_phone": profileData?.phone,
-  //       "app_return_url": `https://hunger.webiknows.in/payment.html?order_id={order_id}&return_url=${userReturnURL}`
-  //     }
-
-  //     const response = await pgCreateOrder(token, payload);
-  //     console.log(response, "______________jhshjshjas");
-
-  //     setOrderId(response?.data?.order_id);
-  //     router.push({
-  //       pathname: "/checkoutWebView",
-  //       params: {
-  //         sessionId: response?.data?.payment_session_id,
-  //         orderId: response?.data?.order_id,
-  //       },
-  //     });
-
-  //   } catch (error) {
-  //     console.log("Payment creation failed:", error);
-  //   }
-  // };
-
-
-
   const handlePay = async () => {
     try {
-      // const orderID = generateOrderNumber();
+      const orderID = generateOrderNumber();
       const payload = {
-        "service_id": 2,
-        "plan_id": 1,
-        "payment_method": "upi",
-        "amount": "199",
-        "currency": "IND",
-        "billing_cycle": "monthly",
-        "payment_status": "paid",
-        "coupon_code": "Save20%",
-        "referral_code": "",
-        "transaction_id": "1233424"
+        "order_id": orderID,
+        "order_amount": parseFloat(totalPrice),
+        "customer_id": profileData?.customer_id,
+        "customer_email": profileData?.email,
+        "customer_phone": profileData?.phone,
+        "app_return_url": `https://hunger.webiknows.in/payment.html?order_id={order_id}&return_url=${userReturnURL}`
       }
 
-      const response = await buySubscription(token, payload);
-      router.replace("home")
+      const response = await pgCreateOrder(token, payload);
+      console.log(response, "______________jhshjshjas");
+
+      setOrderId(response?.data?.order_id);
+      router.push({
+        pathname: "/checkoutWebView",
+        params: {
+          sessionId: response?.data?.payment_session_id,
+          orderId: response?.data?.order_id,
+        },
+      });
+
     } catch (error) {
       console.log("Payment creation failed:", error);
     }
-  }
+  };
+
+
+
+  // const handlePay = async () => {
+  //   try {
+  //     // const orderID = generateOrderNumber();
+  //     const payload = {
+  //       "service_id": 2,
+  //       "plan_id": 1,
+  //       "payment_method": "upi",
+  //       "amount": "199",
+  //       "currency": "IND",
+  //       "billing_cycle": "monthly",
+  //       "payment_status": "paid",
+  //       "coupon_code": "Save20%",
+  //       "referral_code": "",
+  //       "transaction_id": "1233424"
+  //     }
+
+  //     const response = await buySubscription(token, payload);
+  //     router.replace("home")
+  //   } catch (error) {
+  //     console.log("Payment creation failed:", error);
+  //   }
+  // }
 
   const totalPrice = selectedService.offer_price - discount
 
