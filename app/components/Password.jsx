@@ -9,6 +9,7 @@ const PassWordInput = ({
   error,
   errorMessage,
   isPassword = false,
+  isNumberOnly = false
 }) => {
   const [isFocused, setIsFocused] = useState(false);
   const [secureText, setSecureText] = useState(isPassword);
@@ -47,6 +48,7 @@ const PassWordInput = ({
           roundness: 10,
         }}
         contentStyle={{ color: 'white' }}
+        keyboardType={isNumberOnly ? "number-pad":"default"}
       />
       {error && errorMessage ? (
         <Text style={styles.errorText}>{errorMessage}</Text>

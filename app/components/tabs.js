@@ -37,8 +37,16 @@ export default function ProtectedTabs() {
         options={{ title: 'FastLane', href: null }}
       />
       <Tabs.Screen
+        name="pmsAndQuantom/[id]"
+        options={{ title: 'pmsAndQuantom', href: null }}
+      />
+      <Tabs.Screen
         name="fastLaneReport"
         options={{ title: 'FastLaneReport', href: null }}
+      />
+      <Tabs.Screen
+        name="changePassword"
+        options={{ title: 'Change Password' , href: null}}
       />
 
     </Tabs>

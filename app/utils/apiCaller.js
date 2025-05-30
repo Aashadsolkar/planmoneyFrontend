@@ -89,7 +89,7 @@ export const applyCouponApi = async (token, data) => {
   }
 };
 
-export const getFastlaneData = async (token,id) => {
+export const getFastlaneData = async (token, id) => {
   // url https://admin.planmoney.in/api/customer/services/1
   try {
     const response = await axios({
@@ -306,15 +306,72 @@ export const BuyPmsStock = async (token, data) => {
 };
 
 
-export const uzairGnadu = async (token, data) => {
+
+
+export const requestOtp = async (data) => {
   try {
     const response = await axios({
-      method: "GET",
-      url: "http://192.168.1.36:8000/api/cities/1",
-      // data,
+      method: "POST",
+      url: "https://admin.planmoney.in/api/forgot-password/request-otp",
+      data,
       headers: {
         'Content-Type': 'application/json',
         // 'Authorization': `Bearer${token}`
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('API Error:', error?.response?.data || error.message);
+    throw error?.response?.data || { message: 'Something went wrong' };
+  }
+};
+
+export const resetPasswordPreLogin = async (data) => {
+  try {
+    const response = await axios({
+      method: "POST",
+      url: "https://admin.planmoney.in/api/forgot-password/reset",
+      data,
+      headers: {
+        'Content-Type': 'application/json',
+        // 'Authorization': `Bearer${token}`
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('API Error:', error?.response?.data || error.message);
+    throw error?.response?.data || { message: 'Something went wrong' };
+  }
+};
+
+export const verifyOtp = async (data) => {
+  try {
+    const response = await axios({
+      method: "POST",
+      url: "https://admin.planmoney.in/api/forgot-password/verify-otp",
+      data,
+      headers: {
+        'Content-Type': 'application/json',
+        // 'Authorization': `Bearer${token}`
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('API Error:', error?.response?.data || error.message);
+    throw error?.response?.data || { message: 'Something went wrong' };
+  }
+};
+
+
+export const changePassword = async (data, token) => {
+  try {
+    const response = await axios({
+      method: "POST",
+      url: "https://admin.planmoney.in/api/customer/update-password",
+      data,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer${token}`
       },
     });
     return response.data;

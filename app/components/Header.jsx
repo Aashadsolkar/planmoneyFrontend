@@ -15,6 +15,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { COLORS } from '../constants';
 import { router, useNavigation } from 'expo-router';
 import { useAuth } from '../context/useAuth';
+import { Ionicons } from '@expo/vector-icons';
 
 // Icons - you'll need to install a library like react-native-vector-icons
 // or use your own image assets
@@ -123,7 +124,13 @@ const Header = ({
           <View style={styles.leftSection}>
             {showBackButton ? (
               <View style={{ flexDirection: "row", alignItems: "center", gap: 20 }}>
-                <BackButton onPress={() => router.back()} />
+                <TouchableOpacity
+                  style={styles.backButton}
+                  onPress={() => router.back()}
+                  activeOpacity={0.7}
+                >
+                  <Ionicons name="arrow-back" size={24} color="#ffffff" />
+                </TouchableOpacity>
                 <View>{backButtonText()}</View>
               </View>
             ) : (
@@ -187,7 +194,7 @@ const Header = ({
           </View>
         </View>
         <View style={styles.drawerContent}>
-          <TouchableOpacity style={styles.drawerItem}>
+          <TouchableOpacity style={styles.drawerItem} onPress={() => router.push("profile")}>
             <Text style={styles.drawerItemText}>Profile</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.drawerItem}>
@@ -261,9 +268,9 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: 'bold',
   },
-  backButton: {
-    padding: 8,
-  },
+  // backButton: {
+  //   padding: 8,
+  // },
   backIcon: {
     fontSize: 20,
     color: 'white',
@@ -394,6 +401,18 @@ const styles = StyleSheet.create({
   },
   drawerItemText: {
     fontSize: 16,
+  },
+  backButton: {
+    // position: "absolute",
+    // top: 10,
+    // left: 10,
+    zIndex: 10,
+    width: 30,
+    height: 30,
+    borderRadius: 20,
+    backgroundColor: "rgba(255, 255, 255, 0.2)",
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 

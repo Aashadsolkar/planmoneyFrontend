@@ -16,6 +16,7 @@ import { LinearGradient } from "expo-linear-gradient"
 import { Ionicons } from "@expo/vector-icons"
 import { COLORS } from "../constants"
 import Header from "../components/Header"
+import { router } from "expo-router"
 
 const { width, height } = Dimensions.get("window")
 
@@ -112,6 +113,7 @@ export default function App() {
             )}
           </View>
         </View>
+        <Text onPress={() => router.push("changePassword")} style={{ color: COLORS.fontWhite }}>Change Your Password</Text>
       </View>
 
       {/* OTP Modal */}

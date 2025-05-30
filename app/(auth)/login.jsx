@@ -8,6 +8,8 @@ import Input from '../components/Input';
 import Button from '../components/Button';
 import { validateField, validateForm } from '../utils/validator';
 import { login } from '../utils/apiCaller';
+import { TouchableOpacity } from 'react-native';
+import { COLORS } from '../constants';
 
 const { height, width } = Dimensions.get('window');
 
@@ -105,6 +107,13 @@ const Login = () => {
                     errorMessage={errors.password}
                     isPassword={true}
                 />
+                <View style={{ alignItems: "flex-end" }}>
+                    <TouchableOpacity
+                        onPress={() => router.push("forgotPasswrd")}
+                    >
+                        <Text style={{ color: COLORS.secondaryColor }}>Forgot Password?</Text>
+                    </TouchableOpacity>
+                </View>
                 {loginApiError ? (
                     <Text style={styles.errorText}>{loginApiError}</Text>
                 ) : null}
