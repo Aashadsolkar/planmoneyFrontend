@@ -55,7 +55,6 @@ const AuthProvider = ({ children }) => {
 
 
   const logout = async () => {
-    console.log("logout called")
     setToken(null);
     setUser(null);
     await AsyncStorage.clear();
@@ -63,17 +62,22 @@ const AuthProvider = ({ children }) => {
 
   const getCustomerServiceAPi = async () => {
     try {
+      setIsCustomerApiLoading(true);
       const response = await customerService(token)
       setCustomerServiceData(response?.data)
-      console.log(response);
       const filterPurchesService = response?.data?.services?.filter((service) => service.is_subscribed)
       if (filterPurchesService.length > 0) {
+        setPurchesService(filterPurchesService);
         // if (response?.data?.kyc_status == 0) {
         //   router.replace("forms/kyc");
-        // } else if (response?.data?.questionnaire_status == 0) {
-        //   router.replace("forms/personalDetails");
-        // }
-        setPurchesService(filterPurchesService);
+        //   return
+        // }  
+        if(!skipServices){
+          if (response?.data?.questionnaire_status == 0) {
+            router.replace("forms/personalDetails");
+            return
+          }
+        }
       } else {
         if (!skipServices) {
           router.push("service");

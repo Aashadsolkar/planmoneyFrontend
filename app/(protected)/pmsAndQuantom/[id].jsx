@@ -191,7 +191,7 @@ const PmsAndQuantom = () => {
                         <Text style={{ fontSize: 25, fontWeight: 600, color: COLORS.fontWhite, paddingVertical: 20 }}>Oops..!</Text>
                         <Text style={{ fontSize: 14, fontWeight: 400, color: COLORS.fontWhite, paddingVertical: 20, textAlign: "center", width: 250 }}>Its look like you have not filled your Details after Subscription</Text>
                     </View>
-                    <Button onClick={() => navigation.navigate("form1")} label={"PROCEED"} gradientColor={['#D36C32', '#F68F00']} buttonStye={{ marginHorizontal: 20, }} />
+                    <Button onClick={() => router.push("forms/personalDetails")} label={"PROCEED"} gradientColor={['#D36C32', '#F68F00']} buttonStye={{ marginHorizontal: 20, }} />
                 </ScrollView>
             </SafeAreaView>
         )

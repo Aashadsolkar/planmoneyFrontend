@@ -1,4 +1,4 @@
-import { View, Text, SafeAreaView, TouchableOpacity, StyleSheet, ScrollView, Dimensions, FlatList, Modal } from 'react-native';
+import { View, Text, SafeAreaView, TouchableOpacity, StyleSheet, ScrollView, Dimensions, FlatList, Modal, Alert } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { COLORS } from "../../constants";
 import Button from '../../components/Button';
@@ -83,9 +83,17 @@ const ResidentDetails = () => {
             try {
                 const response = await countryApi();
                 setCountryData(response?.data?.country)
-                console.log(response);
             } catch (error) {
-                console.log(error);
+                Alert.alert(
+                    "Error",
+                    error?.message || "Failed to get country data",
+                    [
+                        {
+                            text: "OK",
+                            onPress: () => router.push("home"),
+                        },
+                    ]
+                );
 
             }
         }
@@ -158,49 +166,52 @@ const ResidentDetails = () => {
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.primaryColor, padding: 20 }}>
-            <View style={{padding: 20}}>
+            <View style={{ padding: 20 }}>
 
-            <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-                <Text style={{ fontSize: 20, color: 'white' }}>←</Text>
+                <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+                    <Text style={{ fontSize: 20, color: 'white' }}>←</Text>
+                </TouchableOpacity>
+                <Text style={{ fontSize: 12, fontWeight: "600", color: COLORS.fontWhite, marginTop: 20 }}>
+                    Step <Text style={{ color: COLORS.secondaryColor }}>1</Text> to 6
+                </Text>
+                <Text style={{ fontSize: 20, fontWeight: "600", color: COLORS.fontWhite, marginBottom: 20 }}>
+                    Tax Residence Details
+                </Text>
+
+                <Text style={{ fontSize: 16, fontWeight: "400", color: COLORS.fontWhite, marginBottom: 10 }}>
+                    Are you Resident of India?
+                </Text>
+                <View style={{ flexDirection: "row", gap: 15, marginBottom: 20 }}>
+                    {renderCheckbox('yes')}
+                    {renderCheckbox('no')}
+                </View>
+
+                {selected === "no" && (
+                    <>
+                        {/* Country */}
+                        <View style={styles.inputContainer}>
+                            <SearchableDropdown
+                                data={coutryData}
+                                value={formData.country}
+                                placeholder="Country"
+                                onSelect={handleCountrySelect}
+                                searchKey="name"
+                                displayKey="name"
+                            />
+                        </View>
+                        {errors.country && <Text style={styles.errorText}>{errors.country}</Text>}
+                        <View style={{ flexDirection: "row", gap: 5, marginBottom: 20, alignItems: "flex-start", marginTop: 30 }}>
+                            {renderFatcaCheckbox('yes')}
+                            <Text style={{ fontSize: 16, fontWeight: "400", color: COLORS.fontWhite }}>
+                                If yes, provide FATCA Declaration and Compliance Documents (as applicable).
+                            </Text>
+                        </View>
+                    </>
+                )}
+            </View>
+            <TouchableOpacity onPress={() => router.push("home")} style={styles.skipButton}>
+                <Text style={styles.skipText}>Skip for now</Text>
             </TouchableOpacity>
-            <Text style={{ fontSize: 12, fontWeight: "600", color: COLORS.fontWhite, marginTop: 20 }}>
-                Step <Text style={{ color: COLORS.secondaryColor }}>1</Text> to 6
-            </Text>
-            <Text style={{ fontSize: 20, fontWeight: "600", color: COLORS.fontWhite, marginBottom: 20 }}>
-                Tax Residence Details
-            </Text>
-
-            <Text style={{ fontSize: 16, fontWeight: "400", color: COLORS.fontWhite, marginBottom: 10 }}>
-                Are you Resident of India?
-            </Text>
-            <View style={{ flexDirection: "row", gap: 15, marginBottom: 20 }}>
-                {renderCheckbox('yes')}
-                {renderCheckbox('no')}
-            </View>
-
-            {selected === "no" && (
-                <>
-                    {/* Country */}
-                    <View style={styles.inputContainer}>
-                        <SearchableDropdown
-                            data={coutryData}
-                            value={formData.country}
-                            placeholder="Country"
-                            onSelect={handleCountrySelect}
-                            searchKey="name"
-                            displayKey="name"
-                        />
-                    </View>
-                    {errors.country && <Text style={styles.errorText}>{errors.country}</Text>}
-                    <View style={{ flexDirection: "row", gap: 5, marginBottom: 20, alignItems: "flex-start", marginTop: 30 }}>
-                        {renderFatcaCheckbox('yes')}
-                        <Text style={{ fontSize: 16, fontWeight: "400", color: COLORS.fontWhite }}>
-                            If yes, provide FATCA Declaration and Compliance Documents (as applicable).
-                        </Text>
-                    </View>
-                </>
-            )}
-            </View>
             <Button onClick={handleSubmit} label="Next" gradientColor={['#D36C32', '#F68F00']} buttonStye={{ marginHorizontal: 20 }} />
         </SafeAreaView>
     )
@@ -308,7 +319,15 @@ const styles = StyleSheet.create({
     },
     inputContainer: {
         marginBottom: 5,
-    }
+    },
+    skipButton: {
+        alignItems: "center",
+        marginBottom: 20,
+    },
+    skipText: {
+        color: "#8B9DC3",
+        fontSize: 16,
+    },
 });
 
 export default ResidentDetails;

@@ -19,7 +19,6 @@ const Service = () => {
         setServiceSelectedOnHomePage,
         purchesService
     } = useAuth();
-    console.log("service render");
 
     const navigation = useNavigation();
     const [expandedService, setExpandedService] = useState();
@@ -27,6 +26,7 @@ const Service = () => {
 
     useFocusEffect(
         useCallback(() => {
+            setSkipServices(true)
             const getServiceData = async () => {
                 try {
                     setIsloading(true)
@@ -106,7 +106,6 @@ const Service = () => {
                 {renderService()}
                 {
                     !isLoading && <Text style={{ textAlign: "center", color: COLORS.fontWhite, fontWeight: 500 }} onPress={() => {
-                        setSkipServices(true),
                             router.push("home")
                     }}>Skip for now</Text>
                 }

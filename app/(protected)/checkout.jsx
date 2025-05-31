@@ -31,7 +31,6 @@ export default function Checkout() {
   const [referral, setReferral] = useState("");
   const navigation = useNavigation();
   const userReturnURL = Linking.createURL("/orderConfirm");
-  console.log(userReturnURL);
 
 
 
@@ -127,7 +126,6 @@ export default function Checkout() {
         "referral_code": "asdaskjh"
       }
       const ReferralResponse = await applyReferralApi(token, payload);
-      console.log(ReferralResponse, "referaal");
       handlePay()
 
     } catch (error) {

@@ -25,6 +25,7 @@ import { getProfileData } from '../utils/apiCaller';
 import { router, useNavigation } from 'expo-router';
 import Button from '../components/Button';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import FullScreenLoader from '../components/FullScreenLoader';
 
 export default function Home() {
     const { purchesService,
@@ -186,11 +187,7 @@ export default function Home() {
     }
 
     if (isCustomerApiLoading) {
-        return (
-            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                <ActivityIndicator size="large" />
-            </View>
-        )
+        return <FullScreenLoader />
     }
 
     return (

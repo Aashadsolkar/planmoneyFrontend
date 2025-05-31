@@ -118,6 +118,10 @@ const AgreementForm = () => {
         </Text>
       </View>
 
+      <TouchableOpacity onPress={() => router.push("home")} style={styles.skipButton}>
+        <Text style={styles.skipText}>Skip for now</Text>
+      </TouchableOpacity>
+
       {fatcaError && <Text style={{ color: "red", paddingHorizontal: 20 }}>{fatcaError}</Text>}
 
       <Button
@@ -154,6 +158,14 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderRadius: 2,
   },
+  skipButton: {
+        alignItems: "center",
+        marginBottom: 20,
+    },
+    skipText: {
+        color: "#8B9DC3",
+        fontSize: 16,
+    },
 });
 
 export default AgreementForm;

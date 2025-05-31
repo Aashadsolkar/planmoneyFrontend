@@ -8,6 +8,7 @@ import { useNavigation } from 'expo-router';
 import Header from '../components/Header';
 import Button from '../components/Button';
 import RenderHTML from 'react-native-render-html';
+import { StatusBar } from 'expo-status-bar';
 
 const FastLane = () => {
     const { reportData } = useAuth();
@@ -87,15 +88,16 @@ const FastLane = () => {
     }
 
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.primaryColor, padding: 20 }}>
+        <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.cardColor, padding: 20 }}>
             <Header
                 backButtonText={backButtonText}
                 showBackButton={true}
             />
+           <StatusBar backgroundColor="#fff" style="auto" />
             <ScrollView
                 keyboardShouldPersistTaps="handled"
                 showsVerticalScrollIndicator={false}
-                style={{ paddingHorizontal: 20, marginTop: 80 }}
+                style={{ paddingHorizontal: 20, paddingTop: 20, backgroundColor: COLORS.primaryColor }}
             >
                 {renderCardList(serviceData)}
 

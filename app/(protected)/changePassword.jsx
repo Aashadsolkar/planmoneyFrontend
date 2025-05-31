@@ -186,7 +186,7 @@ const ChangePassword = () => {
 
 
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.primaryColor }}>
+        <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.cardColor }}>
             <Header showBackButton={true} />
             <KeyboardAvoidingView
                 behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -316,6 +316,7 @@ const ChangePassword = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor: COLORS.cardColor
     },
     background: {
         flex: 1,
@@ -329,7 +330,7 @@ const styles = StyleSheet.create({
     contentContainer: {
         flex: 1,
         width: "100%",
-        marginTop: 80,
+        marginTop: 10,
     },
     backButton: {
         position: "absolute",

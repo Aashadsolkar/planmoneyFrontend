@@ -115,7 +115,7 @@ const FastLane = () => {
 
                             }} style={[styles.lightText, { color: COLORS.secondaryColor }]}>REPORT ANALYSIS</Text>
                             <MaterialIcons onPress={() => {
-                                setReportData(data);
+                                setReportData({ "serviceData": data, "serviceID": id });
                                 router.push("fastLaneReport")
 
                             }} name="chevron-right" size={18} color={COLORS.secondaryColor} />
@@ -142,7 +142,7 @@ const FastLane = () => {
                 >
                     {/* <Text style={styles.heading}>Stock updates</Text> */}
                     {/* {renderCardList()} */}
-                    <View style={{ alignItems: 'center', width: "100%", marginTop: 100 }}>
+                    <View style={{ alignItems: 'center', width: "100%",  }}>
                         <Image
                             source={require('../../../assets/images/questionCirlce.png')}
                             style={styles.logo}
@@ -151,7 +151,7 @@ const FastLane = () => {
                         <Text style={{ fontSize: 25, fontWeight: 600, color: COLORS.fontWhite, paddingVertical: 20 }}>Oops..!</Text>
                         <Text style={{ fontSize: 14, fontWeight: 400, color: COLORS.fontWhite, paddingVertical: 20, textAlign: "center", width: 250 }}>Its look like you have not filled your Details after Subscription</Text>
                     </View>
-                    <Button onClick={() => navigation.navigate("form1")} label={"PROCEED"} gradientColor={['#D36C32', '#F68F00']} buttonStye={{ marginHorizontal: 20, }} />
+                    <Button onClick={() => router.push("forms/personalDetails")} label={"PROCEED"} gradientColor={['#D36C32', '#F68F00']} buttonStye={{ marginHorizontal: 20, }} />
                 </ScrollView>
             </SafeAreaView>
         )
@@ -168,7 +168,7 @@ const FastLane = () => {
                     showsVerticalScrollIndicator={false}
                     style={{ paddingHorizontal: 20, backgroundColor: COLORS.primaryColor }}
                 >
-                    <View style={{ alignItems: 'center', width: "100%", marginTop: 100 }}>
+                    <View style={{ alignItems: 'center', width: "100%" }}>
                         <Image
                             source={require('../../../assets/images/rightCircle.png')}
                             style={styles.logo}
@@ -201,7 +201,7 @@ const FastLane = () => {
             <ScrollView
                 keyboardShouldPersistTaps="handled"
                 showsVerticalScrollIndicator={false}
-                style={{ paddingHorizontal: 20, marginTop: 80, backgroundColor: COLORS.primaryColor }}
+                style={{ paddingHorizontal: 20, backgroundColor: COLORS.primaryColor, paddingTop: 20 }}
             >
                 <Text style={styles.heading}>Stock updates</Text>
                 {renderCardList()}

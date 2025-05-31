@@ -73,11 +73,23 @@ const RiskCalculate1 = () => {
                     />
                 </ScrollView>
             </KeyboardAvoidingView>
+            <TouchableOpacity onPress={() => router.push("home")} style={styles.skipButton}>
+                <Text style={styles.skipText}>Skip for now</Text>
+            </TouchableOpacity>
             <Button onClick={handleSubmit} label={"Next"} gradientColor={['#D36C32', '#F68F00']} buttonStye={{marginHorizontal: 20}} />
         </SafeAreaView>
     );
 }
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+    skipButton: {
+        alignItems: "center",
+        marginBottom: 20,
+    },
+    skipText: {
+        color: "#8B9DC3",
+        fontSize: 16,
+    },
+})
 
 export default RiskCalculate1;

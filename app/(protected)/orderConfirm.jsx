@@ -19,12 +19,7 @@ const OrderConfirm = () => {
   const [verifyComplete, setVerifyComplete] = useState(false)
   const [subscriptionComplete, setSubscriptionComplete] = useState(false)
   const [error, setError] = useState(null)
-  const navigation = useNavigation();
-
-
-  console.log(selectedService,"select service from confirm");
   
-
   const { id, billing_cycle, serviceId } = selectedService || {}
 
   useEffect(() => {
@@ -32,7 +27,6 @@ const OrderConfirm = () => {
       setLoading(true)
       try {
         const response = await pgVerifyOrder(token, orderId)
-        console.log(response);
         
         if (response?.data?.length > 0) {
           setOrderDetails(response.data)
@@ -46,7 +40,6 @@ const OrderConfirm = () => {
           setError("Failed to verify your payment. Please contact support.")
         }
       } catch (error) {
-        console.log("Verify order error:", error)
         setError("Failed to verify your payment. Please contact support.")
       } finally {
         setLoading(false)
@@ -70,7 +63,6 @@ const OrderConfirm = () => {
         const response = await buySubscription(token, payload)
         setSubscriptionComplete(true)
       } catch (error) {
-        console.log("Buy subscription error:", error)
         setError(
           "Your payment was successful, but we couldn't activate your subscription. Our team will resolve this shortly.",
         )
@@ -78,8 +70,6 @@ const OrderConfirm = () => {
         setLoading(false)
       }
     }
-
-    console.log(orderId);
     
     if (orderId) {
       verifyOrder()

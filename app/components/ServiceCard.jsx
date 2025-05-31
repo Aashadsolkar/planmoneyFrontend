@@ -44,8 +44,6 @@ const ServiceCard = ({
   };
 
 
-  console.log(selectedDuration, "selecttedDureactin  ,,,,,,,");
-  
   const generateLead = async () => {
     try {
       setIsLeadApiLoading(true);
@@ -60,14 +58,22 @@ const ServiceCard = ({
         service_id: String(serviceId)
       }
       const response = await leads(token, payload);
-      console.log(response, "leads reposne_____");
       setIsLeadGenerated(true);
       setIsLeadApiLoading(false);
       setSearchText("");
       setSearchText("Need more details...")
     } catch (error) {
-      console.log(error);
       setIsLeadApiLoading(false);
+      Alert.alert(
+        "Error",
+        error?.message || "Failed to generate Query",
+        [
+          {
+            text: "OK",
+            onPress: () => router.push("home"),
+          },
+        ]
+      );
 
     }
   }

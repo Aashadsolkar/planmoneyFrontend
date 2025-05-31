@@ -141,7 +141,7 @@ export default function PersonalDetailsForm() {
         pincode: "",
         country: "",
     })
-    const { profileData, token, setQuestionFormData } = useAuth();
+    const { profileData, token, setQuestionFormData, setSkipServices } = useAuth();
 
     const [selectedCountry, setSelectedCountry] = useState(null)
     const [selectedState, setSelectedState] = useState(null)
@@ -154,11 +154,11 @@ export default function PersonalDetailsForm() {
 
 
     useEffect(() => {
+        setSkipServices(true)
         const getState = async () => {
             try {
                 const response = await countryApi(token);
-                setCountryData(response?.data?.country)
-                console.log(response);
+                setCountryData(response?.data?.country);
             } catch (error) {
                 Alert.alert(
                     "Error",
@@ -180,10 +180,18 @@ export default function PersonalDetailsForm() {
         const getState = async (id) => {
             try {
                 const response = await stateApi(id);
-                setStateData(response?.data?.state)
-                console.log(response);
+                setStateData(response?.data?.state);
             } catch (error) {
-                console.log(error);
+                Alert.alert(
+                    "Error",
+                    error?.message || "Failed to get state data",
+                    [
+                        {
+                            text: "OK",
+                            onPress: () => router.push("home"),
+                        },
+                    ]
+                );
 
             }
         }
@@ -197,11 +205,18 @@ export default function PersonalDetailsForm() {
         const getCity = async (id) => {
             try {
                 const response = await cityApi(id);
-                setCityData(response?.data?.cities)
-                console.log(response);
+                setCityData(response?.data?.cities);
             } catch (error) {
-                console.log(error);
-
+                Alert.alert(
+                    "Error",
+                    error?.message || "Failed to get city data",
+                    [
+                        {
+                            text: "OK",
+                            onPress: () => router.push("home"),
+                        },
+                    ]
+                );
             }
         }
         if (selectedState) {
@@ -276,6 +291,7 @@ export default function PersonalDetailsForm() {
     }
 
     const handleNext = () => {
+        router.push("forms/riskCalculate1");
         const newErrors = {};
 
         // Age validation (at least 18 years old)
@@ -305,7 +321,6 @@ export default function PersonalDetailsForm() {
         setErrors(newErrors);
 
         if (Object.keys(newErrors).length === 0) {
-            console.log("Form Data:", formData);
             router.push("forms/riskCalculate1");
             setQuestionFormData((prev) => {
                 return {
@@ -455,7 +470,7 @@ export default function PersonalDetailsForm() {
 
                 </ScrollView>
             </KeyboardAvoidingView>
-            <TouchableOpacity style={styles.skipButton}>
+            <TouchableOpacity onPress={() => router.push("home")} style={styles.skipButton}>
                 <Text style={styles.skipText}>Skip for now</Text>
             </TouchableOpacity>
             <Button onClick={() => handleNext()} label={"Next"} gradientColor={['#D36C32', '#F68F00']} buttonStye={{ marginHorizontal: 20 }} />
