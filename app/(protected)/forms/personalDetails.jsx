@@ -13,6 +13,7 @@ import {
     Dimensions,
     SafeAreaView,
     KeyboardAvoidingView,
+    Alert,
 } from "react-native"
 import DateTimePicker from "@react-native-community/datetimepicker"
 import { Ionicons } from "@expo/vector-icons"
@@ -158,10 +159,17 @@ export default function PersonalDetailsForm() {
                 const response = await countryApi(token);
                 setCountryData(response?.data?.country)
                 console.log(response);
-
-
             } catch (error) {
-                console.log(error);
+                Alert.alert(
+                    "Error",
+                    error?.message || "Failed to get country data",
+                    [
+                        {
+                            text: "OK",
+                            onPress: () => router.push("home"),
+                        },
+                    ]
+                );
 
             }
         }

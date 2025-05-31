@@ -1,5 +1,5 @@
 import React, { use, useCallback, useEffect, useState } from 'react';
-import { SafeAreaView, ScrollView, StatusBar, StyleSheet, Text } from 'react-native';
+import { Alert, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text } from 'react-native';
 import ServiceCard from '../components/ServiceCard';
 import { useAuth } from '../context/useAuth';
 import Header from '../components/Header';
@@ -28,18 +28,31 @@ const Service = () => {
     useFocusEffect(
         useCallback(() => {
             const getServiceData = async () => {
-                setIsloading(true)
-                const serviceResponse = await service();
-                console.log(serviceResponse);
-                setIsloading(false)
-                const services = serviceResponse?.data?.services;
-                if (purchesService?.length > 0) {
-                    const purchesServiceId = purchesService.map(item => item.id);
-                    const filteredArray = services.filter(item => !purchesServiceId.includes(item.id));
-                    setAllServices(filteredArray);
-                } else {
-                    setAllServices(services);
+                try {
+                    setIsloading(true)
+                    const serviceResponse = await service();
+                    setIsloading(false)
+                    const services = serviceResponse?.data?.services;
+                    if (purchesService?.length > 0) {
+                        const purchesServiceId = purchesService.map(item => item.id);
+                        const filteredArray = services.filter(item => !purchesServiceId.includes(item.id));
+                        setAllServices(filteredArray);
+                    } else {
+                        setAllServices(services);
+                    }
+                } catch (error) {
+                    Alert.alert(
+                        "Error",
+                        error?.message || "Failed to get service data",
+                        [
+                            {
+                                text: "OK",
+                                onPress: () => router.push("home"),
+                            },
+                        ]
+                    );
                 }
+
             };
 
             getServiceData();
@@ -87,7 +100,7 @@ const Service = () => {
     return (
         <SafeAreaView style={styles.container}>
             <StatusBar barStyle="light-content" backgroundColor={COLORS.cardColor} />
-            <Header showBackButton={true}/>
+            <Header showBackButton={true} />
             <ScrollView contentContainerStyle={styles.scrollContent}>
                 <Text style={styles.sectionTitle}>Select the Services</Text>
                 {renderService()}
@@ -104,7 +117,7 @@ const Service = () => {
 
 const styles = StyleSheet.create({
     container: { flex: 1, backgroundColor: COLORS.cardColor },
-    scrollContent: { flex: 1,padding: 16,backgroundColor: COLORS.primaryColor },
+    scrollContent: { flex: 1, padding: 16, backgroundColor: COLORS.primaryColor },
     header: { marginBottom: 24 },
     greeting: { fontSize: 18, color: '#FFFFFF' },
     name: { color: '#FF9800', fontWeight: 'bold' },

@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Image, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Alert, Image, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { COLORS } from '../../constants';
 import { getFastlaneData } from '../../utils/apiCaller';
 import { useAuth } from '../../context/useAuth';
@@ -28,7 +28,16 @@ const FastLane = () => {
                     setFastlaneData(response?.data?.services)
 
                 } catch (error) {
-                    console.log(error);
+                    Alert.alert(
+                        "Error",
+                        error?.message || "Failed to get service data",
+                        [
+                            {
+                                text: "OK",
+                                onPress: () => router.push("home"),
+                            },
+                        ]
+                    );
                 }
                 finally {
                     setIsLoading(false);
@@ -118,7 +127,7 @@ const FastLane = () => {
         });
     };
 
-    
+
     if (customerServiceData?.questionnaire_status == 0) {
         return (
             <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.cardColor, padding: 20 }}>
@@ -157,7 +166,7 @@ const FastLane = () => {
                 <ScrollView
                     keyboardShouldPersistTaps="handled"
                     showsVerticalScrollIndicator={false}
-                    style={{ paddingHorizontal: 20,backgroundColor: COLORS.primaryColor }}
+                    style={{ paddingHorizontal: 20, backgroundColor: COLORS.primaryColor }}
                 >
                     <View style={{ alignItems: 'center', width: "100%", marginTop: 100 }}>
                         <Image
@@ -174,7 +183,7 @@ const FastLane = () => {
     }
     if (isLoading) {
         return (
-            <FullScreenLoader visible={isLoading}/>
+            <FullScreenLoader visible={isLoading} />
         )
     }
     const backButtonText = () => {

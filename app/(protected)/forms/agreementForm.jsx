@@ -1,4 +1,4 @@
-import { View, Text, SafeAreaView, TouchableOpacity, StyleSheet, ScrollView, BackHandler } from 'react-native';
+import { View, Text, SafeAreaView, TouchableOpacity, StyleSheet, ScrollView, BackHandler, Alert } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { COLORS } from '../../constants';
 import Button from '../../components/Button';
@@ -17,33 +17,46 @@ const AgreementForm = () => {
     const DOB = questionFormData?.dob;
     const formattedDate = new Date(DOB).toISOString().split("T")[0];
     if (fatcaSeclect === "yes") {
-      const payload = {
-        address: questionFormData?.address,
-        city_id: questionFormData?.city,
-        state_id: questionFormData?.state,
-        country_id: questionFormData?.country,
-        zip_code: questionFormData?.pincode,
-        dob: formattedDate,
-        occupation: questionFormData?.occupation,
-        income_range: questionFormData?.income_range,
-        investment_experience: questionFormData?.investment_experience,
-        investment_goal: questionFormData?.investment_goal,
-        investment_horizon: questionFormData?.plan_investment_horizon,
-        reaction_of_market_volatility: questionFormData?.reaction_of_market_volatility,
-        investment_represent: questionFormData?.investment_represent,
-        knowledge_of_investment: questionFormData?.knowledge_of_investment,
-        investment_return: questionFormData?.investment_return,
-        attitude_towards_risk: questionFormData?.attitude_towards_risk,
-        resident_of_india: questionFormData?.resident_of_india,
-        resident_of: questionFormData?.resident_of,
-        fatca_declaration: questionFormData?.fatca_declaration,
-        risk_disclouser_agreement: 1
-      };
+      try {
+        const payload = {
+          address: questionFormData?.address,
+          city_id: questionFormData?.city,
+          state_id: questionFormData?.state,
+          country_id: questionFormData?.country,
+          zip_code: questionFormData?.pincode,
+          dob: formattedDate,
+          occupation: questionFormData?.occupation,
+          income_range: questionFormData?.income_range,
+          investment_experience: questionFormData?.investment_experience,
+          investment_goal: questionFormData?.investment_goal,
+          investment_horizon: questionFormData?.plan_investment_horizon,
+          reaction_of_market_volatility: questionFormData?.reaction_of_market_volatility,
+          investment_represent: questionFormData?.investment_represent,
+          knowledge_of_investment: questionFormData?.knowledge_of_investment,
+          investment_return: questionFormData?.investment_return,
+          attitude_towards_risk: questionFormData?.attitude_towards_risk,
+          resident_of_india: questionFormData?.resident_of_india,
+          resident_of: questionFormData?.resident_of,
+          fatca_declaration: questionFormData?.fatca_declaration,
+          risk_disclouser_agreement: 1
+        };
 
-      const response = await quetionerApi(token, payload);
-      setRiskData(response?.data);
-      setFatcaError("");
-      router.push("riskResult");
+        const response = await quetionerApi(token, payload);
+        setRiskData(response?.data);
+        setFatcaError("");
+        router.push("riskResult");
+      } catch (error) {
+        Alert.alert(
+          "Error",
+          error?.message || "Questioner Api Failed",
+          [
+            {
+              text: "OK",
+              // onPress: () => router.push("home"),
+            },
+          ]
+        );
+      }
     } else {
       setFatcaError("Please select");
     }
@@ -75,8 +88,8 @@ const AgreementForm = () => {
         style={{ paddingHorizontal: 20 }}
       >
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-                                <Text style={{ fontSize: 20, color: 'white', }}>←</Text>
-                            </TouchableOpacity>
+          <Text style={{ fontSize: 20, color: 'white', }}>←</Text>
+        </TouchableOpacity>
         {/* Removed back button since back is blocked */}
         <Text style={{ fontSize: 12, fontWeight: '600', color: COLORS.fontWhite, marginTop: 20 }}>
           Step <Text style={{ color: COLORS.secondaryColor }}>1</Text> to 6

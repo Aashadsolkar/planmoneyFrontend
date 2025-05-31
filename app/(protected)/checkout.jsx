@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, SafeAreaView, ScrollView, StatusBar } from "react-native"
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, SafeAreaView, ScrollView, StatusBar, Alert } from "react-native"
 import { Ionicons } from "@expo/vector-icons"
 import Header from "../components/Header"
 import { COLORS } from "../constants"
@@ -53,8 +53,6 @@ export default function Checkout() {
       }
 
       const response = await pgCreateOrder(token, payload);
-      console.log(response, "______________jhshjshjas");
-
       setOrderId(response?.data?.order_id);
       router.push({
         pathname: "/checkoutWebView",
@@ -65,7 +63,16 @@ export default function Checkout() {
       });
 
     } catch (error) {
-      console.log("Payment creation failed:", error);
+      Alert.alert(
+        "Error",
+        error?.message || "Create Order Api failed",
+        [
+          {
+            text: "OK",
+            onPress: () => router.push("home"),
+          },
+        ]
+      );
     }
   };
 
@@ -110,7 +117,7 @@ export default function Checkout() {
       setAppliedCoupon("")
       setDiscount(0)
       setShowCouponDiscount(false)
-      setCouponErrorMsg(error?.message)
+      setCouponErrorMsg(error?.message || "Applied Coupon api failed")
     }
   }
 
@@ -124,7 +131,7 @@ export default function Checkout() {
       handlePay()
 
     } catch (error) {
-      setReferralError(error?.errors?.referral_code[0]);
+      setReferralError(error?.errors?.referral_code[0] || "Referral Api Failed.");
     }
   }
 
@@ -139,8 +146,8 @@ export default function Checkout() {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor={COLORS.cardColor} />
-      <Header showBackButton={true}/>
-      <ScrollView style={{backgroundColor: COLORS.primaryColor}}>
+      <Header showBackButton={true} />
+      <ScrollView style={{ backgroundColor: COLORS.primaryColor }}>
 
         {/* Coupon Section */}
         {!showCouponDiscount ? (

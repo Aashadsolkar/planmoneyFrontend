@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Image, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, Image, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { COLORS } from '../../constants';
 import { getFastlaneData } from '../../utils/apiCaller';
 import { useAuth } from '../../context/useAuth';
@@ -30,7 +30,16 @@ const PmsAndQuantom = () => {
                     setFastlaneData(response?.data?.services)
 
                 } catch (error) {
-                    console.log(error);
+                    Alert.alert(
+                        "Error",
+                        error?.message || "Failed to get service data",
+                        [
+                            {
+                                text: "OK",
+                                onPress: () => router.push("home"),
+                            },
+                        ]
+                    );
                 }
                 finally {
                     setIsLoading(false);

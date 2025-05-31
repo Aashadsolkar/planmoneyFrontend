@@ -44,6 +44,8 @@ const ForgotPassword = () => {
     const [passwordConfirmError, setPasswordConfirmError] = useState("");
     const [otpError, setOtpError] = useState("");
     const [successfullModal, setSuccessfullModal] = useState(false);
+    const [sendOtpApiError, setSendOtpApiError] = useState("");
+    const [resetPasswordApiError, setResetPasswordApiError] = useState("");
 
     const scrollViewRef = useRef(null);
 
@@ -127,6 +129,8 @@ const ForgotPassword = () => {
         } catch (error) {
             if (error.errors.email) {
                 setEmailError(error.errors.email[0]);
+            }else{
+                setSendOtpApiError(error?.message || "Otp api failed")
             }
             setLoading(false);
         }
@@ -156,7 +160,7 @@ const ForgotPassword = () => {
             setLoading(false);
         } catch (error) {
             setLoading(false);
-            setOtpError(error?.message)
+            setOtpError(error?.message || "Verify opt api failed")
         }
     };
 
@@ -197,7 +201,7 @@ const ForgotPassword = () => {
             setSuccessfullModal(true);
         } catch (error) {
             setLoading(false);
-            console.log(error);
+            setResetPasswordApiError(error?.message || "Reset Password Api failed")
         }
 
 
@@ -295,6 +299,7 @@ const ForgotPassword = () => {
                                                 error={!!emailError}
                                                 errorMessage={emailError}
                                             />
+                                            {sendOtpApiError && <Text style={styles.errorText}>{sendOtpApiError}</Text>}
                                             <Button onClick={() => handleSendOTP()} isLoading={loading} label={'Send Verification Code'} gradientColor={['#D36C32', '#F68F00']} buttonStye={{ marginTop: 10 }} />
                                         </View>
                                     )}
@@ -375,6 +380,7 @@ const ForgotPassword = () => {
                                                     );
                                                 })}
                                             </View>
+                                            {resetPasswordApiError && <Text style={styles.errorText}>{resetPasswordApiError}</Text>}
                                             <TouchableOpacity
                                                 style={styles.button}
                                                 onPress={handleResetPassword}

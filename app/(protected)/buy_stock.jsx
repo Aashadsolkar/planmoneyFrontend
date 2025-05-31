@@ -10,6 +10,7 @@ import { useLocalSearchParams } from "expo-router"
 import Input from '../components/Input';
 import * as Animatable from "react-native-animatable"
 import { CheckCircle } from "lucide-react-native"
+import { Alert } from "react-native"
 
 const { height } = Dimensions.get("window")
 
@@ -43,7 +44,16 @@ export default function BuyStock() {
             const response = await BuyPmsStock(token, payload);
             setSuccessfullModal(true);
         } catch (error) {
-            console.log(error);
+            Alert.alert(
+                "Error",
+                error?.message || "Buy Stock Api Failed",
+                [
+                    {
+                        text: "OK",
+                        onPress: () => router.push("home"),
+                    },
+                ]
+            );
         }
     }
 

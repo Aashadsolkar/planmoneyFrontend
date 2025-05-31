@@ -1,5 +1,5 @@
 import React, { createContext, useEffect, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Alert, StyleSheet, View } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { customerService } from '../utils/apiCaller';
 import { router } from 'expo-router';
@@ -81,8 +81,18 @@ const AuthProvider = ({ children }) => {
       }
       setIsCustomerApiLoading(false);
     } catch (error) {
-      console.log(error);
       setIsCustomerApiLoading(false)
+      Alert.alert(
+        "Error",
+        error?.message || "Failed to get customer data",
+        [
+          {
+            text: "OK",
+            onPress: () => router.push("home"),
+          },
+        ]
+      );
+
 
     }
   }

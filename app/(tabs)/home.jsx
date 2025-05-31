@@ -8,7 +8,8 @@ import {
     FlatList,
     SafeAreaView,
     ActivityIndicator,
-    StatusBar
+    StatusBar,
+    Alert
 } from 'react-native';
 import {
     Ionicons,
@@ -46,7 +47,16 @@ export default function Home() {
                 setProfileData(response?.data?.data);
 
             } catch (error) {
-                console.log(error);
+                Alert.alert(
+                    "Error",
+                    error?.message || "Failed to get profile data",
+                    [
+                        {
+                            text: "OK",
+                            onPress: () => router.push("home"),
+                        },
+                    ]
+                );
             }
         }
         if (token) {
