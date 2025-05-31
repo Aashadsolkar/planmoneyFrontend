@@ -46,7 +46,7 @@ const SelectBox = ({ label, options = [], selected, setSelected, placeHolder, er
 
 const styles = StyleSheet.create({
   container: {
-    marginVertical: 8,
+    // marginVertical: 8,
   },
   dropdown: {
     backgroundColor: '#012744',
@@ -57,7 +57,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginTop: 5
+    marginTop: 5,
+    height: 70
   },
   selectedText: {
     color: 'white',

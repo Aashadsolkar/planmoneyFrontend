@@ -225,7 +225,7 @@ const PmsAndQuantom = () => {
         )
     }
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.primaryColor, padding: 20 }}>
+        <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.cardColor, padding: 20 }}>
             <Header
                 title="Hi Vignesh"
                 showBackButton={true}
@@ -234,7 +234,7 @@ const PmsAndQuantom = () => {
             <ScrollView
                 keyboardShouldPersistTaps="handled"
                 showsVerticalScrollIndicator={false}
-                style={{ paddingHorizontal: 20, marginTop: 80 }}
+                style={{ paddingHorizontal: 20, marginTop: 80, backgroundColor: COLORS.primaryColor }}
             >
                 <View style={{ marginVertical: 10 }}>
                     <LinearGradient

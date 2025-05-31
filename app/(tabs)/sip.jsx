@@ -39,7 +39,7 @@ export default function SIP() {
   );
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.primaryColor }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.cardColor }}>
       <Header showBackButton={true}/>
       <ScrollView contentContainerStyle={styles.container}>
         <Text style={styles.title}>SIP Calculator</Text>
@@ -116,7 +116,6 @@ const styles = StyleSheet.create({
     padding: 20,
     flex: 1,
     backgroundColor: COLORS.primaryColor,
-    marginTop: 70
   },
   title: {
     fontSize: 26,

@@ -121,7 +121,7 @@ const FastLane = () => {
     
     if (customerServiceData?.questionnaire_status == 0) {
         return (
-            <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.primaryColor, padding: 20 }}>
+            <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.cardColor, padding: 20 }}>
                 <Header
                     title="Hi Vignesh"
                     showBackButton={true}
@@ -129,7 +129,7 @@ const FastLane = () => {
                 <ScrollView
                     keyboardShouldPersistTaps="handled"
                     showsVerticalScrollIndicator={false}
-                    style={{ paddingHorizontal: 20, marginTop: 80 }}
+                    style={{ paddingHorizontal: 20, backgroundColor: COLORS.primaryColor }}
                 >
                     {/* <Text style={styles.heading}>Stock updates</Text> */}
                     {/* {renderCardList()} */}
@@ -149,7 +149,7 @@ const FastLane = () => {
     }
     if (customerServiceData?.verification_status == 0) {
         return (
-            <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.primaryColor, padding: 20 }}>
+            <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.cardColor, padding: 20 }}>
                 <Header
                     title="Hi Vignesh"
                     showBackButton={true}
@@ -157,10 +157,8 @@ const FastLane = () => {
                 <ScrollView
                     keyboardShouldPersistTaps="handled"
                     showsVerticalScrollIndicator={false}
-                    style={{ paddingHorizontal: 20, marginTop: 80 }}
+                    style={{ paddingHorizontal: 20,backgroundColor: COLORS.primaryColor }}
                 >
-                    {/* <Text style={styles.heading}>Stock updates</Text> */}
-                    {/* {renderCardList()} */}
                     <View style={{ alignItems: 'center', width: "100%", marginTop: 100 }}>
                         <Image
                             source={require('../../../assets/images/rightCircle.png')}
@@ -185,7 +183,7 @@ const FastLane = () => {
         )
     }
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.primaryColor, padding: 20 }}>
+        <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.cardColor, padding: 20 }}>
             <Header
                 title="Hi Vignesh"
                 showBackButton={true}
@@ -194,7 +192,7 @@ const FastLane = () => {
             <ScrollView
                 keyboardShouldPersistTaps="handled"
                 showsVerticalScrollIndicator={false}
-                style={{ paddingHorizontal: 20, marginTop: 80 }}
+                style={{ paddingHorizontal: 20, marginTop: 80, backgroundColor: COLORS.primaryColor }}
             >
                 <Text style={styles.heading}>Stock updates</Text>
                 {renderCardList()}

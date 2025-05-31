@@ -12,6 +12,7 @@ import {
     Platform,
     Dimensions,
     SafeAreaView,
+    KeyboardAvoidingView,
 } from "react-native"
 import DateTimePicker from "@react-native-community/datetimepicker"
 import { Ionicons } from "@expo/vector-icons"
@@ -315,130 +316,137 @@ export default function PersonalDetailsForm() {
 
     return (
         <SafeAreaView style={styles.container}>
-            <Header />
-            <ScrollView
-                style={styles.scrollView}
-                showsVerticalScrollIndicator={false}
-                contentContainerStyle={styles.scrollContent}
+            <KeyboardAvoidingView
+                behavior={Platform.OS === "ios" ? "padding" : "height"}
+                style={{ flex: 1 }}
+                keyboardVerticalOffset={Platform.OS === "ios" ? 20 : 0} // adjust as needed
             >
-                <View style={styles.header}>
-                    <Text style={styles.subtitle}>Need some details before you proceed with our Services</Text>
-                    <Text style={{ fontSize: 12, fontWeight: 600, color: COLORS.fontWhite, marginTop: 20 }}>Step <Text style={{ color: COLORS.secondaryColor }}>1</Text> to 6</Text>
-                                        <Text style={{ fontSize: 20, fontWeight: 600, color: COLORS.fontWhite }}>Income & Earnings Profile</Text>
-                </View>
-
-                <View style={styles.form}>
-                    {/* Date of Birth */}
-                    <View style={styles.inputContainer}>
-                        <Text style={styles.label}>Date of Birth</Text>
-                        <TouchableOpacity style={styles.dateInput} onPress={() => setShowDatePicker(true)}>
-                            <Ionicons name="calendar-outline" size={20} color="#8B9DC3" />
-                            <Text style={styles.dateText}>{formatDate(formData.dateOfBirth)}</Text>
-                        </TouchableOpacity>
+                <ScrollView
+                    style={styles.scrollView}
+                    showsVerticalScrollIndicator={false}
+                    contentContainerStyle={styles.scrollContent}
+                >
+                    <View style={styles.header}>
+                        <Text style={styles.subtitle}>Need some details before you proceed with our Services</Text>
+                        <Text style={{ fontSize: 12, fontWeight: 600, color: COLORS.fontWhite, marginTop: 20 }}>Step <Text style={{ color: COLORS.secondaryColor }}>1</Text> to 6</Text>
+                        <Text style={{ fontSize: 20, fontWeight: 600, color: COLORS.fontWhite }}>Income & Earnings Profile</Text>
                     </View>
 
-                    {showDatePicker && (
-                        <DateTimePicker
-                            value={formData.dateOfBirth}
-                            mode="date"
-                            display={Platform.OS === "ios" ? "spinner" : "default"}
-                            onChange={handleDateChange}
-                            maximumDate={new Date()}
-                        />
-                    )}
-                    {errors.dateOfBirth && <Text style={styles.errorText}>{errors.dateOfBirth}</Text>}
-                    {/* Country */}
-                    <View style={styles.inputContainer}>
-                        <SearchableDropdown
-                            data={coutryData}
-                            value={formData.country}
-                            placeholder="Country"
-                            onSelect={handleCountrySelect}
-                            searchKey="name"
-                            displayKey="name"
-                        />
+                    <View style={styles.form}>
+                        {/* Date of Birth */}
+                        <View style={styles.inputContainer}>
+                            <Text style={styles.label}>Date of Birth</Text>
+                            <TouchableOpacity style={styles.dateInput} onPress={() => setShowDatePicker(true)}>
+                                <Ionicons name="calendar-outline" size={20} color="#8B9DC3" />
+                                <Text style={styles.dateText}>{formatDate(formData.dateOfBirth)}</Text>
+                            </TouchableOpacity>
+                        </View>
+
+                        {showDatePicker && (
+                            <DateTimePicker
+                                value={formData.dateOfBirth}
+                                mode="date"
+                                display={Platform.OS === "ios" ? "spinner" : "default"}
+                                onChange={handleDateChange}
+                                maximumDate={new Date()}
+                            />
+                        )}
+
+                        {/* Address */}
+                        <View style={styles.inputContainer}>
+                            <TextInput
+                                style={styles.textInput}
+                                placeholder="Enter your Address"
+                                placeholderTextColor="#8B9DC3"
+                                value={formData.address}
+                                onChangeText={(text) => {
+                                    setFormData((prev) => ({ ...prev, address: text }))
+                                    setErrors((prev) => {
+                                        return {
+                                            ...prev,
+                                            "address": ""
+                                        }
+                                    })
+                                }}
+                                multiline
+                                numberOfLines={3}
+                            />
+                        </View>
+                        {errors.address && <Text style={styles.errorText}>{errors.address}</Text>}
+
+                        {errors.dateOfBirth && <Text style={styles.errorText}>{errors.dateOfBirth}</Text>}
+                        {/* Country */}
+                        <View style={styles.inputContainer}>
+                            <SearchableDropdown
+                                data={coutryData}
+                                value={formData.country}
+                                placeholder="Country"
+                                onSelect={handleCountrySelect}
+                                searchKey="name"
+                                displayKey="name"
+                            />
+                        </View>
+
+                        {errors.country && <Text style={styles.errorText}>{errors.country}</Text>}
+
+
+                        {/* State */}
+                        <View style={styles.inputContainer}>
+                            <SearchableDropdown
+                                data={stateData}
+                                value={formData.state}
+                                placeholder="State"
+                                onSelect={handleStateSelect}
+                                searchKey="name"
+                                displayKey="name"
+                            />
+                        </View>
+                        {errors.state && <Text style={styles.errorText}>{errors.state}</Text>}
+
+
+                        {/* City */}
+                        <View style={styles.inputContainer}>
+                            <SearchableDropdown
+                                data={cityData}
+                                value={formData.city}
+                                placeholder="City"
+                                onSelect={handleCitySelect}
+                                searchKey="name"
+                                displayKey="name"
+                            />
+                        </View>
+                        {errors.city && <Text style={styles.errorText}>{errors.city}</Text>}
+
+
+
+                        {/* Pincode */}
+                        <View style={styles.inputContainer}>
+                            <TextInput
+                                style={styles.textInput}
+                                placeholder="Pincode"
+                                placeholderTextColor="#8B9DC3"
+                                value={formData.pincode}
+                                onChangeText={(text) => {
+                                    setFormData((prev) => ({ ...prev, pincode: text }))
+                                    setErrors((prev) => {
+                                        return {
+                                            ...prev,
+                                            "pincode": ""
+                                        }
+                                    })
+                                }}
+                                keyboardType="numeric"
+                                maxLength={6}
+                            />
+                        </View>
+                        {errors.pincode && <Text style={styles.errorText}>{errors.pincode}</Text>}
+
+
                     </View>
 
-                    {errors.country && <Text style={styles.errorText}>{errors.country}</Text>}
 
-
-                    {/* State */}
-                    <View style={styles.inputContainer}>
-                        <SearchableDropdown
-                            data={stateData}
-                            value={formData.state}
-                            placeholder="State"
-                            onSelect={handleStateSelect}
-                            searchKey="name"
-                            displayKey="name"
-                        />
-                    </View>
-                    {errors.state && <Text style={styles.errorText}>{errors.state}</Text>}
-
-
-                    {/* City */}
-                    <View style={styles.inputContainer}>
-                        <SearchableDropdown
-                            data={cityData}
-                            value={formData.city}
-                            placeholder="City"
-                            onSelect={handleCitySelect}
-                            searchKey="name"
-                            displayKey="name"
-                        />
-                    </View>
-                    {errors.city && <Text style={styles.errorText}>{errors.city}</Text>}
-
-
-
-                    {/* Pincode */}
-                    <View style={styles.inputContainer}>
-                        <TextInput
-                            style={styles.textInput}
-                            placeholder="Pincode"
-                            placeholderTextColor="#8B9DC3"
-                            value={formData.pincode}
-                            onChangeText={(text) => {
-                                setFormData((prev) => ({ ...prev, pincode: text }))
-                                setErrors((prev) => {
-                                    return {
-                                        ...prev,
-                                        "pincode": ""
-                                    }
-                                })
-                            }}
-                            keyboardType="numeric"
-                            maxLength={6}
-                        />
-                    </View>
-                    {errors.pincode && <Text style={styles.errorText}>{errors.pincode}</Text>}
-
-                    {/* Address */}
-                    <View style={styles.inputContainer}>
-                        <TextInput
-                            style={styles.textInput}
-                            placeholder="Enter your Address"
-                            placeholderTextColor="#8B9DC3"
-                            value={formData.address}
-                            onChangeText={(text) => {
-                                setFormData((prev) => ({ ...prev, address: text }))
-                                setErrors((prev) => {
-                                    return {
-                                        ...prev,
-                                        "address": ""
-                                    }
-                                })
-                            }}
-                            multiline
-                            numberOfLines={3}
-                        />
-                    </View>
-                    {errors.address && <Text style={styles.errorText}>{errors.address}</Text>}
-
-                </View>
-
-
-            </ScrollView>
+                </ScrollView>
+            </KeyboardAvoidingView>
             <TouchableOpacity style={styles.skipButton}>
                 <Text style={styles.skipText}>Skip for now</Text>
             </TouchableOpacity>
@@ -458,7 +466,6 @@ const styles = StyleSheet.create({
     },
     scrollView: {
         flex: 1,
-        marginTop: 70
     },
     scrollContent: {
         flexGrow: 1,
@@ -489,7 +496,7 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     inputContainer: {
-        marginBottom: 10,
+        marginBottom: 20,
     },
     label: {
         color: "#8B9DC3",

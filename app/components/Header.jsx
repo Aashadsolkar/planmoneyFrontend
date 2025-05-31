@@ -6,7 +6,6 @@ import {
   StyleSheet,
   SafeAreaView,
   Platform,
-  StatusBar,
   FlatList,
   Animated,
   Dimensions,

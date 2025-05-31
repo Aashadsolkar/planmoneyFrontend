@@ -103,8 +103,8 @@ const Service = () => {
 };
 
 const styles = StyleSheet.create({
-    container: { flex: 1, backgroundColor: COLORS.primaryColor },
-    scrollContent: { padding: 16, },
+    container: { flex: 1, backgroundColor: COLORS.cardColor },
+    scrollContent: { flex: 1,padding: 16,backgroundColor: COLORS.primaryColor },
     header: { marginBottom: 24 },
     greeting: { fontSize: 18, color: '#FFFFFF' },
     name: { color: '#FF9800', fontWeight: 'bold' },

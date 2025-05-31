@@ -299,10 +299,11 @@ export default function Home() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#0A2647',
+        backgroundColor: COLORS.cardColor,
     },
     scrollView: {
         flex: 1,
+        backgroundColor: COLORS.primaryColor
     },
     carouselContainer: {
         marginVertical: 10,

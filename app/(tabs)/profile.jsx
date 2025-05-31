@@ -181,7 +181,6 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: width * 0.05,
     paddingTop: height * 0.05,
-    marginTop: 100
   },
   title: {
     fontSize: width * 0.045,

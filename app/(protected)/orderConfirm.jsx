@@ -21,7 +21,11 @@ const OrderConfirm = () => {
   const [error, setError] = useState(null)
   const navigation = useNavigation();
 
-  const { id, billing_cycle } = selectedService || {}
+
+  console.log(selectedService,"select service from confirm");
+  
+
+  const { id, billing_cycle, serviceId } = selectedService || {}
 
   useEffect(() => {
     const verifyOrder = async () => {
@@ -53,7 +57,7 @@ const OrderConfirm = () => {
       setLoading(true)
       try {
         const payload = {
-          service_id: 1,
+          service_id: serviceId,
           plan_id: id,
           payment_method: orderData[0]?.payment_group,
           amount: orderData[0].order_amount,

@@ -43,6 +43,9 @@ const ServiceCard = ({
     return <MaterialIcons name={icon} size={24} color="#FF9800" />;
   };
 
+
+  console.log(selectedDuration, "selecttedDureactin  ,,,,,,,");
+  
   const generateLead = async () => {
     try {
       setIsLeadApiLoading(true);
@@ -132,7 +135,10 @@ const ServiceCard = ({
               <MaterialIcons name="chevron-right" size={16} color="#FF9800" style={{ marginTop: 3 }} />
             </View>
             <TouchableOpacity disabled={!selectedDuration} onPress={() => {
-              setSelectedService(selectedDuration),
+              setSelectedService({
+                ...selectedDuration,
+                serviceId: serviceId
+              }),
                 router.push('checkout')
             }} style={[styles.payNowBtn, { backgroundColor: selectedDuration ? "#FF9800" : "#ccc" }]}>
               <Text style={styles.payNowText}>PAY NOW</Text>
