@@ -6,7 +6,7 @@ export default function ProtectedTabs() {
   return (
     <Tabs screenOptions={{
       headerShown: false, tabBarActiveTintColor: `${COLORS.secondaryColor}`, tabBarStyle: {
-        backgroundColor: COLORS.primaryColor
+        backgroundColor: COLORS.primaryColor,
       }
     }} >
       <Tabs.Screen

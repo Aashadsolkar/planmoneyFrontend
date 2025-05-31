@@ -1,34 +1,29 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     StyleSheet,
     Text,
     View,
     ScrollView,
     TouchableOpacity,
-    Dimensions,
     FlatList,
     SafeAreaView,
-    ActivityIndicator
+    ActivityIndicator,
+    StatusBar
 } from 'react-native';
 import {
     Ionicons,
     MaterialCommunityIcons,
     FontAwesome5,
-    AntDesign,
-    Feather
+    AntDesign
 } from '@expo/vector-icons';
 import Header from '../components/Header';
 import { LinearGradient } from 'expo-linear-gradient';
 import { COLORS } from '../constants';
 import { useAuth } from '../context/useAuth';
-import { customerService, getProfileData, service } from '../utils/apiCaller';
+import { getProfileData } from '../utils/apiCaller';
 import { router, useNavigation } from 'expo-router';
 import Button from '../components/Button';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import { StatusBar } from 'react-native-web';
-// import Tabs from '../components/Tabs';
-
-const { width } = Dimensions.get('window');
 
 export default function Home() {
     const { purchesService,
@@ -109,6 +104,12 @@ export default function Home() {
         }
     }
 
+    const handleServiceClick = (item) => {
+        setServiceSelectedOnHomePage(item.id);
+        navigation.navigate('service');
+    };
+
+
     // Render services carousel item
     const renderServiceItem = ({ item }) => {
 
@@ -134,10 +135,7 @@ export default function Home() {
                                     <Text style={{ fontSize: 12, color: COLORS.fontWhite }}>$1800</Text>
                                 </View>
                                 <View style={{ flex: 1 }}>
-                                    <Button onClick={() => {
-                                        navigation.navigate('service'),
-                                            setServiceSelectedOnHomePage(item.id)
-                                    }}
+                                    <Button onClick={() => handleServiceClick(item)}
                                         label={"subscribe now"}
                                         gradientColor={['#D36C32', '#F68F00']}
                                         buttonStye={{ padding: 10 }}
@@ -169,7 +167,7 @@ export default function Home() {
             <FlatList
                 data={renderData}
                 renderItem={renderServiceItem}
-                keyExtractor={item => item.id}
+                keyExtractor={item => item.id.toString()}
                 horizontal
                 showsHorizontalScrollIndicator={false}
                 contentContainerStyle={styles.servicesListContainer}
@@ -187,13 +185,8 @@ export default function Home() {
 
     return (
         <SafeAreaView style={styles.container}>
-            {/* Header */}
             <StatusBar barStyle="light-content" backgroundColor={COLORS.cardColor} />
-            <Header
-                title="Hi Vignesh"
-                showBackButton={false}
-            />
-
+            <Header showBackButton={false} />
             <ScrollView style={styles.scrollView}>
                 {/* Offer Carousel Section */}
                 <View style={styles.carouselContainer}>
@@ -308,60 +301,8 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#0A2647',
     },
-    header: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        paddingHorizontal: 20,
-        paddingTop: 50,
-        paddingBottom: 15,
-    },
-    headerLeft: {
-        flexDirection: 'row',
-        alignItems: 'center',
-    },
-    headerGreeting: {
-        fontSize: 18,
-        color: 'white',
-    },
-    headerName: {
-        fontSize: 18,
-        color: '#FFA500',
-        fontWeight: 'bold',
-    },
-    headerRight: {
-        flexDirection: 'row',
-        alignItems: 'center',
-    },
-    notificationButton: {
-        marginRight: 15,
-        position: 'relative',
-    },
-    notificationBadge: {
-        position: 'absolute',
-        top: 0,
-        right: 0,
-        width: 8,
-        height: 8,
-        borderRadius: 4,
-        backgroundColor: '#FFA500',
-    },
-    avatarContainer: {
-        width: 36,
-        height: 36,
-        borderRadius: 18,
-        backgroundColor: '#8B008B',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    avatarText: {
-        color: 'white',
-        fontWeight: 'bold',
-        fontSize: 14,
-    },
     scrollView: {
         flex: 1,
-        paddingTop: 80
     },
     carouselContainer: {
         marginVertical: 10,

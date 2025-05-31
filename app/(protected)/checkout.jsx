@@ -138,10 +138,8 @@ export default function Checkout() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Header
-        title="Hi Vignesh"
-        showBackButton={true}
-      />
+      <StatusBar barStyle="light-content" backgroundColor={COLORS.cardColor} />
+      <Header showBackButton={true}/>
       <ScrollView>
 
         {/* Coupon Section */}
@@ -312,7 +310,6 @@ const styles = StyleSheet.create({
   },
   couponContainer: {
     flexDirection: "row",
-    // margin: 12,
     marginHorizontal: 12,
     marginTop: 0,
     backgroundColor: "#1E1E1E",
@@ -320,7 +317,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     borderWidth: 1,
     borderColor: "#333",
-    marginTop: 100
+    marginTop: 10
   },
   couponInput: {
     flex: 1,
@@ -344,7 +341,6 @@ const styles = StyleSheet.create({
   },
   appliedCouponContainer: {
     margin: 12,
-    marginTop: 80,
     backgroundColor: "#1E1E1E",
     borderRadius: 8,
     padding: 12,

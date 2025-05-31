@@ -10,6 +10,7 @@ import {
   FlatList,
   Animated,
   Dimensions,
+  Pressable,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { COLORS } from '../constants';
@@ -26,14 +27,11 @@ const BellIcon = () => (
 );
 
 const getInitials = (fullName) => {
-  const names = fullName?.trim()?.split(/\s+/);
-  if (names?.length === 0) return "";
+  if (!fullName?.trim()) return "";
+  const names = fullName.trim().split(/\s+/);
+  return names[0][0].toUpperCase() + (names[names.length - 1][0]?.toUpperCase() || "");
+};
 
-  const firstInitial = names[0][0].toUpperCase();
-  const lastInitial = names[names?.length - 1][0].toUpperCase();
-
-  return firstInitial + lastInitial;
-}
 
 const ProfileIcon = ({ onPress, name }) => (
   <TouchableOpacity onPress={onPress} style={styles.profileContainer}>
@@ -43,11 +41,7 @@ const ProfileIcon = ({ onPress, name }) => (
   </TouchableOpacity>
 );
 
-const BackButton = ({ onPress }) => (
-  <TouchableOpacity onPress={onPress} style={styles.backButton}>
-    <Text style={styles.backIcon}>←</Text>
-  </TouchableOpacity>
-);
+
 
 const NotificationItem = ({ item }) => (
   <View style={styles.notificationItem}>
@@ -60,10 +54,7 @@ const NotificationItem = ({ item }) => (
 );
 
 const Header = ({
-  title,
-  highlightedName = 'Vignesh',
   showBackButton = false,
-  onBackPress,
   backButtonText = () => { }
 }) => {
 
@@ -119,7 +110,7 @@ const Header = ({
 
   return (
     <>
-      <SafeAreaView style={[styles.safeArea]}>
+      <SafeAreaView style={[styles.safeArea, { paddingTop: insets.top }]}>
         <View style={styles.header}>
           <View style={styles.leftSection}>
             {showBackButton ? (
@@ -166,13 +157,7 @@ const Header = ({
       </SafeAreaView>
 
       {/* Profile Drawer */}
-      {showProfileDrawer && (
-        <TouchableOpacity
-          style={styles.overlay}
-          activeOpacity={1}
-          onPress={closeProfileDrawer}
-        />
-      )}
+      {showProfileDrawer && <Pressable style={styles.overlay} onPress={closeProfileDrawer} />}
 
       <Animated.View
         style={[
@@ -210,10 +195,7 @@ const styles = StyleSheet.create({
   safeArea: {
     backgroundColor: COLORS.cardColor,
     zIndex: 10,
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
+    width: '100%',
   },
   header: {
     flexDirection: 'row',
@@ -268,9 +250,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: 'bold',
   },
-  // backButton: {
-  //   padding: 8,
-  // },
   backIcon: {
     fontSize: 20,
     color: 'white',
@@ -349,7 +328,7 @@ const styles = StyleSheet.create({
     width: '70%',
     // height: '100%',
     backgroundColor: 'white',
-    zIndex: 1000,
+    zIndex: 1001,
     shadowColor: '#000',
     shadowOffset: { width: -2, height: 0 },
     shadowOpacity: 0.25,
@@ -403,9 +382,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   backButton: {
-    // position: "absolute",
-    // top: 10,
-    // left: 10,
     zIndex: 10,
     width: 30,
     height: 30,
