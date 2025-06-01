@@ -21,11 +21,27 @@ import Header from '../components/Header';
 import { LinearGradient } from 'expo-linear-gradient';
 import { COLORS } from '../constants';
 import { useAuth } from '../context/useAuth';
-import { getProfileData } from '../utils/apiCaller';
+import { getProfileData, news } from '../utils/apiCaller';
 import { router, useNavigation } from 'expo-router';
 import Button from '../components/Button';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import FullScreenLoader from '../components/FullScreenLoader';
+import SkeletonList from '../components/ListSkeleton';
+
+
+const NewsCard = ({ title = "", summary = "", id }) => (
+    <TouchableOpacity style={styles.card} onPress={() => router.push(`singleNews/${id}`)}>
+        <View style={{ width: "90%" }}>
+            <Text style={styles.title} numberOfLines={1}>
+                {title}
+            </Text>
+            <Text style={styles.summary} numberOfLines={2}>
+                {summary}
+            </Text>
+        </View>
+        <Ionicons name="chevron-forward" size={20} color="#f5a623" style={{ width: "10%" }} />
+    </TouchableOpacity>
+);
 
 export default function Home() {
     const { purchesService,
@@ -37,7 +53,9 @@ export default function Home() {
         token
     } = useAuth();
     const [activeAccordion, setActiveAccordion] = useState(null);
+    const [isNewApiLoading, setIsNewApiLoading] = useState(true);
     const navigation = useNavigation();
+    const [newsData, setNewsData] = useState([]);
 
     useEffect(() => {
 
@@ -65,6 +83,32 @@ export default function Home() {
         }
     }, [])
 
+
+    useEffect(() => {
+        const getNew = async () => {
+            try {
+                const response = await news(token);
+                setIsNewApiLoading(false)
+                setNewsData(response?.data?.latest_news);
+
+            } catch (error) {
+                setIsNewApiLoading(false);
+                Alert.alert(
+                    "Error",
+                    error?.message || "Failed to get news",
+                    [
+                        {
+                            text: "OK",
+                            onPress: () => router.push("home"),
+                        },
+                    ]
+                );
+
+            }
+        }
+        getNew()
+    }, [])
+
     // Offer carousel data
     const offerData = [
         {
@@ -90,21 +134,6 @@ export default function Home() {
         },
     ];
 
-    // News accordion data
-    const newsData = [
-        {
-            id: '1',
-            title: 'ICICI Lombard General Insurance Q4 Results: Net profit slips 2% to Rs 510 crore',
-        },
-        {
-            id: '2',
-            title: 'Sebi cracks down on Gemini Engineering, bars promoters from markets for fund misuse',
-        },
-        {
-            id: '3',
-            title: 'RBI keeps repo rate unchanged at 6.5% for seventh consecutive time',
-        },
-    ];
 
     const handleClick = (id) => {
         if ([1, 2].includes(id)) {
@@ -186,6 +215,35 @@ export default function Home() {
         )
     }
 
+    const renderNews = () => {
+        if (isNewApiLoading) {
+            return <>
+                <SkeletonList />
+                <SkeletonList />
+                <SkeletonList />
+                <SkeletonList />
+            </>
+        }
+        return (
+            // <FlatList
+            //     data={newsData}
+            //     keyExtractor={(item) => item.id}
+            //     renderItem={({ item }) => <NewsCard title={item?.title} summary={item?.summary} id={item?.id} />}
+            //     contentContainerStyle={{ paddingVertical: 20 }}
+            // />
+
+            newsData.map((item) => {
+                return (
+                    <NewsCard title={item?.title}
+                        summary={item?.summary}
+                        id={item?.id}
+                        key={item?.id}
+                    />
+                )
+            })
+        )
+    }
+
     if (isCustomerApiLoading) {
         return <FullScreenLoader />
     }
@@ -260,42 +318,14 @@ export default function Home() {
                 <View style={styles.newsContainer}>
                     <View style={styles.newsHeader}>
                         <Text style={styles.newsTitle}>Latest News</Text>
-                        <TouchableOpacity style={styles.viewMoreButton}>
+                        <TouchableOpacity style={styles.viewMoreButton} onPress={() => router.push("news")}>
                             <Text style={styles.viewMoreText}>View More</Text>
                             <AntDesign name="right" size={14} color="#FFA500" />
                         </TouchableOpacity>
                     </View>
 
                     {/* News Accordion */}
-                    {newsData.map((item) => (
-                        <TouchableOpacity
-                            key={item.id}
-                            style={styles.accordionItem}
-                            onPress={() => toggleAccordion(item.id)}
-                        >
-                            <View style={styles.accordionHeader}>
-                                <Text style={styles.accordionTitle} numberOfLines={2}>
-                                    {item.title}
-                                </Text>
-                                <AntDesign
-                                    name="right"
-                                    size={18}
-                                    color="#FFA500"
-                                    style={[
-                                        styles.accordionIcon,
-                                        activeAccordion === item.id && styles.accordionIconActive
-                                    ]}
-                                />
-                            </View>
-                            {activeAccordion === item.id && (
-                                <View style={styles.accordionContent}>
-                                    <Text style={styles.accordionContentText}>
-                                        Detailed information about this news item would appear here when expanded.
-                                    </Text>
-                                </View>
-                            )}
-                        </TouchableOpacity>
-                    ))}
+                    {renderNews()}
                 </View>
             </ScrollView>
             {/* <Tabs /> */}
@@ -484,5 +514,29 @@ const styles = StyleSheet.create({
     accordionContentText: {
         color: '#CCC',
         fontSize: 14,
+    },
+    card: {
+        backgroundColor: '#083b66',
+        borderRadius: 12,
+        padding: 16,
+        marginBottom: 12,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        flexDirection: "row"
+    },
+    title: {
+        color: '#fff',
+        fontSize: 16,
+        flex: 1,
+        marginRight: 8,
+        fontWeight: 600
+    },
+    summary: {
+        marginTop: 10,
+        color: '#fff',
+        fontSize: 14,
+        flex: 1,
+        marginRight: 8,
     },
 });

@@ -17,25 +17,49 @@ import { Ionicons } from "@expo/vector-icons"
 import { COLORS } from "../constants"
 import Header from "../components/Header"
 import { router } from "expo-router"
+import { useAuth } from "../context/useAuth"
+import { generateVerifyEmailOpt, verifyEmailOpt } from "../utils/apiCaller"
 
 const { width, height } = Dimensions.get("window")
 
 export default function App() {
+  const { profileData, token } = useAuth();
   const [mobileVerified, setMobileVerified] = useState(false);
-  const [emailVerified, setEmailVerified] = useState(false);
+  const [emailVerified, setEmailVerified] = useState(profileData?.email_verified_at == null ? false : true);
   const [showOTPModal, setShowOTPModal] = useState(false);
   const [verificationType, setVerificationType] = useState("");
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const otpInputs = useRef([]);
+  const [isEmailOtpLoading, setIsEmailOtpLoading] = useState(false);
+
 
   const mobileNumber = "+91 8889968708"
   const emailAddress = "vigneshiyer212@gmail.com"
 
-  const handleVerifyPress = (type) => {
-    setVerificationType(type)
-    setShowOTPModal(true)
-    setOtp(["", "", "", "", "", ""])
-    setTimeout(() => otpInputs.current[0]?.focus(), 100)
+
+  const handleVerifyPress = async (type) => {
+    try {
+      const payload = {
+        email: profileData?.email
+      }
+      const response = await generateVerifyEmailOpt(token, payload);
+      console.log(response, "send otp response ______________((((()))))))))))))");
+      setVerificationType(type)
+      setShowOTPModal(true)
+      setOtp(["", "", "", "", "", ""])
+      setTimeout(() => otpInputs.current[0]?.focus(), 100)
+    } catch (error) {
+      Alert.alert(
+        "Error",
+        error?.message || "Failed to generate email otp",
+        [
+          {
+            text: "OK",
+            onPress: () => router.push("home"),
+          },
+        ]
+      );
+    }
   }
 
   const handleOTPChange = (value, index) => {
@@ -49,16 +73,37 @@ export default function App() {
     }
   }
 
+  const verifyEmailOtp = async () => {
+    try {
+      const payload = {
+        otp: otp.join("")
+      }
+      const response = await verifyEmailOpt(token, payload)
+      setEmailVerified(true)
+      setShowOTPModal(false)
+      Alert.alert("Success", `${verificationType === "mobile" ? "Mobile number" : "Email address"} verified successfully!`)
+    } catch (error) {
+      Alert.alert(
+        "Error",
+        error?.message || "Failed to verify otp",
+        [
+          {
+            text: "OK",
+            onPress: () => router.push("home"),
+          },
+        ]
+      );
+    }
+  }
+
   const handleVerifyOTP = () => {
     const otpString = otp.join("")
     if (otpString.length === 6) {
       if (verificationType === "mobile") {
         setMobileVerified(true)
       } else {
-        setEmailVerified(true)
+        verifyEmailOtp()
       }
-      setShowOTPModal(false)
-      Alert.alert("Success", `${verificationType === "mobile" ? "Mobile number" : "Email address"} verified successfully!`)
     } else {
       Alert.alert("Error", "Please enter complete OTP")
     }

@@ -1,8 +1,13 @@
 export const validationRules = {
-    email_or_phone : [
+    email_or_phone: [
         {
             rule: (val) => val.trim() !== '',
             message: 'Email or Mobile is required',
+        },
+        {
+            rule: (val) =>
+                /^(\d{10})$|^([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})$/.test(val),
+            message: 'Enter a valid email or 10-digit mobile number',
         },
     ],
     name: [
@@ -61,7 +66,7 @@ export const validationRules = {
             message: 'Password must include at least one special character',
         },
     ],
-    confirmPassword : [
+    confirmPassword: [
         {
             rule: (val) => val.trim() !== '',
             message: 'Password is required',
@@ -86,5 +91,5 @@ export const validationRules = {
             rule: (val) => /[@$!%*?&#]/.test(val),
             message: 'Password must include at least one special character',
         },
-    ]
+    ],
 };
