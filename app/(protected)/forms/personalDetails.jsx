@@ -141,7 +141,7 @@ export default function PersonalDetailsForm() {
         pincode: "",
         country: "",
     })
-    const { profileData, token, setQuestionFormData, setSkipServices } = useAuth();
+    const { profileData, token, setQuestionFormData, setSkipQuestioniar } = useAuth();
 
     const [selectedCountry, setSelectedCountry] = useState(null)
     const [selectedState, setSelectedState] = useState(null)
@@ -154,7 +154,7 @@ export default function PersonalDetailsForm() {
 
 
     useEffect(() => {
-        setSkipServices(true)
+        setSkipQuestioniar(true);
         const getState = async () => {
             try {
                 const response = await countryApi(token);

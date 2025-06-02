@@ -14,11 +14,12 @@ const AuthProvider = ({ children }) => {
   const [purchesService, setPurchesService] = useState([]);
   const [allServices, setAllServices] = useState([]);
   const [skipServices, setSkipServices] = useState(false);
+  const [skipQuestioniar, setSkipQuestioniar] = useState(false);
   const [serviceSelectedOnHomePage, setServiceSelectedOnHomePage] = useState(null);
   const [profileData, setProfileData] = useState({});
   const [orderConfirmDetails, setOrderCinfirmDetails] = useState({})
   const [questionFormData, setQuestionFormData] = useState(null)
-  const [orderId, setOrderId] = useState(null);
+  const [prePaymentDetails, setPrePaymentDetails] = useState(null);
   const [customerServiceData, setCustomerServiceData] = useState("")
   const [riskData, setRiskData] = useState("")
   const [reportData, setReportData] = useState({})
@@ -68,11 +69,11 @@ const AuthProvider = ({ children }) => {
       const filterPurchesService = response?.data?.services?.filter((service) => service.is_subscribed)
       if (filterPurchesService.length > 0) {
         setPurchesService(filterPurchesService);
-        if (response?.data?.kyc_status == 0) {
-          router.replace("forms/kyc");
-          return
-        }  
-        if(!skipServices){
+        // if (response?.data?.kyc_status == 0) {
+        //   router.replace("forms/kyc");
+        //   return
+        // }  
+        if(!skipQuestioniar){
           if (response?.data?.questionnaire_status == 0) {
             router.replace("forms/personalDetails");
             return
@@ -124,8 +125,8 @@ const AuthProvider = ({ children }) => {
       orderConfirmDetails,
       questionFormData,
       setQuestionFormData,
-      setOrderId,
-      orderId,
+      setPrePaymentDetails,
+      prePaymentDetails,
       customerServiceData,
       setCustomerServiceData,
       riskData,
@@ -133,7 +134,9 @@ const AuthProvider = ({ children }) => {
       setReportData,
       reportData,
       isCustomerApiLoading,
-      getCustomerServiceAPi
+      getCustomerServiceAPi,
+      setSkipQuestioniar,
+      skipQuestioniar
     }}>
       {children}
     </AuthContext.Provider>
