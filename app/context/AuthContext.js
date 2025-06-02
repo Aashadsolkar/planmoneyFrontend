@@ -68,10 +68,10 @@ const AuthProvider = ({ children }) => {
       const filterPurchesService = response?.data?.services?.filter((service) => service.is_subscribed)
       if (filterPurchesService.length > 0) {
         setPurchesService(filterPurchesService);
-        // if (response?.data?.kyc_status == 0) {
-        //   router.replace("forms/kyc");
-        //   return
-        // }  
+        if (response?.data?.kyc_status == 0) {
+          router.replace("forms/kyc");
+          return
+        }  
         if(!skipServices){
           if (response?.data?.questionnaire_status == 0) {
             router.replace("forms/personalDetails");

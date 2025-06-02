@@ -286,8 +286,10 @@ export default function Checkout() {
         </View>
 
       </ScrollView>
+      <View style={{backgroundColor: COLORS.primaryColor}}> 
+      <Button onClick={() => handleSubmit()} label={`PAY ₹${totalPrice}`} gradientColor={['#D36C32', '#F68F00']} buttonStye={{marginHorizontal: 10, marginBottom: 10}}/>
+      </View>
       {/* Payment Button */}
-      <Button onClick={() => handleSubmit()} label={`PAY ₹${totalPrice}`} gradientColor={['#D36C32', '#F68F00']} />
     </SafeAreaView>
   )
 }

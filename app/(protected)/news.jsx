@@ -69,6 +69,7 @@ export default function News() {
 
     return (
         <SafeAreaView style={styles.container}>
+            <StatusBar barStyle="light-content" backgroundColor={COLORS.cardColor} />
             <Header showBackButton={true} />
             <View style={{ flex: 1, backgroundColor: COLORS.primaryColor, paddingHorizontal: 20 }}>
                 {renderNews()}
@@ -80,7 +81,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: COLORS.cardColor,
-        paddingHorizontal: 16,
     },
     card: {
         backgroundColor: '#083b66',

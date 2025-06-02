@@ -38,27 +38,31 @@ export default function App() {
 
 
   const handleVerifyPress = async (type) => {
-    try {
-      const payload = {
-        email: profileData?.email
+    if (type == "email") {
+      try {
+        const payload = {
+          email: profileData?.email
+        }
+        const response = await generateVerifyEmailOpt(token, payload);
+        console.log(response, "send otp response ______________((((()))))))))))))");
+        setVerificationType(type)
+        setShowOTPModal(true)
+        setOtp(["", "", "", "", "", ""])
+        setTimeout(() => otpInputs.current[0]?.focus(), 100)
+      } catch (error) {
+        Alert.alert(
+          "Error",
+          error?.message || "Failed to generate email otp",
+          [
+            {
+              text: "OK",
+              onPress: () => router.push("home"),
+            },
+          ]
+        );
       }
-      const response = await generateVerifyEmailOpt(token, payload);
-      console.log(response, "send otp response ______________((((()))))))))))))");
-      setVerificationType(type)
-      setShowOTPModal(true)
-      setOtp(["", "", "", "", "", ""])
-      setTimeout(() => otpInputs.current[0]?.focus(), 100)
-    } catch (error) {
-      Alert.alert(
-        "Error",
-        error?.message || "Failed to generate email otp",
-        [
-          {
-            text: "OK",
-            onPress: () => router.push("home"),
-          },
-        ]
-      );
+    } else {
+      router.push("upcoming");
     }
   }
 
@@ -115,6 +119,7 @@ export default function App() {
 
   return (
     <View style={styles.container}>
+      <StatusBar barStyle="light-content" backgroundColor={COLORS.cardColor} />
       <Header showBackButton={true} backButtonText={() => <Text style={{ color: COLORS.fontWhite, fontWeight: "600" }}>Account</Text>} />
       <View style={styles.content}>
         <Text style={styles.title}>Verify your Mobile No & Email Address</Text>
@@ -158,7 +163,15 @@ export default function App() {
             )}
           </View>
         </View>
-        <Text onPress={() => router.push("changePassword")} style={{ color: COLORS.fontWhite }}>Change Your Password</Text>
+
+        <TouchableOpacity onPress={() => router.push("changePassword")}>
+          <View style={[styles.verificationCard, { marginBottom: 0 }]}>
+            <View style={[styles.cardHeader, { marginBottom: 0 }]}>
+              <Text style={styles.cardLabel}>Change Password</Text>
+              <Ionicons name="chevron-forward" size={25} color="#fff" style={{ width: "10%" }} />
+            </View>
+          </View>
+        </TouchableOpacity>
       </View>
 
       {/* OTP Modal */}

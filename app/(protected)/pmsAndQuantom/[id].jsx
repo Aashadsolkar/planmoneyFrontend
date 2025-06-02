@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Alert, Image, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, Image, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { COLORS } from '../../constants';
 import { getFastlaneData } from '../../utils/apiCaller';
 import { useAuth } from '../../context/useAuth';
@@ -170,7 +170,8 @@ const PmsAndQuantom = () => {
 
     if (customerServiceData?.questionnaire_status == 0) {
         return (
-            <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.primaryColor, padding: 20 }}>
+            <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.primaryColor }}>
+                <StatusBar barStyle="light-content" backgroundColor={COLORS.cardColor} />
                 <Header
                     title="Hi Vignesh"
                     showBackButton={true}
@@ -198,7 +199,8 @@ const PmsAndQuantom = () => {
     }
     if (customerServiceData?.verification_status == 0) {
         return (
-            <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.primaryColor, padding: 20 }}>
+            <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.primaryColor,  }}>
+                <StatusBar barStyle="light-content" backgroundColor={COLORS.cardColor} />
                 <Header
                     title="Hi Vignesh"
                     showBackButton={true}
@@ -234,7 +236,8 @@ const PmsAndQuantom = () => {
         )
     }
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.cardColor, padding: 20 }}>
+        <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.cardColor }}>
+            <StatusBar barStyle="light-content" backgroundColor={COLORS.cardColor} />
             <Header
                 title="Hi Vignesh"
                 showBackButton={true}

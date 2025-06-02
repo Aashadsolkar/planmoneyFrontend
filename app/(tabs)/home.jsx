@@ -27,6 +27,7 @@ import Button from '../components/Button';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import FullScreenLoader from '../components/FullScreenLoader';
 import SkeletonList from '../components/ListSkeleton';
+import Foundation from '@expo/vector-icons/Foundation'
 
 
 const NewsCard = ({ title = "", summary = "", id }) => (
@@ -39,7 +40,7 @@ const NewsCard = ({ title = "", summary = "", id }) => (
                 {summary}
             </Text>
         </View>
-        <Ionicons name="chevron-forward" size={20} color="#f5a623" style={{ width: "10%" }} />
+        <Ionicons name="chevron-forward" size={25} color="#f5a623" style={{ width: "10%" }} />
     </TouchableOpacity>
 );
 
@@ -58,7 +59,6 @@ export default function Home() {
     const [newsData, setNewsData] = useState([]);
 
     useEffect(() => {
-
         getCustomerServiceAPi();
         const callProfileApi = async () => {
             try {
@@ -188,7 +188,7 @@ export default function Home() {
                                 <Text style={styles.updateText}>Expire On</Text>
                                 <Text style={styles.dateText}>{item?.subscription?.end_at}</Text>
                             </View>
-                            <MaterialIcons onPress={() => handleClick(item?.id)} name="chevron-right" size={25} color="#fff" />
+                            <MaterialIcons onPress={() => handleClick(item?.id)} name="chevron-right" size={40} color="#fff" />
                         </>
                     }
                 </View>
@@ -225,13 +225,6 @@ export default function Home() {
             </>
         }
         return (
-            // <FlatList
-            //     data={newsData}
-            //     keyExtractor={(item) => item.id}
-            //     renderItem={({ item }) => <NewsCard title={item?.title} summary={item?.summary} id={item?.id} />}
-            //     contentContainerStyle={{ paddingVertical: 20 }}
-            // />
-
             newsData.map((item) => {
                 return (
                     <NewsCard title={item?.title}
@@ -285,14 +278,14 @@ export default function Home() {
 
                 {/* Quick Links Section */}
                 <View style={styles.linksContainer}>
-                    <TouchableOpacity style={styles.linkItem}>
+                    <TouchableOpacity style={styles.linkItem} onPress={() => router.push("upcoming")}>
                         <View style={styles.linkIconContainer}>
                             <Ionicons name="bulb" size={35} color="#FFA500" />
                         </View>
                         <Text style={styles.linkText}>Portfolio</Text>
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={styles.linkItem}>
+                    <TouchableOpacity style={styles.linkItem} onPress={() => router.push("upcoming")}>
                         <View style={styles.linkIconContainer}>
                             <MaterialCommunityIcons name="wallet-outline" size={35} color="#FFA500" />
                         </View>
@@ -301,14 +294,15 @@ export default function Home() {
 
                     <TouchableOpacity onPress={() => router.push("sip")} style={styles.linkItem}>
                         <View style={styles.linkIconContainer}>
-                            <FontAwesome5 name="chart-bar" size={35} color="#FFA500" />
+                            <Ionicons name="calculator" size={35} color="#FFA500" />
                         </View>
                         <Text style={styles.linkText}>SIP Calculator</Text>
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={styles.linkItem}>
+                    <TouchableOpacity style={styles.linkItem} onPress={() => router.push("upcoming")}>
                         <View style={styles.linkIconContainer}>
-                            <AntDesign name="trademark" size={35} color="#FFA500" />
+                            {/* <AntDesign name="trademark" size={35} color="#FFA500" /> */}
+                            <Foundation name="burst-new" size={40}  style={{ transform: [{ rotate: "30deg" }] }} color="#FFA500" />
                         </View>
                         <Text style={styles.linkText}>New Arrivals</Text>
                     </TouchableOpacity>
@@ -417,12 +411,13 @@ const styles = StyleSheet.create({
         marginRight: 8,
     },
     updateText: {
-        color: 'white',
-        fontSize: 12,
+        color: "#ccc",
+        fontSize: 16,
     },
     dateText: {
+        marginTop: 3,
         color: 'white',
-        fontSize: 12,
+        fontSize: 18,
     },
     serviceFooter: {
         flexDirection: 'row',
