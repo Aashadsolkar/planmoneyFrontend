@@ -278,7 +278,7 @@ export default function Home() {
 
                 {/* Quick Links Section */}
                 <View style={styles.linksContainer}>
-                    <TouchableOpacity style={styles.linkItem} onPress={() => router.push("upcoming")}>
+                    <TouchableOpacity style={styles.linkItem} onPress={() => router.push("portfolio")}>
                         <View style={styles.linkIconContainer}>
                             <Ionicons name="bulb" size={35} color="#FFA500" />
                         </View>

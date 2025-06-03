@@ -291,9 +291,7 @@ export default function PersonalDetailsForm() {
     }
 
     const handleNext = () => {
-        router.push("forms/riskCalculate1");
         const newErrors = {};
-
         // Age validation (at least 18 years old)
         if (!formData.dateOfBirth) {
             newErrors.dateOfBirth = "Date of birth is required.";
@@ -351,7 +349,7 @@ export default function PersonalDetailsForm() {
                 >
                     <View style={styles.header}>
                         <Text style={styles.subtitle}>Need some details before you proceed with our Services</Text>
-                        <Text style={{ fontSize: 12, fontWeight: 600, color: COLORS.fontWhite, marginTop: 20 }}>Step <Text style={{ color: COLORS.secondaryColor }}>1</Text> to 6</Text>
+                        <Text style={{ fontSize: 12, fontWeight: 600, color: COLORS.fontWhite, marginTop: 20 }}>Step <Text style={{ color: COLORS.secondaryColor }}>1</Text> to 5</Text>
                         <Text style={{ fontSize: 20, fontWeight: 600, color: COLORS.fontWhite }}>Income & Earnings Profile</Text>
                     </View>
 

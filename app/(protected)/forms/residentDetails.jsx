@@ -172,7 +172,7 @@ const ResidentDetails = () => {
                     <Text style={{ fontSize: 20, color: 'white' }}>←</Text>
                 </TouchableOpacity>
                 <Text style={{ fontSize: 12, fontWeight: "600", color: COLORS.fontWhite, marginTop: 20 }}>
-                    Step <Text style={{ color: COLORS.secondaryColor }}>1</Text> to 6
+                    Step <Text style={{ color: COLORS.secondaryColor }}>4</Text> to 5
                 </Text>
                 <Text style={{ fontSize: 20, fontWeight: "600", color: COLORS.fontWhite, marginBottom: 20 }}>
                     Tax Residence Details

@@ -246,7 +246,7 @@ const PmsAndQuantom = () => {
             <ScrollView
                 keyboardShouldPersistTaps="handled"
                 showsVerticalScrollIndicator={false}
-                style={{ paddingHorizontal: 20, marginTop: 80, backgroundColor: COLORS.primaryColor }}
+                style={{ paddingHorizontal: 20, backgroundColor: COLORS.primaryColor }}
             >
                 <View style={{ marginVertical: 10 }}>
                     <LinearGradient
