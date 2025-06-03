@@ -6,6 +6,7 @@ import {
   StyleSheet,
   ScrollView,
   SafeAreaView,
+  StatusBar,
 } from 'react-native';
 import Slider from '@react-native-community/slider';
 import { COLORS } from '../constants';
@@ -38,8 +39,17 @@ export default function SIP() {
     }, [monthlyInvestment, annualReturnRate, years])
   );
 
+  const formatToINR = (number) => {
+  return number.toLocaleString('en-IN', {
+    style: 'currency',
+    currency: 'INR',
+    maximumFractionDigits: 2,
+  });
+};
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.cardColor }}>
+      <StatusBar barStyle="light-content" backgroundColor={COLORS.cardColor} />
       <Header showBackButton={true}/>
       <ScrollView contentContainerStyle={styles.container}>
         <Text style={styles.title}>SIP Calculator</Text>
@@ -103,7 +113,7 @@ export default function SIP() {
 
         {maturityAmount && (
           <Text style={styles.result}>
-            Estimated Maturity Amount: ₹ {maturityAmount}
+            Estimated Maturity Amount: ₹ {formatToINR(Number(maturityAmount))}
           </Text>
         )}
       </ScrollView>

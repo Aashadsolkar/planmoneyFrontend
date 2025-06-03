@@ -21,11 +21,28 @@ import Header from '../components/Header';
 import { LinearGradient } from 'expo-linear-gradient';
 import { COLORS } from '../constants';
 import { useAuth } from '../context/useAuth';
-import { getProfileData } from '../utils/apiCaller';
+import { getProfileData, news } from '../utils/apiCaller';
 import { router, useNavigation } from 'expo-router';
 import Button from '../components/Button';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import FullScreenLoader from '../components/FullScreenLoader';
+import SkeletonList from '../components/ListSkeleton';
+import Foundation from '@expo/vector-icons/Foundation'
+
+
+const NewsCard = ({ title = "", summary = "", id }) => (
+    <TouchableOpacity style={styles.card} onPress={() => router.push(`singleNews/${id}`)}>
+        <View style={{ width: "90%" }}>
+            <Text style={styles.title} numberOfLines={1}>
+                {title}
+            </Text>
+            <Text style={styles.summary} numberOfLines={2}>
+                {summary}
+            </Text>
+        </View>
+        <Ionicons name="chevron-forward" size={25} color="#f5a623" style={{ width: "10%" }} />
+    </TouchableOpacity>
+);
 
 export default function Home() {
     const { purchesService,
@@ -37,10 +54,11 @@ export default function Home() {
         token
     } = useAuth();
     const [activeAccordion, setActiveAccordion] = useState(null);
+    const [isNewApiLoading, setIsNewApiLoading] = useState(true);
     const navigation = useNavigation();
+    const [newsData, setNewsData] = useState([]);
 
     useEffect(() => {
-
         getCustomerServiceAPi();
         const callProfileApi = async () => {
             try {
@@ -63,6 +81,32 @@ export default function Home() {
         if (token) {
             callProfileApi()
         }
+    }, [])
+
+
+    useEffect(() => {
+        const getNew = async () => {
+            try {
+                const response = await news(token);
+                setIsNewApiLoading(false)
+                setNewsData(response?.data?.latest_news);
+
+            } catch (error) {
+                setIsNewApiLoading(false);
+                Alert.alert(
+                    "Error",
+                    error?.message || "Failed to get news",
+                    [
+                        {
+                            text: "OK",
+                            onPress: () => router.push("home"),
+                        },
+                    ]
+                );
+
+            }
+        }
+        getNew()
     }, [])
 
     // Offer carousel data
@@ -90,21 +134,6 @@ export default function Home() {
         },
     ];
 
-    // News accordion data
-    const newsData = [
-        {
-            id: '1',
-            title: 'ICICI Lombard General Insurance Q4 Results: Net profit slips 2% to Rs 510 crore',
-        },
-        {
-            id: '2',
-            title: 'Sebi cracks down on Gemini Engineering, bars promoters from markets for fund misuse',
-        },
-        {
-            id: '3',
-            title: 'RBI keeps repo rate unchanged at 6.5% for seventh consecutive time',
-        },
-    ];
 
     const handleClick = (id) => {
         if ([1, 2].includes(id)) {
@@ -159,7 +188,7 @@ export default function Home() {
                                 <Text style={styles.updateText}>Expire On</Text>
                                 <Text style={styles.dateText}>{item?.subscription?.end_at}</Text>
                             </View>
-                            <MaterialIcons onPress={() => handleClick(item?.id)} name="chevron-right" size={25} color="#fff" />
+                            <MaterialIcons onPress={() => handleClick(item?.id)} name="chevron-right" size={40} color="#fff" />
                         </>
                     }
                 </View>
@@ -183,6 +212,28 @@ export default function Home() {
                 showsHorizontalScrollIndicator={false}
                 contentContainerStyle={styles.servicesListContainer}
             />
+        )
+    }
+
+    const renderNews = () => {
+        if (isNewApiLoading) {
+            return <>
+                <SkeletonList />
+                <SkeletonList />
+                <SkeletonList />
+                <SkeletonList />
+            </>
+        }
+        return (
+            newsData.map((item) => {
+                return (
+                    <NewsCard title={item?.title}
+                        summary={item?.summary}
+                        id={item?.id}
+                        key={item?.id}
+                    />
+                )
+            })
         )
     }
 
@@ -227,14 +278,14 @@ export default function Home() {
 
                 {/* Quick Links Section */}
                 <View style={styles.linksContainer}>
-                    <TouchableOpacity style={styles.linkItem}>
+                    <TouchableOpacity style={styles.linkItem} onPress={() => router.push("upcoming")}>
                         <View style={styles.linkIconContainer}>
                             <Ionicons name="bulb" size={35} color="#FFA500" />
                         </View>
                         <Text style={styles.linkText}>Portfolio</Text>
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={styles.linkItem}>
+                    <TouchableOpacity style={styles.linkItem} onPress={() => router.push("upcoming")}>
                         <View style={styles.linkIconContainer}>
                             <MaterialCommunityIcons name="wallet-outline" size={35} color="#FFA500" />
                         </View>
@@ -243,14 +294,15 @@ export default function Home() {
 
                     <TouchableOpacity onPress={() => router.push("sip")} style={styles.linkItem}>
                         <View style={styles.linkIconContainer}>
-                            <FontAwesome5 name="chart-bar" size={35} color="#FFA500" />
+                            <Ionicons name="calculator" size={35} color="#FFA500" />
                         </View>
                         <Text style={styles.linkText}>SIP Calculator</Text>
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={styles.linkItem}>
+                    <TouchableOpacity style={styles.linkItem} onPress={() => router.push("upcoming")}>
                         <View style={styles.linkIconContainer}>
-                            <AntDesign name="trademark" size={35} color="#FFA500" />
+                            {/* <AntDesign name="trademark" size={35} color="#FFA500" /> */}
+                            <Foundation name="burst-new" size={40}  style={{ transform: [{ rotate: "30deg" }] }} color="#FFA500" />
                         </View>
                         <Text style={styles.linkText}>New Arrivals</Text>
                     </TouchableOpacity>
@@ -260,42 +312,14 @@ export default function Home() {
                 <View style={styles.newsContainer}>
                     <View style={styles.newsHeader}>
                         <Text style={styles.newsTitle}>Latest News</Text>
-                        <TouchableOpacity style={styles.viewMoreButton}>
+                        <TouchableOpacity style={styles.viewMoreButton} onPress={() => router.push("news")}>
                             <Text style={styles.viewMoreText}>View More</Text>
                             <AntDesign name="right" size={14} color="#FFA500" />
                         </TouchableOpacity>
                     </View>
 
                     {/* News Accordion */}
-                    {newsData.map((item) => (
-                        <TouchableOpacity
-                            key={item.id}
-                            style={styles.accordionItem}
-                            onPress={() => toggleAccordion(item.id)}
-                        >
-                            <View style={styles.accordionHeader}>
-                                <Text style={styles.accordionTitle} numberOfLines={2}>
-                                    {item.title}
-                                </Text>
-                                <AntDesign
-                                    name="right"
-                                    size={18}
-                                    color="#FFA500"
-                                    style={[
-                                        styles.accordionIcon,
-                                        activeAccordion === item.id && styles.accordionIconActive
-                                    ]}
-                                />
-                            </View>
-                            {activeAccordion === item.id && (
-                                <View style={styles.accordionContent}>
-                                    <Text style={styles.accordionContentText}>
-                                        Detailed information about this news item would appear here when expanded.
-                                    </Text>
-                                </View>
-                            )}
-                        </TouchableOpacity>
-                    ))}
+                    {renderNews()}
                 </View>
             </ScrollView>
             {/* <Tabs /> */}
@@ -387,12 +411,13 @@ const styles = StyleSheet.create({
         marginRight: 8,
     },
     updateText: {
-        color: 'white',
-        fontSize: 12,
+        color: "#ccc",
+        fontSize: 16,
     },
     dateText: {
+        marginTop: 3,
         color: 'white',
-        fontSize: 12,
+        fontSize: 18,
     },
     serviceFooter: {
         flexDirection: 'row',
@@ -484,5 +509,29 @@ const styles = StyleSheet.create({
     accordionContentText: {
         color: '#CCC',
         fontSize: 14,
+    },
+    card: {
+        backgroundColor: '#083b66',
+        borderRadius: 12,
+        padding: 16,
+        marginBottom: 12,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        flexDirection: "row"
+    },
+    title: {
+        color: '#fff',
+        fontSize: 16,
+        flex: 1,
+        marginRight: 8,
+        fontWeight: 600
+    },
+    summary: {
+        marginTop: 10,
+        color: '#fff',
+        fontSize: 14,
+        flex: 1,
+        marginRight: 8,
     },
 });

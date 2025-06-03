@@ -13,30 +13,36 @@ import { router } from "expo-router";
 const OrderConfirm = () => {
   const route = useRoute()
   const { orderId } = route.params || {}
-  const { orderConfirmDetails, token, profileData, selectedService } = useAuth()
+  const { orderConfirmDetails, token, profileData, selectedService, prePaymentDetails } = useAuth()
   const [orderDetails, setOrderDetails] = useState(null)
   const [loading, setLoading] = useState(true)
   const [verifyComplete, setVerifyComplete] = useState(false)
   const [subscriptionComplete, setSubscriptionComplete] = useState(false)
   const [error, setError] = useState(null)
-  
+
   const { id, billing_cycle, serviceId } = selectedService || {}
+
+  console.log(orderId, "order id.................");
+
 
   useEffect(() => {
     const verifyOrder = async () => {
       setLoading(true)
       try {
         const response = await pgVerifyOrder(token, orderId)
-        
-        if (response?.data?.length > 0) {
-          setOrderDetails(response.data)
-          setVerifyComplete(true)
 
-          // Wait 2 seconds before calling the subscription API
-          setTimeout(() => {
-            buyService(response.data)
-          }, 2000)
-        }else{
+        if (response?.data?.length > 0) {
+          if (response?.data[0]?.payment_status == "SUCCESS") {
+            setOrderDetails(response.data)
+            setVerifyComplete(true)
+            // Wait 2 seconds before calling the subscription API
+            setTimeout(() => {
+              buyService(response.data)
+            }, 2000)
+          } else {
+            setError("Failed to verify your payment. Please contact support.")
+          }
+        } else {
           setError("Failed to verify your payment. Please contact support.")
         }
       } catch (error) {
@@ -57,8 +63,12 @@ const OrderConfirm = () => {
           currency: orderData[0]?.payment_currency,
           billing_cycle: billing_cycle,
           payment_status: "paid",
-          transaction_id: orderId
+          transaction_id: orderId,
+          coupon_code: prePaymentDetails?.coupon_code,
+          referral_code: prePaymentDetails?.referral_code
         }
+        console.log(prePaymentDetails, "asdadkjakadhj_________________");
+        
 
         const response = await buySubscription(token, payload)
         setSubscriptionComplete(true)
@@ -70,7 +80,7 @@ const OrderConfirm = () => {
         setLoading(false)
       }
     }
-    
+
     if (orderId) {
       verifyOrder()
     }

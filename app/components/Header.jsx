@@ -173,7 +173,10 @@ const Header = ({
             </View>
             <View style={styles.drawerProfileInfo}>
               <Text style={styles.drawerProfileName}>{profileData?.name}</Text>
-              <Text style={styles.drawerProfileEmail}>{profileData?.email}</Text>
+              <Text
+                style={styles.drawerProfileEmail}>{profileData?.email?.length > 20
+                  ? profileData.email.slice(0, 20) + '...'
+                  : profileData?.email}</Text>
             </View>
           </View>
         </View>
@@ -201,8 +204,10 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 16,
-    paddingVertical: 12,
+    paddingVertical: 20,
     backgroundColor: COLORS.cardColor,
+
+    elevation: 5
   },
   leftSection: {
     flex: 1,
@@ -336,7 +341,7 @@ const styles = StyleSheet.create({
   },
   drawerHeader: {
     padding: 24,
-    backgroundColor: '#002952',
+    backgroundColor: COLORS.cardColor,
   },
   drawerProfileSection: {
     flexDirection: 'row',
@@ -371,14 +376,19 @@ const styles = StyleSheet.create({
   },
   drawerContent: {
     padding: 16,
+    flex: 1,
+    backgroundColor: COLORS.primaryColor,
+    opacity: 0.8,
   },
   drawerItem: {
     paddingVertical: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
+    borderBottomColor: '#fff',
   },
   drawerItemText: {
     fontSize: 16,
+    color: COLORS.fontWhite
+
   },
   backButton: {
     zIndex: 10,

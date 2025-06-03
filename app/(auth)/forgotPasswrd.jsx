@@ -13,7 +13,8 @@ import {
     Keyboard,
     ActivityIndicator,
     Alert,
-    SafeAreaView
+    SafeAreaView,
+    StatusBar
 } from "react-native";
 import { router } from "expo-router";
 import Ionicons from "@expo/vector-icons/Ionicons";
@@ -241,6 +242,7 @@ const ForgotPassword = () => {
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.primaryColor }}>
+            <StatusBar barStyle="light-content" backgroundColor={COLORS.primaryColor} />
             <KeyboardAvoidingView
                 behavior={Platform.OS === "ios" ? "padding" : "height"}
                 style={styles.container}

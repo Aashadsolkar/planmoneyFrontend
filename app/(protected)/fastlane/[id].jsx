@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Alert, Image, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Alert, Image, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, View } from 'react-native';
 import { COLORS } from '../../constants';
 import { getFastlaneData } from '../../utils/apiCaller';
 import { useAuth } from '../../context/useAuth';
@@ -130,7 +130,8 @@ const FastLane = () => {
 
     if (customerServiceData?.questionnaire_status == 0) {
         return (
-            <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.cardColor, padding: 20 }}>
+            <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.cardColor }}>
+                <StatusBar barStyle="light-content" backgroundColor={COLORS.cardColor} />
                 <Header
                     title="Hi Vignesh"
                     showBackButton={true}
@@ -138,7 +139,7 @@ const FastLane = () => {
                 <ScrollView
                     keyboardShouldPersistTaps="handled"
                     showsVerticalScrollIndicator={false}
-                    style={{ paddingHorizontal: 20, backgroundColor: COLORS.primaryColor }}
+                    style={{ paddingHorizontal: 20, backgroundColor: COLORS.primaryColor, paddingTop: 100 }}
                 >
                     {/* <Text style={styles.heading}>Stock updates</Text> */}
                     {/* {renderCardList()} */}
@@ -158,7 +159,8 @@ const FastLane = () => {
     }
     if (customerServiceData?.verification_status == 0) {
         return (
-            <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.cardColor, padding: 20 }}>
+            <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.cardColor }}>
+                <StatusBar barStyle="light-content" backgroundColor={COLORS.cardColor} />
                 <Header
                     title="Hi Vignesh"
                     showBackButton={true}
@@ -166,7 +168,7 @@ const FastLane = () => {
                 <ScrollView
                     keyboardShouldPersistTaps="handled"
                     showsVerticalScrollIndicator={false}
-                    style={{ paddingHorizontal: 20, backgroundColor: COLORS.primaryColor }}
+                    style={{ padding: 20, backgroundColor: COLORS.primaryColor, paddingTop: 100 }}
                 >
                     <View style={{ alignItems: 'center', width: "100%" }}>
                         <Image
@@ -192,7 +194,8 @@ const FastLane = () => {
         )
     }
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.cardColor, padding: 20 }}>
+        <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.cardColor }}>
+            <StatusBar barStyle="light-content" backgroundColor={COLORS.cardColor} />
             <Header
                 title="Hi Vignesh"
                 showBackButton={true}

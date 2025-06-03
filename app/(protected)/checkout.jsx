@@ -12,25 +12,16 @@ import Input from '../components/Input';
 import * as Linking from "expo-linking";
 
 export default function Checkout() {
-  const [couponCode, setCouponCode] = useState("")
-  const [appliedCoupon, setAppliedCoupon] = useState("")
-  const [discount, setDiscount] = useState(0)
-  const [showCouponDiscount, setShowCouponDiscount] = useState(false)
-  const { selectedService, token, profileData, setOrderId } = useAuth();
-  const [couponErrorMsg, setCouponErrorMsg] = useState("")
-  const [orderDetails, setOrderDetails] = useState();
-
-  /// order details
-  const [name, setName] = useState("John Doe");
-  const [email, setEmail] = useState("john.doe@example.com");
-  const [phone, setPhone] = useState("9876543210");
-  const [address, setAddress] = useState("123, Demo Street");
-  const [pincode, setPincode] = useState("560001");
-  const [amount, setAmount] = useState("1");
+  const [couponCode, setCouponCode] = useState("");
+  const [appliedCoupon, setAppliedCoupon] = useState("");
+  const [discount, setDiscount] = useState(0);
+  const [showCouponDiscount, setShowCouponDiscount] = useState(false);
+  const { selectedService, token, profileData, setPrePaymentDetails } = useAuth();
+  const [couponErrorMsg, setCouponErrorMsg] = useState("");
   const [referralError, setReferralError] = useState(null);
   const [referral, setReferral] = useState("");
-  const navigation = useNavigation();
   const userReturnURL = Linking.createURL("/orderConfirm");
+  const [isLoading, setIsLoading] = useState(false);
 
 
 
@@ -52,7 +43,19 @@ export default function Checkout() {
       }
 
       const response = await pgCreateOrder(token, payload);
-      setOrderId(response?.data?.order_id);
+      setIsLoading(false);
+      let prePaymentDetails  ={ 
+        "order_id": orderID,
+        "order_amount": parseFloat(totalPrice),
+        "customer_id": profileData?.customer_id,
+        "referral_code": referral
+      }
+      if(showCouponDiscount){
+        prePaymentDetails["coupon_code"] = couponCode
+      }
+      setPrePaymentDetails(prePaymentDetails)
+
+      ;
       router.push({
         pathname: "/checkoutWebView",
         params: {
@@ -62,6 +65,7 @@ export default function Checkout() {
       });
 
     } catch (error) {
+      setIsLoading(false);
       Alert.alert(
         "Error",
         error?.message || "Create Order Api failed",
@@ -74,31 +78,6 @@ export default function Checkout() {
       );
     }
   };
-
-
-
-  // const handlePay = async () => {
-  //   try {
-  //     // const orderID = generateOrderNumber();
-  //     const payload = {
-  //       "service_id": 2,
-  //       "plan_id": 1,
-  //       "payment_method": "upi",
-  //       "amount": "199",
-  //       "currency": "IND",
-  //       "billing_cycle": "monthly",
-  //       "payment_status": "paid",
-  //       "coupon_code": "Save20%",
-  //       "referral_code": "",
-  //       "transaction_id": "1233424"
-  //     }
-
-  //     const response = await buySubscription(token, payload);
-  //     router.replace("home")
-  //   } catch (error) {
-  //     console.log("Payment creation failed:", error);
-  //   }
-  // }
 
   const totalPrice = selectedService.offer_price - discount
 
@@ -129,11 +108,13 @@ export default function Checkout() {
       handlePay()
 
     } catch (error) {
+      setIsLoading(false);
       setReferralError(error?.errors?.referral_code[0] || "Referral Api Failed.");
     }
   }
 
   const handleSubmit = () => {
+    setIsLoading(true)
     if (referral) {
       applyReferral()
     } else {
@@ -286,8 +267,10 @@ export default function Checkout() {
         </View>
 
       </ScrollView>
+      <View style={{backgroundColor: COLORS.primaryColor}}> 
+      <Button isLoading={isLoading} onClick={() => handleSubmit()} label={`PAY ₹${totalPrice}`} gradientColor={['#D36C32', '#F68F00']} buttonStye={{marginHorizontal: 10, marginBottom: 10}}/>
+      </View>
       {/* Payment Button */}
-      <Button onClick={() => handleSubmit()} label={`PAY ₹${totalPrice}`} gradientColor={['#D36C32', '#F68F00']} />
     </SafeAreaView>
   )
 }

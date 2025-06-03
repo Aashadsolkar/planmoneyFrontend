@@ -10,9 +10,6 @@ export default function CheckoutWebView( props) {
   
   const { sessionId, orderId } = useLocalSearchParams();
  console.log(sessionId, orderId, "asdsadasdasdsdasdsasfdfdadfd____________Adas");
- const { setOrderCinfirmDetails } = useAuth();
-  
-
   const hostedUrl = `https://hunger.webiknows.in/payment.html?session_id=${sessionId}`;
 
   // const handleRedirect = (url) => {

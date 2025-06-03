@@ -89,11 +89,11 @@ const FastLane = () => {
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.cardColor, padding: 20 }}>
+            <StatusBar barStyle="light-content" backgroundColor={COLORS.cardColor} />
             <Header
                 backButtonText={backButtonText}
                 showBackButton={true}
             />
-           <StatusBar backgroundColor="#fff" style="auto" />
             <ScrollView
                 keyboardShouldPersistTaps="handled"
                 showsVerticalScrollIndicator={false}
