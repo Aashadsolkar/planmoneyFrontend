@@ -1,16 +1,14 @@
 {
   "expo": {
-    "name": "LoginSystem",
-    "slug": "LoginSystem",
+    "name": "Plan Money",
+    "slug": "PlanMoney",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/logo.png",
-    "scheme": "myapp",
+    "scheme": "planMoney",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "splash": {
       "image": "./assets/images/logo.png",
-      "imageWidth": 200,
       "resizeMode": "contain",
       "backgroundColor": "#012744"
     },
@@ -20,16 +18,30 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#012744"
       }
     },
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/images/favicon.png"
+      "favicon": "./assets/images/favicon.ico"
     },
     "plugins": [
-      "expo-router"
+      "expo-router",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/images/logo.png",
+          "resizeMode": "contain",
+          "backgroundColor": "#012744",
+          "imageResizeMode": "contain",
+          "imageWidth": 200,
+          "dark": {
+            "image": "./assets/images/logo.png",
+            "backgroundColor": "#012744"
+          }
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
