@@ -1,5 +1,5 @@
 
-import { View, Text, Image, SafeAreaView, ActivityIndicator, StyleSheet, ScrollView } from "react-native"
+import { View, Text, Image, SafeAreaView, ActivityIndicator, StyleSheet, ScrollView, TouchableOpacity } from "react-native"
 import { useEffect, useState } from "react"
 import Button from "../components/Button"
 import { COLORS } from "../constants"
@@ -19,37 +19,14 @@ const OrderConfirm = () => {
   const [verifyComplete, setVerifyComplete] = useState(false)
   const [subscriptionComplete, setSubscriptionComplete] = useState(false)
   const [error, setError] = useState(null)
+  const [paymentFailed, setPaymentFailed] = useState(false);
 
   const { id, billing_cycle, serviceId } = selectedService || {}
 
 
 
   useEffect(() => {
-    const verifyOrder = async () => {
-      setLoading(true)
-      try {
-        const response = await pgVerifyOrder(token, orderId)
 
-        if (response?.data?.length > 0) {
-          if (response?.data[0]?.payment_status == "SUCCESS") {
-            setOrderDetails(response.data)
-            setVerifyComplete(true)
-            // Wait 2 seconds before calling the subscription API
-            setTimeout(() => {
-              buyService(response.data)
-            }, 2000)
-          } else {
-            setError("Failed to verify your payment. Please contact support.")
-          }
-        } else {
-          setError("Failed to verify your payment. Please contact support.")
-        }
-      } catch (error) {
-        setError("Failed to verify your payment. Please contact support.")
-      } finally {
-        setLoading(false)
-      }
-    }
     const buyService = async (orderData) => {
       if (!orderData || !orderData[0]) return
       setLoading(true)
@@ -58,22 +35,47 @@ const OrderConfirm = () => {
           service_id: serviceId,
           plan_id: id,
           payment_method: orderData[0]?.payment_group,
-          amount: orderData[0].order_amount,
+          amount: orderData[0]?.order_amount,
           currency: orderData[0]?.payment_currency,
           billing_cycle: billing_cycle,
-          payment_status: "paid",
+          payment_status: orderData[0]?.payment_status == "SUCCESS" ? "paid" : orderData[0]?.payment_status?.toLowerCase(),
           transaction_id: orderId,
           coupon_code: prePaymentDetails?.coupon_code,
           referral_code: prePaymentDetails?.referral_code
         }
-        
+
 
         const response = await buySubscription(token, payload)
+        if (
+          response?.message &&
+          response.message.toLowerCase().includes("payment failed")
+        ) {
+          setPaymentFailed(true)
+          return
+        }
         setSubscriptionComplete(true)
       } catch (error) {
         setError(
           "Your payment was successful, but we couldn't activate your subscription. Our team will resolve this shortly.",
         )
+      } finally {
+        setLoading(false)
+      }
+    }
+    const verifyOrder = async () => {
+      setLoading(true)
+      try {
+        const response = await pgVerifyOrder(token, orderId)
+
+        if (response?.data?.length > 0) {
+          setOrderDetails(response.data)
+          setVerifyComplete(true)
+          buyService(response.data)
+        } else {
+          setError("Failed to verify your payment. Please contact support.")
+        }
+      } catch (error) {
+        setError("Failed to verify your payment. Please contact support.")
       } finally {
         setLoading(false)
       }
@@ -152,17 +154,72 @@ const OrderConfirm = () => {
     </Animatable.View>
   )
 
+  const renderPaymentFailed = () => (
+    <Animatable.View animation="fadeIn" style={styles.centerContent}>
+      <ScrollView contentContainerStyle={styles.scrollContent}>
+        <Animatable.View animation="shake">
+          <Clock color={COLORS.secondaryColor} size={80} />
+        </Animatable.View>
+        <Text style={[styles.successTitle, { color: COLORS.secondaryColor }]}>Payment Failed</Text>
+        <Text style={styles.subText}>Your payment did not go through. Please try again.</Text>
+
+        <View style={styles.orderDetailsCard}>
+          <Text style={styles.orderDetailsTitle}>Order Details</Text>
+
+          <View style={styles.detailRow}>
+            <Text style={styles.detailLabel}>Order ID:</Text>
+            <Text style={styles.detailValue}>{orderDetails?.[0]?.order_id || orderId}</Text>
+          </View>
+
+          <View style={styles.detailRow}>
+            <Text style={styles.detailLabel}>Status:</Text>
+            <Text style={[styles.detailValue, { color: "red", textTransform: "capitalize" }]}>
+              Failed
+            </Text>
+          </View>
+
+          <View style={styles.detailRow}>
+            <Text style={styles.detailLabel}>Amount:</Text>
+            <Text style={styles.detailValue}>₹{orderDetails?.[0]?.payment_amount || 'N/A'}</Text>
+          </View>
+
+          <View style={styles.detailRow}>
+            <Text style={styles.detailLabel}>Payment Method:</Text>
+            <Text style={styles.detailValue}>{orderDetails?.[0]?.payment_group || 'N/A'}</Text>
+          </View>
+
+          <View style={styles.detailRow}>
+            <Text style={styles.detailLabel}>Billing Cycle:</Text>
+            <Text style={styles.detailValue}>{billing_cycle || 'N/A'}</Text>
+          </View>
+        </View>
+      </ScrollView>
+    </Animatable.View>
+  )
+
+
   const renderContent = () => {
     if (loading && !verifyComplete && !subscriptionComplete) {
       return renderLoadingState()
     } else if (error) {
       return renderErrorState()
+    } else if (paymentFailed) {
+      return renderPaymentFailed()
     } else if (verifyComplete && !subscriptionComplete) {
       return renderVerifyComplete()
     } else if (subscriptionComplete) {
       return renderSubscriptionComplete()
     }
     return renderLoadingState()
+  }
+
+  if (!orderId) {
+    return (
+      <SafeAreaView style={styles.centerContent}>
+        <Text style={styles.errorTitle}>Missing Order ID</Text>
+        <Text style={styles.errorText}>We couldn't find your order. Please try again.</Text>
+      </SafeAreaView>
+    );
   }
 
   return (
@@ -172,10 +229,16 @@ const OrderConfirm = () => {
       </View>
 
       {renderContent()}
-
+      {/* {
+        !subscriptionComplete && <View>
+          <TouchableOpacity onPress={() => router.push("checkout")}>
+            <Text style={{ color: COLORS.secondaryColor, textAlign: "center", paddingBottom: 15 }}>Try Againg</Text>
+          </TouchableOpacity>
+        </View>
+      } */}
       <View style={styles.buttonContainer}>
         <Button
-          label={subscriptionComplete ? "Done" : "Back to Home"}
+          label={subscriptionComplete ? "Done" : "Back To Home"}
           gradientColor={["#D36C32", "#F68F00"]}
           // onPress={() => navigation.navigate("/screens/home")}
           onClick={() => router.push("home")}

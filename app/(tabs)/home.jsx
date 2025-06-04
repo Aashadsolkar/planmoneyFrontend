@@ -15,7 +15,8 @@ import {
     Ionicons,
     MaterialCommunityIcons,
     FontAwesome5,
-    AntDesign
+    AntDesign,
+    FontAwesome6
 } from '@expo/vector-icons';
 import Header from '../components/Header';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -140,24 +141,10 @@ export default function Home() {
 
     const [offerData, setOfferData] = useState(initialOfferData);
     useEffect(() => {
-        const purchesSerivce = [
-            {
-                description: null,
-                id: 4,
-                is_active: true,
-                is_subscribed: true,
-                name: 'QuantumVault (For Above ₹50 lakh Capital)',
-                subscription: {
-                    end_at: '2025-09-04',
-                    id: 3,
-                    plan: {}, // Object placeholder
-                    start_at: '2025-06-04',
-                },
-            },
-        ];
+        
 
         // Create a set of purchased service IDs
-        const purchasedServiceIds = new Set(purchesSerivce.map(service => service.id));
+        const purchasedServiceIds = new Set(portfolioServices.map(service => service.id));
 
         // Filter offer data
         const filteredOffers = initialOfferData.filter(
@@ -165,7 +152,7 @@ export default function Home() {
         );
 
         setOfferData(filteredOffers);
-    }, []);
+    }, [portfolioServices]);
 
 
     const handleClick = (id) => {
@@ -319,21 +306,21 @@ export default function Home() {
                 <View style={styles.linksContainer}>
                     <TouchableOpacity style={styles.linkItem} onPress={() => router.push("portfolio")}>
                         <View style={styles.linkIconContainer}>
-                            <Ionicons name="bulb" size={35} color="#FFA500" />
+                            <FontAwesome6 size={35} name="chart-pie" color={COLORS.secondaryColor} />
                         </View>
                         <Text style={styles.linkText}>Portfolio</Text>
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={styles.linkItem} onPress={() => router.push("upcoming")}>
+                    {/* <TouchableOpacity style={styles.linkItem} onPress={() => router.push("upcoming")}>
                         <View style={styles.linkIconContainer}>
                             <MaterialCommunityIcons name="wallet-outline" size={35} color="#FFA500" />
                         </View>
                         <Text style={styles.linkText}>Wallet</Text>
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
 
                     <TouchableOpacity onPress={() => router.push("sip")} style={styles.linkItem}>
                         <View style={styles.linkIconContainer}>
-                            <Ionicons name="calculator" size={35} color="#FFA500" />
+                            <Ionicons name="calculator" size={40} color="#FFA500" />
                         </View>
                         <Text style={styles.linkText}>SIP Calculator</Text>
                     </TouchableOpacity>
@@ -341,7 +328,7 @@ export default function Home() {
                     <TouchableOpacity style={styles.linkItem} onPress={() => router.push("upcoming")}>
                         <View style={styles.linkIconContainer}>
                             {/* <AntDesign name="trademark" size={35} color="#FFA500" /> */}
-                            <Foundation name="burst-new" size={40} style={{ transform: [{ rotate: "30deg" }] }} color="#FFA500" />
+                            <Foundation name="burst-new" size={50} style={{ transform: [{ rotate: "30deg" }] }} color="#FFA500" />
                         </View>
                         <Text style={styles.linkText}>New Arrivals</Text>
                     </TouchableOpacity>
@@ -480,8 +467,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     linkIconContainer: {
-        width: 60,
-        height: 60,
+        width: 80,
+        height: 70,
         borderRadius: 8,
         backgroundColor: 'rgba(255, 255, 255, 0.1)',
         justifyContent: 'center',
