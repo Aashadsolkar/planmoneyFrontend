@@ -1,14 +1,29 @@
-import { useState } from "react"
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, SafeAreaView, ScrollView, StatusBar, Alert } from "react-native"
-import { Ionicons } from "@expo/vector-icons"
-import Header from "../components/Header"
-import { COLORS } from "../constants"
-import { LinearGradient } from "expo-linear-gradient"
-import Button from "../components/Button"
-import { useAuth } from '../context/useAuth';
-import { applyCouponApi, applyReferralApi, buySubscription, pgCreateOrder } from "../utils/apiCaller"
-import { router, useNavigation } from "expo-router"
-import Input from '../components/Input';
+import { useState } from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  TouchableOpacity,
+  SafeAreaView,
+  ScrollView,
+  StatusBar,
+  Alert,
+} from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import Header from "../components/Header";
+import { COLORS } from "../constants";
+import { LinearGradient } from "expo-linear-gradient";
+import Button from "../components/Button";
+import { useAuth } from "../context/useAuth";
+import {
+  applyCouponApi,
+  applyReferralApi,
+  buySubscription,
+  pgCreateOrder,
+} from "../utils/apiCaller";
+import { router, useNavigation } from "expo-router";
+import Input from "../components/Input";
 import * as Linking from "expo-linking";
 
 export default function Checkout() {
@@ -16,46 +31,44 @@ export default function Checkout() {
   const [appliedCoupon, setAppliedCoupon] = useState("");
   const [discount, setDiscount] = useState(0);
   const [showCouponDiscount, setShowCouponDiscount] = useState(false);
-  const { selectedService, token, profileData, setPrePaymentDetails } = useAuth();
+  const { selectedService, token, profileData, setPrePaymentDetails } =
+    useAuth();
   const [couponErrorMsg, setCouponErrorMsg] = useState("");
   const [referralError, setReferralError] = useState(null);
   const [referral, setReferral] = useState("");
-  const userReturnURL = Linking.createURL("/orderConfirm");
+  // const userReturnURL = Linking.createURL("/orderConfirm");
+  const userReturnURL = `planMoney://orderConfirm`;
   const [isLoading, setIsLoading] = useState(false);
-
-
 
   const generateOrderNumber = () => {
     const randomSixDigit = Math.floor(100000 + Math.random() * 900000); // Ensures 6 digits
     return `ORDER_${randomSixDigit}`;
-  }
+  };
 
   const handlePay = async () => {
     try {
       const orderID = generateOrderNumber();
       const payload = {
-        "order_id": orderID,
-        "order_amount": parseFloat(totalPrice),
-        "customer_id": profileData?.customer_id,
-        "customer_email": profileData?.email,
-        "customer_phone": profileData?.phone,
-        "app_return_url": `https://hunger.webiknows.in/payment.html?order_id={order_id}&return_url=${userReturnURL}`
-      }
+        order_id: orderID,
+        order_amount: parseFloat(totalPrice),
+        customer_id: profileData?.customer_id,
+        customer_email: profileData?.email,
+        customer_phone: profileData?.phone,
+        app_return_url: `https://hunger.webiknows.in/payment.html?order_id={order_id}&return_url=${userReturnURL}`,
+      };
 
       const response = await pgCreateOrder(token, payload);
       setIsLoading(false);
-      let prePaymentDetails  ={ 
-        "order_id": orderID,
-        "order_amount": parseFloat(totalPrice),
-        "customer_id": profileData?.customer_id,
-        "referral_code": referral
+      let prePaymentDetails = {
+        order_id: orderID,
+        order_amount: parseFloat(totalPrice),
+        customer_id: profileData?.customer_id,
+        referral_code: referral,
+      };
+      if (showCouponDiscount) {
+        prePaymentDetails["coupon_code"] = couponCode;
       }
-      if(showCouponDiscount){
-        prePaymentDetails["coupon_code"] = couponCode
-      }
-      setPrePaymentDetails(prePaymentDetails)
-
-      ;
+      setPrePaymentDetails(prePaymentDetails);
       router.push({
         pathname: "/checkoutWebView",
         params: {
@@ -63,71 +76,65 @@ export default function Checkout() {
           orderId: response?.data?.order_id,
         },
       });
-
     } catch (error) {
       setIsLoading(false);
-      Alert.alert(
-        "Error",
-        error?.message || "Create Order Api failed",
-        [
-          {
-            text: "OK",
-            onPress: () => router.push("home"),
-          },
-        ]
-      );
+      Alert.alert("Error", error?.message || "Create Order Api failed", [
+        {
+          text: "OK",
+          onPress: () => router.push("home"),
+        },
+      ]);
     }
   };
 
-  const totalPrice = selectedService.offer_price - discount
+  const totalPrice = selectedService.offer_price - discount;
 
   const applyCoupon = async () => {
     try {
       const payload = {
         coupon_code: couponCode,
-        amount: totalPrice
-      }
-      const couponResponse = await applyCouponApi(token, payload)
-      setDiscount(couponResponse?.data?.discount)
-      setShowCouponDiscount(true)
-
+        amount: totalPrice,
+      };
+      const couponResponse = await applyCouponApi(token, payload);
+      setDiscount(couponResponse?.data?.discount);
+      setShowCouponDiscount(true);
     } catch (error) {
-      setAppliedCoupon("")
-      setDiscount(0)
-      setShowCouponDiscount(false)
-      setCouponErrorMsg(error?.message || "Applied Coupon api failed")
+      setAppliedCoupon("");
+      setDiscount(0);
+      setShowCouponDiscount(false);
+      setCouponErrorMsg(error?.message || "Applied Coupon api failed");
     }
-  }
+  };
 
   const applyReferral = async () => {
     try {
       const payload = {
-        "referral_code": "asdaskjh"
-      }
+        referral_code: "asdaskjh",
+      };
       const ReferralResponse = await applyReferralApi(token, payload);
-      handlePay()
-
+      handlePay();
     } catch (error) {
       setIsLoading(false);
-      setReferralError(error?.errors?.referral_code[0] || "Referral Api Failed.");
+      setReferralError(
+        error?.errors?.referral_code[0] || "Referral Api Failed."
+      );
     }
-  }
+  };
 
   const handleSubmit = () => {
-    setIsLoading(true)
+    setIsLoading(true);
     if (referral) {
-      applyReferral()
+      applyReferral();
     } else {
-      handlePay()
+      handlePay();
     }
-  }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor={COLORS.cardColor} />
       <Header showBackButton={true} />
       <ScrollView style={{ backgroundColor: COLORS.primaryColor }}>
-
         {/* Coupon Section */}
         {!showCouponDiscount ? (
           <View>
@@ -139,71 +146,141 @@ export default function Checkout() {
                 value={couponCode}
                 onChangeText={(val) => {
                   setCouponCode(val);
-                  setCouponErrorMsg("")
+                  setCouponErrorMsg("");
                 }}
               />
-              <TouchableOpacity style={styles.applyButton} onPress={applyCoupon}>
+              <TouchableOpacity
+                style={styles.applyButton}
+                onPress={applyCoupon}
+              >
                 <Text style={styles.applyButtonText}>Apply</Text>
               </TouchableOpacity>
             </View>
-            <Text style={{ color: "red", paddingStart: 20, marginBottom: 5 }}>{couponErrorMsg}</Text>
+            <Text style={{ color: "red", paddingStart: 20, marginBottom: 5 }}>
+              {couponErrorMsg}
+            </Text>
           </View>
         ) : (
           <View style={styles.appliedCouponContainer}>
             <View style={styles.savedContainer}>
               <Text style={styles.discountAmount}>Coupon applied.</Text>
-              <Text style={[styles.discountAmount, { fontSize: 17 }]}>CODE: {couponCode}</Text>
+              <Text style={[styles.discountAmount, { fontSize: 17 }]}>
+                CODE: {couponCode}
+              </Text>
               <Text style={styles.savedText}>Saved: ₹{discount}</Text>
             </View>
             {/* <Text style={styles.withCouponText}>with {appliedCoupon}</Text> */}
             <View style={styles.appliedBadge}>
-              <Text style={styles.appliedText} onPress={() => {
-                setAppliedCoupon("")
-                setDiscount(0)
-                setShowCouponDiscount(false)
-                setCouponCode("")
-              }}>Remove</Text>
+              <Text
+                style={styles.appliedText}
+                onPress={() => {
+                  setAppliedCoupon("");
+                  setDiscount(0);
+                  setShowCouponDiscount(false);
+                  setCouponCode("");
+                }}
+              >
+                Remove
+              </Text>
             </View>
           </View>
         )}
 
-
-
         {/* Subscription Details */}
         <View style={styles.subscriptionCard}>
-          <View style={{ borderBottomWidth: 1, borderBlockColor: COLORS.primaryColor, paddingBottom: 10, marginBottom: 10 }}>
+          <View
+            style={{
+              borderBottomWidth: 1,
+              borderBlockColor: COLORS.primaryColor,
+              paddingBottom: 10,
+              marginBottom: 10,
+            }}
+          >
             <View style={styles.subscriptionHeader}>
-              <Text style={styles.subscriptionTitle}>{selectedService?.name}</Text>
-              <Text style={styles.subscriptionDuration}>{selectedService?.billing_cycle}</Text>
-              <Text style={[styles.subscriptionPrice, { fontWeight: 400, color: COLORS.lightGray, textDecorationLine: "line-through" }]}>₹{selectedService?.actual_price}</Text>
+              <Text style={styles.subscriptionTitle}>
+                {selectedService?.name}
+              </Text>
+              <Text style={styles.subscriptionDuration}>
+                {selectedService?.billing_cycle}
+              </Text>
+              <Text
+                style={[
+                  styles.subscriptionPrice,
+                  {
+                    fontWeight: 400,
+                    color: COLORS.lightGray,
+                    textDecorationLine: "line-through",
+                  },
+                ]}
+              >
+                ₹{selectedService?.actual_price}
+              </Text>
             </View>
             <View style={[styles.subscriptionHeader]}>
               <Text style={styles.expiryText}>Expires on 02 Jul 2025</Text>
-              <Text style={styles.subscriptionPrice}>₹{selectedService?.offer_price}</Text>
+              <Text style={styles.subscriptionPrice}>
+                ₹{selectedService?.offer_price}
+              </Text>
             </View>
           </View>
 
-          <Text style={[styles.expiryText, { marginBottom: 10 }]}>If you Pay ₹{selectedService?.actual_price}/- now. The plan is valid till 02 Jul 2025 </Text>
-          <Text style={[styles.expiryText, { backgroundColor: COLORS.primaryColor, padding: 10, fontSize: 10, }]}>Note: Please don’t worry, we’ll remind you for the payment</Text>
+          <Text style={[styles.expiryText, { marginBottom: 10 }]}>
+            If you Pay ₹{selectedService?.actual_price}/- now. The plan is valid
+            till 02 Jul 2025{" "}
+          </Text>
+          <Text
+            style={[
+              styles.expiryText,
+              {
+                backgroundColor: COLORS.primaryColor,
+                padding: 10,
+                fontSize: 10,
+              },
+            ]}
+          >
+            Note: Please don’t worry, we’ll remind you for the payment
+          </Text>
 
           {/* Grand Total Section */}
-          {showCouponDiscount && <View style={{ borderTopWidth: 1, borderBlockColor: COLORS.primaryColor, paddingTop: 10, marginTop: 10 }}>
-            <View style={[styles.subscriptionHeader]}>
-              <Text style={{ color: "#fff" }}>Coupon Discount</Text>
-              <Text style={styles.discountValue}>
-                You saved <Text style={styles.greenText}>-₹{discount}</Text>
-              </Text>
+          {showCouponDiscount && (
+            <View
+              style={{
+                borderTopWidth: 1,
+                borderBlockColor: COLORS.primaryColor,
+                paddingTop: 10,
+                marginTop: 10,
+              }}
+            >
+              <View style={[styles.subscriptionHeader]}>
+                <Text style={{ color: "#fff" }}>Coupon Discount</Text>
+                <Text style={styles.discountValue}>
+                  You saved <Text style={styles.greenText}>-₹{discount}</Text>
+                </Text>
+              </View>
             </View>
-          </View>}
+          )}
 
-          <View style={{ borderTopWidth: 1, borderBlockColor: COLORS.primaryColor, paddingTop: 10, marginTop: 10 }}>
+          <View
+            style={{
+              borderTopWidth: 1,
+              borderBlockColor: COLORS.primaryColor,
+              paddingTop: 10,
+              marginTop: 10,
+            }}
+          >
             <View style={[styles.subscriptionHeader]}>
               <Text style={{ color: "#fff" }}>Grand Total</Text>
-              <Text style={[styles.subscriptionPrice, { color: COLORS.secondaryColor }]}>₹{totalPrice}</Text>
+              <Text
+                style={[
+                  styles.subscriptionPrice,
+                  { color: COLORS.secondaryColor },
+                ]}
+              >
+                ₹{totalPrice}
+              </Text>
             </View>
           </View>
         </View>
-
 
         {/* Referral section */}
         <View style={{ marginHorizontal: 20 }}>
@@ -212,7 +289,7 @@ export default function Checkout() {
             value={referral}
             onChangeText={(val) => {
               setReferral(val);
-              setReferralError("")
+              setReferralError("");
             }}
             error={!!referralError}
             errorMessage={referralError}
@@ -227,8 +304,9 @@ export default function Checkout() {
             <View style={styles.noteContent}>
               <Text style={styles.noteItemTitle}>Auto-Renewal</Text>
               <Text style={styles.noteItemText}>
-                - Your Subscription will automatically renew based on your selected plan (3 Month, 6 Month, 1 Year)
-                unless cancelled. You can cancel anytime before renewal.
+                - Your Subscription will automatically renew based on your
+                selected plan (3 Month, 6 Month, 1 Year) unless cancelled. You
+                can cancel anytime before renewal.
               </Text>
             </View>
           </View>
@@ -238,7 +316,8 @@ export default function Checkout() {
             <View style={styles.noteContent}>
               <Text style={styles.noteItemTitle}>Renewal Pricing</Text>
               <Text style={styles.noteItemText}>
-                - The renewal amount may vary from your current payment. Please Review the renewal price before renewal.
+                - The renewal amount may vary from your current payment. Please
+                Review the renewal price before renewal.
               </Text>
             </View>
           </View>
@@ -248,8 +327,9 @@ export default function Checkout() {
             <View style={styles.noteContent}>
               <Text style={styles.noteItemTitle}>KYC Requirement</Text>
               <Text style={styles.noteItemText}>
-                - As per SEBI regulations, all SEBI registered intermediaries (including Fintorneary) must complete KYC
-                verification. You'll need to complete KYC to unlock all Fintorneary benefits.
+                - As per SEBI regulations, all SEBI registered intermediaries
+                (including Fintorneary) must complete KYC verification. You'll
+                need to complete KYC to unlock all Fintorneary benefits.
               </Text>
             </View>
           </View>
@@ -259,20 +339,26 @@ export default function Checkout() {
             <View style={styles.noteContent}>
               <Text style={styles.noteItemTitle}>Agreement</Text>
               <Text style={styles.noteItemText}>
-                - By Proceeding, you agree to Fintorneary's <Text style={styles.linkText}>Term & Conditions</Text> and{" "}
+                - By Proceeding, you agree to Fintorneary's{" "}
+                <Text style={styles.linkText}>Term & Conditions</Text> and{" "}
                 <Text style={styles.linkText}>Privacy Policy</Text>
               </Text>
             </View>
           </View>
         </View>
-
       </ScrollView>
-      <View style={{backgroundColor: COLORS.primaryColor}}> 
-      <Button isLoading={isLoading} onClick={() => handleSubmit()} label={`PAY ₹${totalPrice}`} gradientColor={['#D36C32', '#F68F00']} buttonStye={{marginHorizontal: 10, marginBottom: 10}}/>
+      <View style={{ backgroundColor: COLORS.primaryColor }}>
+        <Button
+          isLoading={isLoading}
+          onClick={() => handleSubmit()}
+          label={`PAY ₹${totalPrice}`}
+          gradientColor={["#D36C32", "#F68F00"]}
+          buttonStye={{ marginHorizontal: 10, marginBottom: 10 }}
+        />
       </View>
       {/* Payment Button */}
     </SafeAreaView>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
@@ -289,14 +375,14 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     borderWidth: 1,
     borderColor: "#333",
-    marginTop: 10
+    marginTop: 10,
   },
   couponInput: {
     flex: 1,
     color: "white",
     paddingHorizontal: 16,
     paddingVertical: 12,
-    height: 60
+    height: 60,
   },
   applyButton: {
     backgroundColor: "#FF9500",
@@ -305,7 +391,7 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     height: 40,
     marginTop: 10,
-    marginEnd: 10
+    marginEnd: 10,
   },
   applyButtonText: {
     color: "white",
@@ -361,7 +447,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 4,
-    justifyContent: "space-between"
+    justifyContent: "space-between",
   },
   subscriptionTitle: {
     color: "white",
@@ -435,7 +521,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#333",
     borderWidth: 2,
-    borderColor: COLORS.secondaryColor
+    borderColor: COLORS.secondaryColor,
   },
   upgradeHeader: {
     flexDirection: "row",
@@ -524,4 +610,4 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 16,
   },
-})
+});

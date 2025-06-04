@@ -5,21 +5,44 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "scheme": "planMoney",
+    "deepLinks": ["orderConfirm"],
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
-    "splash": {
-      "image": "./assets/images/logo.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#012744"
-    },
     "ios": {
       "supportsTablet": true
     },
     "android": {
+      "package": "com.pallav1503.PlanMoney",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#012744"
-      }
+      },
+      "intentFilters": [
+        {  
+          "action": "VIEW",
+          "autoVerify": true,
+          "data": {
+            "scheme": "planMoney"
+          },
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
+        },
+        {
+          "action": "VIEW",
+          "autoVerify": true,
+          "data": {
+            "scheme": "https",
+            "host": "hunger.webiknows.in",
+            "pathPrefix": "/payment.html"
+          },
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
+        }
+      ]
     },
     "web": {
       "bundler": "metro",
@@ -32,19 +55,20 @@
         "expo-splash-screen",
         {
           "image": "./assets/images/logo.png",
-          "resizeMode": "contain",
           "backgroundColor": "#012744",
           "imageResizeMode": "contain",
-          "imageWidth": 200,
-          "dark": {
-            "image": "./assets/images/logo.png",
-            "backgroundColor": "#012744"
-          }
+          "imageWidth": 200
         }
       ]
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "9b287878-2e94-496e-951f-a84bda272f44"
+      }
     }
   }
 }

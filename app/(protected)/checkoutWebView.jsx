@@ -4,12 +4,9 @@ import { Alert } from "react-native";
 import { useAuth } from '../context/useAuth';
 import { router, useLocalSearchParams } from "expo-router";
 import { useNavigation } from "@react-navigation/native";
-
+import * as Linking from 'expo-linking';
 export default function CheckoutWebView( props) {
-  console.log(props,":::::::::::::::::::::::::");
-  
   const { sessionId, orderId } = useLocalSearchParams();
- console.log(sessionId, orderId, "asdsadasdasdsdasdsasfdfdadfd____________Adas");
   const hostedUrl = `https://hunger.webiknows.in/payment.html?session_id=${sessionId}`;
 
   // const handleRedirect = (url) => {
@@ -39,37 +36,35 @@ export default function CheckoutWebView( props) {
 
  const navigation = useNavigation();
 
-  const handleRedirect = (url) => {
-    // Parse URL params
-    
-    // const parsed = new URL(url);
-    // const returnUrl = parsed.searchParams.get("return_url");
-    // const orderId = parsed.searchParams.get("order_id");
+ const handleRedirect = (url) => {
+  console.log("🔁 Full Redirect URL:", url);
 
-    // if (returnUrl) {
-    //   // Parse screen path from return_url
-    //   const returnParsed = new URL(returnUrl);
-    //   const path = returnParsed.pathname; // "/--/screens/orderConfirm"
-    //   const pathParts = path.split("/--/");
+  // Parse query params from the full URL
+  const parsed = Linking.parse(url);
+  const query = parsed.queryParams || {};
 
-    //   if (pathParts.length === 2) {
-    //     const screen = pathParts[1]; // "screens/orderConfirm"
-    //     const screenParts = screen.split("/");
+  const returnUrl = query.return_url; // planMoney://orderConfirm
+  const order_Id = query.order_id;
 
-    //     if (screenParts.length === 2) {
-    //       const screenName = screenParts[1]; // "orderConfirm"
+  if (returnUrl && returnUrl.startsWith("planMoney://")) {
+    // Extract path from return URL
+    const path = returnUrl.replace("planMoney://", "");
 
-    //       // Navigate to that screen and pass orderId
-    //       navigation.navigate(screenName, { orderId });
+    console.log("🔀 Navigating to:", path, "with order_id:", order_Id);
 
-    //       return false; // prevent WebView from loading the URL
-    //     }
-    //   }
-    // }
+    // Navigate using expo-router
+    router.push({
+      pathname: `/${path}`,
+      params: { orderId: order_Id },
+    });
 
-    return true; // otherwise, allow WebView to load normally
-  }; 
+    return false; // Don't let WebView load this URL
+  }
 
+  return true; // Let WebView handle non-return links
+};
+
+  
   return (
     <WebView
       source={{

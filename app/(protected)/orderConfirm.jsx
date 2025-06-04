@@ -9,10 +9,12 @@ import { useNavigation, useRoute } from "@react-navigation/native"
 import { CheckCircle, Clock } from "lucide-react-native"
 import * as Animatable from "react-native-animatable"
 import { router } from "expo-router";
+import { useSearchParams } from "expo-router/build/hooks";
 
 const OrderConfirm = () => {
   const route = useRoute()
   const { orderId } = route.params || {}
+  // const { orderId } = useSearchParams();
   const { orderConfirmDetails, token, profileData, selectedService, prePaymentDetails } = useAuth()
   const [orderDetails, setOrderDetails] = useState(null)
   const [loading, setLoading] = useState(true)
