@@ -266,19 +266,7 @@ const ChangePassword = () => {
                                                 );
                                             })}
                                         </View>
-
-                                        <TouchableOpacity
-                                            style={styles.button}
-                                            onPress={() => handleUpdatePassword()}
-                                            disabled={loading}
-                                            activeOpacity={0.8}
-                                        >
-                                            {loading ? (
-                                                <ActivityIndicator color="#fff" size="small" />
-                                            ) : (
-                                                <Text style={styles.buttonText}>Reset Password</Text>
-                                            )}
-                                        </TouchableOpacity>
+                                        <Button isLoading={loading} onClick={() => handleUpdatePassword()} gradientColor={['#D36C32', '#F68F00']} label={"Change Password"}/>
                                     </View>
                                 </View>
                             </View>

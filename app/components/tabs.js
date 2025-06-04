@@ -28,10 +28,6 @@ export default function ProtectedTabs() {
         name="profile"
         options={{ title: 'Account', tabBarIcon: ({ color }) => <FontAwesome size={28} name="user-circle-o" color={color} />, }}
       />
-      <Tabs.Screen
-        name="sip"
-        options={{ title: 'SIP', href: null }}
-      />
     </Tabs>
   );
 }

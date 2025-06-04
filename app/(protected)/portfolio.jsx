@@ -19,8 +19,6 @@ import { useAuth } from '../context/useAuth';
 import { useLocalSearchParams } from 'expo-router';
 
 
-
-
 const Portfolio = () => {
   const { portfolioServices } = useAuth();
   const { serviceID } = useLocalSearchParams();
@@ -47,7 +45,7 @@ const Portfolio = () => {
     4: 'QuantumVoltz',
   };
 
-  const [activeTab, setActiveTab] = useState(serviceIdToTab[serviceID] || 'PMS');
+  const [activeTab, setActiveTab] = useState(serviceIdToTab[serviceID] || hasPMS ? 'PMS' : "QuantumVoltz");
 
 
   // Don't render if no tabs are available
@@ -123,7 +121,7 @@ const styles = StyleSheet.create({
   },
   activeTab: {
     backgroundColor: '#ff8c00',
-    shadowColor: '#ff8c00',
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
