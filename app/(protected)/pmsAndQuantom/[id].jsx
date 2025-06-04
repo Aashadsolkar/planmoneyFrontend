@@ -11,7 +11,7 @@ import { useLocalSearchParams } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
 import FullScreenLoader from '../../components/FullScreenLoader';
 import { LinearGradient } from 'expo-linear-gradient';
-
+import * as Linking from "expo-linking";
 const PmsAndQuantom = () => {
     const { token, customerServiceData, setReportData } = useAuth();
     const { } = useLocalSearchParams();
@@ -46,8 +46,8 @@ const PmsAndQuantom = () => {
                 }
             }
             if (customerServiceData?.questionnaire_status == 1 && customerServiceData?.verification_status == 1) {
-                callFastlaneApi()
             }
+            callFastlaneApi()
         }, [id])
     );
 
@@ -178,63 +178,63 @@ const PmsAndQuantom = () => {
     };
 
 
-    if (customerServiceData?.questionnaire_status == 0) {
-        return (
-            <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.primaryColor }}>
-                <StatusBar barStyle="light-content" backgroundColor={COLORS.cardColor} />
-                <Header
-                    title="Hi Vignesh"
-                    showBackButton={true}
-                />
-                <ScrollView
-                    keyboardShouldPersistTaps="handled"
-                    showsVerticalScrollIndicator={false}
-                    style={{ paddingHorizontal: 20, marginTop: 80 }}
-                >
-                    {/* <Text style={styles.heading}>Stock updates</Text> */}
-                    {/* {renderCardList()} */}
-                    <View style={{ alignItems: 'center', width: "100%", marginTop: 100 }}>
-                        <Image
-                            source={require('../../../assets/images/questionCirlce.png')}
-                            style={styles.logo}
-                            resizeMode="contain"
-                        />
-                        <Text style={{ fontSize: 25, fontWeight: 600, color: COLORS.fontWhite, paddingVertical: 20 }}>Oops..!</Text>
-                        <Text style={{ fontSize: 14, fontWeight: 400, color: COLORS.fontWhite, paddingVertical: 20, textAlign: "center", width: 250 }}>Its look like you have not filled your Details after Subscription</Text>
-                    </View>
-                    <Button onClick={() => router.push("forms/personalDetails")} label={"PROCEED"} gradientColor={['#D36C32', '#F68F00']} buttonStye={{ marginHorizontal: 20, }} />
-                </ScrollView>
-            </SafeAreaView>
-        )
-    }
-    if (customerServiceData?.verification_status == 0) {
-        return (
-            <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.primaryColor, }}>
-                <StatusBar barStyle="light-content" backgroundColor={COLORS.cardColor} />
-                <Header
-                    title="Hi Vignesh"
-                    showBackButton={true}
-                />
-                <ScrollView
-                    keyboardShouldPersistTaps="handled"
-                    showsVerticalScrollIndicator={false}
-                    style={{ paddingHorizontal: 20, marginTop: 80 }}
-                >
-                    {/* <Text style={styles.heading}>Stock updates</Text> */}
-                    {/* {renderCardList()} */}
-                    <View style={{ alignItems: 'center', width: "100%", marginTop: 100 }}>
-                        <Image
-                            source={require('../../../assets/images/rightCircle.png')}
-                            style={styles.logo}
-                            resizeMode="contain"
-                        />
-                        <Text style={{ fontSize: 25, fontWeight: 600, color: COLORS.fontWhite, paddingVertical: 20, textAlign: "center", width: 220 }}>Your Profile is Under Verification</Text>
-                        <Text style={{ fontSize: 14, fontWeight: 400, color: COLORS.fontWhite, paddingVertical: 20, textAlign: "center", width: 250 }}>Please wait until our Advisor Approves your Profile</Text>
-                    </View>
-                </ScrollView>
-            </SafeAreaView>
-        )
-    }
+    // if (customerServiceData?.questionnaire_status == 0) {
+    //     return (
+    //         <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.primaryColor }}>
+    //             <StatusBar barStyle="light-content" backgroundColor={COLORS.cardColor} />
+    //             <Header
+    //                 title="Hi Vignesh"
+    //                 showBackButton={true}
+    //             />
+    //             <ScrollView
+    //                 keyboardShouldPersistTaps="handled"
+    //                 showsVerticalScrollIndicator={false}
+    //                 style={{ paddingHorizontal: 20, marginTop: 80 }}
+    //             >
+    //                 {/* <Text style={styles.heading}>Stock updates</Text> */}
+    //                 {/* {renderCardList()} */}
+    //                 <View style={{ alignItems: 'center', width: "100%", marginTop: 100 }}>
+    //                     <Image
+    //                         source={require('../../../assets/images/questionCirlce.png')}
+    //                         style={styles.logo}
+    //                         resizeMode="contain"
+    //                     />
+    //                     <Text style={{ fontSize: 25, fontWeight: 600, color: COLORS.fontWhite, paddingVertical: 20 }}>Oops..!</Text>
+    //                     <Text style={{ fontSize: 14, fontWeight: 400, color: COLORS.fontWhite, paddingVertical: 20, textAlign: "center", width: 250 }}>Its look like you have not filled your Details after Subscription</Text>
+    //                 </View>
+    //                 <Button onClick={() => router.push("forms/personalDetails")} label={"PROCEED"} gradientColor={['#D36C32', '#F68F00']} buttonStye={{ marginHorizontal: 20, }} />
+    //             </ScrollView>
+    //         </SafeAreaView>
+    //     )
+    // }
+    // if (customerServiceData?.verification_status == 0) {
+    //     return (
+    //         <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.primaryColor, }}>
+    //             <StatusBar barStyle="light-content" backgroundColor={COLORS.cardColor} />
+    //             <Header
+    //                 title="Hi Vignesh"
+    //                 showBackButton={true}
+    //             />
+    //             <ScrollView
+    //                 keyboardShouldPersistTaps="handled"
+    //                 showsVerticalScrollIndicator={false}
+    //                 style={{ paddingHorizontal: 20, marginTop: 80 }}
+    //             >
+    //                 {/* <Text style={styles.heading}>Stock updates</Text> */}
+    //                 {/* {renderCardList()} */}
+    //                 <View style={{ alignItems: 'center', width: "100%", marginTop: 100 }}>
+    //                     <Image
+    //                         source={require('../../../assets/images/rightCircle.png')}
+    //                         style={styles.logo}
+    //                         resizeMode="contain"
+    //                     />
+    //                     <Text style={{ fontSize: 25, fontWeight: 600, color: COLORS.fontWhite, paddingVertical: 20, textAlign: "center", width: 220 }}>Your Profile is Under Verification</Text>
+    //                     <Text style={{ fontSize: 14, fontWeight: 400, color: COLORS.fontWhite, paddingVertical: 20, textAlign: "center", width: 250 }}>Please wait until our Advisor Approves your Profile</Text>
+    //                 </View>
+    //             </ScrollView>
+    //         </SafeAreaView>
+    //     )
+    // }
     if (isLoading) {
         return (
             <FullScreenLoader visible={isLoading} />
@@ -245,6 +245,21 @@ const PmsAndQuantom = () => {
             <Text style={{ color: COLORS.fontWhite, fontSize: 18, fontWeight: 600 }}>{id == 3 ? "PMS" : "Quantum Voltz"}</Text>
         )
     }
+
+    const openDialer = () => {
+        const phoneNumber = '1234567890'; // dummy number
+        const url = `tel: ${ phoneNumber }`;
+
+        Linking.canOpenURL(url)
+            .then((supported) => {
+                if (!supported) {
+                    Alert.alert('Error', 'Unable to open dialer');
+                } else {
+                    return Linking.openURL(url);
+                }
+            })
+            .catch((err) => Alert.alert('Error', err.message));
+    };
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.cardColor }}>
             <StatusBar barStyle="light-content" backgroundColor={COLORS.cardColor} />
@@ -258,7 +273,9 @@ const PmsAndQuantom = () => {
                 showsVerticalScrollIndicator={false}
                 style={{ paddingHorizontal: 20, backgroundColor: COLORS.primaryColor }}
             >
-                <View style={{ marginVertical: 10 }}>
+                <TouchableOpacity style={{ marginVertical: 10 }}
+                    onPress={openDialer}
+                >
                     <LinearGradient
                         start={{ x: 1, y: 0 }}
                         end={{ x: 0, y: 0 }}
@@ -277,7 +294,7 @@ const PmsAndQuantom = () => {
                             />
                         </View>
                     </LinearGradient>
-                </View>
+                </TouchableOpacity>
                 <Text style={styles.heading}>Stock updates</Text>
                 {renderCardList()}
             </ScrollView>
