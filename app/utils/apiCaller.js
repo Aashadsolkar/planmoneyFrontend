@@ -468,6 +468,40 @@ export const pmsPortfolio = async (token) => {
   }
 };
 
+export const quantomPortfolio = async (token) => {
+  try {
+    const response = await axios({
+      method: "GET",
+      url: "https://admin.planmoney.in/api/quantumvault-data",
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer${token}`
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('API Error:', error?.response?.data || error.message);
+    throw error?.response?.data || { message: 'Something went wrong' };
+  }
+};
+
+export const BuyQuantomStock = async (token, data) => {
+  try {
+    const response = await axios({
+      method: "POST",
+      url: "https://admin.planmoney.in/api/quantumvault-data",
+      data,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer${token}`
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('API Error:', error?.response?.data || error.message);
+    throw error?.response?.data || { message: 'Something went wrong' };
+  }
+};
 export const getCmpStock = async (token) => {
   try {
     const response = await axios({

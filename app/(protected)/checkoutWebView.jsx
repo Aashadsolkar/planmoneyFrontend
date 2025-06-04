@@ -6,10 +6,8 @@ import { router, useLocalSearchParams } from "expo-router";
 import { useNavigation } from "@react-navigation/native";
 
 export default function CheckoutWebView( props) {
-  console.log(props,":::::::::::::::::::::::::");
   
   const { sessionId, orderId } = useLocalSearchParams();
- console.log(sessionId, orderId, "asdsadasdasdsdasdsasfdfdadfd____________Adas");
   const hostedUrl = `https://hunger.webiknows.in/payment.html?session_id=${sessionId}`;
 
   // const handleRedirect = (url) => {

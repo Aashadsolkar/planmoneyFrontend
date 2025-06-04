@@ -20,6 +20,7 @@ export default function BuyStock() {
     const [successfullModal, setSuccessfullModal] = useState(false);
     const [qty, setQty] = useState("");
     const [qtyError, setQtyError] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
 
     const parsedPrice = parseFloat(price) || 0;
     const parsedQty = parseInt(qty) || 0;
@@ -32,7 +33,7 @@ export default function BuyStock() {
         }
 
         setQtyError(""); // clear error if valid
-
+        setIsLoading(true)
         try {
             const payload = {
                 price,
@@ -42,8 +43,10 @@ export default function BuyStock() {
                 stock_id: stockId
             };
             const response = await BuyPmsStock(token, payload);
+            setIsLoading(false);
             setSuccessfullModal(true);
         } catch (error) {
+            setIsLoading(false);
             Alert.alert(
                 "Error",
                 error?.message || "Buy Stock Api Failed",
@@ -61,7 +64,7 @@ export default function BuyStock() {
         <SafeAreaView style={styles.container}>
             <StatusBar barStyle="light-content" backgroundColor={COLORS.cardColor} />
             <Header title="Hi Vignesh" showBackButton={true} />
-            <ScrollView style={{backgroundColor: COLORS.primaryColor }}>
+            <ScrollView style={{ backgroundColor: COLORS.primaryColor }}>
                 <View>
                     <View style={styles.stockInfoRow}>
                         <Text style={styles.stockTitle}>State of India</Text>
@@ -86,6 +89,7 @@ export default function BuyStock() {
                                 keyboardType="numeric"
                                 error={!!qtyError}
                                 errorMessage={qtyError}
+                                isNumberOnly={true}
                             />
                         </View>
                     </View>
@@ -95,8 +99,8 @@ export default function BuyStock() {
                 <Text style={styles.totalLabel}>Total Buy Value</Text>
                 <Text style={styles.totalValue}>₹{totalBuyValue.toFixed(2)}</Text>
             </View>
-            <View style={{backgroundColor: COLORS.primaryColor,paddingBottom: 20}}>
-            <Button onClick={buyPmsTock} label={`Buy Now`} gradientColor={['#119320', '#04B719']} buttonStye={{marginHorizontal: 20}} />
+            <View style={{ backgroundColor: COLORS.primaryColor, paddingBottom: 20 }}>
+                <Button isLoading={isLoading} onClick={buyPmsTock} label={`Buy Now`} gradientColor={['#119320', '#04B719']} buttonStye={{ marginHorizontal: 20 }} />
             </View>
 
             {/* Success Modal */}
@@ -115,9 +119,14 @@ export default function BuyStock() {
                                     <Text style={styles.successText}>Successfull</Text>
                                     <Text style={styles.successMessage}>Stock added to your portfolio successfully.</Text>
                                 </View>
-                                <Button isLoading={false} buttonStye={{ marginHorizontal: 20 }} onClick={() => {
+                                <Button buttonStye={{ marginHorizontal: 20 }} onClick={() => {
                                     setSuccessfullModal(false)
-                                    router.push("portfolio")
+                                    router.push({
+                                        pathname: "/portfolio",
+                                        params: {
+                                            serviceID: 3
+                                        },
+                                    })
                                 }} label={"Go To Portfolio"} gradientColor={['#D36C32', '#F68F00']} />
                             </Animatable.View>
                         </View>

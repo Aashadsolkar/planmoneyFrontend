@@ -14,81 +14,40 @@ import {
 import Header from '../components/Header';
 import PortfolioTab from '../components/PortfolioTab';
 import { COLORS } from '../constants';
+import { pmsPortfolio, quantomPortfolio } from '../utils/apiCaller';
+import { useAuth } from '../context/useAuth';
+import { useLocalSearchParams } from 'expo-router';
 
-// Configuration for available services
-const APP_CONFIG = {
-  pmsAvailable: true, // Set to false to hide PMS tab
-  quantumVoltzAvailable: true, // Set to false to hide QuantumVoltz tab
-};
 
-// Sample investment data
-const INVESTMENT_DATA = [
-  {
-    id: '1',
-    name: 'State of India',
-    quantity: 100,
-    investedAmount: 78000.00,
-    currentValue: 782.00,
-    buyPrice: 4785.00,
-    date: '15 Apr',
-    returnPercentage: 0.45,
-    returnAmount: 200.00,
-  },
-  {
-    id: '2',
-    name: 'Tech Mahindra',
-    quantity: 50,
-    investedAmount: 45000.00,
-    currentValue: 920.00,
-    buyPrice: 900.00,
-    date: '12 Mar',
-    returnPercentage: 2.22,
-    returnAmount: 1000.00,
-  },
-  {
-    id: '3',
-    name: 'Reliance Industries',
-    quantity: 25,
-    investedAmount: 62500.00,
-    currentValue: 2580.00,
-    buyPrice: 2500.00,
-    date: '08 Feb',
-    returnPercentage: 3.20,
-    returnAmount: 2000.00,
-  },
-  {
-    id: '4',
-    name: 'HDFC Bank',
-    quantity: 75,
-    investedAmount: 112500.00,
-    currentValue: 1520.00,
-    buyPrice: 1500.00,
-    date: '20 Jan',
-    returnPercentage: 1.33,
-    returnAmount: 1500.00,
-  },
-  {
-    id: '5',
-    name: 'Infosys',
-    quantity: 30,
-    investedAmount: 42000.00,
-    currentValue: 1380.00,
-    buyPrice: 1400.00,
-    date: '05 Jan',
-    returnPercentage: -1.43,
-    returnAmount: -600.00,
-  },
-];
 
 
 const Portfolio = () => {
+  const { portfolioServices } = useAuth();
+  const { serviceID } = useLocalSearchParams();
+
   // Determine available tabs based on configuration
 
+  // Define availableTabs based on subscription presence
   const availableTabs = [];
-  if (APP_CONFIG.pmsAvailable) availableTabs.push('PMS');
-  if (APP_CONFIG.quantumVoltzAvailable) availableTabs.push('QuantumVoltz');
 
-  const [activeTab, setActiveTab] = useState(availableTabs[0] || 'QuantumVoltz');
+  const hasPMS = portfolioServices.some(
+    (sub) => sub.name === "Portfolio Management Subscription" && sub.is_subscribed
+  );
+  if (hasPMS) availableTabs.push("PMS");
+
+  const hasQuantumVoltz = portfolioServices.some(
+    (sub) => sub.name === "QuantumVault (For Above ₹50 lakh Capital)" && sub.is_subscribed
+  );
+  if (hasQuantumVoltz) availableTabs.push("QuantumVoltz");
+
+
+  // Map service IDs to tab names
+  const serviceIdToTab = {
+    3: 'PMS',
+    4: 'QuantumVoltz',
+  };
+
+  const [activeTab, setActiveTab] = useState(serviceIdToTab[serviceID] || 'PMS');
 
 
   // Don't render if no tabs are available
@@ -118,7 +77,7 @@ const Portfolio = () => {
       <StatusBar barStyle="light-content" />
       <Header showBackButton={true} backButtonText={headerText} />
       {/* Header Tabs - Only show if more than one tab available */}
-      {availableTabs.length > 1 && (
+      {availableTabs.length > 0 && (
         <View style={styles.tabContainer}>
           {availableTabs.map((tab) => (
             <TouchableOpacity
@@ -134,7 +93,7 @@ const Portfolio = () => {
         </View>
       )}
       {/* Content */}
-      {activeTab === 'PMS' ? <PortfolioTab advisorName={"aashad"} key={1}/> : <PortfolioTab advisorName={"uzair"} key={2}/>}
+      {activeTab === 'PMS' ? <PortfolioTab advisorName={"aashad"} key={1} stockAPi={pmsPortfolio} /> : <PortfolioTab advisorName={"uzair"} key={2} stockAPi={quantomPortfolio} />}
     </SafeAreaView>
   );
 };

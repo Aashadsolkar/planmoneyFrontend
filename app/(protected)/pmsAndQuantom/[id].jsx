@@ -51,6 +51,24 @@ const PmsAndQuantom = () => {
         }, [id])
     );
 
+    const handleBuyButtonClick = (data) => {
+        let path = ""
+        if (id == 3) {
+            path = "/buy_stock_pms"
+        } else {
+            path = "/buy_stock_quantom"
+        }
+        router.push({
+            pathname: path,
+            params: {
+                stockId: data?.stock_id,
+                serviceID: id,
+                type: "BUY",
+                price: data?.buy_price
+            },
+        })
+    }
+
 
     const renderCardList = (data) => {
         return fastlaneData?.map((data) => {
@@ -149,15 +167,7 @@ const PmsAndQuantom = () => {
                             }} name="chevron-right" size={18} color={COLORS.secondaryColor} />
                         </View>
                         <View>
-                            <TouchableOpacity style={styles.buttonWrapper} onPress={() => router.push({
-                                pathname: "/buy_stock",
-                                params: {
-                                    stockId: data?.stock_id,
-                                    serviceID: id,
-                                    type: "BUY",
-                                    price: data?.buy_price
-                                },
-                            })}>
+                            <TouchableOpacity style={styles.buttonWrapper} onPress={() => handleBuyButtonClick(data)}>
                                 <Text style={styles.buttonText}>Buy</Text>
                             </TouchableOpacity>
                         </View>
@@ -199,7 +209,7 @@ const PmsAndQuantom = () => {
     }
     if (customerServiceData?.verification_status == 0) {
         return (
-            <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.primaryColor,  }}>
+            <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.primaryColor, }}>
                 <StatusBar barStyle="light-content" backgroundColor={COLORS.cardColor} />
                 <Header
                     title="Hi Vignesh"

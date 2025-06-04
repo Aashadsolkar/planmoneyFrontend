@@ -24,6 +24,7 @@ const AuthProvider = ({ children }) => {
   const [riskData, setRiskData] = useState("")
   const [reportData, setReportData] = useState({})
   const [isCustomerApiLoading, setIsCustomerApiLoading] = useState(true);
+  const [portfolioServices, setPortfolioServices] = useState([])
 
   useEffect(() => {
     const loadSession = async () => {
@@ -58,6 +59,7 @@ const AuthProvider = ({ children }) => {
   const logout = async () => {
     setToken(null);
     setUser(null);
+    router.push("login")
     await AsyncStorage.clear();
   };
 
@@ -68,12 +70,20 @@ const AuthProvider = ({ children }) => {
       setCustomerServiceData(response?.data)
       const filterPurchesService = response?.data?.services?.filter((service) => service.is_subscribed)
       if (filterPurchesService.length > 0) {
+        const filteredPortfolioService = filterPurchesService.filter(service =>
+          service.is_subscribed &&
+          (
+            service.name === "Portfolio Management Subscription" ||
+            service.name === "QuantumVault (For Above ₹50 lakh Capital)"
+          )
+        );
+        setPortfolioServices(filteredPortfolioService);
         setPurchesService(filterPurchesService);
-        // if (response?.data?.kyc_status == 0) {
-        //   router.replace("forms/kyc");
-        //   return
-        // }  
-        if(!skipQuestioniar){
+        if (response?.data?.kyc_status == 0) {
+          router.replace("forms/kyc");
+          return
+        }
+        if (!skipQuestioniar) {
           if (response?.data?.questionnaire_status == 0) {
             router.replace("forms/personalDetails");
             return
@@ -136,7 +146,8 @@ const AuthProvider = ({ children }) => {
       isCustomerApiLoading,
       getCustomerServiceAPi,
       setSkipQuestioniar,
-      skipQuestioniar
+      skipQuestioniar,
+      portfolioServices
     }}>
       {children}
     </AuthContext.Provider>

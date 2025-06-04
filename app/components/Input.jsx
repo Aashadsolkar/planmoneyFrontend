@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, StyleSheet, Text } from 'react-native';
 import { TextInput } from 'react-native-paper';
 
-const CustomTextInput = ({ label, value, onChangeText, error, errorMessage }) => {
+const CustomTextInput = ({ label, value, onChangeText, error, errorMessage, isNumberOnly }) => {
   const [isFocused, setIsFocused] = useState(false);
 
   return (
@@ -23,6 +23,7 @@ const CustomTextInput = ({ label, value, onChangeText, error, errorMessage }) =>
           roundness: 10,
         }}
         contentStyle={{ color: 'white' }}
+        keyboardType={isNumberOnly ? "number-pad":"default"}
       />
       {error && errorMessage ? (
         <Text style={styles.errorText}>{errorMessage}</Text>

@@ -9,7 +9,7 @@ import { COLORS } from '../constants';
 import { getCmpStock, pmsPortfolio } from '../utils/apiCaller';
 import { router } from 'expo-router';
 
-const PortfolioTab = ({ advisorName }) => {
+const PortfolioTab = ({ advisorName, stockAPi }) => {
 
     const { token } = useAuth();
     const [sortOrder, setSortOrder] = useState('asc');
@@ -41,32 +41,8 @@ const PortfolioTab = ({ advisorName }) => {
     useEffect(() => {
         const getPmsData = async () => {
             try {
-                const pmsRes = await pmsPortfolio(token);
-                // const cmpRes = await getCmpStock(token);
-                const cmpRes = {
-                    "status": "success",
-                    "message": "All stock prices retrieved successfully.",
-                    "data": {
-                        "stocks": [
-                            {
-                                "stock_id": 1,
-                                "symbol": "TATASTEEL",
-                                "nse_price": "700.30",
-                                "bse_price": "700.30",
-                                "year_high": "184.60",
-                                "year_low": "122.60"
-                            },
-                            {
-                                "stock_id": 2,
-                                "symbol": "TCS",
-                                "nse_price": "3407.50",
-                                "bse_price": "3405.05",
-                                "year_high": "4513.98",
-                                "year_low": "3060.25"
-                            }
-                        ]
-                    }
-                }
+                const pmsRes = await stockAPi(token);
+                const cmpRes = await getCmpStock(token);
 
                 const cmpStocks = cmpRes.data.stocks;
                 const buyData = pmsRes.data;
@@ -286,7 +262,7 @@ const PortfolioTab = ({ advisorName }) => {
             </View>
 
             {/* Call Advisor Section with Enhanced Gradient */}
-            <TouchableOpacity style={styles.advisorCardContainer} onPress={handleAdvisorCall}>
+            {/* <TouchableOpacity style={styles.advisorCardContainer} onPress={handleAdvisorCall}>
                 <LinearGradient
                     colors={['#f96c2a', '#db4646', '#a8034d']}
                     start={{ x: 0, y: 0 }}
@@ -303,7 +279,7 @@ const PortfolioTab = ({ advisorName }) => {
                         </View>
                     </View>
                 </LinearGradient>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
 
             {/* Investments Section */}
             <View style={styles.investmentsHeader}>
@@ -508,7 +484,7 @@ const styles = StyleSheet.create({
     },
     sortBy: {
         color: '#a0a0a0',
-        fontSize: 12,
+        fontSize: 8,
         fontWeight: '500',
     },
     sortIcon: {
