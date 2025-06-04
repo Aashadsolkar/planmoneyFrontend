@@ -24,7 +24,6 @@ const OrderConfirm = () => {
 
   const { id, billing_cycle, serviceId } = selectedService || {}
 
-  console.log(orderId, "order id.................");
 
 
   useEffect(() => {
@@ -69,7 +68,6 @@ const OrderConfirm = () => {
           coupon_code: prePaymentDetails?.coupon_code,
           referral_code: prePaymentDetails?.referral_code
         }
-        console.log(prePaymentDetails, "asdadkjakadhj_________________");
         
 
         const response = await buySubscription(token, payload)

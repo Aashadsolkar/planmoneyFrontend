@@ -58,7 +58,7 @@ const riskCalculate2 = () => {
                     <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
                         <Text style={{ fontSize: 20, color: 'white', }}>←</Text>
                     </TouchableOpacity>
-                    <Text style={{ fontSize: 12, fontWeight: 600, color: COLORS.fontWhite, marginTop: 20 }}>Step <Text style={{ color: COLORS.secondaryColor }}>1</Text> to 6</Text>
+                    <Text style={{ fontSize: 12, fontWeight: 600, color: COLORS.fontWhite, marginTop: 20 }}>Step <Text style={{ color: COLORS.secondaryColor }}>3</Text> to 5</Text>
                     <Text style={{ fontSize: 20, fontWeight: 600, color: COLORS.fontWhite }}>Investment Objectives & Risk Capacity</Text>
                     <SelectBox
                         selected={questionFormData?.investment_experience}

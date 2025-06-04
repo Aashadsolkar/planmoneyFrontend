@@ -6,7 +6,7 @@ import { COLORS } from "../constants"
 import Button from "../components/Button"
 import { useAuth } from '../context/useAuth';
 import { BuyPmsStock } from "../utils/apiCaller"
-import { useLocalSearchParams } from "expo-router"
+import { router, useLocalSearchParams } from "expo-router"
 import Input from '../components/Input';
 import * as Animatable from "react-native-animatable"
 import { CheckCircle } from "lucide-react-native"
@@ -20,6 +20,7 @@ export default function BuyStock() {
     const [successfullModal, setSuccessfullModal] = useState(false);
     const [qty, setQty] = useState("");
     const [qtyError, setQtyError] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
 
     const parsedPrice = parseFloat(price) || 0;
     const parsedQty = parseInt(qty) || 0;
@@ -32,7 +33,7 @@ export default function BuyStock() {
         }
 
         setQtyError(""); // clear error if valid
-
+        setIsLoading(true)
         try {
             const payload = {
                 price,
@@ -42,8 +43,10 @@ export default function BuyStock() {
                 stock_id: stockId
             };
             const response = await BuyPmsStock(token, payload);
+            setIsLoading(false);
             setSuccessfullModal(true);
         } catch (error) {
+            setIsLoading(false);
             Alert.alert(
                 "Error",
                 error?.message || "Buy Stock Api Failed",
@@ -61,7 +64,7 @@ export default function BuyStock() {
         <SafeAreaView style={styles.container}>
             <StatusBar barStyle="light-content" backgroundColor={COLORS.cardColor} />
             <Header title="Hi Vignesh" showBackButton={true} />
-            <ScrollView style={{ marginTop: 70 }}>
+            <ScrollView style={{ backgroundColor: COLORS.primaryColor }}>
                 <View>
                     <View style={styles.stockInfoRow}>
                         <Text style={styles.stockTitle}>State of India</Text>
@@ -86,6 +89,7 @@ export default function BuyStock() {
                                 keyboardType="numeric"
                                 error={!!qtyError}
                                 errorMessage={qtyError}
+                                isNumberOnly={true}
                             />
                         </View>
                     </View>
@@ -95,7 +99,9 @@ export default function BuyStock() {
                 <Text style={styles.totalLabel}>Total Buy Value</Text>
                 <Text style={styles.totalValue}>₹{totalBuyValue.toFixed(2)}</Text>
             </View>
-            <Button onClick={buyPmsTock} label={`Buy Now`} gradientColor={['#119320', '#04B719']} />
+            <View style={{ backgroundColor: COLORS.primaryColor, paddingBottom: 20 }}>
+                <Button isLoading={isLoading} onClick={buyPmsTock} label={`Buy Now`} gradientColor={['#119320', '#04B719']} buttonStye={{ marginHorizontal: 20 }} />
+            </View>
 
             {/* Success Modal */}
             <Modal visible={successfullModal} transparent animationType="fade">
@@ -113,7 +119,15 @@ export default function BuyStock() {
                                     <Text style={styles.successText}>Successfull</Text>
                                     <Text style={styles.successMessage}>Stock added to your portfolio successfully.</Text>
                                 </View>
-                                <Button isLoading={false} buttonStye={{ marginHorizontal: 20 }} onClick={() => { }} label={"Go To Portfolio"} gradientColor={['#D36C32', '#F68F00']} />
+                                <Button buttonStye={{ marginHorizontal: 20 }} onClick={() => {
+                                    setSuccessfullModal(false)
+                                    router.push({
+                                        pathname: "/portfolio",
+                                        params: {
+                                            serviceID: 3
+                                        },
+                                    })
+                                }} label={"Go To Portfolio"} gradientColor={['#D36C32', '#F68F00']} />
                             </Animatable.View>
                         </View>
                     </View>
@@ -126,7 +140,7 @@ export default function BuyStock() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: COLORS.primaryColor,
+        backgroundColor: COLORS.cardColor,
     },
     stockInfoRow: {
         flexDirection: "row",
@@ -156,7 +170,8 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
         gap: 10,
-        marginBottom: 10,
+        paddingBottom: 10,
+        backgroundColor: COLORS.primaryColor
     },
     totalLabel: {
         fontSize: 12,

@@ -10,13 +10,15 @@ import {
   Animated,
   Dimensions,
   Pressable,
+  Modal,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { COLORS } from '../constants';
 import { router, useNavigation } from 'expo-router';
 import { useAuth } from '../context/useAuth';
 import { Ionicons } from '@expo/vector-icons';
-
+import Button from './Button';
+const { height } = Dimensions.get("window")
 // Icons - you'll need to install a library like react-native-vector-icons
 // or use your own image assets
 const BellIcon = () => (
@@ -60,6 +62,7 @@ const Header = ({
   const insets = useSafeAreaInsets();
   const [showNotifications, setShowNotifications] = useState(false);
   const [showProfileDrawer, setShowProfileDrawer] = useState(false);
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const drawerAnimation = useState(new Animated.Value(Dimensions.get('window').width))[0];
   const navigation = useNavigation();
   const { logout, profileData } = useAuth();
@@ -181,13 +184,45 @@ const Header = ({
           </View>
         </View>
         <View style={styles.drawerContent}>
-          <TouchableOpacity style={styles.drawerItem} onPress={() => router.push("profile")}>
-            <Text style={styles.drawerItemText}>Profile</Text>
+
+          <TouchableOpacity style={styles.drawerItem} onPress={() =>{ router.push("home")}}>
+            <Text style={styles.drawerItemText}>Home</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.drawerItem}>
-            <Text onPress={() => logout()} style={styles.drawerItemText}>Logout</Text>
+          <TouchableOpacity style={styles.drawerItem} onPress={() => router.push("portfolio")}>
+            <Text style={styles.drawerItemText}>Portfolio</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.drawerItem} onPress={() => router.push("service")}>
+            <Text style={styles.drawerItemText}>Buy New Service</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.drawerItem} onPress={() => router.push("sip")}>
+            <Text style={styles.drawerItemText}>SIP Calculator</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.drawerItem} onPress={() => router.push("profile")}>
+            <Text style={styles.drawerItemText}>Account</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.drawerItem} onPress={() => setIsLogoutModalOpen(true)}>
+            <Text  style={styles.drawerItemText}>Logout</Text>
           </TouchableOpacity>
         </View>
+        <Modal visible={isLogoutModalOpen} transparent animationType="slide">
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalContent}>
+              <View style={styles.modalHeader}>
+                <Text style={styles.modalTitle}>Logout ?</Text>
+                <TouchableOpacity onPress={() => setIsLogoutModalOpen(false)}>
+                  <Ionicons name="close" size={24} color="#fff" />
+                </TouchableOpacity>
+              </View>
+              <View style={{ padding: 20, flexDirection: "column", justifyContent: "center" }}>
+                <Text style={{ fontSize: 16, color: COLORS.fontWhite, fontWeight: 600, marginBottom: 20, textAlign: "center" }}>Are you sure you want to logout?</Text>
+                <View style={{ flexDirection: "row", justifyContent: "center" }}>
+                  <Button onClick={() => setIsLogoutModalOpen(false)} label={"cancel"} gradientColor={['#D36C32', '#F68F00']} buttonStye={{ width: 100, marginRight: 10 }} />
+                  <Button onClick={() => logout()} label={"Logout"} gradientColor={['#D36C32', '#F68F00']} buttonStye={{ width: 100 }} />
+                </View>
+              </View>
+            </View>
+          </View>
+        </Modal>
       </Animated.View>
     </>
   );
@@ -224,6 +259,7 @@ const styles = StyleSheet.create({
   highlightedName: {
     color: '#FFA500',
     fontWeight: '600',
+    textTransform: "capitalize"
   },
   iconButton: {
     marginRight: 16,
@@ -375,19 +411,20 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   drawerContent: {
-    padding: 16,
+    // padding: 16,
     flex: 1,
-    backgroundColor: COLORS.primaryColor,
-    opacity: 0.8,
+    backgroundColor: COLORS.cardColor,
+    opacity: 0.9,
   },
   drawerItem: {
     paddingVertical: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#fff',
+    borderBottomColor: '#ccc',
   },
   drawerItemText: {
     fontSize: 16,
-    color: COLORS.fontWhite
+    color: COLORS.fontWhite,
+    paddingHorizontal: 20
 
   },
   backButton: {
@@ -398,6 +435,31 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255, 255, 255, 0.2)",
     justifyContent: "center",
     alignItems: "center",
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    justifyContent: "center",
+  },
+  modalContent: {
+    backgroundColor: COLORS.cardColor,
+    borderRadius: 20,
+    borderTopRightRadius: 20,
+    maxHeight: height * 0.7,
+    paddingBottom: 20,
+    width: "90%",
+    marginHorizontal: "auto"
+  },
+  modalHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: 20,
+  },
+  modalTitle: {
+    color: "#FFFFFF",
+    fontSize: 18,
+    fontWeight: "bold",
   },
 });
 

@@ -33,8 +33,8 @@ export default function App() {
   const [isEmailOtpLoading, setIsEmailOtpLoading] = useState(false);
 
 
-  const mobileNumber = "+91 8889968708"
-  const emailAddress = "vigneshiyer212@gmail.com"
+  const mobileNumber = profileData?.phone
+  const emailAddress = profileData?.email
 
 
   const handleVerifyPress = async (type) => {
