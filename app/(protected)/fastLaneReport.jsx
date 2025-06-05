@@ -58,7 +58,6 @@ const FastLane = () => {
 
     const getServiceName = (id) => {
         // serviceID == 1 ? "FastLane" : "PMS"
-        console.log(id,"+++++++++++++++++++++++++++++++++++");
         
         let serviceName = "";
         switch (id) {
@@ -90,7 +89,7 @@ const FastLane = () => {
     }
 
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.cardColor, padding: 20 }}>
+        <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.cardColor }}>
             <StatusBar barStyle="light-content" backgroundColor={COLORS.cardColor} />
             <Header
                 backButtonText={backButtonText}

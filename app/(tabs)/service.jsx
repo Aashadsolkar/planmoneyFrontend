@@ -103,7 +103,7 @@ const Service = () => {
         <SafeAreaView style={styles.container}>
             <StatusBar barStyle="light-content" backgroundColor={COLORS.cardColor} />
             <Header showBackButton={true} />
-            <ScrollView contentContainerStyle={styles.scrollContent}>
+            <ScrollView style={{flex:1}} contentContainerStyle={styles.scrollContent}>
                 <Text style={styles.sectionTitle}>Select the Services</Text>
                 {renderService()}
                 {
@@ -117,8 +117,8 @@ const Service = () => {
 };
 
 const styles = StyleSheet.create({
-    container: { flex: 1, backgroundColor: COLORS.cardColor },
-    scrollContent: { flex: 1, padding: 16, backgroundColor: COLORS.primaryColor },
+    container: { flex: 1, backgroundColor: COLORS.primaryColor },
+    scrollContent: { padding: 16, backgroundColor: COLORS.primaryColor },
     header: { marginBottom: 24 },
     greeting: { fontSize: 18, color: '#FFFFFF' },
     name: { color: '#FF9800', fontWeight: 'bold' },

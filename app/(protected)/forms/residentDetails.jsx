@@ -165,11 +165,11 @@ const ResidentDetails = () => {
     }
 
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.primaryColor, padding: 20 }}>
-            <View style={{ padding: 20 }}>
+        <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.primaryColor, paddingBottom: 20 }}>
+            <View style={{ padding: 20, marginTop: 20 }}>
 
                 <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-                    <Text style={{ fontSize: 20, color: 'white' }}>←</Text>
+                    <Ionicons name="arrow-back" size={ 24} color="#ffffff" />
                 </TouchableOpacity>
                 <Text style={{ fontSize: 12, fontWeight: "600", color: COLORS.fontWhite, marginTop: 20 }}>
                     Step <Text style={{ color: COLORS.secondaryColor }}>4</Text> to 5

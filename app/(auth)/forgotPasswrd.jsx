@@ -383,18 +383,7 @@ const ForgotPassword = () => {
                                                 })}
                                             </View>
                                             {resetPasswordApiError && <Text style={styles.errorText}>{resetPasswordApiError}</Text>}
-                                            <TouchableOpacity
-                                                style={styles.button}
-                                                onPress={handleResetPassword}
-                                                disabled={loading}
-                                                activeOpacity={0.8}
-                                            >
-                                                {loading ? (
-                                                    <ActivityIndicator color="#fff" size="small" />
-                                                ) : (
-                                                    <Text style={styles.buttonText}>Reset Password</Text>
-                                                )}
-                                            </TouchableOpacity>
+                                            <Button isLoading={loading} onClick={() => handleResetPassword()} gradientColor={['#D36C32', '#F68F00']} label={"Reset Password"}/>
                                         </View>
                                     )}
                                 </View>

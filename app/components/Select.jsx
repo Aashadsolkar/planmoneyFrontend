@@ -18,9 +18,16 @@ const SelectBox = ({ label, options = [], selected, setSelected, placeHolder, er
         onDismiss={closeMenu}
         anchor={
           <TouchableOpacity style={styles.dropdown} onPress={openMenu}>
-            <Text style={styles.selectedText}>{selected || placeHolder}</Text>
+            <Text
+              style={styles.selectedText}
+              numberOfLines={1}
+              ellipsizeMode="tail"
+            >
+              {selected || placeHolder}
+            </Text>
             <MaterialIcons name="arrow-drop-down" size={24} color="white" />
           </TouchableOpacity>
+
         }
         contentStyle={{ backgroundColor: '#012744' }}
       >
@@ -57,11 +64,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginTop: 5,
-    height: 70
+    marginTop: 10,
+    height: 60
   },
   selectedText: {
     color: 'white',
+    flex: 1,
+    flexShrink: 1,
+    marginRight: 10,
+    numberOfLines: 1, // React Native Text prop
   },
   menuItem: {
     color: 'white',

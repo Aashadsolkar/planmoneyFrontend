@@ -18,8 +18,8 @@ const PmsAndQuantom = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [fastlaneData, setFastlaneData] = useState([]);
     const navigation = useNavigation();
-    const { id, advisor_name,advisor_nummber, is_advisor_assign } = useLocalSearchParams();
-    
+    const { id, advisor_name, advisor_nummber, is_advisor_assign } = useLocalSearchParams();
+
 
 
     useFocusEffect(
@@ -208,7 +208,7 @@ const PmsAndQuantom = () => {
             </SafeAreaView>
         )
     }
-    if (customerServiceData?.verification_status == 0 || !is_advisor_assign) {
+    if (customerServiceData?.verification_status == 0 || is_advisor_assign == "false") {
         return (
             <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.cardColor, }}>
                 <StatusBar barStyle="light-content" backgroundColor={COLORS.cardColor} />
@@ -248,17 +248,10 @@ const PmsAndQuantom = () => {
     }
 
     const openDialer = () => {
-        const url = `tel: ${ advisor_nummber }`;
-
-        Linking.canOpenURL(url)
-            .then((supported) => {
-                if (!supported) {
-                    Alert.alert('Error', 'Unable to open dialer');
-                } else {
-                    return Linking.openURL(url);
-                }
-            })
-            .catch((err) => Alert.alert('Error', err.message));
+        const url = `tel:${advisor_nummber}`;
+        Linking.openURL(url).catch((err) =>
+            Alert.alert('Error', 'Unable to open dialer')
+        );
     };
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.cardColor }}>

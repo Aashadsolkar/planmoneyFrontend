@@ -181,7 +181,7 @@ export default function Home() {
 
     // Render services carousel item
     const renderServiceItem = ({ item }) => {
-
+        
         const is__not_subscribed = !item.is_subscribed;
 
         return (
@@ -201,7 +201,7 @@ export default function Home() {
                             <View style={{ flexDirection: "row", justifyContent: "space-between", width: "100%" }}>
                                 <View style={{ justifyContent: "center", paddingEnd: 20 }}>
                                     <Text style={{ fontSize: 10, color: COLORS.fontWhite }}>Start from</Text>
-                                    <Text style={{ fontSize: 12, color: COLORS.fontWhite }}>$1800</Text>
+                                    <Text style={{ fontSize: 12, color: COLORS.fontWhite }}>₹{item.plans?.[0]?.offer_price}</Text>
                                 </View>
                                 <View style={{ flex: 1 }}>
                                     <Button onClick={() => handleServiceClick(item)}
@@ -372,7 +372,7 @@ const styles = StyleSheet.create({
         backgroundColor: COLORS.primaryColor
     },
     carouselContainer: {
-        marginVertical: 20
+        marginVertical: 10
     },
     offerCard: {
         height: 177,
@@ -411,7 +411,7 @@ const styles = StyleSheet.create({
         fontWeight: '500',
     },
     sectionContainer: {
-        marginTop: 20,
+        // marginTop: 10,
         paddingHorizontal: 20,
     },
     sectionTitle: {
