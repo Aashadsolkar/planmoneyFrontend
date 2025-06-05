@@ -15,7 +15,8 @@ import {
     Ionicons,
     MaterialCommunityIcons,
     FontAwesome5,
-    AntDesign
+    AntDesign,
+    FontAwesome6
 } from '@expo/vector-icons';
 import Header from '../components/Header';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -51,7 +52,8 @@ export default function Home() {
         isCustomerApiLoading,
         getCustomerServiceAPi,
         setProfileData,
-        token
+        token,
+        portfolioServices
     } = useAuth();
     const [activeAccordion, setActiveAccordion] = useState(null);
     const [isNewApiLoading, setIsNewApiLoading] = useState(true);
@@ -110,29 +112,47 @@ export default function Home() {
     }, [])
 
     // Offer carousel data
-    const offerData = [
+    const initialOfferData = [
         {
             id: '1',
             title: 'PORTFOLIO MANAGEMENT SYSTEM',
+            serviceId: 3,
             subtitle: 'Organize your Investment',
             buttonText: 'Get this Service',
-            color: '#0066CC',
+            color: [COLORS.secondaryColor, COLORS.secondaryColor],
+            onClick: () => {
+                setServiceSelectedOnHomePage(3)
+                router.push("service");
+            }
         },
         {
             id: '2',
-            title: 'STOCK ADVISORY',
+            title: 'QuantumVault (For Above ₹50 lakh Capital)',
+            serviceId: 4,
             subtitle: 'Expert Stock Picks',
             buttonText: 'Subscribe Now',
-            color: '#0077DD',
-        },
-        {
-            id: '3',
-            title: 'MUTUAL FUND ANALYSIS',
-            subtitle: 'Optimize your Portfolio',
-            buttonText: 'Learn More',
-            color: '#0088EE',
+            color: [COLORS.secondaryColor, COLORS.secondaryColor],
+            onClick: () => {
+                setServiceSelectedOnHomePage(4)
+                router.push("service");
+            }
         },
     ];
+
+    const [offerData, setOfferData] = useState(initialOfferData);
+    useEffect(() => {
+        
+
+        // Create a set of purchased service IDs
+        const purchasedServiceIds = new Set(portfolioServices.map(service => service.id));
+
+        // Filter offer data
+        const filteredOffers = initialOfferData.filter(
+            offer => !offer.serviceId || !purchasedServiceIds.has(offer.serviceId)
+        );
+
+        setOfferData(filteredOffers);
+    }, [portfolioServices]);
 
 
     const handleClick = (id) => {
@@ -255,16 +275,22 @@ export default function Home() {
                         style={{ paddingHorizontal: 10 }}
                     >
                         {offerData.map((item) => (
-                            <View key={item.id} style={[styles.offerCard, { backgroundColor: item.color }]}>
+                            <LinearGradient
+                                key={item.id}
+                                colors={item.color}
+                                style={styles.offerCard}
+                                start={{ x: 0, y: 0 }}
+                                end={{ x: 1, y: 1 }}
+                            >
                                 <TouchableOpacity style={styles.closeButton}>
                                     <Ionicons name="close" size={20} color="white" />
                                 </TouchableOpacity>
                                 <Text style={styles.offerSubtitle}>{item.subtitle}</Text>
                                 <Text style={styles.offerTitle}>{item.title}</Text>
-                                <TouchableOpacity style={styles.offerButton}>
+                                <TouchableOpacity style={styles.offerButton} onPress={() => item.onClick()}>
                                     <Text style={styles.offerButtonText}>{item.buttonText}</Text>
                                 </TouchableOpacity>
-                            </View>
+                            </LinearGradient>
                         ))}
                     </ScrollView>
                 </View>
@@ -280,21 +306,21 @@ export default function Home() {
                 <View style={styles.linksContainer}>
                     <TouchableOpacity style={styles.linkItem} onPress={() => router.push("portfolio")}>
                         <View style={styles.linkIconContainer}>
-                            <Ionicons name="bulb" size={35} color="#FFA500" />
+                            <FontAwesome6 size={35} name="chart-pie" color={COLORS.secondaryColor} />
                         </View>
                         <Text style={styles.linkText}>Portfolio</Text>
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={styles.linkItem} onPress={() => router.push("upcoming")}>
+                    {/* <TouchableOpacity style={styles.linkItem} onPress={() => router.push("upcoming")}>
                         <View style={styles.linkIconContainer}>
                             <MaterialCommunityIcons name="wallet-outline" size={35} color="#FFA500" />
                         </View>
                         <Text style={styles.linkText}>Wallet</Text>
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
 
                     <TouchableOpacity onPress={() => router.push("sip")} style={styles.linkItem}>
                         <View style={styles.linkIconContainer}>
-                            <Ionicons name="calculator" size={35} color="#FFA500" />
+                            <Ionicons name="calculator" size={40} color="#FFA500" />
                         </View>
                         <Text style={styles.linkText}>SIP Calculator</Text>
                     </TouchableOpacity>
@@ -302,7 +328,7 @@ export default function Home() {
                     <TouchableOpacity style={styles.linkItem} onPress={() => router.push("upcoming")}>
                         <View style={styles.linkIconContainer}>
                             {/* <AntDesign name="trademark" size={35} color="#FFA500" /> */}
-                            <Foundation name="burst-new" size={40}  style={{ transform: [{ rotate: "30deg" }] }} color="#FFA500" />
+                            <Foundation name="burst-new" size={50} style={{ transform: [{ rotate: "30deg" }] }} color="#FFA500" />
                         </View>
                         <Text style={styles.linkText}>New Arrivals</Text>
                     </TouchableOpacity>
@@ -337,7 +363,7 @@ const styles = StyleSheet.create({
         backgroundColor: COLORS.primaryColor
     },
     carouselContainer: {
-        marginVertical: 10,
+        marginVertical: 20
     },
     offerCard: {
         height: 177,
@@ -441,8 +467,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     linkIconContainer: {
-        width: 60,
-        height: 60,
+        width: 80,
+        height: 70,
         borderRadius: 8,
         backgroundColor: 'rgba(255, 255, 255, 0.1)',
         justifyContent: 'center',

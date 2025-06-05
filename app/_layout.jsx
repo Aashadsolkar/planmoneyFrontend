@@ -6,13 +6,13 @@ import { Provider as PaperProvider } from 'react-native-paper';
 import * as SplashScreen from 'expo-splash-screen';
 import * as Linking from 'expo-linking';
 import AuthProvider from './context/AuthContext';
+import NoInternetScreen from './components/OfflineScreen';
 
-// Prevent splash screen from auto-hiding (only run once)
 SplashScreen.preventAutoHideAsync();
 
 const RootLayout = () => {
   const [appIsReady, setAppIsReady] = useState(false);
-
+   const [isConnected, setIsConnected] = useState(true);
     const router = useRouter();
 
   useEffect(() => {
@@ -40,6 +40,14 @@ const RootLayout = () => {
     prepareApp();
   }, []);
 
+  useEffect(() => {
+    const unsubscribe = NetInfo.addEventListener(state => {
+      setIsConnected(state.isConnected);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
   const onLayoutRootView = useCallback(async () => {
     if (appIsReady) {
       await SplashScreen.hideAsync();
@@ -51,7 +59,7 @@ const RootLayout = () => {
     return null;
   }
 
-  return (
+  return isConnected ? (
     <AuthProvider>
       <PaperProvider>
         <View style={{ flex: 1 }} onLayout={onLayoutRootView}>
@@ -59,6 +67,8 @@ const RootLayout = () => {
         </View>
       </PaperProvider>
     </AuthProvider>
+  ):(
+    <NoInternetScreen/>
   );
 };
 

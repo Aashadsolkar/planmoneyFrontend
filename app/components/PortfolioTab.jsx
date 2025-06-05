@@ -279,7 +279,7 @@ const PortfolioTab = ({ advisorName, stockAPi }) => {
                         </View>
                     </View>
                 </LinearGradient>
-            </TouchableOpacity> */}
+            </TouchableOpacity> 
 
             {/* Investments Section */}
             <View style={styles.investmentsHeader}>
@@ -333,7 +333,7 @@ const PortfolioTab = ({ advisorName, stockAPi }) => {
                                 </Text>
                             </View>
                             <View style={styles.investmentFooterItem}>
-                                <Text style={styles.investmentFooterLabel}>Buy at</Text>
+                                <Text style={styles.investmentFooterLabel}>Avg cost</Text>
                                 <Text style={styles.buyAtValue}>
                                     {formatCurrency(investment.buyPrice)}
                                 </Text>

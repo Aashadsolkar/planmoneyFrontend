@@ -19,8 +19,6 @@ import { useAuth } from '../context/useAuth';
 import { useLocalSearchParams } from 'expo-router';
 
 
-
-
 const Portfolio = () => {
   const { portfolioServices } = useAuth();
   const { serviceID } = useLocalSearchParams();
@@ -47,15 +45,16 @@ const Portfolio = () => {
     4: 'QuantumVoltz',
   };
 
-  const [activeTab, setActiveTab] = useState(serviceIdToTab[serviceID] || 'PMS');
+  const [activeTab, setActiveTab] = useState(serviceIdToTab[serviceID] || hasPMS ? 'PMS' : "QuantumVoltz");
 
 
   // Don't render if no tabs are available
   if (availableTabs.length === 0) {
     return (
       <SafeAreaView style={styles.container}>
+        <Header showBackButton={true}/>
         <StatusBar barStyle="light-content" />
-        <LinearGradient colors={['#1e3a8a', '#1e40af', '#1d4ed8']} style={styles.gradient}>
+        <LinearGradient colors={[COLORS.primaryColor, COLORS.primaryColor]} style={styles.gradient}>
           <View style={styles.noServiceContainer}>
             <Ionicons name="alert-circle-outline" size={64} color="#ff8c00" />
             <Text style={styles.noServiceText}>No Services Available</Text>
@@ -77,6 +76,7 @@ const Portfolio = () => {
       <StatusBar barStyle="light-content" />
       <Header showBackButton={true} backButtonText={headerText} />
       {/* Header Tabs - Only show if more than one tab available */}
+      {/* {availableTabs.length == 0 } */}
       {availableTabs.length > 0 && (
         <View style={styles.tabContainer}>
           {availableTabs.map((tab) => (
@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
   },
   activeTab: {
     backgroundColor: '#ff8c00',
-    shadowColor: '#ff8c00',
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,

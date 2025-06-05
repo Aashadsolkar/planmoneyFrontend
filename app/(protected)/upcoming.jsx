@@ -8,7 +8,7 @@ export default function Upcomping() {
             <StatusBar barStyle="light-content" backgroundColor={COLORS.cardColor} />
             <Header showBackButton={true} />
             <View style={{flex: 1, backgroundColor: COLORS.primaryColor, justifyContent: "center", alignItems: "center"}}>
-                <Text style={{color: COLORS.fontWhite, fontWeight: 600, fontSize: 20}}>Work in progrees...</Text>
+                <Text style={{color: COLORS.fontWhite, fontWeight: 600, fontSize: 20}}>Comming soon...</Text>
             </View>
         </SafeAreaView>
     )
