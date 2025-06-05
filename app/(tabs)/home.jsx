@@ -141,7 +141,7 @@ export default function Home() {
 
     const [offerData, setOfferData] = useState(initialOfferData);
     useEffect(() => {
-        
+
 
         // Create a set of purchased service IDs
         const purchasedServiceIds = new Set(portfolioServices.map(service => service.id));
@@ -155,11 +155,20 @@ export default function Home() {
     }, [portfolioServices]);
 
 
-    const handleClick = (id) => {
-        if ([1, 2].includes(id)) {
-            router.push(`fastlane/${id}`)
+    const handleClick = (item) => {
+        
+        if ([1, 2].includes(item?.id)) {
+            router.push(`fastlane/${item?.id}`)
         } else {
-            router.push(`pmsAndQuantom/${id}`)
+            // router.push(`pmsAndQuantom/${id}`)
+            router.push({
+                pathname: `/pmsAndQuantom/${item?.id}`,
+                params: {
+                    is_advisor_assign: item?.subscription?.is_advisor_assign,
+                    advisor_name: item?.subscription?.advisor?.name,
+                    advisor_nummber: item?.subscription?.advisor?.phone,
+                },
+            });
 
         }
     }
@@ -208,7 +217,7 @@ export default function Home() {
                                 <Text style={styles.updateText}>Expire On</Text>
                                 <Text style={styles.dateText}>{item?.subscription?.end_at}</Text>
                             </View>
-                            <MaterialIcons onPress={() => handleClick(item?.id)} name="chevron-right" size={40} color="#fff" />
+                            <MaterialIcons onPress={() => handleClick(item)} name="chevron-right" size={40} color="#fff" />
                         </>
                     }
                 </View>
@@ -298,7 +307,7 @@ export default function Home() {
 
                 {/* Services Section */}
                 <View style={styles.sectionContainer}>
-                    <Text style={styles.sectionTitle}>Your Services</Text>
+                    <Text style={styles.sectionTitle}>{purchesService.length > 0 ? "Your Services" : "Buy Service"}</Text>
                     {renderServices()}
                 </View>
 

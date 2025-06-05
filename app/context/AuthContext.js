@@ -59,6 +59,20 @@ const AuthProvider = ({ children }) => {
   const logout = async () => {
     setToken(null);
     setUser(null);
+    setSkipServices(false);
+    setSkipQuestioniar(false);
+    setServiceSelectedOnHomePage(null);
+    setProfileData({});
+    setOrderCinfirmDetails({});
+    setQuestionFormData(null);
+    setPrePaymentDetails(null);
+    setCustomerServiceData("");
+    setRiskData("")
+    setPortfolioServices([]);
+    setReportData({})
+    setPurchesService([]);
+    setSelectedService([]);
+    setAllServices([]);
     router.push("login")
     await AsyncStorage.clear();
   };

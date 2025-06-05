@@ -56,9 +56,11 @@ const Service = () => {
             };
 
             getServiceData();
-
+            setExpandedService(null)
             if (serviceSelectedOnHomePage) {
-                setExpandedService(serviceSelectedOnHomePage);
+                setTimeout(() => {
+                    setExpandedService(serviceSelectedOnHomePage);
+                });
                 setServiceSelectedOnHomePage(null);
             }
 
@@ -106,7 +108,7 @@ const Service = () => {
                 {renderService()}
                 {
                     !isLoading && <Text style={{ textAlign: "center", color: COLORS.fontWhite, fontWeight: 500 }} onPress={() => {
-                            router.push("home")
+                        router.push("home")
                     }}>Skip for now</Text>
                 }
             </ScrollView>

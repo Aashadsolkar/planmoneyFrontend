@@ -38,7 +38,7 @@ const OrderConfirm = () => {
           amount: orderData[0]?.order_amount,
           currency: orderData[0]?.payment_currency,
           billing_cycle: billing_cycle,
-          payment_status: orderData[0]?.payment_status == "SUCCESS" ? "paid" : orderData[0]?.payment_status?.toLowerCase(),
+          payment_status: orderData[0]?.payment_status,
           transaction_id: orderId,
           coupon_code: prePaymentDetails?.coupon_code,
           referral_code: prePaymentDetails?.referral_code
