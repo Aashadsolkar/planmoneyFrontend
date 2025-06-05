@@ -200,6 +200,9 @@ const Header = ({
           <TouchableOpacity style={styles.drawerItem} onPress={() => router.push("profile")}>
             <Text style={styles.drawerItemText}>Account</Text>
           </TouchableOpacity>
+          <TouchableOpacity style={styles.drawerItem} onPress={() => router.push("support")}>
+            <Text style={styles.drawerItemText}>Contact us</Text>
+          </TouchableOpacity>
           <TouchableOpacity style={styles.drawerItem} onPress={() => setIsLogoutModalOpen(true)}>
             <Text  style={styles.drawerItemText}>Logout</Text>
           </TouchableOpacity>
@@ -419,7 +422,7 @@ const styles = StyleSheet.create({
   drawerItem: {
     paddingVertical: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
+    borderBottomColor: "#1f68a1",
   },
   drawerItemText: {
     fontSize: 16,
