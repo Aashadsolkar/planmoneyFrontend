@@ -47,8 +47,8 @@ const PmsAndQuantom = () => {
                 }
             }
             if (customerServiceData?.questionnaire_status == 1 && customerServiceData?.verification_status == 1) {
+                callFastlaneApi()
             }
-            callFastlaneApi()
         }, [id])
     );
 
@@ -208,7 +208,7 @@ const PmsAndQuantom = () => {
             </SafeAreaView>
         )
     }
-    if (customerServiceData?.verification_status == 0 && is_advisor_assign) {
+    if (customerServiceData?.verification_status == 0 || !is_advisor_assign) {
         return (
             <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.cardColor, }}>
                 <StatusBar barStyle="light-content" backgroundColor={COLORS.cardColor} />
