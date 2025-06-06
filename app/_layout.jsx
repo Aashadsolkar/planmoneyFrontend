@@ -7,7 +7,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import * as Linking from 'expo-linking';
 import AuthProvider from './context/AuthContext';
 import NoInternetScreen from './components/OfflineScreen';
-
+import NetInfo from '@react-native-community/netinfo';
 SplashScreen.preventAutoHideAsync();
 
 const RootLayout = () => {
