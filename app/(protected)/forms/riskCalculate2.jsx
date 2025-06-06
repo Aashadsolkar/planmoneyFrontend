@@ -5,6 +5,7 @@ import { router, useNavigation } from 'expo-router';
 import SelectBox from '../../components/Select';
 import { COLORS } from '../../constants';
 import { useAuth } from '../../context/useAuth';
+import { Ionicons } from '@expo/vector-icons';
 
 const riskCalculate2 = () => {
     const navigation = useNavigation();
@@ -44,7 +45,7 @@ const riskCalculate2 = () => {
 
     }
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.primaryColor, padding: 20 }}>
+        <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.primaryColor, paddingBottom: 20 }}>
             <KeyboardAvoidingView
                 style={{ flex: 1 }}
                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -56,7 +57,7 @@ const riskCalculate2 = () => {
                     style={{ padding: 20 }}
                 >
                     <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-                        <Text style={{ fontSize: 20, color: 'white', }}>←</Text>
+                        <Ionicons name="arrow-back" size={ 24} color="#ffffff" />
                     </TouchableOpacity>
                     <Text style={{ fontSize: 12, fontWeight: 600, color: COLORS.fontWhite, marginTop: 20 }}>Step <Text style={{ color: COLORS.secondaryColor }}>3</Text> to 5</Text>
                     <Text style={{ fontSize: 20, fontWeight: 600, color: COLORS.fontWhite }}>Investment Objectives & Risk Capacity</Text>

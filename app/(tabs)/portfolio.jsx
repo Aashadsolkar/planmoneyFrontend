@@ -17,6 +17,7 @@ import { COLORS } from '../constants';
 import { pmsPortfolio, quantomPortfolio } from '../utils/apiCaller';
 import { useAuth } from '../context/useAuth';
 import { useLocalSearchParams } from 'expo-router';
+import { useFocusEffect } from '@react-navigation/native';
 
 
 const Portfolio = () => {
@@ -45,14 +46,31 @@ const Portfolio = () => {
     4: 'QuantumVoltz',
   };
 
-  const [activeTab, setActiveTab] = useState(serviceIdToTab[serviceID] || hasPMS ? 'PMS' : "QuantumVoltz");
+
+  const [activeTab, setActiveTab] = useState(null);
+  useFocusEffect(
+    useCallback(() => {
+      const id = Number(serviceID); // ensure it's a number
+      const mappedTab = serviceIdToTab[id];
+
+      if (availableTabs.includes(mappedTab)) {
+        setActiveTab(mappedTab);
+      } else if (availableTabs.includes('PMS')) {
+        setActiveTab('PMS');
+      } else {
+        setActiveTab(availableTabs[0]);
+      }
+    }, [serviceID, portfolioServices])
+  );
+
+
 
 
   // Don't render if no tabs are available
   if (availableTabs.length === 0) {
     return (
       <SafeAreaView style={styles.container}>
-        <Header showBackButton={true}/>
+        <Header showBackButton={true} />
         <StatusBar barStyle="light-content" />
         <LinearGradient colors={[COLORS.primaryColor, COLORS.primaryColor]} style={styles.gradient}>
           <View style={styles.noServiceContainer}>

@@ -6,6 +6,7 @@ import Input from '../../components/Input';
 import { router, useNavigation } from 'expo-router';
 import { quetionerApi } from '../../utils/apiCaller';
 import { useAuth } from '../../context/useAuth';
+import { Ionicons } from '@expo/vector-icons';
 
 const AgreementForm = () => {
   const [fatcaSeclect, setFatcaSelect] = useState(null);
@@ -80,7 +81,7 @@ const AgreementForm = () => {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.primaryColor, padding: 20 }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.primaryColor, paddingBottom: 20, paddingTop: 20 }}>
       <ScrollView
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
@@ -88,7 +89,7 @@ const AgreementForm = () => {
         style={{ paddingHorizontal: 20 }}
       >
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-          <Text style={{ fontSize: 20, color: 'white', }}>←</Text>
+          <Ionicons name="arrow-back" size={24} color="#ffffff" />
         </TouchableOpacity>
         {/* Removed back button since back is blocked */}
         <Text style={{ fontSize: 12, fontWeight: '600', color: COLORS.fontWhite, marginTop: 20 }}>
@@ -98,16 +99,16 @@ const AgreementForm = () => {
           Tax Residence Details
         </Text>
         <Text style={{ color: COLORS.fontWhite, fontSize: 14, marginBottom: 20 }}>
-          I confirm that I have understood the nature of the investment products being offered...
+          I confirm that I have understood the nature of the investment products being offered and acknowledge that:Investments are subject to market risks, including the potential loss of capital.Returns are not guaranteed, and past performance is not indicative of future results.The risk profile assessment has been conducted based on the information provided by me, and I take full responsibility for its accuracy and completeness.
         </Text>
         <Text style={{ fontSize: 14, color: COLORS.fontWhite, fontWeight: '600' }}>
           Investor Undertaking:
         </Text>
         <Text style={{ color: COLORS.fontWhite, fontSize: 14, marginBottom: 20 }}>
-          I hereby declare that I have carefully read and understood the risk factors...
+          I hereby declare that I have carefully read and understood the risk factors associated with the investment products I am choosing to invest in. I confirm that I am making an informed decision after considering my financial position, risk appetite, and investment goals.
         </Text>
         <Text style={{ color: COLORS.fontWhite, fontSize: 14 }}>
-          I agree that the investment decisions are made voluntarily and at my own risk...
+          I agree that the investment decisions are made voluntarily and at my own risk. I will not hold [Company Name] or its representatives responsible for any losses or shortfall in expected returns. I am aware that I can seek independent legal and financial advice before investing.
         </Text>
       </ScrollView>
 
@@ -159,13 +160,13 @@ const styles = StyleSheet.create({
     borderRadius: 2,
   },
   skipButton: {
-        alignItems: "center",
-        marginBottom: 20,
-    },
-    skipText: {
-        color: "#8B9DC3",
-        fontSize: 16,
-    },
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  skipText: {
+    color: "#8B9DC3",
+    fontSize: 16,
+  },
 });
 
 export default AgreementForm;

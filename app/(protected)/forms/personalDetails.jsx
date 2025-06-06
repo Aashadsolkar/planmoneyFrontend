@@ -480,7 +480,8 @@ export default function PersonalDetailsForm() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: COLORS.primaryColor
+        backgroundColor: COLORS.primaryColor,
+        paddingBottom: 20
     },
     gradient: {
         flex: 1,

@@ -341,7 +341,7 @@ const styles = StyleSheet.create({
   buttonContainer: {
     paddingHorizontal: 20,
     width: "100%",
-    paddingBottom: 30,
+    paddingBottom: 40,
     backgroundColor: COLORS.primaryColor,
   },
   errorTitle: {
