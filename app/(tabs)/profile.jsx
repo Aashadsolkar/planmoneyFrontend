@@ -124,7 +124,7 @@ export default function App() {
   return (
     <View style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor={COLORS.cardColor} />
-      <Header showBackButton={true} backButtonText={() => <Text style={{ color: COLORS.fontWhite, fontWeight: "600" }}>Account</Text>} />
+      <Header showBackButton={true} backButtonText={() => <Text style={{ color: COLORS.fontWhite, fontWeight: 600, fontSize: 18 }}>Account</Text>} />
       <View style={styles.content}>
         <Text style={styles.title}>Verify your Mobile No & Email Address</Text>
 

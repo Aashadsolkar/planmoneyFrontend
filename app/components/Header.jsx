@@ -11,6 +11,7 @@ import {
   Dimensions,
   Pressable,
   Modal,
+  Image,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { COLORS } from '../constants';
@@ -127,9 +128,17 @@ const Header = ({
                 <View>{backButtonText()}</View>
               </View>
             ) : (
-              <Text style={styles.title}>
-                Hi <Text style={styles.highlightedName}>{profileData?.name}</Text>
-              </Text>
+              <View style={{ flexDirection: "row", alignItems: "center", gap: 15 }}>
+                <View style={{ backgroundColor: "#004B8869", borderRadius: "50%", height: 45, width: 45, justifyContent:"center", alignItems: "center" }}>
+                  <Image
+                    source={require("../../assets/images/planmoney_icon.png")}
+                    resizeMode="contain"
+                  />
+                </View>
+                <Text style={styles.title}>
+                  Hi <Text style={styles.highlightedName}>{profileData?.name}</Text>
+                </Text>
+              </View>
             )}
           </View>
           <View style={styles.rightSection}>
@@ -185,7 +194,7 @@ const Header = ({
         </View>
         <View style={styles.drawerContent}>
 
-          <TouchableOpacity style={styles.drawerItem} onPress={() =>{ router.push("home")}}>
+          <TouchableOpacity style={styles.drawerItem} onPress={() => { router.push("home") }}>
             <Text style={styles.drawerItemText}>Home</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.drawerItem} onPress={() => router.push("portfolio")}>
@@ -204,7 +213,7 @@ const Header = ({
             <Text style={styles.drawerItemText}>Contact us</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.drawerItem} onPress={() => setIsLogoutModalOpen(true)}>
-            <Text  style={styles.drawerItemText}>Logout</Text>
+            <Text style={styles.drawerItemText}>Logout</Text>
           </TouchableOpacity>
         </View>
         <Modal visible={isLogoutModalOpen} transparent animationType="slide">
@@ -284,13 +293,13 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: '#7a1ea1',
+    backgroundColor: "#DADA0A",
     justifyContent: 'center',
     alignItems: 'center',
   },
   profileInitial: {
-    color: 'white',
-    fontSize: 14,
+    color: "#000",
+    fontSize: 16,
     fontWeight: 'bold',
   },
   backIcon: {

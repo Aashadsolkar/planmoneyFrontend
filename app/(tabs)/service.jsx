@@ -99,10 +99,14 @@ const Service = () => {
         })
     }
 
+    const headerText = () => {
+    return <Text style={{ color: COLORS.fontWhite, fontWeight: 600, fontSize: 18 }}>Services</Text>
+  }
+
     return (
         <SafeAreaView style={styles.container}>
             <StatusBar barStyle="light-content" backgroundColor={COLORS.cardColor} />
-            <Header showBackButton={true} />
+            <Header showBackButton={true} backButtonText={headerText} />
             <ScrollView style={{flex:1}} contentContainerStyle={styles.scrollContent}>
                 <Text style={styles.sectionTitle}>Select the Services</Text>
                 {renderService()}
