@@ -260,8 +260,8 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   logo: {
-    height: 60,
-    alignSelf: "center",
+    width: 200,
+    height: 80
   },
   centerContent: {
     flex: 1,

@@ -148,7 +148,7 @@ export default function SIPCalculator() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="#6366f1" />
+      <StatusBar barStyle="light-content" backgroundColor={COLORS.cardColor} />
       <Header
         showBackButton={true}
       />

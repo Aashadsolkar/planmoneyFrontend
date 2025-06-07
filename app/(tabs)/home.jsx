@@ -30,6 +30,8 @@ import FullScreenLoader from '../components/FullScreenLoader';
 import SkeletonList from '../components/ListSkeleton';
 import Foundation from '@expo/vector-icons/Foundation'
 import { BackHandler } from 'react-native';
+import * as Animatable from 'react-native-animatable';
+
 
 
 const NewsCard = ({ title = "", summary = "", id }) => (
@@ -63,18 +65,18 @@ export default function Home() {
 
 
     // 🚫 Prevent back button and swipe gestures
-      useEffect(() => {
+    useEffect(() => {
         const unsubscribe = navigation.addListener('beforeRemove', (e) => {
-          e.preventDefault(); // Block back navigation
+            e.preventDefault(); // Block back navigation
         });
-    
+
         const backHandler = BackHandler.addEventListener('hardwareBackPress', () => true); // Block Android hardware back
-    
+
         return () => {
-          unsubscribe();
-          backHandler.remove();
+            unsubscribe();
+            backHandler.remove();
         };
-      }, [navigation]);
+    }, [navigation]);
 
     useEffect(() => {
         getCustomerServiceAPi();
@@ -172,7 +174,7 @@ export default function Home() {
 
 
     const handleClick = (item) => {
-        
+
         if ([1, 2].includes(item?.id)) {
             router.push(`fastlane/${item?.id}`)
         } else {
@@ -197,47 +199,54 @@ export default function Home() {
 
     // Render services carousel item
     const renderServiceItem = ({ item }) => {
-        
+
         const is__not_subscribed = !item.is_subscribed;
 
         return (
-            <LinearGradient
-                start={{ x: 1, y: 0 }}
-                end={{ x: 0, y: 0 }}
-                colors={is__not_subscribed ? [COLORS.cardColor, COLORS.cardColor] : ['#AF125D', '#D36C32']}
-                // style={}
-                style={[styles.serviceCard]}
+            <Animatable.View
+                key={item.id}
+                animation="fadeInRight"
+                delay={item.id * 100}
+                duration={300}
             >
-                <Text style={styles.serviceTitle}>{item?.name}</Text>
-                <View style={styles.serviceInfoRow}>
-                </View>
-                <View style={styles.serviceFooter}>
-                    {
-                        is__not_subscribed ? <>
-                            <View style={{ flexDirection: "row", justifyContent: "space-between", width: "100%" }}>
-                                <View style={{ justifyContent: "center", paddingEnd: 20 }}>
-                                    <Text style={{ fontSize: 10, color: COLORS.fontWhite }}>Start from</Text>
-                                    <Text style={{ fontSize: 12, color: COLORS.fontWhite }}>₹{item.plans?.[0]?.offer_price}</Text>
-                                </View>
-                                <View style={{ flex: 1 }}>
-                                    <Button onClick={() => handleServiceClick(item)}
-                                        label={"subscribe now"}
-                                        gradientColor={['#D36C32', '#F68F00']}
-                                        buttonStye={{ padding: 10 }}
+                <LinearGradient
+                    start={{ x: 1, y: 0 }}
+                    end={{ x: 0, y: 0 }}
+                    colors={is__not_subscribed ? [COLORS.cardColor, COLORS.cardColor] : ['#AF125D', '#D36C32']}
+                    // style={}
+                    style={[styles.serviceCard]}
+                >
+                    <Text style={styles.serviceTitle}>{item?.name}</Text>
+                    <View style={styles.serviceInfoRow}>
+                    </View>
+                    <View style={styles.serviceFooter}>
+                        {
+                            is__not_subscribed ? <>
+                                <View style={{ flexDirection: "row", justifyContent: "space-between", width: "100%" }}>
+                                    <View style={{ justifyContent: "center", paddingEnd: 20 }}>
+                                        <Text style={{ fontSize: 10, color: COLORS.fontWhite }}>Start from</Text>
+                                        <Text style={{ fontSize: 12, color: COLORS.fontWhite }}>₹{item.plans?.[0]?.offer_price}</Text>
+                                    </View>
+                                    <View style={{ flex: 1 }}>
+                                        <Button onClick={() => handleServiceClick(item)}
+                                            label={"subscribe now"}
+                                            gradientColor={['#D36C32', '#F68F00']}
+                                            buttonStye={{ padding: 10 }}
 
-                                    />
+                                        />
+                                    </View>
                                 </View>
-                            </View>
-                        </> : <>
-                            <View>
-                                <Text style={styles.updateText}>Expire On</Text>
-                                <Text style={styles.dateText}>{item?.subscription?.end_at}</Text>
-                            </View>
-                            <MaterialIcons onPress={() => handleClick(item)} name="chevron-right" size={40} color="#fff" />
-                        </>
-                    }
-                </View>
-            </LinearGradient>
+                            </> : <>
+                                <View>
+                                    <Text style={styles.updateText}>Expire On</Text>
+                                    <Text style={styles.dateText}>{item?.subscription?.end_at}</Text>
+                                </View>
+                                <MaterialIcons onPress={() => handleClick(item)} name="chevron-right" size={40} color="#fff" />
+                            </>
+                        }
+                    </View>
+                </LinearGradient>
+            </Animatable.View>
         )
     };
 
@@ -299,23 +308,30 @@ export default function Home() {
                         showsHorizontalScrollIndicator={false}
                         style={{ paddingHorizontal: 10 }}
                     >
-                        {offerData.map((item) => (
-                            <LinearGradient
+                        {offerData.map((item, index) => (
+                            <Animatable.View
                                 key={item.id}
-                                colors={item.color}
-                                style={styles.offerCard}
-                                start={{ x: 0, y: 0 }}
-                                end={{ x: 1, y: 1 }}
+                                animation="fadeInRight"
+                                delay={index * 100}
+                                duration={300}
                             >
-                                <TouchableOpacity style={styles.closeButton}>
-                                    <Ionicons name="close" size={20} color="white" />
-                                </TouchableOpacity>
-                                <Text style={styles.offerSubtitle}>{item.subtitle}</Text>
-                                <Text style={styles.offerTitle}>{item.title}</Text>
-                                <TouchableOpacity style={styles.offerButton} onPress={() => item.onClick()}>
-                                    <Text style={styles.offerButtonText}>{item.buttonText}</Text>
-                                </TouchableOpacity>
-                            </LinearGradient>
+                                <LinearGradient
+                                    key={item.id}
+                                    colors={item.color}
+                                    style={styles.offerCard}
+                                    start={{ x: 0, y: 0 }}
+                                    end={{ x: 1, y: 1 }}
+                                >
+                                    <TouchableOpacity style={styles.closeButton}>
+                                        <Ionicons name="close" size={20} color="white" />
+                                    </TouchableOpacity>
+                                    <Text style={styles.offerSubtitle}>{item.subtitle}</Text>
+                                    <Text style={styles.offerTitle}>{item.title}</Text>
+                                    <TouchableOpacity style={styles.offerButton} onPress={() => item.onClick()}>
+                                        <Text style={styles.offerButtonText}>{item.buttonText}</Text>
+                                    </TouchableOpacity>
+                                </LinearGradient>
+                            </Animatable.View>
                         ))}
                     </ScrollView>
                 </View>
@@ -329,12 +345,14 @@ export default function Home() {
 
                 {/* Quick Links Section */}
                 <View style={styles.linksContainer}>
-                    <TouchableOpacity style={styles.linkItem} onPress={() => router.push("portfolio")}>
-                        <View style={styles.linkIconContainer}>
-                            <FontAwesome6 size={35} name="chart-pie" color={COLORS.secondaryColor} />
-                        </View>
-                        <Text style={styles.linkText}>Portfolio</Text>
-                    </TouchableOpacity>
+                    <Animatable.View animation="zoomIn" delay={100} duration={100} style={styles.linkItem}>
+                        <TouchableOpacity style={styles.linkItem} onPress={() => router.push("portfolio")}>
+                            <View style={styles.linkIconContainer}>
+                                <FontAwesome6 size={35} name="chart-pie" color={COLORS.secondaryColor} />
+                            </View>
+                            <Text style={styles.linkText}>Portfolio</Text>
+                        </TouchableOpacity>
+                    </Animatable.View>
 
                     {/* <TouchableOpacity style={styles.linkItem} onPress={() => router.push("upcoming")}>
                         <View style={styles.linkIconContainer}>
@@ -342,21 +360,24 @@ export default function Home() {
                         </View>
                         <Text style={styles.linkText}>Wallet</Text>
                     </TouchableOpacity> */}
+                    <Animatable.View animation="zoomIn" delay={200} duration={200} style={styles.linkItem}>
+                        <TouchableOpacity onPress={() => router.push("sip")} style={styles.linkItem}>
+                            <View style={styles.linkIconContainer}>
+                                <Ionicons name="calculator" size={40} color="#FFA500" />
+                            </View>
+                            <Text style={styles.linkText}>SIP Calculator</Text>
+                        </TouchableOpacity>
+                    </Animatable.View>
 
-                    <TouchableOpacity onPress={() => router.push("sip")} style={styles.linkItem}>
-                        <View style={styles.linkIconContainer}>
-                            <Ionicons name="calculator" size={40} color="#FFA500" />
-                        </View>
-                        <Text style={styles.linkText}>SIP Calculator</Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity style={styles.linkItem} onPress={() => router.push("upcoming")}>
-                        <View style={styles.linkIconContainer}>
-                            {/* <AntDesign name="trademark" size={35} color="#FFA500" /> */}
-                            <Foundation name="burst-new" size={50} style={{ transform: [{ rotate: "30deg" }] }} color="#FFA500" />
-                        </View>
-                        <Text style={styles.linkText}>New Arrivals</Text>
-                    </TouchableOpacity>
+                    <Animatable.View animation="zoomIn" delay={300} duration={200} style={styles.linkItem}>
+                        <TouchableOpacity style={styles.linkItem} onPress={() => router.push("upcoming")}>
+                            <View style={styles.linkIconContainer}>
+                                {/* <AntDesign name="trademark" size={35} color="#FFA500" /> */}
+                                <Foundation name="burst-new" size={50} style={{ transform: [{ rotate: "30deg" }] }} color="#FFA500" />
+                            </View>
+                            <Text style={styles.linkText}>New Arrivals</Text>
+                        </TouchableOpacity>
+                    </Animatable.View>
                 </View>
 
                 {/* Latest News Section */}
