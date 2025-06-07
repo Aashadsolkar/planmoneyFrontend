@@ -94,12 +94,12 @@ const AuthProvider = ({ children }) => {
         setPortfolioServices(filteredPortfolioService);
         setPurchesService(filterPurchesService);
         if (response?.data?.kyc_status == 0) {
-          router.replace("forms/kyc");
+          router.push("forms/kyc");
           return
         }
         if (!skipQuestioniar) {
           if (response?.data?.questionnaire_status == 0) {
-            router.replace("forms/personalDetails");
+            router.push("forms/personalDetails");
             return
           }
         }
