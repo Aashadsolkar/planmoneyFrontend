@@ -29,6 +29,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import FullScreenLoader from '../components/FullScreenLoader';
 import SkeletonList from '../components/ListSkeleton';
 import Foundation from '@expo/vector-icons/Foundation'
+import { BackHandler } from 'react-native';
 
 
 const NewsCard = ({ title = "", summary = "", id }) => (
@@ -59,6 +60,21 @@ export default function Home() {
     const [isNewApiLoading, setIsNewApiLoading] = useState(true);
     const navigation = useNavigation();
     const [newsData, setNewsData] = useState([]);
+
+
+    // 🚫 Prevent back button and swipe gestures
+      useEffect(() => {
+        const unsubscribe = navigation.addListener('beforeRemove', (e) => {
+          e.preventDefault(); // Block back navigation
+        });
+    
+        const backHandler = BackHandler.addEventListener('hardwareBackPress', () => true); // Block Android hardware back
+    
+        return () => {
+          unsubscribe();
+          backHandler.remove();
+        };
+      }, [navigation]);
 
     useEffect(() => {
         getCustomerServiceAPi();

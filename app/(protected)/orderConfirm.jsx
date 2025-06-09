@@ -1,4 +1,4 @@
-
+ 
 import { View, Text, Image, SafeAreaView, ActivityIndicator, StyleSheet, ScrollView, TouchableOpacity } from "react-native"
 import { useEffect, useState } from "react"
 import Button from "../components/Button"

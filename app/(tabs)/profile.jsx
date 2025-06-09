@@ -11,6 +11,7 @@ import {
   StatusBar,
   KeyboardAvoidingView,
   Platform,
+  ActivityIndicator,
 } from "react-native"
 import { LinearGradient } from "expo-linear-gradient"
 import { Ionicons } from "@expo/vector-icons"
@@ -40,6 +41,7 @@ export default function App() {
   const handleVerifyPress = async (type) => {
     if (type == "email") {
       try {
+        setIsEmailOtpLoading(true)
         const payload = {
           email: profileData?.email
         }
@@ -49,7 +51,9 @@ export default function App() {
         setShowOTPModal(true)
         setOtp(["", "", "", "", "", ""])
         setTimeout(() => otpInputs.current[0]?.focus(), 100)
+        setIsEmailOtpLoading(false)
       } catch (error) {
+        setIsEmailOtpLoading(false);
         Alert.alert(
           "Error",
           error?.message || "Failed to generate email otp",
@@ -149,7 +153,7 @@ export default function App() {
           <View style={styles.cardHeader}>
             <Text style={styles.cardLabel}>Email Address</Text>
           </View>
-          <Text style={styles.contactInfo}>{emailAddress}</Text>
+          <Text style={styles.contactInfo}>{emailAddress?.toLowerCase()}</Text>
           <View style={styles.statusRow}>
             {emailVerified ? (
               <View style={styles.verifiedStatus}>
@@ -158,7 +162,7 @@ export default function App() {
               </View>
             ) : (
               <TouchableOpacity style={styles.verifyButton} onPress={() => handleVerifyPress("email")}>
-                <Text style={styles.verifyButtonText}>Verify Now</Text>
+                {isEmailOtpLoading ? <ActivityIndicator color={"#fff"} size="small" /> : <Text style={styles.verifyButtonText}>Verify Now</Text>}
               </TouchableOpacity>
             )}
           </View>
@@ -189,7 +193,7 @@ export default function App() {
             </View>
 
             <Text style={styles.modalSubtitle}>
-              We have sent a 4 Digit OTP to your {verificationType === "mobile" ? "Mobile Number" : "Email Address"}
+              We have sent a 6 Digit OTP to your {verificationType === "mobile" ? "Mobile Number" : "Email Address"}
             </Text>
 
             <View style={styles.otpContainer}>
@@ -213,9 +217,9 @@ export default function App() {
 
             </View>
 
-            <TouchableOpacity style={styles.resendButton} onPress={handleResendOTP}>
+            {/* <TouchableOpacity style={styles.resendButton} onPress={handleResendOTP}>
               <Text style={styles.resendText}>Resend OTP</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
 
             <TouchableOpacity
               style={[styles.verifyOTPButton, { opacity: otp.join("").length === 6 ? 1 : 0.5 }]}

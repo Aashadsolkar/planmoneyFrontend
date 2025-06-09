@@ -240,7 +240,7 @@ const ChangePassword = () => {
                                             isPassword={true}
                                         />
                                         <PassWordInput
-                                            label={'Confirm You New Password'}
+                                            label={'Confirm Your New Password'}
                                             value={confirmPassword}
                                             onChangeText={(value) => {
                                                 setConfirmPassword(value);
