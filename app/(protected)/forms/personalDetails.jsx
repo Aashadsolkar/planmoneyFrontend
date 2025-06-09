@@ -280,6 +280,12 @@ export default function PersonalDetailsForm() {
                 dateOfBirth: selectedDate,
             }))
         }
+        setErrors((prev) => {
+            return {
+                ...prev,
+                "dateOfBirth": ""
+            }
+        })
     }
 
     const formatDate = (date) => {
@@ -372,6 +378,7 @@ export default function PersonalDetailsForm() {
                                 maximumDate={new Date()}
                             />
                         )}
+                        {errors.dateOfBirth && <Text style={styles.errorText}>{errors.dateOfBirth}</Text>}
 
                         {/* Address */}
                         <View style={styles.inputContainer}>
@@ -395,7 +402,6 @@ export default function PersonalDetailsForm() {
                         </View>
                         {errors.address && <Text style={styles.errorText}>{errors.address}</Text>}
 
-                        {errors.dateOfBirth && <Text style={styles.errorText}>{errors.dateOfBirth}</Text>}
                         {/* Country */}
                         <View style={styles.inputContainer}>
                             <SearchableDropdown

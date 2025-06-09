@@ -86,7 +86,7 @@ const Portfolio = () => {
   }
 
   const headerText = () => {
-    return <Text style={{ color: COLORS.fontWhite, fontWeight: 600 }}>Portfolio</Text>
+    return <Text style={{ color: COLORS.fontWhite, fontWeight: 600, fontSize: 18 }}>Portfolio</Text>
   }
 
   return (
