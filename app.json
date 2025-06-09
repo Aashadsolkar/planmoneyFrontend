@@ -5,7 +5,9 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "scheme": "planMoney",
-    "deepLinks": ["orderConfirm"],
+    "deepLinks": [
+      "orderConfirm"
+    ],
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
@@ -17,25 +19,16 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#012744"
       },
+      "permissions": [
+        "NOTIFICATIONS"
+      ],
+      "googleServicesFile": "./google-services.json",
       "intentFilters": [
-        {  
-          "action": "VIEW",
-          "autoVerify": true,
-          "data": {
-            "scheme": "planMoney"
-          },
-          "category": [
-            "BROWSABLE",
-            "DEFAULT"
-          ]
-        },
         {
           "action": "VIEW",
           "autoVerify": true,
           "data": {
-            "scheme": "https",
-            "host": "hunger.webiknows.in",
-            "pathPrefix": "/payment.html"
+            "scheme": "planMoney"
           },
           "category": [
             "BROWSABLE",
@@ -57,7 +50,17 @@
           "image": "./assets/images/logo.png",
           "backgroundColor": "#012744",
           "imageResizeMode": "contain",
-          "imageWidth": 200
+          "imageWidth": 300
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/images/ic_notification.png",
+          "color": "#ffff",
+          "enableVibration": true,
+          "enableLights": true,
+          "enableBackgroundRemoteNotifications": true
         }
       ]
     ],

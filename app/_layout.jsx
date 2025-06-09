@@ -1,20 +1,24 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { View } from 'react-native';
-import { Slot, useRouter } from 'expo-router';
-import { NavigationContainer } from '@react-navigation/native';
-import { Provider as PaperProvider } from 'react-native-paper';
-import * as SplashScreen from 'expo-splash-screen';
-import * as Linking from 'expo-linking';
-import AuthProvider from './context/AuthContext';
-import NoInternetScreen from './components/OfflineScreen';
-import NetInfo from '@react-native-community/netinfo';
+import React, { useCallback, useEffect, useState } from "react";
+import { View } from "react-native";
+import { Slot, useRouter } from "expo-router";
+
+import { Provider as PaperProvider } from "react-native-paper";
+import * as SplashScreen from "expo-splash-screen";
+import * as Linking from "expo-linking";
+import AuthProvider from "./context/AuthContext";
+import NoInternetScreen from "./components/OfflineScreen";
+import NetInfo from "@react-native-community/netinfo";
+import CustomSplash from "./components/CustomSplashScreen";
+
 SplashScreen.preventAutoHideAsync();
 
 const RootLayout = () => {
   const [appIsReady, setAppIsReady] = useState(false);
-   const [isConnected, setIsConnected] = useState(true);
-    const router = useRouter();
-
+  const [isConnected, setIsConnected] = useState(true);
+  const [showSplash,setShowSplash]=useState(true);
+  const router = useRouter();
+    
+ 
   useEffect(() => {
     const subscription = Linking.addEventListener("url", ({ url }) => {
       const { path } = Linking.parse(url);
@@ -25,13 +29,16 @@ const RootLayout = () => {
 
     return () => subscription.remove();
   }, []);
+
+  
+
   useEffect(() => {
     const prepareApp = async () => {
       try {
         // Do any app initialization logic here (e.g., loading fonts, tokens)
-        await new Promise(resolve => setTimeout(resolve, 2000));
+        await new Promise((resolve) => setTimeout(resolve, 2000));
       } catch (e) {
-        console.warn('App init error:', e);
+        console.warn("App init error:", e);
       } finally {
         setAppIsReady(true);
       }
@@ -41,7 +48,7 @@ const RootLayout = () => {
   }, []);
 
   useEffect(() => {
-    const unsubscribe = NetInfo.addEventListener(state => {
+    const unsubscribe = NetInfo.addEventListener((state) => {
       setIsConnected(state.isConnected);
     });
 
@@ -49,16 +56,18 @@ const RootLayout = () => {
   }, []);
 
   const onLayoutRootView = useCallback(async () => {
-    if (appIsReady) {
+    if (appIsReady && !showSplash) {
       await SplashScreen.hideAsync();
     }
-  }, [appIsReady]);
+  }, [appIsReady,showSplash]);
 
-  if (!appIsReady) {
-    // Don't render anything until the app is ready
-    return null;
-  }
-
+   const handleSplashEnd = () => {
+    setShowSplash(false);
+  };
+  if (!appIsReady) return null;
+if(showSplash) {
+  return <CustomSplash onAnimationEnd={handleSplashEnd}/>
+}
   return isConnected ? (
     <AuthProvider>
       <PaperProvider>
@@ -67,8 +76,8 @@ const RootLayout = () => {
         </View>
       </PaperProvider>
     </AuthProvider>
-  ):(
-    <NoInternetScreen/>
+  ) : (
+    <NoInternetScreen />
   );
 };
 

@@ -518,3 +518,25 @@ export const getCmpStock = async (token) => {
     throw error?.response?.data || { message: 'Something went wrong' };
   }
 };
+
+
+export const RegisterPushNotificationToken = async (deviceToken, token) => {
+  try {
+    const response = await axios({
+      method: "POST",
+      url: "https://admin.planmoney.in/api/customer/save-device-token",
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`, // space is important here
+      },
+      data: {
+        device_token: deviceToken, // pass as JSON body
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error('API Error:', error?.response?.data || error.message);
+    throw error?.response?.data || { message: 'Something went wrong' };
+  }
+};

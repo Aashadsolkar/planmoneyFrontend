@@ -1,0 +1,67 @@
+{
+  "project_info": {
+    "project_number": "79753379728",
+    "project_id": "expo-firebase-notification-app",
+    "storage_bucket": "expo-firebase-notification-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:79753379728:android:1ea4096090291269be3d15",
+        "android_client_info": {
+          "package_name": "com.pallav1503.PlanMoney"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDk4RL2i05V7J7yGVh6Xrq6emToJwxYptI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:79753379728:android:b4c188ab417a4e8abe3d15",
+        "android_client_info": {
+          "package_name": "com.pallav1503.exponotficationtest"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDk4RL2i05V7J7yGVh6Xrq6emToJwxYptI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:79753379728:android:b83771769e362475be3d15",
+        "android_client_info": {
+          "package_name": "com.pallav1503.myapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDk4RL2i05V7J7yGVh6Xrq6emToJwxYptI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
