@@ -9,7 +9,7 @@ import { useNavigation, useRoute } from "@react-navigation/native"
 import { CheckCircle, Clock } from "lucide-react-native"
 import * as Animatable from "react-native-animatable"
 import { router } from "expo-router";
-import { useSearchParams } from "expo-router/build/hooks";
+import LogoSVG from '../components/LogoSVG';
 
 const OrderConfirm = () => {
   const route = useRoute()
@@ -227,7 +227,7 @@ const OrderConfirm = () => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.logoContainer}>
-        <Image source={require("../../assets/images/logo.png")} style={styles.logo} resizeMode="contain" />
+       <LogoSVG  />
       </View>
 
       {renderContent()}
