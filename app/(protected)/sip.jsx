@@ -1,4 +1,3 @@
-"use client"
 
 import { useState, useEffect } from "react"
 import {
@@ -13,10 +12,8 @@ import {
   Platform,
   PanResponder,
   Animated,
-} from "react-native"
-// import Slider from "react-native-slider"
+} from "react-native";
 import Slider from '@react-native-community/slider';
-
 import { LinearGradient } from "expo-linear-gradient"
 import { Ionicons } from "@expo/vector-icons"
 import Header from "../components/Header";

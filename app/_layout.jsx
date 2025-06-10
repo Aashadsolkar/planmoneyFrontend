@@ -41,6 +41,7 @@ const RootLayout = () => {
         console.warn("App init error:", e);
       } finally {
         setAppIsReady(true);
+        setShowSplash(false);
       }
     };
 
@@ -56,17 +57,14 @@ const RootLayout = () => {
   }, []);
 
   const onLayoutRootView = useCallback(async () => {
-    if (appIsReady && !showSplash) {
+    if (appIsReady) {
       await SplashScreen.hideAsync();
     }
   }, [appIsReady,showSplash]);
 
-   const handleSplashEnd = () => {
-    setShowSplash(false);
-  };
   if (!appIsReady) return null;
 if(showSplash) {
-  return <CustomSplash onAnimationEnd={handleSplashEnd}/>
+  return <CustomSplash/>
 }
   return isConnected ? (
     <AuthProvider>

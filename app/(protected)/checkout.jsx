@@ -37,7 +37,7 @@ export default function Checkout() {
   const [referralError, setReferralError] = useState(null);
   const [referral, setReferral] = useState("");
   // const userReturnURL = Linking.createURL("/orderConfirm");
-  const userReturnURL = `planMoney://orderConfirm`;
+  const userReturnURL = `planmoney://orderConfirm`;
   const [isLoading, setIsLoading] = useState(false);
 
   const generateOrderNumber = () => {

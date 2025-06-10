@@ -46,9 +46,9 @@ export default function CheckoutWebView( props) {
   const returnUrl = query.return_url; // planMoney://orderConfirm
   const order_Id = query.order_id;
 
-  if (returnUrl && returnUrl.startsWith("planMoney://")) {
+  if (returnUrl && returnUrl.startsWith("planmoney://")) {
     // Extract path from return URL
-    const path = returnUrl.replace("planMoney://", "");
+    const path = returnUrl.replace("planmoney://", "");
 
     console.log("🔀 Navigating to:", path, "with order_id:", order_Id);
 

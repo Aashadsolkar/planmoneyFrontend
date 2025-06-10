@@ -1,52 +1,37 @@
-import React, { useRef, useEffect } from "react";
-import { View, StyleSheet, Dimensions } from "react-native";
-import * as Animatable from "react-native-animatable";
-import { Image } from "react-native";
+import { View} from "react-native";
+import  { useEffect, useState } from 'react';
+import { ActivityIndicator } from 'react-native';
+import { WebView } from 'react-native-webview';
+import * as FileSystem from 'expo-file-system';
+import * as Asset from 'expo-asset';
 
-const { width, height } = Dimensions.get("window");
-
-const CustomSplashScreen = ({ onAnimationEnd }) => {
-  const imageRef = useRef(null);
+export default function HtmlViewer() {
+  const [htmlContent, setHtmlContent] = useState(null);
 
   useEffect(() => {
-    const animate = async () => {
-      if (imageRef.current) {
-        await imageRef.current.fadeIn(800);
-        await new Promise((resolve) => setTimeout(resolve, 1200)); // ⏱️ stays visible for 1.2s
-        await imageRef.current.fadeOut(800);
-        onAnimationEnd(); // 👈 now proceed
-      }
+    const loadHtml = async () => {
+      const asset = Asset.Asset.fromModule(require('../../assets/custom-screen.html'));
+      await asset.downloadAsync();
+      const fileUri = asset.localUri || asset.uri;
+      const content = await FileSystem.readAsStringAsync(fileUri);
+      setHtmlContent(content);
     };
 
-    animate();
+    loadHtml();
   }, []);
 
+  if (!htmlContent) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
   return (
-    <View style={styles.container}>
-      <Animatable.Image
-        ref={imageRef}
-        style={styles.logo}
-        source={require("../../assets/images/logo.png")}
-        resizeMode="contain"
-      />
-    </View>
+    
+       <WebView
+         originWhitelist={['*']}
+         source={{ html: htmlContent }}
+       />
   );
-};
-
-export default CustomSplashScreen;
-
-const styles = StyleSheet.create({
-  container: {
-    position: "absolute",
-    width,
-    height,
-    backgroundColor: "#012744",
-    justifyContent: "center",
-    alignItems: "center",
-    zIndex: 999,
-  },
-  logo: {
-    width: 400,
-    height: 400,
-  },
-});
+}

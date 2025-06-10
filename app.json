@@ -4,10 +4,7 @@
     "slug": "PlanMoney",
     "version": "1.0.0",
     "orientation": "portrait",
-    "scheme": "planMoney",
-    "deepLinks": [
-      "orderConfirm"
-    ],
+    "scheme": "planmoney",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
@@ -23,19 +20,6 @@
         "NOTIFICATIONS"
       ],
       "googleServicesFile": "./google-services.json",
-      "intentFilters": [
-        {
-          "action": "VIEW",
-          "autoVerify": true,
-          "data": {
-            "scheme": "planMoney"
-          },
-          "category": [
-            "BROWSABLE",
-            "DEFAULT"
-          ]
-        }
-      ]
     },
     "web": {
       "bundler": "metro",
@@ -48,9 +32,8 @@
         "expo-splash-screen",
         {
           "image": "./assets/images/logo.png",
-          "backgroundColor": "#012744",
           "imageResizeMode": "contain",
-          "imageWidth": 300
+          "backgroundColor": "#012744"
         }
       ],
       [
