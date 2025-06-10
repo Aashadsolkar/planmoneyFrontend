@@ -19,6 +19,8 @@ import Button from '../components/Button';
 import { validateField, validateForm } from '../utils/validator';
 import { login } from '../utils/apiCaller';
 import { COLORS } from '../constants';
+import LogoSVG from '../components/LogoSVG';
+import * as Animatable from 'react-native-animatable';
 
 const { height, width } = Dimensions.get('window');
 
@@ -95,46 +97,51 @@ const Login = () => {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={{ flex: 1 }}
       >
-        <View style={styles.logoContainer}>
-          <Image
-            source={require('../../assets/images/logo.png')}
-            style={styles.logo}
-            resizeMode="contain"
-          />
-        </View>
+        <Animatable.View animation="fadeIn" delay={200} duration={600}>
+          <View style={styles.logoContainer}>
+            <LogoSVG />
+          </View>
+        </Animatable.View>
 
         <View style={styles.formContainer}>
           <Text style={styles.subText}>
             Please enter your details to sign in
           </Text>
 
-          <Input
-            label="ENTER YOUR EMAIL OR MOBILE"
-            value={formData.email_or_phone}
-            onChangeText={(value) => handleChange(value, 'email_or_phone')}
-            error={!!errors?.email_or_phone}
-            errorMessage={errors?.email_or_phone}
-          />
+          <Animatable.View animation="fadeInUp" delay={100} duration={600}>
+            <Input
+              label="ENTER YOUR EMAIL OR MOBILE"
+              value={formData.email_or_phone}
+              onChangeText={(value) => handleChange(value, 'email_or_phone')}
+              error={!!errors?.email_or_phone}
+              errorMessage={errors?.email_or_phone}
+            />
+          </Animatable.View>
 
-          <PassWordInput
-            label="ENTER PASSWORD"
-            value={formData.password}
-            onChangeText={(value) => handleChange(value, 'password')}
-            error={!!errors.password}
-            errorMessage={errors.password}
-            isPassword={true}
-          />
+          <Animatable.View animation="fadeInUp" delay={200} duration={600}>
+            <PassWordInput
+              label="ENTER PASSWORD"
+              value={formData.password}
+              onChangeText={(value) => handleChange(value, 'password')}
+              error={!!errors.password}
+              errorMessage={errors.password}
+              isPassword={true}
+            />
+          </Animatable.View>
 
-          <View style={styles.forgotContainer}>
-            <TouchableOpacity onPress={() => router.push('forgotPasswrd')}>
-              <Text style={styles.forgotText}>Forgot Password?</Text>
-            </TouchableOpacity>
-          </View>
+          <Animatable.View animation="fadeInUp" delay={300} duration={600}>
+            <View style={styles.forgotContainer}>
+              <TouchableOpacity onPress={() => router.push('forgotPasswrd')}>
+                <Text style={styles.forgotText}>Forgot Password?</Text>
+              </TouchableOpacity>
+            </View>
+          </Animatable.View>
 
           {loginApiError ? (
             <Text style={styles.errorText}>{loginApiError}</Text>
           ) : null}
         </View>
+
 
         <View style={styles.bottomContainer}>
           <Text style={styles.signupText}>
@@ -167,6 +174,7 @@ const styles = StyleSheet.create({
   logoContainer: {
     alignItems: 'center',
     marginTop: height * 0.05,
+    paddingVertical: 30
   },
   logo: {
     height: 100,

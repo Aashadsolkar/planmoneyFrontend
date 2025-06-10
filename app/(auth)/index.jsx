@@ -19,6 +19,9 @@ import Input from '../components/Input';
 import { validateField, validateForm } from '../utils/validator';
 import { registor } from '../utils/apiCaller';
 import { useAuth } from '../context/useAuth';
+import LogoSVG from '../components/LogoSVG';
+import * as Animatable from 'react-native-animatable';
+
 
 const { height, width } = Dimensions.get('window');
 
@@ -48,7 +51,7 @@ const Register = () => {
     if (['password', 'confirmPassword'].includes(name)) {
       confirmPasswordError =
         updatedForm.password && updatedForm.confirmPassword &&
-        updatedForm.password !== updatedForm.confirmPassword
+          updatedForm.password !== updatedForm.confirmPassword
           ? 'Passwords do not match'
           : '';
     }
@@ -115,56 +118,70 @@ const Register = () => {
           contentContainerStyle={styles.scrollContent}
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
+          style={{ paddingTop: 40 }}
         >
+          <Animatable.View animation="fadeIn" delay={200} duration={600}>
           <View style={styles.logoContainer}>
-            <Image
-              source={require('../../assets/images/logo.png')}
-              style={styles.logo}
-              resizeMode="contain"
-            />
+            <LogoSVG />
           </View>
+          </Animatable.View>
 
           <Text style={styles.titleText}>
             Please enter your details to sign up
           </Text>
 
-          <Input
-            label="ENTER YOUR FULL NAME"
-            value={formData.name}
-            onChangeText={val => handleChange(val, 'name')}
-            error={!!errors?.name}
-            errorMessage={errors?.name}
-          />
-          <Input
-            label="ENTER EMAIL ADDRESS"
-            value={formData.email}
-            onChangeText={val => handleChange(val, 'email')}
-            error={!!errors?.email}
-            errorMessage={errors?.email}
-          />
-          <Input
-            label="ENTER MOBILE NUMBER"
-            value={formData.phone}
-            onChangeText={val => handleChange(val, 'phone')}
-            error={!!errors?.phone}
-            errorMessage={errors?.phone}
-          />
-          <PassWordInput
-            label="ENTER PASSWORD"
-            value={formData.password}
-            onChangeText={val => handleChange(val, 'password')}
-            isPassword
-            error={!!errors?.password}
-            errorMessage={errors?.password}
-          />
-          <PassWordInput
-            label="ENTER CONFIRM PASSWORD"
-            value={formData.confirmPassword}
-            onChangeText={val => handleChange(val, 'confirmPassword')}
-            isPassword
-            error={!!errors?.confirmPassword}
-            errorMessage={errors?.confirmPassword}
-          />
+          <Animatable.View animation="fadeInUp" duration={600} delay={100}>
+            <Input
+              label="ENTER YOUR FULL NAME"
+              value={formData.name}
+              onChangeText={val => handleChange(val, 'name')}
+              error={!!errors?.name}
+              errorMessage={errors?.name}
+            />
+          </Animatable.View>
+
+          <Animatable.View animation="fadeInUp" duration={600} delay={200}>
+            <Input
+              label="ENTER EMAIL ADDRESS"
+              value={formData.email}
+              onChangeText={val => handleChange(val, 'email')}
+              error={!!errors?.email}
+              errorMessage={errors?.email}
+            />
+          </Animatable.View>
+
+          <Animatable.View animation="fadeInUp" duration={600} delay={300}>
+            <Input
+              label="ENTER MOBILE NUMBER"
+              value={formData.phone}
+              onChangeText={val => handleChange(val, 'phone')}
+              error={!!errors?.phone}
+              errorMessage={errors?.phone}
+            />
+          </Animatable.View>
+
+          <Animatable.View animation="fadeInUp" duration={600} delay={400}>
+            <PassWordInput
+              label="ENTER PASSWORD"
+              value={formData.password}
+              onChangeText={val => handleChange(val, 'password')}
+              isPassword
+              error={!!errors?.password}
+              errorMessage={errors?.password}
+            />
+          </Animatable.View>
+
+          <Animatable.View animation="fadeInUp" duration={600} delay={500}>
+            <PassWordInput
+              label="ENTER CONFIRM PASSWORD"
+              value={formData.confirmPassword}
+              onChangeText={val => handleChange(val, 'confirmPassword')}
+              isPassword
+              error={!!errors?.confirmPassword}
+              errorMessage={errors?.confirmPassword}
+            />
+          </Animatable.View>
+
 
           {apiError ? (
             <Text style={styles.apiErrorText}>{apiError}</Text>
@@ -210,7 +227,7 @@ const styles = StyleSheet.create({
     marginBottom: height * 0.05,
   },
   logo: {
-    height:100,
+    height: 100,
     width: 200,
   },
   titleText: {

@@ -19,6 +19,7 @@ import { router, useNavigation } from 'expo-router';
 import { useAuth } from '../context/useAuth';
 import { Ionicons } from '@expo/vector-icons';
 import Button from './Button';
+import IconSVG from './IconSVG';
 const { height } = Dimensions.get("window")
 // Icons - you'll need to install a library like react-native-vector-icons
 // or use your own image assets
@@ -130,10 +131,7 @@ const Header = ({
             ) : (
               <View style={{ flexDirection: "row", alignItems: "center", gap: 15 }}>
                 <View style={{ backgroundColor: "#004B8869", borderRadius: "50%", height: 45, width: 45, justifyContent:"center", alignItems: "center" }}>
-                  <Image
-                    source={require("../../assets/images/planmoney_icon.png")}
-                    resizeMode="contain"
-                  />
+                  <IconSVG />
                 </View>
                 <Text style={styles.title}>
                   Hi <Text style={styles.highlightedName}>{profileData?.name}</Text>
