@@ -41,11 +41,11 @@ const PortfolioTab = ({ advisorName, stockAPi }) => {
     useEffect(() => {
         const getPmsData = async () => {
             try {
-                const pmsRes = await stockAPi(token);
+                const buyStockData = await stockAPi(token);
                 const cmpRes = await getCmpStock(token);
 
                 const cmpStocks = cmpRes.data.stocks;
-                const buyData = pmsRes.data;
+                const buyData = buyStockData.data;
 
                 const merged = buyData.map(buy => {
                     const stockDetails = cmpStocks.find(stock => stock.stock_id === buy.stock_id);

@@ -175,7 +175,7 @@ export default function Home() {
 
     const handleClick = (item) => {
 
-        if ([1, 2].includes(item?.id)) {
+        if ([1].includes(item?.id)) {
             router.push(`fastlane/${item?.id}`)
         } else {
             // router.push(`pmsAndQuantom/${id}`)

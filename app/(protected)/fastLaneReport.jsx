@@ -65,13 +65,13 @@ const FastLane = () => {
                 return serviceName = "Fastlane"
                 break;
             case "2":
-                return serviceName = "Premium Research"
+                return serviceName = "PIS"
                 break;
             case "3":
                 return serviceName = "Portfolio Management"
                 break;
             case "4":
-                 return serviceName = "Quantum Voltz"
+                 return serviceName = "Quantum Volt"
                 break;
             default:
                 return serviceName = "Service Name"

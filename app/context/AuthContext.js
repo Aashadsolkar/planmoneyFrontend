@@ -88,7 +88,8 @@ const AuthProvider = ({ children }) => {
           service.is_subscribed &&
           (
             service.name === "Portfolio Management Subscription" ||
-            service.name === "QuantumVault (For Above ₹50 lakh Capital)"
+            service.name === "QuantumVault (For Above ₹50 lakh Capital)" ||
+            service.name === "Personalised Investment Services"
           )
         );
         setPortfolioServices(filteredPortfolioService);
