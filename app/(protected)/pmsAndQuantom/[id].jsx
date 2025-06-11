@@ -340,10 +340,10 @@ const styles = StyleSheet.create({
         fontSize: 10
     },
     greenText: {
-        color: "#4BDE9F"
+        color: COLORS.profitColor
     },
     redText: {
-        color: "#F85255"
+        color: COLORS.lossColor
     },
     font12: {
         fontSize: 12

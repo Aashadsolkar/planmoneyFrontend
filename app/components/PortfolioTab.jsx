@@ -253,7 +253,7 @@ const PortfolioTab = ({ advisorName, stockAPi }) => {
                         <Text style={styles.summaryLabel}>Total Returns</Text>
                         <Text style={[
                             styles.returnsValue,
-                            { color: portfolioSummary.totalReturns >= 0 ? '#10b981' : '#ef4444' }
+                            { color: portfolioSummary.totalReturns >= 0 ? COLORS.profitColor : COLORS.lossColor }
                         ]}>
                             {formatCurrency(portfolioSummary.totalReturns)} ({formatReturnPercentage(portfolioSummary.returnPercentage)})
                         </Text>
@@ -315,7 +315,7 @@ const PortfolioTab = ({ advisorName, stockAPi }) => {
                             <View style={styles.investmentValueContainer}>
                                 <Text style={[
                                     styles.investmentCurrentValue,
-                                    { color: investment.returnPercentage >= 0 ? '#10b981' : '#ef4444' }
+                                    { color: investment.returnPercentage >= 0 ? COLORS.profitColor : COLORS.lossColor }
                                 ]}>
                                     {formatCurrency(investment.currentValue)}
                                 </Text>
@@ -342,7 +342,7 @@ const PortfolioTab = ({ advisorName, stockAPi }) => {
                                 <Text style={styles.investmentFooterLabel}>Return</Text>
                                 <Text style={[
                                     styles.returnPercentage,
-                                    { color: investment.returnPercentage >= 0 ? '#10b981' : '#ef4444' }
+                                    { color: investment.returnPercentage >= 0 ? COLORS.profitColor : COLORS.lossColor }
                                 ]}>
                                     {formatReturnPercentage(investment.returnPercentage)}
                                 </Text>
@@ -383,7 +383,7 @@ const styles = StyleSheet.create({
         fontWeight: '500',
     },
     currentRateValue: {
-        color: '#10b981',
+        color: COLORS.profitColor,
         fontSize: 36,
         fontWeight: '800',
         letterSpacing: -1,

@@ -18,6 +18,7 @@ import { pisPortfolio, pmsPortfolio, quantomPortfolio } from '../utils/apiCaller
 import { useAuth } from '../context/useAuth';
 import { useLocalSearchParams } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
+import QuantomVoltIcon, { FastlaneIcon, PMSIcon, PSIcon } from '../../assets/images/SVG';
 
 
 const Portfolio = () => {
@@ -28,6 +29,11 @@ const Portfolio = () => {
 
   // Define availableTabs based on subscription presence
   const availableTabs = [];
+  const availableTabsIcone = {
+    "PIS": () => <FastlaneIcon height={20} width={20} />,
+    "PMS": () => <PMSIcon height={20} width={20}/>,
+    "QuantumVolt": () => <QuantomVoltIcon height={20} width={20}/>,
+  };
 
   const hasPMS = portfolioServices.some(
     (sub) => sub.name === "Portfolio Management Subscription" && sub.is_subscribed
@@ -121,6 +127,7 @@ const Portfolio = () => {
               style={[styles.tab, activeTab === tab && styles.activeTab]}
               onPress={() => setActiveTab(tab)}
             >
+              {availableTabsIcone[tab]()}
               <Text style={[styles.tabText, activeTab === tab && styles.activeTabText]}>
                 {tab}
               </Text>
@@ -151,10 +158,13 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.primaryColor
   },
   tab: {
-    paddingHorizontal: 20,
+    paddingHorizontal: 15,
     paddingVertical: 10,
     // borderRadius: 25,
     // borderColor: '#ff8c00',
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 5
   },
   activeTab: {
     borderBottomWidth: 2,
@@ -163,7 +173,6 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
-    elevation: 8,
   },
   tabText: {
     color: '#fff',

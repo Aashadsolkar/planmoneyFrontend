@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
     StyleSheet,
     Text,
@@ -9,7 +9,9 @@ import {
     SafeAreaView,
     ActivityIndicator,
     StatusBar,
-    Alert
+    Alert,
+    Image,
+    Dimensions
 } from 'react-native';
 import {
     Ionicons,
@@ -33,6 +35,7 @@ import { BackHandler } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 
 
+const { height, width } = Dimensions.get("window");
 
 const NewsCard = ({ title = "", summary = "", id }) => (
     <TouchableOpacity style={styles.card} onPress={() => router.push(`singleNews/${id}`)}>
@@ -141,7 +144,8 @@ export default function Home() {
             onClick: () => {
                 setServiceSelectedOnHomePage(3)
                 router.push("service");
-            }
+            },
+            banner: require('../../assets/images/portfolioBanner.png')
         },
         {
             id: '2',
@@ -153,7 +157,8 @@ export default function Home() {
             onClick: () => {
                 setServiceSelectedOnHomePage(4)
                 router.push("service");
-            }
+            },
+            banner: ""
         },
     ];
 
@@ -258,16 +263,16 @@ export default function Home() {
     const renderServices = () => {
         const renderData = purchesService.length > 0 ? purchesService : allServices
         return (
-            <FlatList
-                data={renderData}
-                renderItem={renderServiceItem}
+                <FlatList
+                    data={renderData}
+                    renderItem={renderServiceItem}
                 keyExtractor={item => item.id.toString()}
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                contentContainerStyle={styles.servicesListContainer}
-            />
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    contentContainerStyle={styles.servicesListContainer}
+                            />
         )
-    }
+                }
 
     const renderNews = () => {
         if (isNewApiLoading) {
@@ -314,23 +319,13 @@ export default function Home() {
                                 animation="fadeInRight"
                                 delay={index * 100}
                                 duration={300}
+                                // style={}
                             >
-                                <LinearGradient
-                                    key={item.id}
-                                    colors={item.color}
+                                <Image
                                     style={styles.offerCard}
-                                    start={{ x: 0, y: 0 }}
-                                    end={{ x: 1, y: 1 }}
-                                >
-                                    <TouchableOpacity style={styles.closeButton}>
-                                        <Ionicons name="close" size={20} color="white" />
-                                    </TouchableOpacity>
-                                    <Text style={styles.offerSubtitle}>{item.subtitle}</Text>
-                                    <Text style={styles.offerTitle}>{item.title}</Text>
-                                    <TouchableOpacity style={styles.offerButton} onPress={() => item.onClick()}>
-                                        <Text style={styles.offerButtonText}>{item.buttonText}</Text>
-                                    </TouchableOpacity>
-                                </LinearGradient>
+                                    source={item.banner}
+                                    resizeMode="stretch"
+                                />
                             </Animatable.View>
                         ))}
                     </ScrollView>
@@ -409,15 +404,14 @@ const styles = StyleSheet.create({
         backgroundColor: COLORS.primaryColor
     },
     carouselContainer: {
-        marginVertical: 10
+        marginTop: 20
     },
     offerCard: {
         height: 177,
-        width: 335,
-        borderRadius: 10,
-        padding: 20,
+        width: width - 38,
         marginHorizontal: 10,
         position: 'relative',
+        overflow: "hidden"
     },
     closeButton: {
         position: 'absolute',
@@ -448,8 +442,8 @@ const styles = StyleSheet.create({
         fontWeight: '500',
     },
     sectionContainer: {
-        // marginTop: 10,
-        paddingHorizontal: 20,
+        marginTop: 10,
+        paddingStart: 20
     },
     sectionTitle: {
         color: 'white',
@@ -506,7 +500,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         paddingHorizontal: 30,
-        marginTop: 30,
+        marginTop: 20,
         marginBottom: 20,
     },
     linkItem: {
@@ -516,7 +510,7 @@ const styles = StyleSheet.create({
         width: 80,
         height: 70,
         borderRadius: 8,
-        backgroundColor: 'rgba(255, 255, 255, 0.1)',
+        backgroundColor: COLORS.cardColor,
         justifyContent: 'center',
         alignItems: 'center',
         marginBottom: 5,
@@ -583,7 +577,7 @@ const styles = StyleSheet.create({
         fontSize: 14,
     },
     card: {
-        backgroundColor: '#083b66',
+        backgroundColor: COLORS.cardColor,
         borderRadius: 12,
         padding: 16,
         marginBottom: 12,
@@ -605,5 +599,22 @@ const styles = StyleSheet.create({
         fontSize: 14,
         flex: 1,
         marginRight: 8,
+    },
+    dotContainer: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        marginTop: 10,
+    },
+    dot: {
+        width: 8,
+        height: 8,
+        borderRadius: 4,
+        backgroundColor: COLORS.cardColor,
+        marginHorizontal: 4,
+    },
+    activeDot: {
+        backgroundColor: COLORS.secondaryColor, // Active dot color
+        width: 10,
+        height: 10,
     },
 });
