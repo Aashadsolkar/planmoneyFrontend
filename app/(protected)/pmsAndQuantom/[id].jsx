@@ -28,8 +28,7 @@ const PmsAndQuantom = () => {
                 try {
                     setIsLoading(true);
                     const response = await getFastlaneData(token, id);
-                    setFastlaneData(response?.data?.services)
-
+                    setFastlaneData(response?.data?.services);
                 } catch (error) {
                     Alert.alert(
                         "Error",
@@ -54,7 +53,9 @@ const PmsAndQuantom = () => {
 
     const handleBuyButtonClick = (data) => {
         let path = ""
-        if (id == 3) {
+        if (id == 2) {
+            path = "/buy_stock_pis"
+        } else if (id == 3) {
             path = "/buy_stock_pms"
         } else {
             path = "/buy_stock_quantom"
@@ -241,9 +242,22 @@ const PmsAndQuantom = () => {
             <FullScreenLoader visible={isLoading} />
         )
     }
+
+    const renderHeaderText = () => {
+        switch (id) {
+            case "3":
+                return "PMS";
+            case "4":
+                return "Quantum Volt"
+            case "2":
+                return "PIS"
+            default:
+                return null;
+        }
+    }
     const backButtonText = () => {
         return (
-            <Text style={{ color: COLORS.fontWhite, fontSize: 18, fontWeight: 600 }}>{id == 3 ? "PMS" : "Quantum Voltz"}</Text>
+            <Text style={{ color: COLORS.fontWhite, fontSize: 18, fontWeight: 600 }}>{renderHeaderText()}</Text>
         )
     }
 
@@ -326,10 +340,10 @@ const styles = StyleSheet.create({
         fontSize: 10
     },
     greenText: {
-        color: "#4BDE9F"
+        color: COLORS.profitColor
     },
     redText: {
-        color: "#F85255"
+        color: COLORS.lossColor
     },
     font12: {
         fontSize: 12

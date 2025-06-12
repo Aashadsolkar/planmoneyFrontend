@@ -71,7 +71,7 @@ const FastLane = () => {
                 return serviceName = "Portfolio Management"
                 break;
             case "4":
-                 return serviceName = "Quantum Voltz"
+                 return serviceName = "Quantum Volt"
                 break;
             default:
                 return serviceName = "Service Name"

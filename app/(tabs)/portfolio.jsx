@@ -14,10 +14,11 @@ import {
 import Header from '../components/Header';
 import PortfolioTab from '../components/PortfolioTab';
 import { COLORS } from '../constants';
-import { pmsPortfolio, quantomPortfolio } from '../utils/apiCaller';
+import { pisPortfolio, pmsPortfolio, quantomPortfolio } from '../utils/apiCaller';
 import { useAuth } from '../context/useAuth';
 import { useLocalSearchParams } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
+import QuantomVoltIcon, { FastlaneIcon, PMSIcon, PSIcon } from '../../assets/images/SVG';
 
 
 const Portfolio = () => {
@@ -28,6 +29,11 @@ const Portfolio = () => {
 
   // Define availableTabs based on subscription presence
   const availableTabs = [];
+  const availableTabsIcone = {
+    "PIS": () => <FastlaneIcon height={20} width={20} />,
+    "PMS": () => <PMSIcon height={20} width={20}/>,
+    "QuantumVolt": () => <QuantomVoltIcon height={20} width={20}/>,
+  };
 
   const hasPMS = portfolioServices.some(
     (sub) => sub.name === "Portfolio Management Subscription" && sub.is_subscribed
@@ -37,14 +43,20 @@ const Portfolio = () => {
   const hasQuantumVoltz = portfolioServices.some(
     (sub) => sub.name === "QuantumVault (For Above ₹50 lakh Capital)" && sub.is_subscribed
   );
-  if (hasQuantumVoltz) availableTabs.push("QuantumVoltz");
+  if (hasQuantumVoltz) availableTabs.push("QuantumVolt");
 
+  const hasPIS = portfolioServices.some(
+    (sub) => sub.name === "Personalised Investment Services" && sub.is_subscribed //need to change
+  );
+  if (hasPIS) availableTabs.push("PIS");
 
   // Map service IDs to tab names
   const serviceIdToTab = {
+    2: 'PIS',
     3: 'PMS',
-    4: 'QuantumVoltz',
+    4: 'QuantumVolt',
   };
+
 
 
   const [activeTab, setActiveTab] = useState(null);
@@ -52,7 +64,6 @@ const Portfolio = () => {
     useCallback(() => {
       const id = Number(serviceID); // ensure it's a number
       const mappedTab = serviceIdToTab[id];
-
       if (availableTabs.includes(mappedTab)) {
         setActiveTab(mappedTab);
       } else if (availableTabs.includes('PMS')) {
@@ -89,6 +100,19 @@ const Portfolio = () => {
     return <Text style={{ color: COLORS.fontWhite, fontWeight: 600, fontSize: 18 }}>Portfolio</Text>
   }
 
+  const renderContent = () => {
+    switch (activeTab) {
+      case 'PMS':
+        return <PortfolioTab  key="pms" stockAPi={pmsPortfolio} />;
+      case 'QuantumVolt':
+        return <PortfolioTab  key="quantum" stockAPi={quantomPortfolio} />;
+      case 'PIS':
+        return <PortfolioTab key="pis" stockAPi={pisPortfolio} />;
+      default:
+        return null;
+    }
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" />
@@ -103,6 +127,7 @@ const Portfolio = () => {
               style={[styles.tab, activeTab === tab && styles.activeTab]}
               onPress={() => setActiveTab(tab)}
             >
+              {availableTabsIcone[tab]()}
               <Text style={[styles.tabText, activeTab === tab && styles.activeTabText]}>
                 {tab}
               </Text>
@@ -111,7 +136,7 @@ const Portfolio = () => {
         </View>
       )}
       {/* Content */}
-      {activeTab === 'PMS' ? <PortfolioTab advisorName={"aashad"} key={1} stockAPi={pmsPortfolio} /> : <PortfolioTab advisorName={"uzair"} key={2} stockAPi={quantomPortfolio} />}
+      {renderContent()}
     </SafeAreaView>
   );
 };
@@ -133,27 +158,29 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.primaryColor
   },
   tab: {
-    paddingHorizontal: 36,
+    paddingHorizontal: 15,
     paddingVertical: 10,
-    borderRadius: 25,
-    borderWidth: 1,
-    borderColor: '#ff8c00',
+    // borderRadius: 25,
+    // borderColor: '#ff8c00',
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 5
   },
   activeTab: {
-    backgroundColor: '#ff8c00',
+    borderBottomWidth: 2,
+    borderBottomColor: '#ff8c00',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
-    elevation: 8,
   },
   tabText: {
-    color: '#ff8c00',
+    color: '#fff',
     fontSize: 15,
     fontWeight: '600',
   },
   activeTabText: {
-    color: '#fff',
+    color: COLORS.secondaryColor,
     fontWeight: '700',
   },
   contentContainer: {

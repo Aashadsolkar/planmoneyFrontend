@@ -46,7 +46,6 @@ export default function App() {
           email: profileData?.email
         }
         const response = await generateVerifyEmailOpt(token, payload);
-        console.log(response, "send otp response ______________((((()))))))))))))");
         setVerificationType(type)
         setShowOTPModal(true)
         setOtp(["", "", "", "", "", ""])
