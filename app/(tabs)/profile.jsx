@@ -24,7 +24,7 @@ import { generateVerifyEmailOpt, verifyEmailOpt } from "../utils/apiCaller"
 const { width, height } = Dimensions.get("window")
 
 export default function App() {
-  const { profileData, token } = useAuth();
+  const { profileData, token, setGetCustomerDataAgain } = useAuth();
   const [mobileVerified, setMobileVerified] = useState(false);
   const [emailVerified, setEmailVerified] = useState(profileData?.email_verified_at == null ? false : true);
   const [showOTPModal, setShowOTPModal] = useState(false);
@@ -51,6 +51,7 @@ export default function App() {
         setOtp(["", "", "", "", "", ""])
         setTimeout(() => otpInputs.current[0]?.focus(), 100)
         setIsEmailOtpLoading(false)
+        setGetCustomerDataAgain(true);
       } catch (error) {
         setIsEmailOtpLoading(false);
         Alert.alert(

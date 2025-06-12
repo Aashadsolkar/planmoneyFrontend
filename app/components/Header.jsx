@@ -20,6 +20,7 @@ import { useAuth } from '../context/useAuth';
 import { Ionicons } from '@expo/vector-icons';
 import Button from './Button';
 import IconSVG from './IconSVG';
+import ShimmerSkeleton from './ListSkeleton';
 const { height } = Dimensions.get("window")
 // Icons - you'll need to install a library like react-native-vector-icons
 // or use your own image assets
@@ -36,10 +37,10 @@ const getInitials = (fullName) => {
 };
 
 
-const ProfileIcon = ({ onPress, name }) => (
+const ProfileIcon = ({ onPress, name, isProfileLoading }) => (
   <TouchableOpacity onPress={onPress} style={styles.profileContainer}>
     <View style={styles.profileCircle}>
-      <Text style={styles.profileInitial}>{name && getInitials(name)}</Text>
+      {isProfileLoading ? <ShimmerSkeleton height={40} width={40} radius={"50%"} /> : <Text style={styles.profileInitial}>{name && getInitials(name)}</Text>}
     </View>
   </TouchableOpacity>
 );
@@ -67,7 +68,7 @@ const Header = ({
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const drawerAnimation = useState(new Animated.Value(Dimensions.get('window').width))[0];
   const navigation = useNavigation();
-  const { logout, profileData } = useAuth();
+  const { logout, profileData, isProfileLoading } = useAuth();
   // Sample notifications data
   const notifications = [
     { id: '1', title: 'Your order has been shipped', time: '5 min ago' },
@@ -130,11 +131,11 @@ const Header = ({
               </View>
             ) : (
               <View style={{ flexDirection: "row", alignItems: "center", gap: 15 }}>
-                <View style={{ backgroundColor: "#004B8869", borderRadius: "50%", height: 45, width: 45, justifyContent:"center", alignItems: "center" }}>
+                <View style={{ backgroundColor: "#004B8869", borderRadius: "50%", height: 45, width: 45, justifyContent: "center", alignItems: "center" }}>
                   <IconSVG />
                 </View>
                 <Text style={styles.title}>
-                  Hi <Text style={styles.highlightedName}>{profileData?.name}</Text>
+                  {isProfileLoading ? <ShimmerSkeleton height={23} width={180} /> : <>Hi <Text style={styles.highlightedName}>{profileData?.name}</Text></>}
                 </Text>
               </View>
             )}
@@ -143,7 +144,7 @@ const Header = ({
             {/* <TouchableOpacity onPress={toggleNotifications} style={styles.iconButton}>
               <BellIcon />
             </TouchableOpacity> */}
-            <ProfileIcon onPress={toggleProfileDrawer} name={profileData?.name} />
+            <ProfileIcon onPress={toggleProfileDrawer} name={profileData?.name} isProfileLoading={isProfileLoading} />
           </View>
         </View>
 

@@ -5,7 +5,7 @@ import { COLORS } from '../constants';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
-const ShimmerSkeleton = ({height = 50}) => {
+const ShimmerSkeleton = ({height = 50, width = "100%", radius = 8}) => {
   const shimmerTranslate = useRef(new Animated.Value(-1)).current;
 
   useEffect(() => {
@@ -25,7 +25,7 @@ const ShimmerSkeleton = ({height = 50}) => {
 
   return (
     <View style={styles.container}>
-      <View style={[styles.skeletonBox , {height: height}]}>
+      <View style={[styles.skeletonBox , {height: height, width: width, borderRadius: radius,} ]}>
         <Animated.View
           style={[
             styles.shimmerOverlay,
@@ -53,7 +53,6 @@ const styles = StyleSheet.create({
   },
   skeletonBox: {
     height: 60,
-    borderRadius: 8,
     backgroundColor: COLORS.cardColor,
     overflow: 'hidden',
   },
