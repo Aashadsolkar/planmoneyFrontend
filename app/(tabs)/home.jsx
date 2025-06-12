@@ -7,16 +7,13 @@ import {
     TouchableOpacity,
     FlatList,
     SafeAreaView,
-    ActivityIndicator,
     StatusBar,
-    Alert,
     Image,
-    Dimensions
+    Dimensions,
+    RefreshControl
 } from 'react-native';
 import {
     Ionicons,
-    MaterialCommunityIcons,
-    FontAwesome5,
     AntDesign,
     FontAwesome6
 } from '@expo/vector-icons';
@@ -24,15 +21,14 @@ import Header from '../components/Header';
 import { LinearGradient } from 'expo-linear-gradient';
 import { COLORS } from '../constants';
 import { useAuth } from '../context/useAuth';
-import { getProfileData, news } from '../utils/apiCaller';
 import { router, useNavigation } from 'expo-router';
 import Button from '../components/Button';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import FullScreenLoader from '../components/FullScreenLoader';
-import SkeletonList from '../components/ListSkeleton';
 import Foundation from '@expo/vector-icons/Foundation'
 import { BackHandler } from 'react-native';
 import * as Animatable from 'react-native-animatable';
+import ShimmerSkeleton from '../components/ListSkeleton';
+import { useHomeData } from '../hooks/useHomeData';
 
 
 const { height, width } = Dimensions.get("window");
@@ -55,16 +51,22 @@ export default function Home() {
     const { purchesService,
         allServices,
         setServiceSelectedOnHomePage,
-        isCustomerApiLoading,
-        getCustomerServiceAPi,
-        setProfileData,
-        token,
-        portfolioServices
+        portfolioServices,
+        newsData
     } = useAuth();
-    const [activeAccordion, setActiveAccordion] = useState(null);
-    const [isNewApiLoading, setIsNewApiLoading] = useState(true);
     const navigation = useNavigation();
-    const [newsData, setNewsData] = useState([]);
+    const {
+        isLoading,
+        refreshing,
+        onRefresh,
+    } = useHomeData();
+
+    const [showPullHint, setShowPullHint] = useState(true);
+
+    useEffect(() => {
+        const timer = setTimeout(() => setShowPullHint(false), 3000); // Hide after 3 sec
+        return () => clearTimeout(timer);
+    }, []);
 
 
     // 🚫 Prevent back button and swipe gestures
@@ -80,57 +82,6 @@ export default function Home() {
             backHandler.remove();
         };
     }, [navigation]);
-
-    useEffect(() => {
-        getCustomerServiceAPi();
-        const callProfileApi = async () => {
-            try {
-                const response = await getProfileData(token);
-                setProfileData(response?.data?.data);
-
-            } catch (error) {
-                Alert.alert(
-                    "Error",
-                    error?.message || "Failed to get profile data",
-                    [
-                        {
-                            text: "OK",
-                            onPress: () => router.push("home"),
-                        },
-                    ]
-                );
-            }
-        }
-        if (token) {
-            callProfileApi()
-        }
-    }, [])
-
-
-    useEffect(() => {
-        const getNew = async () => {
-            try {
-                const response = await news(token);
-                setIsNewApiLoading(false)
-                setNewsData(response?.data?.latest_news);
-
-            } catch (error) {
-                setIsNewApiLoading(false);
-                Alert.alert(
-                    "Error",
-                    error?.message || "Failed to get news",
-                    [
-                        {
-                            text: "OK",
-                            onPress: () => router.push("home"),
-                        },
-                    ]
-                );
-
-            }
-        }
-        getNew()
-    }, [])
 
     // Offer carousel data
     const initialOfferData = [
@@ -158,14 +109,12 @@ export default function Home() {
                 setServiceSelectedOnHomePage(4)
                 router.push("service");
             },
-            banner: ""
+            banner: require('../../assets/images/qauntomBanner.png')
         },
     ];
 
     const [offerData, setOfferData] = useState(initialOfferData);
     useEffect(() => {
-
-
         // Create a set of purchased service IDs
         const purchasedServiceIds = new Set(portfolioServices.map(service => service.id));
 
@@ -255,34 +204,21 @@ export default function Home() {
         )
     };
 
-    // Toggle accordion
-    const toggleAccordion = (id) => {
-        setActiveAccordion(activeAccordion === id ? null : id);
-    };
-
     const renderServices = () => {
         const renderData = purchesService.length > 0 ? purchesService : allServices
         return (
-                <FlatList
-                    data={renderData}
-                    renderItem={renderServiceItem}
+            <FlatList
+                data={renderData}
+                renderItem={renderServiceItem}
                 keyExtractor={item => item.id.toString()}
-                    horizontal
-                    showsHorizontalScrollIndicator={false}
-                    contentContainerStyle={styles.servicesListContainer}
-                            />
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={styles.servicesListContainer}
+            />
         )
-                }
+    }
 
     const renderNews = () => {
-        if (isNewApiLoading) {
-            return <>
-                <SkeletonList />
-                <SkeletonList />
-                <SkeletonList />
-                <SkeletonList />
-            </>
-        }
         return (
             newsData.map((item) => {
                 return (
@@ -296,15 +232,30 @@ export default function Home() {
         )
     }
 
-    if (isCustomerApiLoading) {
-        return <FullScreenLoader />
-    }
+    const renderContent = () => {
+        if (isLoading) {
+            return (
+                <View style={{ padding: 16 }}>
+                    <ShimmerSkeleton height={180} />
+                    <ShimmerSkeleton height={120} />
+                    {/* <ShimmerSkeleton height={50} /> */}
+                    <View style={{ flexDirection: "row", justifyContent: "space-evenly" }}>
+                        <ShimmerSkeleton height={60} width={60} />
+                        <ShimmerSkeleton height={60} width={60} />
+                        <ShimmerSkeleton height={60} width={60} />
+                        <ShimmerSkeleton height={60} width={60} />
+                    </View>
+                    <View>
+                        <ShimmerSkeleton height={80} />
+                        <ShimmerSkeleton height={80} />
+                        <ShimmerSkeleton height={80} />
+                    </View>
+                </View>
 
-    return (
-        <SafeAreaView style={styles.container}>
-            <StatusBar barStyle="light-content" backgroundColor={COLORS.cardColor} />
-            <Header showBackButton={false} />
-            <ScrollView style={styles.scrollView}>
+            )
+        }
+        return (
+            <>
                 {/* Offer Carousel Section */}
                 <View style={styles.carouselContainer}>
                     <ScrollView
@@ -319,7 +270,7 @@ export default function Home() {
                                 animation="fadeInRight"
                                 delay={index * 100}
                                 duration={300}
-                                // style={}
+                            // style={}
                             >
                                 <Image
                                     style={styles.offerCard}
@@ -388,8 +339,44 @@ export default function Home() {
                     {/* News Accordion */}
                     {renderNews()}
                 </View>
+            </>
+        )
+    }
+
+    return (
+        <SafeAreaView style={styles.container}>
+            <StatusBar barStyle="light-content" backgroundColor={COLORS.cardColor} />
+            <Header showBackButton={false} />
+            <ScrollView style={styles.scrollView}
+                refreshControl={
+                    <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+                }
+            >
+                {showPullHint && (
+                    <Animatable.View
+                        animation="fadeIn"
+                        duration={1000}
+                        easing="ease-in-out"
+                        style={{ alignItems: 'center', paddingVertical: 10 }}
+                    >
+                        <Animatable.View
+                            animation="slideInDown"
+                            duration={1000}
+                            easing="ease-in-out"
+                            iterationCount="infinite"
+                            direction="alternate"
+                            style={{ transform: [{ translateY: 0 }] }}
+                        >
+                            <Ionicons name="arrow-down" size={22} color="#ccc" />
+                        </Animatable.View>
+                        <Text style={{ color: '#ccc', fontSize: 13, marginTop: 5 }}>
+                            Pull down to refresh
+                        </Text>
+                    </Animatable.View>
+                )}
+
+                {renderContent()}
             </ScrollView>
-            {/* <Tabs /> */}
         </SafeAreaView>
     );
 }
@@ -419,27 +406,11 @@ const styles = StyleSheet.create({
         right: 10,
         zIndex: 1,
     },
-    offerSubtitle: {
-        color: 'white',
-        fontSize: 14,
-        marginBottom: 5,
-    },
     offerTitle: {
         color: 'white',
         fontSize: 20,
         fontWeight: 'bold',
         marginBottom: 20,
-    },
-    offerButton: {
-        backgroundColor: 'rgba(0, 0, 0, 0.2)',
-        paddingVertical: 8,
-        paddingHorizontal: 15,
-        borderRadius: 20,
-        alignSelf: 'flex-start',
-    },
-    offerButtonText: {
-        color: 'white',
-        fontWeight: '500',
     },
     sectionContainer: {
         marginTop: 10,
@@ -472,10 +443,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginBottom: 15,
     },
-    updateContainer: {
-        borderRadius: 12,
-        marginRight: 8,
-    },
     updateText: {
         color: "#ccc",
         fontSize: 16,
@@ -490,11 +457,6 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         marginTop: "auto"
-    },
-    updateDateText: {
-        color: 'white',
-        fontSize: 12,
-        fontWeight: 500
     },
     linksContainer: {
         flexDirection: 'row',
@@ -543,39 +505,6 @@ const styles = StyleSheet.create({
         fontSize: 14,
         marginRight: 5,
     },
-    accordionItem: {
-        backgroundColor: 'rgba(255, 255, 255, 0.05)',
-        borderRadius: 10,
-        marginBottom: 10,
-        overflow: 'hidden',
-    },
-    accordionHeader: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        padding: 15,
-    },
-    accordionTitle: {
-        color: 'white',
-        fontSize: 14,
-        flex: 1,
-        paddingRight: 10,
-    },
-    accordionIcon: {
-        transform: [{ rotate: '0deg' }],
-    },
-    accordionIconActive: {
-        transform: [{ rotate: '90deg' }],
-    },
-    accordionContent: {
-        padding: 15,
-        paddingTop: 0,
-        backgroundColor: 'rgba(255, 255, 255, 0.03)',
-    },
-    accordionContentText: {
-        color: '#CCC',
-        fontSize: 14,
-    },
     card: {
         backgroundColor: COLORS.cardColor,
         borderRadius: 12,
@@ -599,22 +528,5 @@ const styles = StyleSheet.create({
         fontSize: 14,
         flex: 1,
         marginRight: 8,
-    },
-    dotContainer: {
-        flexDirection: 'row',
-        justifyContent: 'center',
-        marginTop: 10,
-    },
-    dot: {
-        width: 8,
-        height: 8,
-        borderRadius: 4,
-        backgroundColor: COLORS.cardColor,
-        marginHorizontal: 4,
-    },
-    activeDot: {
-        backgroundColor: COLORS.secondaryColor, // Active dot color
-        width: 10,
-        height: 10,
     },
 });

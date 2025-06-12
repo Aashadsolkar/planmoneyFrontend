@@ -15,7 +15,7 @@ const OrderConfirm = () => {
   const route = useRoute()
   const { orderId } = route.params || {}
   // const { orderId } = useSearchParams();
-  const { orderConfirmDetails, token, profileData, selectedService, prePaymentDetails } = useAuth()
+  const { orderConfirmDetails, token, profileData, selectedService, prePaymentDetails, setGetCustomerDataAgain } = useAuth()
   const [orderDetails, setOrderDetails] = useState(null)
   const [loading, setLoading] = useState(true)
   const [verifyComplete, setVerifyComplete] = useState(false)
@@ -48,6 +48,7 @@ const OrderConfirm = () => {
 
 
         const response = await buySubscription(token, payload)
+        setGetCustomerDataAgain(true);
         if (
           response?.message &&
           response.message.toLowerCase().includes("payment failed")

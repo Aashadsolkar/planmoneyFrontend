@@ -23,8 +23,10 @@ const AuthProvider = ({ children }) => {
   const [customerServiceData, setCustomerServiceData] = useState("")
   const [riskData, setRiskData] = useState("")
   const [reportData, setReportData] = useState({})
-  const [isCustomerApiLoading, setIsCustomerApiLoading] = useState(true);
   const [portfolioServices, setPortfolioServices] = useState([])
+  const [getCustomerDataAgain, setGetCustomerDataAgain] = useState(true);
+  const [newsData, setNewsData] = useState([]);
+  const [isProfileLoading, setIsProfileLoading] = useState(false);
 
   useEffect(() => {
     const loadSession = async () => {
@@ -73,59 +75,12 @@ const AuthProvider = ({ children }) => {
     setPurchesService([]);
     setSelectedService([]);
     setAllServices([]);
+    setGetCustomerDataAgain(true)
     router.push("login")
     await AsyncStorage.clear();
   };
 
-  const getCustomerServiceAPi = async () => {
-    try {
-      setIsCustomerApiLoading(true);
-      const response = await customerService(token)
-      setCustomerServiceData(response?.data)
-      const filterPurchesService = response?.data?.services?.filter((service) => service.is_subscribed)
-      if (filterPurchesService.length > 0) {
-        const filteredPortfolioService = filterPurchesService.filter(service =>
-          service.is_subscribed &&
-          (
-            service.name === "Portfolio Management Subscription" ||
-            service.name === "QuantumVault (For Above ₹50 lakh Capital)" ||
-            service.name === "Personalised Investment Services"
-          )
-        );
-        setPortfolioServices(filteredPortfolioService);
-        setPurchesService(filterPurchesService);
-        if (response?.data?.kyc_status == 0) {
-          router.push("forms/kyc");
-          return
-        }
-        if (!skipQuestioniar) {
-          if (response?.data?.questionnaire_status == 0) {
-            router.push("forms/personalDetails");
-            return
-          }
-        }
-      } else {
-        if (!skipServices) {
-          router.push("service");
-        }
-      }
-      setIsCustomerApiLoading(false);
-    } catch (error) {
-      setIsCustomerApiLoading(false)
-      Alert.alert(
-        "Error",
-        error?.message || "Failed to get customer data",
-        [
-          {
-            text: "OK",
-            onPress: () => router.push("home"),
-          },
-        ]
-      );
-
-
-    }
-  }
+ 
 
   return (
     <AuthContext.Provider value={{
@@ -158,11 +113,16 @@ const AuthProvider = ({ children }) => {
       setRiskData,
       setReportData,
       reportData,
-      isCustomerApiLoading,
-      getCustomerServiceAPi,
       setSkipQuestioniar,
       skipQuestioniar,
-      portfolioServices
+      portfolioServices,
+      setGetCustomerDataAgain,
+      getCustomerDataAgain,
+      setPortfolioServices,
+      setNewsData,
+      newsData,
+      isProfileLoading,
+      setIsProfileLoading
     }}>
       {children}
     </AuthContext.Provider>

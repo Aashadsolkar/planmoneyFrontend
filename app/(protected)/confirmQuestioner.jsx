@@ -4,12 +4,16 @@ import { COLORS } from "../constants";
 import Button from "../components/Button";
 import { router, useNavigation } from "expo-router";
 import { useEffect } from "react";
+import { useAuth } from "../context/useAuth";
 
 export default function App() {
     const navigation = useNavigation();
+    const { setGetCustomerDataAgain
+        } = useAuth();
 
     // 🚫 Prevent back button and swipe gestures
         useEffect(() => {
+            setGetCustomerDataAgain(true);
           const unsubscribe = navigation.addListener('beforeRemove', (e) => {
             e.preventDefault(); // Block back navigation
           });
