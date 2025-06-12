@@ -190,7 +190,7 @@ const FastLane = () => {
     }
     const backButtonText = () => {
         return (
-            <Text style={{ color: COLORS.fontWhite, fontSize: 18, fontWeight: 600 }}>{id == 1 ? "FastLane" : "Premium Research"}</Text>
+            <Text style={{ color: COLORS.fontWhite, fontSize: 18, fontWeight: 600 }}>{id == 1 ? "FastLane" : "PIS"}</Text>
         )
     }
     return (

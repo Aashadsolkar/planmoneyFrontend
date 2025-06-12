@@ -13,12 +13,10 @@ import CustomSplash from "./components/CustomSplashScreen";
 SplashScreen.preventAutoHideAsync();
 
 const RootLayout = () => {
-  const [appIsReady, setAppIsReady] = useState(false);
+  const [showCustomSplash, setShowCustomSplash] = useState(false);
   const [isConnected, setIsConnected] = useState(true);
-  const [showSplash,setShowSplash]=useState(true);
   const router = useRouter();
-    
- 
+
   useEffect(() => {
     const subscription = Linking.addEventListener("url", ({ url }) => {
       const { path } = Linking.parse(url);
@@ -30,22 +28,28 @@ const RootLayout = () => {
     return () => subscription.remove();
   }, []);
 
-  
-
   useEffect(() => {
-    const prepareApp = async () => {
+    // Timer 1: Hide default splash after 100ms and show custom splash
+    const hideDefaultSplashTimer = setTimeout(async () => {
       try {
-        // Do any app initialization logic here (e.g., loading fonts, tokens)
-        await new Promise((resolve) => setTimeout(resolve, 2000));
-      } catch (e) {
-        console.warn("App init error:", e);
-      } finally {
-        setAppIsReady(true);
-        setShowSplash(false);
+        await SplashScreen.hideAsync();
+        setShowCustomSplash(true);
+      } catch (error) {
+        console.warn("Error hiding splash screen:", error);
+        setShowCustomSplash(true);
       }
-    };
+    }, 50);
 
-    prepareApp();
+    // Timer 2: Hide custom splash after 2100ms total (100ms + 2000ms)
+    const hideCustomSplashTimer = setTimeout(() => {
+      setShowCustomSplash(false);
+    }, 4500);
+
+    // Cleanup timers
+    return () => {
+      clearTimeout(hideDefaultSplashTimer);
+      clearTimeout(hideCustomSplashTimer);
+    };
   }, []);
 
   useEffect(() => {
@@ -55,21 +59,13 @@ const RootLayout = () => {
 
     return () => unsubscribe();
   }, []);
-
-  const onLayoutRootView = useCallback(async () => {
-    if (appIsReady) {
-      await SplashScreen.hideAsync();
-    }
-  }, [appIsReady,showSplash]);
-
-  if (!appIsReady) return null;
-if(showSplash) {
-  return <CustomSplash/>
-}
+  if (showCustomSplash) {
+    return <CustomSplash />;
+  }
   return isConnected ? (
     <AuthProvider>
       <PaperProvider>
-        <View style={{ flex: 1 }} onLayout={onLayoutRootView}>
+        <View style={{ flex: 1 }}>
           <Slot />
         </View>
       </PaperProvider>

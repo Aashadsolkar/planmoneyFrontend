@@ -79,30 +79,47 @@ const CustomSlider = ({
   )
 }
 
+// export default function SIPCalculator() {
+//   const [monthlyAmount, setMonthlyAmount] = useState(5000)
+//   const [monthlyAmountInput, setMonthlyAmountInput] = useState(monthlyAmount.toString())
+//   const [interestRate, setInterestRate] = useState(12)
+//   const [years, setYears] = useState(10)
+//   const [maturityAmount, setMaturityAmount] = useState(0)
+//   const [totalInvested, setTotalInvested] = useState(0)
+//   const [totalReturns, setTotalReturns] = useState(0)
+//   const [useCustomSlider, setUseCustomSlider] = useState(Platform.OS === "android")
+
+// Calculate SIP maturity amount
 export default function SIPCalculator() {
-  const [monthlyAmount, setMonthlyAmount] = useState(5000)
+  const [monthlyAmount, setMonthlyAmount] = useState(500)
   const [interestRate, setInterestRate] = useState(12)
   const [years, setYears] = useState(10)
+
+  const [monthlyAmountInput, setMonthlyAmountInput] = useState("500")
+  const [interestRateInput, setInterestRateInput] = useState("12")
+  const [yearsInput, setYearsInput] = useState("10")
+
   const [maturityAmount, setMaturityAmount] = useState(0)
   const [totalInvested, setTotalInvested] = useState(0)
   const [totalReturns, setTotalReturns] = useState(0)
   const [useCustomSlider, setUseCustomSlider] = useState(Platform.OS === "android")
 
-  // Calculate SIP maturity amount
   const calculateSIP = () => {
     const monthlyRate = interestRate / 12 / 100
     const totalMonths = years * 12
     const invested = monthlyAmount * totalMonths
 
     if (monthlyRate === 0) {
-      const maturity = invested
-      setMaturityAmount(maturity)
+      setMaturityAmount(invested)
       setTotalInvested(invested)
       setTotalReturns(0)
       return
     }
 
-    const maturity = monthlyAmount * (((Math.pow(1 + monthlyRate, totalMonths) - 1) / monthlyRate) * (1 + monthlyRate))
+    const maturity =
+      monthlyAmount *
+      (((Math.pow(1 + monthlyRate, totalMonths) - 1) / monthlyRate) * (1 + monthlyRate))
+
     const returns = maturity - invested
 
     setMaturityAmount(maturity)
@@ -111,52 +128,52 @@ export default function SIPCalculator() {
   }
 
   useEffect(() => {
-    calculateSIP()
+    const timer = setTimeout(() => {
+      calculateSIP()
+    }, 300)
+    return () => clearTimeout(timer)
   }, [monthlyAmount, interestRate, years])
 
   const formatCurrency = (amount) => {
-    return new Intl.NumberFormat("en-IN", {
-      style: "currency",
-      currency: "INR",
-      maximumFractionDigits: 0,
-    }).format(amount)
-  }
-
-  const formatNumber = (num) => {
-    return new Intl.NumberFormat("en-IN").format(num)
+    try {
+      return new Intl.NumberFormat("en-IN", {
+        style: "currency",
+        currency: "INR",
+        maximumFractionDigits: 0,
+      }).format(amount)
+    } catch {
+      return `₹${amount}`
+    }
   }
 
   const handleAmountChange = (text) => {
-    const numValue = Number.parseInt(text.replace(/[^0-9]/g, "")) || 0
-    setMonthlyAmount(Math.min(Math.max(numValue, 500), 100000))
+    setMonthlyAmountInput(text)
+    const num = parseInt(text.replace(/[^0-9]/g, ""), 10) || 0
+    const clamped = Math.min(Math.max(num, 500), 100000)
+    setMonthlyAmount(clamped)
   }
 
   const handleRateChange = (text) => {
-    const numValue = Number.parseFloat(text.replace(/[^0-9.]/g, "")) || 0
-    setInterestRate(Math.min(Math.max(numValue, 1), 30))
+    setInterestRateInput(text)
+    const num = parseFloat(text.replace(/[^0-9.]/g, "")) || 0
+    const clamped = Math.min(Math.max(num, 1), 30)
+    setInterestRate(clamped)
   }
 
   const handleYearsChange = (text) => {
-    const numValue = Number.parseInt(text.replace(/[^0-9]/g, "")) || 0
-    setYears(Math.min(Math.max(numValue, 1), 40))
+    setYearsInput(text)
+    const num = parseInt(text.replace(/[^0-9]/g, ""), 10) || 0
+    const clamped = Math.min(Math.max(num, 1), 40)
+    setYears(clamped)
   }
 
-
+  const investedPercentage = maturityAmount ? (totalInvested / maturityAmount) * 100 : 0
+  const returnsPercentage = maturityAmount ? (totalReturns / maturityAmount) * 100 : 0
 
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor={COLORS.cardColor} />
-      <Header
-        showBackButton={true}
-      />
-      {/* 
-      <LinearGradient colors={["#6366f1", "#8b5cf6", "#a855f7"]} style={styles.header}>
-        <View style={styles.headerContent}>
-          <Ionicons name="calculator" size={32} color="white" />
-          <Text style={styles.headerTitle}>SIP Calculator</Text>
-          <Text style={styles.headerSubtitle}>Plan your systematic investments</Text>
-        </View>
-      </LinearGradient> */}
+      <Header showBackButton />
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {/* Monthly Investment Amount */}
@@ -169,17 +186,21 @@ export default function SIPCalculator() {
             <Text style={styles.currencySymbol}>₹</Text>
             <TextInput
               style={styles.textInput}
-              value={formatNumber(monthlyAmount)}
+              value={monthlyAmountInput}
               onChangeText={handleAmountChange}
               keyboardType="numeric"
-              placeholder="5,000"
+              placeholder="500"
+              placeholderTextColor="rgba(211, 211, 211, 0.5)"
             />
           </View>
 
           {useCustomSlider ? (
             <CustomSlider
               value={monthlyAmount}
-              onValueChange={setMonthlyAmount}
+              onValueChange={(v) => {
+                setMonthlyAmount(v)
+                setMonthlyAmountInput(v.toString())
+              }}
               minimumValue={500}
               maximumValue={100000}
               step={500}
@@ -187,16 +208,16 @@ export default function SIPCalculator() {
             />
           ) : (
             <Slider
-              style={styles.slider}
               minimumValue={500}
               maximumValue={100000}
               step={500}
               value={monthlyAmount}
-              onValueChange={setMonthlyAmount}
+              onValueChange={(v) => {
+                setMonthlyAmount(v)
+                setMonthlyAmountInput(v.toString())
+              }}
               minimumTrackTintColor="#6366f1"
               maximumTrackTintColor="#e5e7eb"
-              thumbStyle={styles.sliderThumb}
-              trackStyle={styles.sliderTrack}
             />
           )}
 
@@ -215,10 +236,11 @@ export default function SIPCalculator() {
           <View style={styles.inputContainer}>
             <TextInput
               style={styles.textInput}
-              value={interestRate.toString()}
+              value={interestRateInput}
               onChangeText={handleRateChange}
               keyboardType="numeric"
               placeholder="12"
+              placeholderTextColor="rgba(211, 211, 211, 0.5)"
             />
             <Text style={styles.percentSymbol}>%</Text>
           </View>
@@ -226,7 +248,10 @@ export default function SIPCalculator() {
           {useCustomSlider ? (
             <CustomSlider
               value={interestRate}
-              onValueChange={setInterestRate}
+              onValueChange={(v) => {
+                setInterestRate(v)
+                setInterestRateInput(v.toString())
+              }}
               minimumValue={1}
               maximumValue={30}
               step={0.5}
@@ -239,7 +264,10 @@ export default function SIPCalculator() {
               maximumValue={30}
               step={0.5}
               value={interestRate}
-              onValueChange={setInterestRate}
+              onValueChange={(v) => {
+                setInterestRate(v)
+                setInterestRateInput(v.toString())
+              }}
               minimumTrackTintColor="#10b981"
               maximumTrackTintColor="#e5e7eb"
               thumbStyle={styles.sliderThumb}
@@ -262,10 +290,11 @@ export default function SIPCalculator() {
           <View style={styles.inputContainer}>
             <TextInput
               style={styles.textInput}
-              value={years.toString()}
+              value={yearsInput}
               onChangeText={handleYearsChange}
               keyboardType="numeric"
               placeholder="10"
+              placeholderTextColor="rgba(211, 211, 211, 0.5)"
             />
             <Text style={styles.percentSymbol}>Years</Text>
           </View>
@@ -273,7 +302,10 @@ export default function SIPCalculator() {
           {useCustomSlider ? (
             <CustomSlider
               value={years}
-              onValueChange={setYears}
+              onValueChange={(v) => {
+                setYearsInput(v.toString())
+                setYears(v)
+              }}
               minimumValue={1}
               maximumValue={40}
               step={1}
@@ -286,7 +318,10 @@ export default function SIPCalculator() {
               maximumValue={40}
               step={1}
               value={years}
-              onValueChange={setYears}
+              onValueChange={(v) => {
+                setYearsInput(v.toString())
+                setYears(v)
+              }}
               minimumTrackTintColor="#f59e0b"
               maximumTrackTintColor="#e5e7eb"
               thumbStyle={styles.sliderThumb}
@@ -483,7 +518,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     backgroundColor: "#6366f1",
     marginLeft: -12,
-    marginTop: 0,
+    // marginTop: -10,
     shadowColor: "#000",
     shadowOffset: {
       width: 0,

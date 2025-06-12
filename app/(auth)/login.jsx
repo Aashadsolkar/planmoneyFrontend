@@ -21,6 +21,7 @@ import { login } from '../utils/apiCaller';
 import { COLORS } from '../constants';
 import LogoSVG from '../components/LogoSVG';
 import * as Animatable from 'react-native-animatable';
+import { customerLogin } from '../utils/apis/customer-api-caller';
 
 const { height, width } = Dimensions.get('window');
 
@@ -61,7 +62,7 @@ const Login = () => {
 
     if (Object.keys(newErrors).length === 0) {
       try {
-        const response = await login({
+        const response = await customerLogin({
           email_or_phone: formData.email_or_phone,
           password: formData.password,
         });
