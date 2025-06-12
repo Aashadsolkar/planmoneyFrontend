@@ -38,134 +38,99 @@ import * as Animatable from 'react-native-animatable';
 const { height, width } = Dimensions.get("window");
 
 const NewsCard = ({ title = "", summary = "", id }) => (
-  <TouchableOpacity
-    style={styles.card}
-    onPress={() => router.push(`singleNews/${id}`)}
-  >
-    <View style={{ width: "90%" }}>
-      <Text style={styles.title} numberOfLines={1}>
-        {title}
-      </Text>
-      <Text style={styles.summary} numberOfLines={2}>
-        {summary}
-      </Text>
-    </View>
-    <Ionicons
-      name="chevron-forward"
-      size={25}
-      color="#f5a623"
-      style={{ width: "10%" }}
-    />
-  </TouchableOpacity>
+    <TouchableOpacity style={styles.card} onPress={() => router.push(`singleNews/${id}`)}>
+        <View style={{ width: "90%" }}>
+            <Text style={styles.title} numberOfLines={1}>
+                {title}
+            </Text>
+            <Text style={styles.summary} numberOfLines={2}>
+                {summary}
+            </Text>
+        </View>
+        <Ionicons name="chevron-forward" size={25} color="#f5a623" style={{ width: "10%" }} />
+    </TouchableOpacity>
 );
 
 export default function Home() {
-  const {
-    purchesService,
-    allServices,
-    setServiceSelectedOnHomePage,
-    isCustomerApiLoading,
-    getCustomerServiceAPi,
-    setProfileData,
-    token,
-    portfolioServices,
-  } = useAuth();
-  const [activeAccordion, setActiveAccordion] = useState(null);
-  const [isNewApiLoading, setIsNewApiLoading] = useState(true);
-  const navigation = useNavigation();
-  const [newsData, setNewsData] = useState([]);
-  const expoToken = usePushNotification();
-  useEffect(() => {
-    const registerToken = async () => {
-      if (!expoToken || !token) return;
+    const { purchesService,
+        allServices,
+        setServiceSelectedOnHomePage,
+        isCustomerApiLoading,
+        getCustomerServiceAPi,
+        setProfileData,
+        token,
+        portfolioServices
+    } = useAuth();
+    const [activeAccordion, setActiveAccordion] = useState(null);
+    const [isNewApiLoading, setIsNewApiLoading] = useState(true);
+    const navigation = useNavigation();
+    const [newsData, setNewsData] = useState([]);
 
-      try {
-        const key = `pushTokenRegistered:${token}`; // unique per user
-        const alreadyRegistered = await AsyncStorage.getItem(key);
 
-        if (alreadyRegistered === "true") {
-          console.log("✅ Push token already registered for this user.");
-          return;
+    // 🚫 Prevent back button and swipe gestures
+    useEffect(() => {
+        const unsubscribe = navigation.addListener('beforeRemove', (e) => {
+            e.preventDefault(); // Block back navigation
+        });
+
+        const backHandler = BackHandler.addEventListener('hardwareBackPress', () => true); // Block Android hardware back
+
+        return () => {
+            unsubscribe();
+            backHandler.remove();
+        };
+    }, [navigation]);
+
+    useEffect(() => {
+        getCustomerServiceAPi();
+        const callProfileApi = async () => {
+            try {
+                const response = await getProfileData(token);
+                setProfileData(response?.data?.data);
+
+            } catch (error) {
+                Alert.alert(
+                    "Error",
+                    error?.message || "Failed to get profile data",
+                    [
+                        {
+                            text: "OK",
+                            onPress: () => router.push("home"),
+                        },
+                    ]
+                );
+            }
         }
-
-        const response = await RegisterPushNotificationToken(expoToken, token);
-
-        if (response?.status || response?.message) {
-          Alert.alert(
-            "✅ Notification",
-            "Push notification service activated."
-          );
-          await AsyncStorage.setItem(key, "true");
-        } else {
-          console.error("❌ Failed to register token:", response);
-          Alert.alert(
-            "❌ Failed",
-            response?.message || "Could not register push token."
-          );
+        if (token) {
+            callProfileApi()
         }
-      } catch (error) {
-        console.error("❌ Push token registration error:", error);
-        Alert.alert("❌ Error", error.message || "Unexpected error occurred.");
-      }
-    };
+    }, [])
 
-    registerToken();
-  }, [expoToken, token]);
-  // 🚫 Prevent back button and swipe gestures
-  useEffect(() => {
-    const unsubscribe = navigation.addListener("beforeRemove", (e) => {
-      e.preventDefault(); // Block back navigation
-    });
 
-    const backHandler = BackHandler.addEventListener(
-      "hardwareBackPress",
-      () => true
-    ); // Block Android hardware back
+    useEffect(() => {
+        const getNew = async () => {
+            try {
+                const response = await news(token);
+                setIsNewApiLoading(false)
+                setNewsData(response?.data?.latest_news);
 
-    return () => {
-      unsubscribe();
-      backHandler.remove();
-    };
-  }, [navigation]);
+            } catch (error) {
+                setIsNewApiLoading(false);
+                Alert.alert(
+                    "Error",
+                    error?.message || "Failed to get news",
+                    [
+                        {
+                            text: "OK",
+                            onPress: () => router.push("home"),
+                        },
+                    ]
+                );
 
-  useEffect(() => {
-    getCustomerServiceAPi();
-    const callProfileApi = async () => {
-      try {
-        const response = await getProfileData(token);
-        setProfileData(response?.data?.data);
-      } catch (error) {
-        Alert.alert("Error", error?.message || "Failed to get profile data", [
-          {
-            text: "OK",
-            onPress: () => router.push("home"),
-          },
-        ]);
-      }
-    };
-    if (token) {
-      callProfileApi();
-    }
-  }, []);
-
-  useEffect(() => {
-    const getNew = async () => {
-      try {
-        const response = await news(token);
-        setIsNewApiLoading(false);
-        setNewsData(response?.data?.latest_news);
-      } catch (error) {
-        setIsNewApiLoading(false);
-        Alert.alert("Error", error?.message || "Failed to get news", [
-          {
-            text: "OK",
-            onPress: () => router.push("home"),
-          },
-        ]);
-      }
-    };
-    getNew();
-  }, []);
+            }
+        }
+        getNew()
+    }, [])
 
     // Offer carousel data
     const initialOfferData = [
@@ -197,20 +162,21 @@ export default function Home() {
         },
     ];
 
-  const [offerData, setOfferData] = useState(initialOfferData);
-  useEffect(() => {
-    // Create a set of purchased service IDs
-    const purchasedServiceIds = new Set(
-      portfolioServices.map((service) => service.id)
-    );
+    const [offerData, setOfferData] = useState(initialOfferData);
+    useEffect(() => {
 
-    // Filter offer data
-    const filteredOffers = initialOfferData.filter(
-      (offer) => !offer.serviceId || !purchasedServiceIds.has(offer.serviceId)
-    );
 
-    setOfferData(filteredOffers);
-  }, [portfolioServices]);
+        // Create a set of purchased service IDs
+        const purchasedServiceIds = new Set(portfolioServices.map(service => service.id));
+
+        // Filter offer data
+        const filteredOffers = initialOfferData.filter(
+            offer => !offer.serviceId || !purchasedServiceIds.has(offer.serviceId)
+        );
+
+        setOfferData(filteredOffers);
+    }, [portfolioServices]);
+
 
     const handleClick = (item) => {
 
@@ -229,91 +195,70 @@ export default function Home() {
 
         }
     }
-  };
 
-  const handleServiceClick = (item) => {
-    setServiceSelectedOnHomePage(item.id);
-    navigation.navigate("service");
-  };
+    const handleServiceClick = (item) => {
+        setServiceSelectedOnHomePage(item.id);
+        navigation.navigate('service');
+    };
 
-  // Render services carousel item
-  const renderServiceItem = ({ item }) => {
-    const is__not_subscribed = !item.is_subscribed;
 
-    return (
-      <Animatable.View
-        key={item.id}
-        animation="fadeInRight"
-        delay={item.id * 100}
-        duration={300}
-      >
-        <LinearGradient
-          start={{ x: 1, y: 0 }}
-          end={{ x: 0, y: 0 }}
-          colors={
-            is__not_subscribed
-              ? [COLORS.cardColor, COLORS.cardColor]
-              : ["#AF125D", "#D36C32"]
-          }
-          // style={}
-          style={[styles.serviceCard]}
-        >
-          <Text style={styles.serviceTitle}>{item?.name}</Text>
-          <View style={styles.serviceInfoRow}></View>
-          <View style={styles.serviceFooter}>
-            {is__not_subscribed ? (
-              <>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    width: "100%",
-                  }}
+    // Render services carousel item
+    const renderServiceItem = ({ item }) => {
+
+        const is__not_subscribed = !item.is_subscribed;
+
+        return (
+            <Animatable.View
+                key={item.id}
+                animation="fadeInRight"
+                delay={item.id * 100}
+                duration={300}
+            >
+                <LinearGradient
+                    start={{ x: 1, y: 0 }}
+                    end={{ x: 0, y: 0 }}
+                    colors={is__not_subscribed ? [COLORS.cardColor, COLORS.cardColor] : ['#AF125D', '#D36C32']}
+                    // style={}
+                    style={[styles.serviceCard]}
                 >
-                  <View style={{ justifyContent: "center", paddingEnd: 20 }}>
-                    <Text style={{ fontSize: 10, color: COLORS.fontWhite }}>
-                      Start from
-                    </Text>
-                    <Text style={{ fontSize: 12, color: COLORS.fontWhite }}>
-                      ₹{item.plans?.[0]?.offer_price}
-                    </Text>
-                  </View>
-                  <View style={{ flex: 1 }}>
-                    <Button
-                      onClick={() => handleServiceClick(item)}
-                      label={"subscribe now"}
-                      gradientColor={["#D36C32", "#F68F00"]}
-                      buttonStye={{ padding: 10 }}
-                    />
-                  </View>
-                </View>
-              </>
-            ) : (
-              <>
-                <View>
-                  <Text style={styles.updateText}>Expire On</Text>
-                  <Text style={styles.dateText}>
-                    {item?.subscription?.end_at}
-                  </Text>
-                </View>
-                <MaterialIcons
-                  onPress={() => handleClick(item)}
-                  name="chevron-right"
-                  size={40}
-                  color="#fff"
-                />
-              </>
-            )}
-          </View>
-        </LinearGradient>
-      </Animatable.View>
-    );
-  };
+                    <Text style={styles.serviceTitle}>{item?.name}</Text>
+                    <View style={styles.serviceInfoRow}>
+                    </View>
+                    <View style={styles.serviceFooter}>
+                        {
+                            is__not_subscribed ? <>
+                                <View style={{ flexDirection: "row", justifyContent: "space-between", width: "100%" }}>
+                                    <View style={{ justifyContent: "center", paddingEnd: 20 }}>
+                                        <Text style={{ fontSize: 10, color: COLORS.fontWhite }}>Start from</Text>
+                                        <Text style={{ fontSize: 12, color: COLORS.fontWhite }}>₹{item.plans?.[0]?.offer_price}</Text>
+                                    </View>
+                                    <View style={{ flex: 1 }}>
+                                        <Button onClick={() => handleServiceClick(item)}
+                                            label={"subscribe now"}
+                                            gradientColor={['#D36C32', '#F68F00']}
+                                            buttonStye={{ padding: 10 }}
 
-  // Toggle accordion
-  const toggleAccordion = (id) => {
-    setActiveAccordion(activeAccordion === id ? null : id);
-  };
+                                        />
+                                    </View>
+                                </View>
+                            </> : <>
+                                <View>
+                                    <Text style={styles.updateText}>Expire On</Text>
+                                    <Text style={styles.dateText}>{item?.subscription?.end_at}</Text>
+                                </View>
+                                <MaterialIcons onPress={() => handleClick(item)} name="chevron-right" size={40} color="#fff" />
+                            </>
+                        }
+                    </View>
+                </LinearGradient>
+            </Animatable.View>
+        )
+    };
+
+    // Toggle accordion
+    const toggleAccordion = (id) => {
+        setActiveAccordion(activeAccordion === id ? null : id);
+    };
 
     const renderServices = () => {
         const renderData = purchesService.length > 0 ? purchesService : allServices
@@ -329,32 +274,31 @@ export default function Home() {
         )
                 }
 
-  const renderNews = () => {
-    if (isNewApiLoading) {
-      return (
-        <>
-          <SkeletonList />
-          <SkeletonList />
-          <SkeletonList />
-          <SkeletonList />
-        </>
-      );
+    const renderNews = () => {
+        if (isNewApiLoading) {
+            return <>
+                <SkeletonList />
+                <SkeletonList />
+                <SkeletonList />
+                <SkeletonList />
+            </>
+        }
+        return (
+            newsData.map((item) => {
+                return (
+                    <NewsCard title={item?.title}
+                        summary={item?.summary}
+                        id={item?.id}
+                        key={item?.id}
+                    />
+                )
+            })
+        )
     }
-    return newsData.map((item) => {
-      return (
-        <NewsCard
-          title={item?.title}
-          summary={item?.summary}
-          id={item?.id}
-          key={item?.id}
-        />
-      );
-    });
-  };
 
-  if (isCustomerApiLoading) {
-    return <FullScreenLoader />;
-  }
+    if (isCustomerApiLoading) {
+        return <FullScreenLoader />
+    }
 
     return (
         <SafeAreaView style={styles.container}>
@@ -388,104 +332,66 @@ export default function Home() {
                 </View>
 
 
-        {/* Services Section */}
-        <View style={styles.sectionContainer}>
-          <Text style={styles.sectionTitle}>
-            {purchesService.length > 0 ? "Your Services" : "Buy Service"}
-          </Text>
-          {renderServices()}
-        </View>
+                {/* Services Section */}
+                <View style={styles.sectionContainer}>
+                    <Text style={styles.sectionTitle}>{purchesService.length > 0 ? "Your Services" : "Buy Service"}</Text>
+                    {renderServices()}
+                </View>
 
-        {/* Quick Links Section */}
-        <View style={styles.linksContainer}>
-          <Animatable.View
-            animation="zoomIn"
-            delay={100}
-            duration={100}
-            style={styles.linkItem}
-          >
-            <TouchableOpacity
-              style={styles.linkItem}
-              onPress={() => router.push("portfolio")}
-            >
-              <View style={styles.linkIconContainer}>
-                <FontAwesome6
-                  size={35}
-                  name="chart-pie"
-                  color={COLORS.secondaryColor}
-                />
-              </View>
-              <Text style={styles.linkText}>Portfolio</Text>
-            </TouchableOpacity>
-          </Animatable.View>
+                {/* Quick Links Section */}
+                <View style={styles.linksContainer}>
+                    <Animatable.View animation="zoomIn" delay={100} duration={100} style={styles.linkItem}>
+                        <TouchableOpacity style={styles.linkItem} onPress={() => router.push("portfolio")}>
+                            <View style={styles.linkIconContainer}>
+                                <FontAwesome6 size={35} name="chart-pie" color={COLORS.secondaryColor} />
+                            </View>
+                            <Text style={styles.linkText}>Portfolio</Text>
+                        </TouchableOpacity>
+                    </Animatable.View>
 
-          {/* <TouchableOpacity style={styles.linkItem} onPress={() => router.push("upcoming")}>
+                    {/* <TouchableOpacity style={styles.linkItem} onPress={() => router.push("upcoming")}>
                         <View style={styles.linkIconContainer}>
                             <MaterialCommunityIcons name="wallet-outline" size={35} color="#FFA500" />
                         </View>
                         <Text style={styles.linkText}>Wallet</Text>
                     </TouchableOpacity> */}
-          <Animatable.View
-            animation="zoomIn"
-            delay={200}
-            duration={200}
-            style={styles.linkItem}
-          >
-            <TouchableOpacity
-              onPress={() => router.push("sip")}
-              style={styles.linkItem}
-            >
-              <View style={styles.linkIconContainer}>
-                <Ionicons name="calculator" size={40} color="#FFA500" />
-              </View>
-              <Text style={styles.linkText}>SIP Calculator</Text>
-            </TouchableOpacity>
-          </Animatable.View>
+                    <Animatable.View animation="zoomIn" delay={200} duration={200} style={styles.linkItem}>
+                        <TouchableOpacity onPress={() => router.push("sip")} style={styles.linkItem}>
+                            <View style={styles.linkIconContainer}>
+                                <Ionicons name="calculator" size={40} color="#FFA500" />
+                            </View>
+                            <Text style={styles.linkText}>SIP Calculator</Text>
+                        </TouchableOpacity>
+                    </Animatable.View>
 
-          <Animatable.View
-            animation="zoomIn"
-            delay={300}
-            duration={200}
-            style={styles.linkItem}
-          >
-            <TouchableOpacity
-              style={styles.linkItem}
-              onPress={() => router.push("upcoming")}
-            >
-              <View style={styles.linkIconContainer}>
-                {/* <AntDesign name="trademark" size={35} color="#FFA500" /> */}
-                <Foundation
-                  name="burst-new"
-                  size={50}
-                  style={{ transform: [{ rotate: "30deg" }] }}
-                  color="#FFA500"
-                />
-              </View>
-              <Text style={styles.linkText}>New Arrivals</Text>
-            </TouchableOpacity>
-          </Animatable.View>
-        </View>
+                    <Animatable.View animation="zoomIn" delay={300} duration={200} style={styles.linkItem}>
+                        <TouchableOpacity style={styles.linkItem} onPress={() => router.push("upcoming")}>
+                            <View style={styles.linkIconContainer}>
+                                {/* <AntDesign name="trademark" size={35} color="#FFA500" /> */}
+                                <Foundation name="burst-new" size={50} style={{ transform: [{ rotate: "30deg" }] }} color="#FFA500" />
+                            </View>
+                            <Text style={styles.linkText}>New Arrivals</Text>
+                        </TouchableOpacity>
+                    </Animatable.View>
+                </View>
 
-        {/* Latest News Section */}
-        <View style={styles.newsContainer}>
-          <View style={styles.newsHeader}>
-            <Text style={styles.newsTitle}>Latest News</Text>
-            <TouchableOpacity
-              style={styles.viewMoreButton}
-              onPress={() => router.push("news")}
-            >
-              <Text style={styles.viewMoreText}>View More</Text>
-              <AntDesign name="right" size={14} color="#FFA500" />
-            </TouchableOpacity>
-          </View>
+                {/* Latest News Section */}
+                <View style={styles.newsContainer}>
+                    <View style={styles.newsHeader}>
+                        <Text style={styles.newsTitle}>Latest News</Text>
+                        <TouchableOpacity style={styles.viewMoreButton} onPress={() => router.push("news")}>
+                            <Text style={styles.viewMoreText}>View More</Text>
+                            <AntDesign name="right" size={14} color="#FFA500" />
+                        </TouchableOpacity>
+                    </View>
 
-          {/* News Accordion */}
-          {renderNews()}
-        </View>
-      </ScrollView>
-      {/* <Tabs /> */}
-    </SafeAreaView>
-  );
+                    {/* News Accordion */}
+                    {renderNews()}
+                </View>
+            </ScrollView>
+            {/* <Tabs /> */}
+        </SafeAreaView>
+    );
 }
 
 const styles = StyleSheet.create({

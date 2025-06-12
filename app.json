@@ -19,7 +19,7 @@
       "permissions": [
         "NOTIFICATIONS"
       ],
-      "googleServicesFile": "./google-services.json",
+      "googleServicesFile": "./google-services.json"
     },
     "web": {
       "bundler": "metro",
@@ -31,7 +31,7 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/logo.png",
+          "image": "./assets/images/splash-icon-dark.png",
           "imageResizeMode": "contain",
           "backgroundColor": "#012744",
           "imageWidth":200
