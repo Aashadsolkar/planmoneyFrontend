@@ -101,7 +101,7 @@ export default function BuyStock() {
                 <Text style={styles.totalLabel}>Total Buy Value</Text>
                 <Text style={styles.totalValue}>₹{totalBuyValue.toFixed(2)}</Text>
             </View>
-            <View style={{ backgroundColor: COLORS.primaryColor, paddingBottom: 20 }}>
+            <View style={{ backgroundColor: COLORS.primaryColor, paddingBottom: 50 }}>
                 <Button isLoading={isLoading} onClick={buyPISTock} label={`Buy Now`} gradientColor={['#119320', '#04B719']} buttonStye={{ marginHorizontal: 20 }} />
             </View>
 

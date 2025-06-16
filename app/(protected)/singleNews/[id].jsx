@@ -37,14 +37,14 @@ export default function SingleNew() {
         getNew()
     }, [])
 
-    
+
     const renderNews = () => {
         if (isLoading) {
             return [1, 2, 3, 4, 5].map((item) => <SkeletonList height={20} key={item} />)
         }
         return (
             <>
-            <Text style={{ fontSize: 18, fontWeight: 600, color: COLORS.fontWhite }}>
+                <Text style={{ fontSize: 18, fontWeight: 600, color: COLORS.fontWhite }}>
                     {newsData?.title}
                 </Text>
                 <Text style={{ fontSize: 15, fontWeight: 400, marginTop: 20, color: COLORS.fontWhite }}>
@@ -58,9 +58,13 @@ export default function SingleNew() {
         <SafeAreaView style={styles.container}>
             <StatusBar barStyle="light-content" backgroundColor={COLORS.cardColor} />
             <Header showBackButton={true} />
-            <View style={{ flex: 1, backgroundColor: COLORS.primaryColor, paddingHorizontal: 20, paddingTop: 20 }}>
-                {renderNews()}
-            </View>
+            <ScrollView>
+                <View style={{ flex: 1, backgroundColor: COLORS.primaryColor, paddingHorizontal: 20, paddingTop: 20 }}>
+                    <View style={{ marginBottom: 30 }}>
+                        {renderNews()}
+                    </View>
+                </View>
+            </ScrollView>
         </SafeAreaView>
     )
 }

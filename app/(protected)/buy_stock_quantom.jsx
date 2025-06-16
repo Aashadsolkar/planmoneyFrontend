@@ -64,7 +64,7 @@ export default function BuyStock() {
         <SafeAreaView style={styles.container}>
             <StatusBar barStyle="light-content" backgroundColor={COLORS.cardColor} />
             <Header title="Hi Vignesh" showBackButton={true} />
-            <ScrollView style={{backgroundColor: COLORS.primaryColor }}>
+            <ScrollView style={{ backgroundColor: COLORS.primaryColor }}>
                 <View>
                     <View style={styles.stockInfoRow}>
                         <Text style={styles.stockTitle}>State of India</Text>
@@ -99,8 +99,8 @@ export default function BuyStock() {
                 <Text style={styles.totalLabel}>Total Buy Value</Text>
                 <Text style={styles.totalValue}>₹{totalBuyValue.toFixed(2)}</Text>
             </View>
-            <View style={{backgroundColor: COLORS.primaryColor,paddingBottom: 20}}>
-            <Button isLoading={isLoading} onClick={buyPmsTock} label={`Buy Now`} gradientColor={['#119320', '#04B719']} buttonStye={{marginHorizontal: 20}} />
+            <View style={{ backgroundColor: COLORS.primaryColor, paddingBottom: 50 }}>
+                <Button isLoading={isLoading} onClick={buyPmsTock} label={`Buy Now`} gradientColor={['#119320', '#04B719']} buttonStye={{ marginHorizontal: 20 }} />
             </View>
 
             {/* Success Modal */}

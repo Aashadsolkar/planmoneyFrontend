@@ -68,45 +68,48 @@ const FastLane = () => {
                                 />
                             </View>
                             <View>
-                                <Text style={[styles.boldText, { fontSize: 12 }]}>{data?.stock?.name}</Text>
+                                <Text style={[styles.boldText, { fontSize: 16, width: 200 }]}>{data?.stock?.name}</Text>
                                 <Text style={styles.boldText}><Text style={styles.lightText}>CMP</Text> ₹{data?.cmp} </Text>
                             </View>
                         </View>
-                        <View style={{ flexDirection: "row", gap: 10, alignItems: "center" }}>
-                            <Text style={styles.lightText}>{formattedDate}</Text>
+                        <View style={{ gap: 5, }}>
+                            <Text style={[styles.lightText, {fontSize: 12}]}>{formattedDate}</Text>
                             <Text style={[styles.boldText, { paddingHorizontal: 4, paddingVertical: 2, backgroundColor: "#F2B225", borderRadius: 5, color: COLORS.fontWhite }]} >Med</Text>
                         </View>
                     </View>
                     <View style={styles.cardSections}>
-                        <View>
+                        <View style={{flex: 1}}>
                             <Text style={styles.lightText}>Buy Price</Text>
                             <Text style={styles.boldText}>₹{data?.buy_price}</Text>
                         </View>
-                        <View>
-                            <Text style={styles.lightText}>Holding Period</Text>
-                            <Text style={styles.boldText}>{data?.holding_period} days</Text>
-                        </View>
-                        <View>
+                        <View style={{flex: 1}}>
                             <Text style={styles.lightText}>Valid till</Text>
                             <Text style={styles.boldText}>{data?.valid_till}</Text>
                         </View>
-                        <View>
-                            <Text style={styles.lightText}>Upside</Text>
-                            <Text style={[styles.boldText, styles.greenText]}>{data?.upside}%</Text>
+                        <View style={{flex: 1}}>
+                            <Text style={styles.lightText}>Holding Period</Text>
+                            <Text style={styles.boldText}>{data?.holding_period} days</Text>
+                        </View>
+                       
+                    </View>
+                    <View style={[styles.cardSections]}>
+                        <View style={{flex: 1}}>
+                            <Text style={styles.lightText}>Stop Loss</Text>
+                            <Text style={[styles.boldText, styles.redText]}>₹{data?.stop_loss_price}</Text>
+                        </View>
+                        <View style={{flex: 1}}>
+                            <Text style={styles.lightText}>Target 1</Text>
+                            <Text style={[styles.boldText, styles.greenText]}>₹{data?.target_1}</Text>
+                        </View>
+                        <View style={{flex: 1}}>
+                            <Text style={styles.lightText}>Target 2</Text>
+                            <Text style={[styles.boldText, styles.greenText]}>₹{data?.target_2}</Text>
                         </View>
                     </View>
                     <View style={[styles.cardSections, { borderBottomColor: COLORS.cardColor }]}>
                         <View>
-                            <Text style={styles.lightText}>Stop Loss</Text>
-                            <Text style={[styles.boldText, styles.redText, styles.font12]}>₹{data?.stop_loss_price}</Text>
-                        </View>
-                        <View>
-                            <Text style={styles.lightText}>Target 1</Text>
-                            <Text style={[styles.boldText, styles.greenText, styles.font12]}>₹{data?.target_1}</Text>
-                        </View>
-                        <View>
-                            <Text style={styles.lightText}>Target 2</Text>
-                            <Text style={[styles.boldText, styles.greenText, styles.font12]}>₹{data?.target_2}</Text>
+                            <Text style={styles.lightText}>Upside</Text>
+                            <Text style={[styles.boldText, styles.greenText]}>{data?.upside}%</Text>
                         </View>
                         <View style={{ alignSelf: "center", flexDirection: "row", alignItems: "center", gap: 2 }}>
                             <Text onPress={() => {
@@ -143,7 +146,7 @@ const FastLane = () => {
                 >
                     {/* <Text style={styles.heading}>Stock updates</Text> */}
                     {/* {renderCardList()} */}
-                    <View style={{ alignItems: 'center', width: "100%",  }}>
+                    <View style={{ alignItems: 'center', width: "100%", }}>
                         <Image
                             source={require('../../../assets/images/questionCirlce.png')}
                             style={styles.logo}
@@ -204,10 +207,13 @@ const FastLane = () => {
             <ScrollView
                 keyboardShouldPersistTaps="handled"
                 showsVerticalScrollIndicator={false}
-                style={{ paddingHorizontal: 20, backgroundColor: COLORS.primaryColor, paddingTop: 20 }}
+                style={{ paddingHorizontal: 20, backgroundColor: COLORS.primaryColor, paddingTop: 15 }}
             >
                 <Text style={styles.heading}>Stock updates</Text>
+                <View style={{marginBottom: 50}}>
+
                 {renderCardList()}
+                </View>
             </ScrollView>
         </SafeAreaView>
     );
@@ -215,33 +221,36 @@ const FastLane = () => {
 
 const styles = StyleSheet.create({
     heading: {
-        fontSize: 16,
+        fontSize: 18,
         color: COLORS.fontWhite,
         fontWeight: 600,
-        marginBottom: 10
+        marginBottom: 15
     },
     card: {
         padding: 8,
         borderRadius: 10,
         backgroundColor: COLORS.cardColor,
-        marginBottom: 20
+        marginBottom: 20,
+        borderLeftWidth: 3,
+        borderLeftColor: COLORS.secondaryColor
     },
     cardSections: {
         padding: 15,
-        borderBottomWidth: 2,
+        borderBottomWidth: 1,
         borderBottomColor: COLORS.primaryColor,
         flexDirection: "row",
-        justifyContent: "space-between"
+        justifyContent: "space-between",
+        alignItems: "center"
     },
     lightText: {
-        fontSize: 10,
+        fontSize: 14,
         fontWeight: 400,
         color: COLORS.lightGray
     },
     boldText: {
         color: COLORS.fontWhite,
         fontWeight: 700,
-        fontSize: 10
+        fontSize: 14
     },
     greenText: {
         color: COLORS.profitColor

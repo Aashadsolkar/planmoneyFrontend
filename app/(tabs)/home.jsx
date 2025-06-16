@@ -220,7 +220,7 @@ export default function Home() {
 
     const renderNews = () => {
         return (
-            newsData.map((item) => {
+            newsData.slice(0, 4).map((item) => {
                 return (
                     <NewsCard title={item?.title}
                         summary={item?.summary}
@@ -322,6 +322,17 @@ export default function Home() {
                                 <Foundation name="burst-new" size={50} style={{ transform: [{ rotate: "30deg" }] }} color="#FFA500" />
                             </View>
                             <Text style={styles.linkText}>New Arrivals</Text>
+                        </TouchableOpacity>
+                    </Animatable.View>
+
+                    {/* MF option  */}
+                    <Animatable.View animation="zoomIn" delay={300} duration={200} style={styles.linkItem}>
+                        <TouchableOpacity style={styles.linkItem} onPress={() => router.push("upcoming")}>
+                            <View style={styles.linkIconContainer}>
+                                {/* <AntDesign name="trademark" size={35} color="#FFA500" /> */}
+                               <MaterialIcons name="savings" size={38} color={COLORS.secondaryColor} />
+                            </View>
+                            <Text style={styles.linkText}>Mutual Fund</Text>
                         </TouchableOpacity>
                     </Animatable.View>
                 </View>
@@ -445,12 +456,12 @@ const styles = StyleSheet.create({
     },
     updateText: {
         color: "#ccc",
-        fontSize: 16,
+        fontSize: 14,
     },
     dateText: {
         marginTop: 3,
         color: 'white',
-        fontSize: 18,
+        fontSize: 16,
     },
     serviceFooter: {
         flexDirection: 'row',
@@ -469,8 +480,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     linkIconContainer: {
-        width: 80,
-        height: 70,
+        width: 70,
+        height: 65,
         borderRadius: 8,
         backgroundColor: COLORS.cardColor,
         justifyContent: 'center',
