@@ -20,7 +20,7 @@ const PmsAndQuantom = () => {
     const navigation = useNavigation();
     const { id, advisor_name, advisor_nummber, is_advisor_assign } = useLocalSearchParams();
 
-
+    
 
     useFocusEffect(
         useCallback(() => {
@@ -45,7 +45,7 @@ const PmsAndQuantom = () => {
                     setIsLoading(false);
                 }
             }
-            if (customerServiceData?.questionnaire_status == 1 && customerServiceData?.verification_status == 1) {
+            if (customerServiceData?.questionnaire_status == 1 && customerServiceData?.verification_status == 1 && is_advisor_assign == "true") {
                 callFastlaneApi()
             }
         }, [id])
