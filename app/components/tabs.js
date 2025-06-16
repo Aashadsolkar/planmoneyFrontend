@@ -1,4 +1,5 @@
 import { FontAwesome, FontAwesome6 } from '@expo/vector-icons';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { Tabs } from 'expo-router';
 import { COLORS } from '../constants';
 
@@ -53,6 +54,15 @@ export default function ProtectedTabs() {
           title: 'Account',
           tabBarIcon: ({ color }) => (
             <FontAwesome size={28} name="user-circle-o" color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="mutualFund"
+        options={{
+          title: 'Mututal Fund',
+          tabBarIcon: ({ color }) => (
+            <MaterialIcons name="savings" size={28} color={color} />
           ),
         }}
       />

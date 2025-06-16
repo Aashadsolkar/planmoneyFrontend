@@ -84,7 +84,6 @@ const PmsAndQuantom = () => {
 
     const renderCardList = (data) => {
         return fastlaneData?.map((data) => {
-            console.log(data);
 
             const dateStr = data?.created_at;
             const date = new Date(dateStr);

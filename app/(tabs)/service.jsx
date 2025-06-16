@@ -71,6 +71,18 @@ const Service = () => {
         setExpandedService(prev => (prev === name ? null : name));
     };
 
+
+   const getLowestActualPricePlan = (plans) => {
+  if (!Array.isArray(plans) || plans.length === 0) return null;
+
+  return plans.reduce((minPlan, currentPlan) => {
+    return parseFloat(currentPlan.actual_price) < parseFloat(minPlan.actual_price)
+      ? currentPlan
+      : minPlan;
+  });  
+};
+
+
     const renderService = () => {
         if (isLoading) {
             return <>
@@ -86,7 +98,7 @@ const Service = () => {
                     name={service.name}
                     icon="line-chart"
                     iconType="fa"
-                    startsAt={service?.plans[0]?.actual_price}
+                    startsAt={getLowestActualPricePlan(service?.plans)?.actual_price}
                     isExpanded={expandedService === service.id}
                     onToggle={() => toggleExpand(service.id)}
                     plans={service?.plans}

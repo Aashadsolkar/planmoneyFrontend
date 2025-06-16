@@ -272,11 +272,13 @@ export default function Home() {
                                 duration={300}
                             // style={}
                             >
-                                <Image
+                                <TouchableOpacity onPress={() => item.onClick()}>
+                                    <Image
                                     style={styles.offerCard}
                                     source={item.banner}
                                     resizeMode="stretch"
                                 />
+                                </TouchableOpacity>
                             </Animatable.View>
                         ))}
                     </ScrollView>

@@ -346,7 +346,7 @@ export default function PersonalDetailsForm() {
             <KeyboardAvoidingView
                 behavior={Platform.OS === "ios" ? "padding" : "height"}
                 style={{ flex: 1 }}
-                keyboardVerticalOffset={Platform.OS === "ios" ? 20 : 0} // adjust as needed
+                keyboardVerticalOffset={Platform.OS === "ios" ? 20 : 10} // adjust as needed
             >
                 <ScrollView
                     style={styles.scrollView}

@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Dimensions, Modal, TextInput, Image } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -30,6 +30,7 @@ const ServiceCard = ({
   const [searchText, setSearchText] = useState("Need more details...");
   const [isLeadApiLoading, setIsLeadApiLoading] = useState(false);
   const [isLeadGenerated, setIsLeadGenerated] = useState(false);
+  const [sortedPlans, setSortedPlans] = useState([])
   const {
     setSelectedService,
     token,
@@ -42,6 +43,18 @@ const ServiceCard = ({
     }
     return <MaterialIcons name={icon} size={24} color="#FF9800" />;
   };
+
+  useEffect(() => {
+    const sortPlans = sortPlansByActualPrice(plans)
+    setSortedPlans(sortPlans)
+  },[])
+
+  const sortPlansByActualPrice = (plans) => {
+  if (!Array.isArray(plans)) return [];
+
+  return plans.sort((a, b) => parseFloat(a.actual_price) - parseFloat(b.actual_price));
+};
+
 
 
   const generateLead = async () => {
@@ -78,6 +91,28 @@ const ServiceCard = ({
     }
   }
 
+  const renderOfferPrice = (actual, offer) => {
+    
+  // If no offer price, show only actual price
+  if (!offer) {
+    return <Text style={[styles.discounted, {paddingTop: 10}]}>₹{actual}</Text>;
+  }
+
+  // If both prices are same, show only one
+  if (actual === offer) {
+    return <Text style={[styles.discounted, {paddingTop: 10}]}>₹{offer}</Text>;
+  }
+
+  // Show original (strikethrough) and discounted
+  return (
+    <>
+      <Text style={styles.original}>₹{actual}</Text>
+      <Text style={styles.discounted}>₹{offer}</Text>
+    </>
+  );
+};
+
+
   return (
     <>
       <View style={styles.card}>
@@ -110,7 +145,7 @@ const ServiceCard = ({
           <View style={styles.expanded}>
             <Text style={styles.expandedTitle}>Stock Advise</Text>
             <View style={styles.subscriptions}>
-              {plans.map((plan) => {
+              {sortedPlans.map((plan) => {
                 const isBest = plan?.is_bestseller == 0 ? false : true;
                 // de
                 const isSelected = selectedDuration?.id === plan?.id;
@@ -129,8 +164,7 @@ const ServiceCard = ({
                       </View>
                     )}
                     <Text style={styles.duration}>{plan.billing_cycle}</Text>
-                    <Text style={styles.original}>₹{plan?.actual_price}</Text>
-                    <Text style={styles.discounted}>₹{plan?.offer_price}</Text>
+                    {renderOfferPrice(plan?.actual_price, plan?.offer_price)}
                   </TouchableOpacity>
 
                 );
@@ -320,7 +354,8 @@ const styles = StyleSheet.create({
     color: '#FFF',
     fontSize: 14,
     marginBottom: 8,
-    textTransform: "capitalize"
+    textTransform: "capitalize",
+    paddingTop: 5
   },
   original: {
     color: '#AAA',
