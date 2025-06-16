@@ -62,6 +62,9 @@ export default function Home() {
     } = useHomeData();
 
     const [showPullHint, setShowPullHint] = useState(true);
+    const [activeServiceIndex, setActiveServiceIndex] = useState(0)
+    const [activeIndex, setActiveIndex] = useState(0);
+    const screenWidth = Dimensions.get("window").width;
 
     useEffect(() => {
         const timer = setTimeout(() => setShowPullHint(false), 3000); // Hide after 3 sec
@@ -205,18 +208,46 @@ export default function Home() {
     };
 
     const renderServices = () => {
-        const renderData = purchesService.length > 0 ? purchesService : allServices
+        const renderData = purchesService.length > 0 ? purchesService : allServices;
+
+        const handleServiceScroll = (event) => {
+            const scrollX = event.nativeEvent.contentOffset.x;
+            const index = Math.round(scrollX / 250); // adjust 180 based on your service card width
+            setActiveServiceIndex(index);
+        };
+
         return (
-            <FlatList
-                data={renderData}
-                renderItem={renderServiceItem}
-                keyExtractor={item => item.id.toString()}
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                contentContainerStyle={styles.servicesListContainer}
-            />
-        )
-    }
+            <>
+                <FlatList
+                    data={renderData}
+                    renderItem={renderServiceItem}
+                    keyExtractor={(item) => item.id.toString()}
+                    horizontal
+                    onScroll={handleServiceScroll}
+                    scrollEventThrottle={16}
+                    showsHorizontalScrollIndicator={false}
+                    contentContainerStyle={styles.servicesListContainer}
+                />
+
+                {/* Dot Indicators for Services */}
+                {
+                    renderData?.length > 1 &&
+                    <View style={styles.dotContainer}>
+                        {renderData.map((_, i) => (
+                            <View
+                                key={i}
+                                style={[
+                                    styles.dot,
+                                    { backgroundColor: i === activeServiceIndex ? COLORS.secondaryColor : COLORS.lightGray },
+                                ]}
+                            />
+                        ))}
+                    </View>
+                }
+            </>
+        );
+    };
+
 
     const renderNews = () => {
         return (
@@ -230,6 +261,29 @@ export default function Home() {
                 )
             })
         )
+    }
+
+    const handleScroll = (event) => {
+        const scrollX = event.nativeEvent.contentOffset.x;
+        const index = Math.round(scrollX / screenWidth);
+        setActiveIndex(index);
+    };
+    const showOffterSliderDots = () => {
+        if (offerData.length > 1) {
+            return (
+                <View style={styles.dotContainer}>
+                    {offerData.map((_, i) => (
+                        <View
+                            key={i}
+                            style={[
+                                styles.dot,
+                                { backgroundColor: i === activeIndex ? COLORS.secondaryColor : COLORS.lightGray },
+                            ]}
+                        />
+                    ))}
+                </View>
+            )
+        }
     }
 
     const renderContent = () => {
@@ -262,6 +316,8 @@ export default function Home() {
                         horizontal
                         pagingEnabled
                         showsHorizontalScrollIndicator={false}
+                        onScroll={handleScroll}
+                        scrollEventThrottle={16}
                         style={{ paddingHorizontal: 10 }}
                     >
                         {offerData.map((item, index) => (
@@ -270,18 +326,20 @@ export default function Home() {
                                 animation="fadeInRight"
                                 delay={index * 100}
                                 duration={300}
-                            // style={}
                             >
                                 <TouchableOpacity onPress={() => item.onClick()}>
                                     <Image
-                                    style={styles.offerCard}
-                                    source={item.banner}
-                                    resizeMode="stretch"
-                                />
+                                        style={styles.offerCard}
+                                        source={item.banner}
+                                        resizeMode="stretch"
+                                    />
                                 </TouchableOpacity>
                             </Animatable.View>
                         ))}
                     </ScrollView>
+
+                    {/* Dot Indicators */}
+                    {showOffterSliderDots()}
                 </View>
 
 
@@ -332,7 +390,7 @@ export default function Home() {
                         <TouchableOpacity style={styles.linkItem} onPress={() => router.push("upcoming")}>
                             <View style={styles.linkIconContainer}>
                                 {/* <AntDesign name="trademark" size={35} color="#FFA500" /> */}
-                               <MaterialIcons name="savings" size={38} color={COLORS.secondaryColor} />
+                                <MaterialIcons name="savings" size={38} color={COLORS.secondaryColor} />
                             </View>
                             <Text style={styles.linkText}>Mutual Fund</Text>
                         </TouchableOpacity>
@@ -542,4 +600,18 @@ const styles = StyleSheet.create({
         flex: 1,
         marginRight: 8,
     },
+    dotContainer: {
+        flexDirection: "row",
+        justifyContent: "center",
+        alignItems: "center",
+        marginTop: 8,
+        zIndex: 9999
+    },
+    dot: {
+        width: 8,
+        height: 8,
+        borderRadius: 4,
+        marginHorizontal: 4,
+    },
+
 });
