@@ -75,11 +75,21 @@ const PmsAndQuantom = () => {
     const getRiskLevelColor = (riskLevel) => {
         const colors = {
             low: COLORS.profitColor,    // green
-            med: COLORS.secondaryColor,// yellow
+            medium: COLORS.secondaryColor,// yellow
             high: COLORS.lossColor   // red
         };
 
         return colors[riskLevel.toLowerCase()] || '#6c757d'; // fallback: gray
+    }
+
+    const getRiskLevellabel = (riskLevel) => {
+        const label = {
+            low: "LOW",
+            medium: "MED",
+            high: "HIGH" 
+        };
+
+        return label[riskLevel.toLowerCase()]; // fallback: gray
     }
 
     const renderCardList = (data) => {
@@ -106,7 +116,7 @@ const PmsAndQuantom = () => {
                         </View>
                         <View style={{ gap: 5 }}>
                             <Text style={[styles.lightText, { fontSize: 12 }]}>{formattedDate}</Text>
-                            <Text style={[styles.boldText, { paddingHorizontal: 4, paddingVertical: 2, backgroundColor: getRiskLevelColor(data?.risk_level), borderRadius: 5, color: COLORS.fontWhite, textAlign: "center" }]} >{data?.risk_level}</Text>
+                            <Text style={[styles.boldText, { paddingHorizontal: 4, paddingVertical: 2, backgroundColor: getRiskLevelColor(data?.risk_level), borderRadius: 5, color: COLORS.fontWhite, textAlign: "center" }]} >{getRiskLevellabel(data?.risk_level)}</Text>
                         </View>
                     </View>
                     <View style={styles.cardSections}>

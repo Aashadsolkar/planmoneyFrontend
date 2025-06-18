@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, ScrollView, ActivityIndicator } from 'react-native'
+import { View, Text, StyleSheet, ScrollView, ActivityIndicator, Modal } from 'react-native'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { LinearGradient } from 'expo-linear-gradient';
 import { TouchableOpacity } from 'react-native';
@@ -16,13 +16,39 @@ const PortfolioTab = ({ advisorName, stockAPi }) => {
     const [investments, setInvestments] = useState([]);
     const [isLoading, setIsLoading] = useState(true)
 
+    const [sortDropdownVisible, setSortDropdownVisible] = useState(false);
+    const [sortKey, setSortKey] = useState('returnPercentage'); // returnPercentage, investedAmount, name
+    const [sortDirection, setSortDirection] = useState('asc');
     const sortedInvestments = useMemo(() => {
         return [...investments].sort((a, b) => {
-            return sortOrder === 'asc'
-                ? a.returnPercentage - b.returnPercentage
-                : b.returnPercentage - a.returnPercentage;
+            if (sortKey === 'profitLoss') {
+                // Profit first, loss later
+                return sortDirection === 'desc'
+                    ? a.returnAmount - b.returnAmount
+                    : b.returnAmount - a.returnAmount;
+            }
+
+            if (sortKey === 'returnPercentage') {
+            // Reverse logic: asc means high to low, desc means low to high
+            return sortDirection === 'asc'
+                ? b.returnPercentage - a.returnPercentage
+                : a.returnPercentage - b.returnPercentage;
+        }
+
+            const valA = a[sortKey];
+            const valB = b[sortKey];
+
+            if (typeof valA === 'string') {
+                return sortDirection === 'asc'
+                    ? valA.localeCompare(valB)
+                    : valB.localeCompare(valA);
+            } else {
+                return sortDirection === 'asc'
+                    ? valA - valB
+                    : valB - valA;
+            }
         });
-    }, [sortOrder, investments]);
+    }, [sortKey, sortDirection, investments]);
 
     // Calculate portfolio summary
     const portfolioSummary = useMemo(() => {
@@ -73,98 +99,6 @@ const PortfolioTab = ({ advisorName, stockAPi }) => {
 
                 setInvestments(merged);
                 setIsLoading(false)
-                // setTimeout(() => {
-                //     let pmsRes = {}
-                //     if (advisorName == "aashad") {
-                //         pmsRes = {
-                //             "status": "success",
-                //             "message": "PMS data stored successfully.",
-                //             "data": [
-                //                 {
-                //                     "stock_id": 1,
-                //                     "total_quantity": "6",
-                //                     "total_invested": "3912.00"
-                //                 },
-                //                 {
-                //                     "stock_id": 2,
-                //                     "total_quantity": "3",
-                //                     "total_invested": "345.00"
-                //                 }
-                //             ]
-                //         }
-                //     } else {
-                //         pmsRes = {
-                //             "status": "success",
-                //             "message": "PMS data stored successfully.",
-                //             "data": [
-                //                 {
-                //                     "stock_id": 1,
-                //                     "total_quantity": "10",
-                //                     "total_invested": "6000.00"
-                //                 },
-                //                 {
-                //                     "stock_id": 2,
-                //                     "total_quantity": "3",
-                //                     "total_invested": "345.00"
-                //                 }
-                //             ]
-                //         }
-                //     }
-                //     const cmpRes = {
-                //         "status": "success",
-                //         "message": "All stock prices retrieved successfully.",
-                //         "data": {
-                //             "stocks": [
-                //                 {
-                //                     "stock_id": 1,
-                //                     "symbol": "TATASTEEL",
-                //                     "nse_price": "700.30",
-                //                     "bse_price": "700.30",
-                //                     "year_high": "184.60",
-                //                     "year_low": "122.60"
-                //                 },
-                //                 {
-                //                     "stock_id": 2,
-                //                     "symbol": "TCS",
-                //                     "nse_price": "3407.50",
-                //                     "bse_price": "3405.05",
-                //                     "year_high": "4513.98",
-                //                     "year_low": "3060.25"
-                //                 }
-                //             ]
-                //         }
-                //     }
-
-                //     const cmpStocks = cmpRes.data.stocks;
-                //     const buyData = pmsRes.data;
-
-                //     const merged = buyData.map(buy => {
-                //         const stockDetails = cmpStocks.find(stock => stock.stock_id === buy.stock_id);
-                //         if (!stockDetails) return null;
-
-                //         const quantity = parseFloat(buy.total_quantity);
-                //         const investedAmount = parseFloat(buy.total_invested);
-                //         const currentPrice = parseFloat(stockDetails.nse_price || stockDetails.bse_price);
-                //         const currentValue = quantity * currentPrice;
-                //         const returnAmount = currentValue - investedAmount;
-                //         const returnPercentage = (returnAmount / investedAmount) * 100;
-
-                //         return {
-                //             id: String(stockDetails.stock_id),
-                //             name: stockDetails.symbol,
-                //             quantity,
-                //             investedAmount,
-                //             currentValue,
-                //             buyPrice: investedAmount / quantity,
-                //             date: 'N/A', // Replace with actual buy date if available
-                //             returnPercentage,
-                //             returnAmount,
-                //         };
-                //     }).filter(Boolean);
-
-                //     setInvestments(merged);
-                //     setIsLoading(false)
-                // }, 500);
             } catch (error) {
                 Alert.alert(
                     "Error",
@@ -261,43 +195,70 @@ const PortfolioTab = ({ advisorName, stockAPi }) => {
                 </View>
             </View>
 
-            {/* Call Advisor Section with Enhanced Gradient */}
-            {/* <TouchableOpacity style={styles.advisorCardContainer} onPress={handleAdvisorCall}>
-                <LinearGradient
-                    colors={['#f96c2a', '#db4646', '#a8034d']}
-                    start={{ x: 0, y: 0 }}
-                    end={{ x: 1, y: 1 }}
-                    style={styles.advisorCard}
-                >
-                    <View style={styles.advisorContent}>
-                        <View style={styles.advisorTextContainer}>
-                            <Text style={styles.advisorLabel}>Call our Advisor</Text>
-                            <Text style={styles.advisorName}>{advisorName}</Text>
-                        </View>
-                        <View style={styles.phoneIconContainer}>
-                            <Ionicons name="call" size={22} color="#fff" />
-                        </View>
-                    </View>
-                </LinearGradient>
-            </TouchableOpacity> 
-
             {/* Investments Section */}
             <View style={styles.investmentsHeader}>
                 <Text style={styles.investmentsTitle}>
                     Investments ({sortedInvestments.length})
                 </Text>
-                <TouchableOpacity style={styles.sortContainer} onPress={handleSortToggle}>
-                    <Text style={styles.sortBy}>
-                        Sort By Returns % ({sortOrder === 'asc' ? 'Low to High' : 'High to Low'})
-                    </Text>
-                    <Ionicons
-                        name={sortOrder === 'asc' ? "chevron-up" : "chevron-down"}
-                        size={16}
-                        color="#a0a0a0"
-                        style={styles.sortIcon}
-                    />
-                </TouchableOpacity>
+                <View style={styles.dropdownWrapper}>
+                    <TouchableOpacity
+                        style={styles.dropdownButton}
+                        onPress={() => setSortDropdownVisible(true)}
+                    >
+                        <Text style={styles.dropdownText}>
+                            Sort by: {
+                                sortKey === 'returnPercentage' ? 'Returns %' :
+                                    sortKey === 'investedAmount' ? 'Invested Amount' :
+                                        sortKey === 'name' ? 'Stock A-Z' :
+                                            sortKey === 'profitLoss' ? 'Share Up / Down' :
+                                                ''
+                            } ({sortDirection})
+                        </Text>
+                        {
+                            sortDirection == "desc" ? <Ionicons style={{ marginLeft: 5 }} name="chevron-up" size={16} color="#aaa" /> : <Ionicons style={{ marginLeft: 5 }} name="chevron-down" size={16} color="#aaa" />
+                        }
+                        {/* <Ionicons style={{marginLeft: 5}} name="chevron-down" size={16} color="#aaa" /> */}
+                    </TouchableOpacity>
+
+                    <Modal visible={sortDropdownVisible} transparent animationType="fade">
+                        <TouchableOpacity
+                            style={styles.modalOverlay}
+                            onPress={() => setSortDropdownVisible(false)}
+                        >
+                            <View style={styles.dropdownMenu}>
+                                {[
+                                    { key: 'returnPercentage', label: 'Returns %' },
+                                    { key: 'investedAmount', label: 'Invested Amount' },
+                                    { key: 'name', label: 'Stock A-Z' },
+                                    { key: 'profitLoss', label: 'Profit / Loss' }, // ➕ NEW
+                                ].map(item => (
+                                    <TouchableOpacity
+                                        key={item.key}
+                                        style={styles.dropdownItem}
+                                        onPress={() => {
+                                            if (sortKey === item.key) {
+                                                setSortDirection(prev => prev === 'asc' ? 'desc' : 'asc');
+                                            } else {
+                                                setSortKey(item.key);
+                                                setSortDirection('desc');
+                                            }
+                                            setSortDropdownVisible(false);
+                                        }}
+                                    >
+                                        <Text style={styles.dropdownItemText}>
+                                            {item.label} ({sortKey === item.key ? sortDirection : 'desc'})
+                                        </Text>
+                                    </TouchableOpacity>
+                                ))}
+                            </View>
+                        </TouchableOpacity>
+                    </Modal>
+                </View>
             </View>
+
+
+
+
 
             {/* Investment Items */}
             {sortedInvestments.map((investment) => (
@@ -319,7 +280,7 @@ const PortfolioTab = ({ advisorName, stockAPi }) => {
                                 ]}>
                                     {formatCurrency(investment.currentValue)}
                                 </Text>
-                                <Text style={styles.investmentDate}>{investment.date}</Text>
+                                {/* <Text style={styles.investmentDate}>{investment.date}</Text> */}
                             </View>
                         </View>
 
@@ -570,6 +531,41 @@ const styles = StyleSheet.create({
     bottomSpacing: {
         height: 20,
     },
+    dropdownWrapper: {
+        paddingHorizontal: 16,
+        marginTop: 12,
+    },
+    dropdownButton: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+    },
+    dropdownText: {
+        fontSize: 12,
+        color: COLORS.fontWhite,
+    },
+    modalOverlay: {
+        flex: 1,
+        backgroundColor: 'rgba(0,0,0,0.3)',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    dropdownMenu: {
+        backgroundColor: COLORS.cardColor,
+        borderRadius: 10,
+        padding: 12,
+        width: 220,
+        elevation: 4,
+    },
+    dropdownItem: {
+        paddingVertical: 10,
+    },
+    dropdownItemText: {
+        fontSize: 14,
+        color: '#fff',
+    },
+
+
 })
 
 export default PortfolioTab

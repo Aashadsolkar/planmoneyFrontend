@@ -132,7 +132,7 @@ const Register = () => {
 
           <Animatable.View animation="fadeInUp" duration={600} delay={100}>
             <Input
-              label="ENTER YOUR FULL NAME"
+              label="Full Name"
               value={formData.name}
               onChangeText={val => handleChange(val, 'name')}
               error={!!errors?.name}
@@ -142,7 +142,7 @@ const Register = () => {
 
           <Animatable.View animation="fadeInUp" duration={600} delay={200}>
             <Input
-              label="ENTER EMAIL ADDRESS"
+              label="Email Address"
               value={formData.email}
               onChangeText={val => handleChange(val, 'email')}
               error={!!errors?.email}
@@ -152,7 +152,7 @@ const Register = () => {
 
           <Animatable.View animation="fadeInUp" duration={600} delay={300}>
             <Input
-              label="ENTER MOBILE NUMBER"
+              label="Mobile Number"
               value={formData.phone}
               onChangeText={val => handleChange(val, 'phone')}
               error={!!errors?.phone}
@@ -162,7 +162,7 @@ const Register = () => {
 
           <Animatable.View animation="fadeInUp" duration={600} delay={400}>
             <PassWordInput
-              label="ENTER PASSWORD"
+              label="Password"
               value={formData.password}
               onChangeText={val => handleChange(val, 'password')}
               isPassword
@@ -173,7 +173,7 @@ const Register = () => {
 
           <Animatable.View animation="fadeInUp" duration={600} delay={500}>
             <PassWordInput
-              label="ENTER CONFIRM PASSWORD"
+              label="Confirm Password"
               value={formData.confirmPassword}
               onChangeText={val => handleChange(val, 'confirmPassword')}
               isPassword

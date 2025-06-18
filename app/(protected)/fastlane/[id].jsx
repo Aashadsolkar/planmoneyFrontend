@@ -49,9 +49,31 @@ const FastLane = () => {
         }, [id])
     );
 
+    const getRiskLevelColor = (riskLevel) => {
+        const colors = {
+            low: COLORS.profitColor,    // green
+            medium: COLORS.secondaryColor,// yellow
+            high: COLORS.lossColor   // red
+        };
+
+        return colors[riskLevel.toLowerCase()] || '#6c757d'; // fallback: gray
+    }
+
+     const getRiskLevellabel = (riskLevel) => {
+        const label = {
+            low: "LOW",
+            medium: "MED",
+            high: "HIGH"         
+        };
+
+        return label[riskLevel.toLowerCase()]; // fallback: gray
+    }
+
 
     const renderCardList = (data) => {
         return fastlaneData?.map((data) => {
+            console.log(data?.stock?.company_logo, "------------------------------");
+            
             const dateStr = data?.created_at;
             const date = new Date(dateStr);
 
@@ -74,7 +96,7 @@ const FastLane = () => {
                         </View>
                         <View style={{ gap: 5, }}>
                             <Text style={[styles.lightText, {fontSize: 12}]}>{formattedDate}</Text>
-                            <Text style={[styles.boldText, { paddingHorizontal: 4, paddingVertical: 2, backgroundColor: "#F2B225", borderRadius: 5, color: COLORS.fontWhite }]} >Med</Text>
+                            <Text style={[styles.boldText, { paddingHorizontal: 4, paddingVertical: 2, backgroundColor: getRiskLevelColor(data?.risk_level), borderRadius: 5, color: COLORS.fontWhite, textAlign: "center" }]} >{getRiskLevellabel(data?.risk_level)}</Text>
                         </View>
                     </View>
                     <View style={styles.cardSections}>
@@ -193,7 +215,7 @@ const FastLane = () => {
     }
     const backButtonText = () => {
         return (
-            <Text style={{ color: COLORS.fontWhite, fontSize: 18, fontWeight: 600 }}>{id == 1 ? "FastLane" : "PIS"}</Text>
+            <Text style={{ color: COLORS.fontWhite, fontSize: 18, fontWeight: 600 }}>{id == 1 ? "FastLane" : "Premium Research"}</Text>
         )
     }
     return (

@@ -111,7 +111,7 @@ const Login = () => {
 
           <Animatable.View animation="fadeInUp" delay={100} duration={600}>
             <Input
-              label="ENTER YOUR EMAIL OR MOBILE"
+              label="Email OR mobile"
               value={formData.email_or_phone}
               onChangeText={(value) => handleChange(value, 'email_or_phone')}
               error={!!errors?.email_or_phone}
@@ -121,7 +121,7 @@ const Login = () => {
 
           <Animatable.View animation="fadeInUp" delay={200} duration={600}>
             <PassWordInput
-              label="ENTER PASSWORD"
+              label="Password"
               value={formData.password}
               onChangeText={(value) => handleChange(value, 'password')}
               error={!!errors.password}
