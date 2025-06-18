@@ -13,7 +13,7 @@ import { StatusBar } from 'expo-status-bar';
 const FastLane = () => {
     const { reportData } = useAuth();
     const { serviceData, serviceID } = reportData;
-    
+
 
     const { width } = useWindowDimensions();
     const renderCardList = (data) => {
@@ -58,7 +58,7 @@ const FastLane = () => {
 
     const getServiceName = (id) => {
         // serviceID == 1 ? "FastLane" : "PMS"
-        
+
         let serviceName = "";
         switch (id) {
             case "1":
@@ -71,7 +71,10 @@ const FastLane = () => {
                 return serviceName = "Portfolio Management"
                 break;
             case "4":
-                 return serviceName = "Quantum Volt"
+                return serviceName = "Quantum Volt"
+                break;
+            case "6":
+                return serviceName = "Premium Research"
                 break;
             default:
                 return serviceName = "Service Name"
