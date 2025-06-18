@@ -66,6 +66,11 @@ export default function Home() {
     const [activeIndex, setActiveIndex] = useState(0);
     const screenWidth = Dimensions.get("window").width;
 
+
+    const { width } = Dimensions.get('window');
+    const ITEM_WIDTH = width * 0.9; // 90% of screen width
+    const SPACING = (width - ITEM_WIDTH) / 2;
+
     useEffect(() => {
         const timer = setTimeout(() => setShowPullHint(false), 3000); // Hide after 3 sec
         return () => clearTimeout(timer);
@@ -90,10 +95,27 @@ export default function Home() {
     const initialOfferData = [
         {
             id: '1',
-            title: 'PORTFOLIO MANAGEMENT SYSTEM',
+            serviceId: 1,
+            color: [COLORS.secondaryColor, COLORS.secondaryColor],
+            onClick: () => {
+                setServiceSelectedOnHomePage(1)
+                router.push("service");
+            },
+            banner: require('../../assets/images/fastlaneBanner.png')
+        },
+        {
+            id: '2',
+            serviceId: 6,
+            color: [COLORS.secondaryColor, COLORS.secondaryColor],
+            onClick: () => {
+                setServiceSelectedOnHomePage(6)
+                router.push("service");
+            },
+            banner: require('../../assets/images/premiumResearchbanner.png')
+        },
+        {
+            id: '3',
             serviceId: 3,
-            subtitle: 'Organize your Investment',
-            buttonText: 'Get this Service',
             color: [COLORS.secondaryColor, COLORS.secondaryColor],
             onClick: () => {
                 setServiceSelectedOnHomePage(3)
@@ -102,7 +124,7 @@ export default function Home() {
             banner: require('../../assets/images/portfolioBanner.png')
         },
         {
-            id: '2',
+            id: '4',
             title: 'QuantumVault (For Above ₹50 lakh Capital)',
             serviceId: 4,
             subtitle: 'Expert Stock Picks',
@@ -119,7 +141,7 @@ export default function Home() {
     const [offerData, setOfferData] = useState(initialOfferData);
     useEffect(() => {
         // Create a set of purchased service IDs
-        const purchasedServiceIds = new Set(portfolioServices.map(service => service.id));
+        const purchasedServiceIds = new Set(purchesService.map(service => service.id));
 
         // Filter offer data
         const filteredOffers = initialOfferData.filter(
@@ -312,32 +334,43 @@ export default function Home() {
             <>
                 {/* Offer Carousel Section */}
                 <View style={styles.carouselContainer}>
-                    <ScrollView
+                    <FlatList
+                        data={offerData}
+                        keyExtractor={(item) => item.id.toString()}
                         horizontal
-                        pagingEnabled
                         showsHorizontalScrollIndicator={false}
-                        onScroll={handleScroll}
-                        scrollEventThrottle={16}
-                        style={{ paddingHorizontal: 10 }}
-                    >
-                        {offerData.map((item, index) => (
+                        snapToInterval={ITEM_WIDTH}
+                        decelerationRate="fast"
+                        contentContainerStyle={{
+                            paddingHorizontal: SPACING
+                        }}
+                        renderItem={({ item, index }) => (
                             <Animatable.View
-                                key={item.id}
                                 animation="fadeInRight"
                                 delay={index * 100}
                                 duration={300}
                             >
                                 <TouchableOpacity onPress={() => item.onClick()}>
                                     <Image
-                                        style={styles.offerCard}
                                         source={item.banner}
+                                        style={{
+                                            width: ITEM_WIDTH,
+                                            height: 177,
+                                            borderRadius: 10,
+                                            overflow: 'hidden',
+                                            marginHorizontal: 5,
+                                        }}
                                         resizeMode="stretch"
                                     />
                                 </TouchableOpacity>
                             </Animatable.View>
-                        ))}
-                    </ScrollView>
+                        )}
+                        onScroll={(e) => {
+                            const index = Math.round(e.nativeEvent.contentOffset.x / ITEM_WIDTH);
+                            setActiveIndex(index); // use this for dot indicators
+                        }}
 
+                    />
                     {/* Dot Indicators */}
                     {showOffterSliderDots()}
                 </View>
@@ -466,7 +499,7 @@ const styles = StyleSheet.create({
     },
     offerCard: {
         height: 177,
-        width: width - 38,
+        width: width,
         marginHorizontal: 10,
         position: 'relative',
         overflow: "hidden"
