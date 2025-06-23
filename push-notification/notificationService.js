@@ -1,7 +1,11 @@
 import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
 import { Platform } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
+const PUSH_TOKEN_KEY = "expo_push_token";
+
+// Notification handler setup
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowBanner: true,
@@ -11,29 +15,45 @@ Notifications.setNotificationHandler({
   }),
 });
 
+// Get and cache push token
 export async function getExpoPushToken() {
-  if (!Device.isDevice) {
-    alert("Must use physical device");
+  try {
+    const storedToken = await AsyncStorage.getItem(PUSH_TOKEN_KEY);
+    if (storedToken) {
+      console.log("Using stored token:", storedToken);
+      return storedToken;
+    }
+
+    if (!Device.isDevice) {
+      alert("Must use physical device");
+      return null;
+    }
+
+    const { status: existingStatus } = await Notifications.getPermissionsAsync();
+    let finalStatus = existingStatus;
+
+    if (existingStatus !== "granted") {
+      const { status } = await Notifications.requestPermissionsAsync();
+      finalStatus = status;
+    }
+
+    if (finalStatus !== "granted") {
+      alert("Push notification permission not granted");
+      return null;
+    }
+
+    const tokenData = await Notifications.getExpoPushTokenAsync();
+    const token = tokenData.data;
+    await AsyncStorage.setItem(PUSH_TOKEN_KEY, token);
+    console.log("New token saved:", token);
+    return token;
+  } catch (error) {
+    console.error("Error getting push token:", error);
     return null;
   }
-
-  const { status: existingStatus } = await Notifications.getPermissionsAsync();
-  let finalStatus = existingStatus;
-
-  if (existingStatus !== "granted") {
-    const { status } = await Notifications.requestPermissionsAsync();
-    finalStatus = status;
-  }
-
-  if (finalStatus !== "granted") {
-    alert("Push notification permission not granted");
-    return null;
-  }
-
-  const tokenData = await Notifications.getExpoPushTokenAsync();
-  return tokenData.data;
 }
 
+// Notification channel config for Android
 export async function configureNotificationChannel() {
   if (Platform.OS === "android") {
     await Notifications.setNotificationChannelAsync("default", {
@@ -46,15 +66,12 @@ export async function configureNotificationChannel() {
   }
 }
 
-// export async function registerTokenWithServer(token) {
-//   try {
-//     await fetch("http://192.168.1.39:3000/register-token", {
-//       method: "POST",
-//       headers: { "Content-Type": "application/json" },
-//       body: JSON.stringify({ token }),
-//     });
-//     console.log("✅ Token registered with backend");
-//   } catch (err) {
-//     console.error("❌ Failed to register token:", err);
-//   }
-// }
+// Optional: Clear stored token (e.g., on logout)
+export async function clearStoredPushToken() {
+  await AsyncStorage.removeItem(PUSH_TOKEN_KEY);
+}
+
+// Optional: Just get the stored token
+export async function getStoredPushToken() {
+  return await AsyncStorage.getItem(PUSH_TOKEN_KEY);
+}
