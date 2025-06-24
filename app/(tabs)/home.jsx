@@ -29,6 +29,7 @@ import { BackHandler } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import ShimmerSkeleton from '../components/ListSkeleton';
 import { useHomeData } from '../hooks/useHomeData';
+import StockOptionSlider from '../components/StockOtionSlider';
 
 
 const { height, width } = Dimensions.get("window");
@@ -52,7 +53,8 @@ export default function Home() {
         allServices,
         setServiceSelectedOnHomePage,
         portfolioServices,
-        newsData
+        newsData,
+        optionStockData
     } = useAuth();
     const navigation = useNavigation();
     const {
@@ -64,12 +66,25 @@ export default function Home() {
     const [showPullHint, setShowPullHint] = useState(true);
     const [activeServiceIndex, setActiveServiceIndex] = useState(0)
     const [activeIndex, setActiveIndex] = useState(0);
+    const [purchesAllserviceFlag, setPurchesAllserviceFlag] = useState(false);
     const screenWidth = Dimensions.get("window").width;
 
 
     const { width } = Dimensions.get('window');
     const ITEM_WIDTH = width * 0.9; // 90% of screen width
     const SPACING = (width - ITEM_WIDTH) / 2;
+
+    useEffect(() => {
+        const targetIds = [1, 2, 3, 4, 6];
+
+        // Get all ids from the data
+        const dataIds = purchesService.map(item => item.id);
+
+        // Check if every target ID is included in data
+        const allIncluded = targetIds.every(id => dataIds.includes(id));
+        setPurchesAllserviceFlag(allIncluded)
+    }, [purchesService])
+
 
     useEffect(() => {
         const timer = setTimeout(() => setShowPullHint(false), 3000); // Hide after 3 sec
@@ -155,7 +170,12 @@ export default function Home() {
     const handleClick = (item) => {
 
         if ([1, 6].includes(item?.id)) {
-            router.push(`fastlane/${item?.id}`)
+            router.push({
+                pathname: `/fastlane/${item?.id}`,
+                params: {
+                    is_advisor_assign: item?.subscription?.is_advisor_assign,
+                },
+            });
         } else {
             // router.push(`pmsAndQuantom/${id}`)
             router.push({
@@ -231,7 +251,8 @@ export default function Home() {
 
     const renderServices = () => {
         const renderData = purchesService.length > 0 ? purchesService : allServices;
-
+        // removing new arrivals
+        const filteredData = renderData.filter(item => item.id !== 5);
         const handleServiceScroll = (event) => {
             const scrollX = event.nativeEvent.contentOffset.x;
             const index = Math.round(scrollX / 250); // adjust 180 based on your service card width
@@ -241,7 +262,7 @@ export default function Home() {
         return (
             <>
                 <FlatList
-                    data={renderData}
+                    data={filteredData}
                     renderItem={renderServiceItem}
                     keyExtractor={(item) => item.id.toString()}
                     horizontal
@@ -332,6 +353,7 @@ export default function Home() {
         }
         return (
             <>
+                {purchesAllserviceFlag && <Text style={{ color: COLORS.fontWhite, marginHorizontal: 20, marginTop: 20, fontSize: 18, fontWeight: "bold" }}>You’ve subscribed to all our available services. Thank you for being a valued customer!</Text>}
                 {/* Offer Carousel Section */}
                 <View style={styles.carouselContainer}>
                     <FlatList
@@ -375,6 +397,10 @@ export default function Home() {
                     {showOffterSliderDots()}
                 </View>
 
+                {/* Option stock section */}
+                <View style={{ marginTop: 10 }}>
+                    <StockOptionSlider marketData={optionStockData || []} />
+                </View>
 
                 {/* Services Section */}
                 <View style={styles.sectionContainer}>
@@ -409,7 +435,7 @@ export default function Home() {
                     </Animatable.View>
 
                     <Animatable.View animation="zoomIn" delay={300} duration={200} style={styles.linkItem}>
-                        <TouchableOpacity style={styles.linkItem} onPress={() => router.push("upcoming")}>
+                        <TouchableOpacity style={styles.linkItem} onPress={() => router.push("newArrivals")}>
                             <View style={styles.linkIconContainer}>
                                 {/* <AntDesign name="trademark" size={35} color="#FFA500" /> */}
                                 <Foundation name="burst-new" size={50} style={{ transform: [{ rotate: "30deg" }] }} color="#FFA500" />

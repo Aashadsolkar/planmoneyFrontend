@@ -201,7 +201,7 @@ export default function Checkout() {
                 {selectedService?.name}
               </Text>
               <Text style={styles.subscriptionDuration}>
-                {selectedService?.billing_cycle}
+                {selectedService?.billing_cycle || ""}
               </Text>
               <Text
                 style={[
@@ -213,7 +213,7 @@ export default function Checkout() {
                   },
                 ]}
               >
-                ₹{selectedService?.actual_price}
+                {selectedService?.actual_price && "₹" + selectedService?.actual_price}
               </Text>
             </View>
             <View style={[styles.subscriptionHeader]}>
@@ -225,7 +225,7 @@ export default function Checkout() {
           </View>
 
           <Text style={[styles.expiryText, { marginBottom: 10 }]}>
-            If you Pay ₹{selectedService?.actual_price}/- now. The plan is valid
+            If you Pay ₹{selectedService?.offer_price}/- now. The plan is valid
             till 02 Jul 2025{" "}
           </Text>
           <Text

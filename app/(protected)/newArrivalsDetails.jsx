@@ -1,64 +1,26 @@
 import React, { useState } from 'react';
-import { 
-  View, 
-  Text, 
-  StyleSheet, 
-  TouchableOpacity, 
-  ScrollView, 
-  SafeAreaView, 
-  StatusBar 
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+  SafeAreaView,
+  StatusBar,
+  useWindowDimensions
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Header from '../components/Header';
 import { COLORS } from '../constants';
+import { useAuth } from '../context/useAuth';
+import RenderHTML from 'react-native-render-html';
+import { router } from 'expo-router';
+
 
 const ServiceDetailScreen = () => {
-  const  service = { 
-    title: '5 STOCKS WITH 50% UPSIDE', 
-    date: '11 Apr 2025', 
-    timeframe: '18 Months' 
-  };
-  
-  const [expandedCompany, setExpandedCompany] = useState('pfc');
-  
-  const companies = [
-    {
-      id: 'pfc',
-      name: 'Power Finance Corporation Ltd',
-      price: '₹780.00',
-      details: [
-        'Maharatna PSU financing India\'s power sector',
-        'Loan book of loan crore | 80% to government entities',
-        'Supports 25% of India\'s renewable energy capacity',
-        'GNPA at 3.4%, NIM at 3.18%',
-        'Expanding via PSC-OFS City arm'
-      ]
-    },
-    {
-      id: 'abc',
-      name: 'Aditya Birla Capital Ltd',
-      price: '₹185.00',
-      details: []
-    },
-    {
-      id: 'bhf',
-      name: 'Bajaj Housing Finance Ltd',
-      price: '₹119.00',
-      details: []
-    },
-    {
-      id: 'tcp',
-      name: 'Tata Consumer Products Ltd',
-      price: '₹1088.00',
-      details: []
-    },
-    {
-      id: 'kpit',
-      name: 'KPIT Technologies Ltd',
-      price: '₹1119.00',
-      details: []
-    }
-  ];
+  const { width } = useWindowDimensions();
+  const { newArrivalsDetails } = useAuth();
+  const [expandedCompany, setExpandedCompany] = useState(null);
 
   const toggleCompany = (id) => {
     if (expandedCompany === id) {
@@ -68,72 +30,143 @@ const ServiceDetailScreen = () => {
     }
   };
 
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = date.toLocaleString('en-US', { month: 'short' }); // "Apr"
+    const year = date.getFullYear();
+    return `${day} ${month} ${year}`;
+  };
+
+  const getTimeframeLabel = (validTillDate) => {
+    const now = new Date();
+    const end = new Date(validTillDate);
+
+    // Ensure valid dates
+    if (isNaN(end.getTime())) return 'Invalid Date';
+
+    let years = end.getFullYear() - now.getFullYear();
+    let months = end.getMonth() - now.getMonth();
+    let days = end.getDate() - now.getDate();
+
+    // Adjust for negative days
+    if (days < 0) {
+      months--;
+      const prevMonth = new Date(end.getFullYear(), end.getMonth(), 0);
+      days += prevMonth.getDate();
+    }
+
+    // Adjust for negative months
+    if (months < 0) {
+      years--;
+      months += 12;
+    }
+
+    // Return based on values
+    if (years === 0 && months === 0) {
+      return `${days} Days`;
+    } else if (years === 0 && days === 0) {
+      return `${months} Month${months > 1 ? 's' : ''}`;
+    } else if (years === 0) {
+      return `${months} Month${months > 1 ? 's' : ''} ${days} Day${days > 1 ? 's' : ''}`;
+    } else if (months === 0 && days === 0) {
+      return `${years} Year${years > 1 ? 's' : ''}`;
+    } else {
+      return `${years} Year${years > 1 ? 's' : ''} ${months} Month${months > 1 ? 's' : ''}`;
+    }
+  };
+
+
+  const getRiskLevelColor = (riskLevel) => {
+    const colors = {
+      low: COLORS.profitColor,    // green
+      medium: COLORS.secondaryColor,// yellow
+      high: COLORS.lossColor   // red
+    };
+
+    return colors[riskLevel.toLowerCase()] || '#6c757d'; // fallback: gray
+  }
+
+  const getRiskLevellabel = (riskLevel) => {
+    const label = {
+      low: "LOW",
+      medium: "MED",
+      high: "HIGH"
+    };
+
+    return label[riskLevel.toLowerCase()]; // fallback: gray
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor={COLORS.cardColor} />
-      <Header showBackButton={true}/>
+      <Header showBackButton={true} />
 
       <ScrollView style={styles.scrollView}>
         <View style={styles.serviceHeader}>
-          <Text style={styles.serviceTitle}>{service.title}</Text>
+          <Text style={styles.serviceTitle}>{newArrivalsDetails.title}</Text>
         </View>
-        
+
         <View style={styles.serviceDetails}>
           <View style={styles.detailColumn}>
             <Text style={styles.detailLabel}>As on</Text>
-            <Text style={styles.detailValue}>{service.date}</Text>
+            <Text style={styles.detailValue}>{formatDate(newArrivalsDetails.created_at)}</Text>
           </View>
           <View style={styles.detailColumn}>
             <Text style={styles.detailLabel}>Timeframe</Text>
-            <Text style={styles.detailValue}>{service.timeframe}</Text>
+            <Text style={styles.detailValue}>{getTimeframeLabel(newArrivalsDetails.valid_till)}</Text>
           </View>
           <View style={styles.detailColumn}>
             <Text style={styles.detailLabel}>Risk</Text>
-            <View style={styles.riskTag}>
-              <Text style={styles.riskTagText}>MED</Text>
+            <View style={[styles.riskTag, { backgroundColor: getRiskLevelColor(newArrivalsDetails?.risk_level) }]}>
+              <Text style={styles.riskTagText}>{getRiskLevellabel(newArrivalsDetails?.risk_level)}</Text>
             </View>
           </View>
         </View>
-        
-        <TouchableOpacity style={styles.pdfButton}>
+
+        <TouchableOpacity style={styles.pdfButton} onPress={() => router.push({
+          pathname: "/newArrivalPDF",
+          params: {
+            report: newArrivalsDetails?.report
+          }
+        })}>
           <Text style={styles.pdfButtonText}>View PDF</Text>
           <Ionicons name="chevron-forward" size={16} color="#ffaa00" />
         </TouchableOpacity>
-        
+
         <View style={styles.companiesContainer}>
-          {companies.map((company) => (
+          {newArrivalsDetails?.new_arrivals_recommendation?.map((company) => (
             <View key={company.id} style={styles.companyCard}>
-              <TouchableOpacity 
+              <TouchableOpacity
                 style={styles.companyHeader}
                 onPress={() => toggleCompany(company.id)}
               >
                 <View style={styles.companyIcon}>
                   <Text style={styles.companyIconText}>
-                    {company.name.charAt(0)}
+                    {company?.stock?.name?.charAt(0)}
                   </Text>
                 </View>
                 <View style={styles.companyInfo}>
-                  <Text style={styles.companyName}>{company.name}</Text>
+                  <Text style={styles.companyName}>{company?.stock?.name}</Text>
                   <View>
                     <Text style={styles.companyLabel}>CMP</Text>
-                    <Text style={styles.companyPrice}>{company.price}</Text>
+                    <Text style={styles.companyPrice}>{company?.stock?.bse_price}</Text>
                   </View>
                 </View>
-                <Ionicons 
-                  name={expandedCompany === company.id ? "chevron-up" : "chevron-down"} 
-                  size={24} 
+                <Ionicons
+                  name={expandedCompany === company.id ? "chevron-up" : "chevron-down"}
+                  size={24}
                   color={expandedCompany === company.id ? COLORS.secondaryColor : COLORS.fontWhite}
                 />
               </TouchableOpacity>
-              
-              {expandedCompany === company.id && company.details.length > 0 && (
+
+              {expandedCompany === company.id && (
                 <View style={styles.companyDetails}>
-                  {company.details.map((detail, index) => (
-                    <View key={index} style={styles.detailItem}>
-                      <View style={styles.bulletPoint} />
-                      <Text style={styles.detailText}>{detail}</Text>
-                    </View>
-                  ))}
+                  <RenderHTML
+                    contentWidth={width}
+                    source={{ html: company.report }}
+                    baseStyle={{ color: COLORS.fontWhite, fontSize: 14 }}
+                  />
                 </View>
               )}
             </View>
@@ -164,9 +197,7 @@ const styles = StyleSheet.create({
   serviceDetails: {
     flexDirection: 'row',
     marginBottom: 20,
-  },
-  detailColumn: {
-    flex: 1,
+    justifyContent: "space-between"
   },
   detailLabel: {
     fontSize: 12,

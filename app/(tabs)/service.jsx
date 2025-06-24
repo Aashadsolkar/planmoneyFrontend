@@ -36,9 +36,11 @@ const Service = () => {
                     if (purchesService?.length > 0) {
                         const purchesServiceId = purchesService.map(item => item.id);
                         const filteredArray = services.filter(item => !purchesServiceId.includes(item.id));
-                        setAllServices(filteredArray);
+                        const filteredData = filteredArray.filter(item => item.id !== 5);
+                        setAllServices(filteredData);
                     } else {
-                        setAllServices(services);
+                        const filteredData = services.filter(item => item.id !== 5);
+                        setAllServices(filteredData);
                     }
                 } catch (error) {
                     Alert.alert(

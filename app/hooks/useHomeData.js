@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import { Alert } from 'react-native';
-import { getProfileData, customerService, news } from '../utils/apiCaller'; // adjust path as needed
+import { getProfileData, customerService, news, optionstocks } from '../utils/apiCaller'; // adjust path as needed
 import { useAuth } from '../context/useAuth'; // adjust path as needed
 import { useRouter } from 'expo-router';
 
@@ -17,6 +17,7 @@ export const useHomeData = () => {
         skipServices,
         newsData,
         setNewsData,
+        setOptionStockData,
         setIsProfileLoading
     } = useAuth();
 
@@ -31,6 +32,7 @@ export const useHomeData = () => {
                 await fetchProfile();
                 await fetchNews();
                 await fetchCustomerServices();
+                await fetchOptionStockData();
             } catch (error) {
                 console.error('Error fetching home data:', error);
             } finally {
@@ -101,6 +103,18 @@ export const useHomeData = () => {
             ]);
         }
     };
+
+     const fetchOptionStockData = async () => {
+        try {
+            const response = await optionstocks(token);
+            setOptionStockData(response?.data?.optionStock || []);
+        } catch (error) {
+            Alert.alert("Error", error?.message || "Failed to get news", [
+                { text: "OK", onPress: () => router.push("home") },
+            ]);
+        }
+    };
+
 
     const onRefresh = () => {
         setRefreshing(true);
