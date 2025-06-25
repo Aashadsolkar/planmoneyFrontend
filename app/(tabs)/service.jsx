@@ -8,6 +8,15 @@ import { service } from '../utils/apiCaller';
 import { router, useNavigation } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
 import SkeletonList from '../components/ListSkeleton';
+import QuantomVoltIcon, { FastlaneIcon, PMSIcon, PSIcon } from '../../assets/images/SVG';
+
+const icon = {
+    1 : () => <FastlaneIcon height={33} width={33} />,
+    2 : () => <PSIcon height={33} width={33} />,
+    3 : () => <FastlaneIcon height={33} width={33} />,
+    4 : () => <QuantomVoltIcon height={33} width={33} />,
+    6 : () => <PMSIcon height={33} width={33} />
+}
 
 const Service = () => {
     const {
@@ -98,7 +107,7 @@ const Service = () => {
             return (
                 <ServiceCard
                     name={service.name}
-                    icon="line-chart"
+                    // icon="line-chart"
                     iconType="fa"
                     startsAt={getLowestActualPricePlan(service?.plans)?.actual_price}
                     isExpanded={expandedService === service.id}
@@ -108,6 +117,7 @@ const Service = () => {
                     showSubscriptions
                     key={service?.id}
                     serviceId={service?.id}
+                    icon={icon[service?.id]}
                 />
             )
         })

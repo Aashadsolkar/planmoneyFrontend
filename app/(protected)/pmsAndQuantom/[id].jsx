@@ -28,7 +28,9 @@ const PmsAndQuantom = () => {
                 try {
                     setIsLoading(true);
                     const response = await getFastlaneData(token, id);
-                    setFastlaneData(response?.data?.services);
+                    const data = response?.data?.services;
+                    const sortedData = data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+                    setFastlaneData(sortedData)
                 } catch (error) {
                     Alert.alert(
                         "Error",
@@ -303,7 +305,7 @@ const PmsAndQuantom = () => {
                         </View>
                     </LinearGradient>
                 </TouchableOpacity>
-                <Text style={styles.heading}>Stock updates</Text>
+                <Text style={styles.heading}>Stock Recommendations</Text>
                 <View style={{ marginBottom: 50 }}>
                     {renderCardList()}
                 </View>

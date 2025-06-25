@@ -7,10 +7,15 @@ import { router } from 'expo-router';
 import { useAuth } from '../context/useAuth';
 import { getFastLaneServiceData } from '../utils/apis/customer-api-caller';
 import { newArrivals } from '../utils/apiCaller';
+import SkeletonList from '../components/ListSkeleton';
+import * as Animatable from 'react-native-animatable';
+import Entypo from '@expo/vector-icons/Entypo';
 
 const HomeScreen = () => {
   const { token, setNewArrivalsDetails, setSelectedService } = useAuth()
-  const [newArrivalsData, setNewArrivalsData] = useState([])
+  const [newArrivalsData, setNewArrivalsData] = useState([]);
+  const [noData, setNoData] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
     getNewArrivalsData(token, 5)
   }, [token])
@@ -27,8 +32,6 @@ const HomeScreen = () => {
       availableService.forEach(service => {
         // Check if this service is purchased
         const purchased = availableUserService.find(p => p.id === service.id);
-
-
         if (purchased) {
           // Merge both objects if found
           mergedServices.push({ ...service, ...purchased });
@@ -43,9 +46,11 @@ const HomeScreen = () => {
       } else if (availableService.length > 0) {
         setNewArrivalsData(mergedServices);
       } else {
-        console.log("no data found");
+        setNoData(true);
       }
+      setIsLoading(false);
     } catch (error) {
+      setIsLoading(false);
       Alert.alert(
         "Error",
         error?.message || "Faild to get New Arrivals Data.",
@@ -127,57 +132,94 @@ const HomeScreen = () => {
     return label[riskLevel.toLowerCase()]; // fallback: gray
   }
 
+  const renderStockList = () => {
+
+    if (noData) {
+      return (
+        <View style={styles.content}>
+          <Animatable.View
+            animation="bounceInDown"
+            delay={300}
+            duration={1000}
+            useNativeDriver
+          >
+            <Entypo
+              name="new"
+              size={100}
+              color={COLORS.secondaryColor}
+              style={{ marginBottom: 20 }}
+            />
+          </Animatable.View>
+
+          <Animatable.Text
+            animation="pulse"
+            iterationCount="infinite"
+            duration={2000}
+            style={styles.text}
+          >
+            New services are currently unavailable.
+          </Animatable.Text>
+        </View>
+      )
+    }
+
+    if (isLoading) {
+      return [1, 2, 3, 4, 5].map((v) => <SkeletonList key={v} />)
+    }
+    return newArrivalsData.map((service) => (
+      <View key={service.id} style={styles.serviceCard}>
+        <View style={styles.serviceHeader}>
+          <Text style={styles.serviceTitle}>{service.title}</Text>
+          <View style={[
+            styles.serviceTag,
+            styles.multiTag,
+            { backgroundColor: getRiskLevelColor(service?.risk_level) }
+          ]}>
+            <Text style={[styles.serviceTagText]}>
+              {getRiskLevellabel(service?.risk_level)}
+            </Text>
+          </View>
+        </View>
+        <View style={styles.serviceDetails}>
+          <View style={styles.detailColumn}>
+            <Text style={styles.detailLabel}>As on</Text>
+            <Text style={styles.detailValue}>{formatDate(service.created_at)}</Text>
+          </View>
+          <View style={styles.detailColumn}>
+            <Text style={styles.detailLabel}>Timeframe</Text>
+            <Text style={styles.detailValue}>{getTimeframeLabel(service.valid_till)}</Text>
+          </View>
+          {
+            service?.new_arrivals_recommendation ?
+              <TouchableOpacity style={{ flexDirection: "row", alignItems: "center" }} onPress={() => {
+                setNewArrivalsDetails(service);
+                router.push('newArrivalsDetails')
+              }}>
+                <Text style={{ color: COLORS.secondaryColor }}>View Details</Text><MaterialIcons name="chevron-right" size={18} color={COLORS.secondaryColor} />
+              </TouchableOpacity>
+              :
+              <TouchableOpacity
+                style={styles.buyButton}
+                onPress={() => {
+                  setSelectedService({ new_arrival_id: service?.id, name: service?.title, offer_price: service?.price, id: 1, billing_cycle: "yearly", serviceId: "5" })
+                  router.push("checkout")
+                }}
+              >
+                <Text style={styles.buyButtonText}>Buy Now</Text>
+              </TouchableOpacity>
+          }
+        </View>
+      </View>
+    ))
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#003366" />
       <Header showBackButton={true} />
 
       <ScrollView style={styles.scrollView}>
-        {newArrivalsData.map((service) => (
-          <View key={service.id} style={styles.serviceCard}>
-            <View style={styles.serviceHeader}>
-              <Text style={styles.serviceTitle}>{service.title}</Text>
-              <View style={[
-                styles.serviceTag,
-                styles.multiTag,
-                { backgroundColor: getRiskLevelColor(service?.risk_level) }
-              ]}>
-                <Text style={[styles.serviceTagText]}>
-                  {getRiskLevellabel(service?.risk_level)}
-                </Text>
-              </View>
-            </View>
-            <View style={styles.serviceDetails}>
-              <View style={styles.detailColumn}>
-                <Text style={styles.detailLabel}>As on</Text>
-                <Text style={styles.detailValue}>{formatDate(service.created_at)}</Text>
-              </View>
-              <View style={styles.detailColumn}>
-                <Text style={styles.detailLabel}>Timeframe</Text>
-                <Text style={styles.detailValue}>{getTimeframeLabel(service.valid_till)}</Text>
-              </View>
-              {
-                service?.new_arrivals_recommendation ?
-                  <TouchableOpacity style={{ flexDirection: "row", alignItems: "center" }} onPress={() => {
-                    setNewArrivalsDetails(service);
-                    router.push('newArrivalsDetails')
-                  }}>
-                    <Text style={{ color: COLORS.secondaryColor }}>View Details</Text><MaterialIcons name="chevron-right" size={18} color={COLORS.secondaryColor} />
-                  </TouchableOpacity>
-                  :
-                  <TouchableOpacity
-                    style={styles.buyButton}
-                    onPress={() => {
-                      setSelectedService({ new_arrival_id: newArrivalsData?.id, name: service?.title, offer_price: 100 })
-                      router.push("checkout")
-                    }}
-                  >
-                    <Text style={styles.buyButtonText}>Buy Now</Text>
-                  </TouchableOpacity>
-              }
-            </View>
-          </View>
-        ))}
+        {renderStockList()}
       </ScrollView>
     </SafeAreaView>
   );
@@ -292,6 +334,19 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: '600',
     fontSize: 14,
+  },
+  content: {
+    flex: 1,
+    marginTop: 100,
+    backgroundColor: COLORS.primaryColor,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  text: {
+    color: COLORS.fontWhite,
+    fontWeight: "600",
+    fontSize: 20,
+    textAlign: "center"
   },
 });
 

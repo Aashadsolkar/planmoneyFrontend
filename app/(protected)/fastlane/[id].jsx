@@ -25,7 +25,9 @@ const FastLane = () => {
                 try {
                     setIsLoading(true);
                     const response = await getFastlaneData(token, id);
-                    setFastlaneData(response?.data?.services)
+                    const data = response?.data?.services;
+                    const sortedData = data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+                    setFastlaneData(sortedData)
 
                 } catch (error) {
                     Alert.alert(
@@ -59,11 +61,11 @@ const FastLane = () => {
         return colors[riskLevel.toLowerCase()] || '#6c757d'; // fallback: gray
     }
 
-     const getRiskLevellabel = (riskLevel) => {
+    const getRiskLevellabel = (riskLevel) => {
         const label = {
             low: "LOW",
             medium: "MED",
-            high: "HIGH"         
+            high: "HIGH"
         };
 
         return label[riskLevel.toLowerCase()]; // fallback: gray
@@ -110,7 +112,7 @@ const FastLane = () => {
                             <Text style={styles.lightText}>Holding Period</Text>
                             <Text style={styles.boldText}>{data?.holding_period} days</Text>
                         </View>
-                       
+
                     </View>
                     <View style={[styles.cardSections]}>
                         <View style={{flex: 1}}>
@@ -229,10 +231,10 @@ const FastLane = () => {
                 showsVerticalScrollIndicator={false}
                 style={{ paddingHorizontal: 20, backgroundColor: COLORS.primaryColor, paddingTop: 15 }}
             >
-                <Text style={styles.heading}>Stock updates</Text>
-                <View style={{marginBottom: 50}}>
+                <Text style={styles.heading}>Stock Recommendations</Text>
+                <View style={{ marginBottom: 50 }}>
 
-                {renderCardList()}
+                    {renderCardList()}
                 </View>
             </ScrollView>
         </SafeAreaView>

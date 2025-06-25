@@ -71,8 +71,8 @@ export default function Home() {
 
 
     const { width } = Dimensions.get('window');
-    const ITEM_WIDTH = width * 0.9; // 90% of screen width
-    const SPACING = (width - ITEM_WIDTH) / 2;
+    const ITEM_WIDTH = width * 0.93; // 90% of screen width
+    const SPACING = (width - ITEM_WIDTH) / 3;
 
     useEffect(() => {
         const targetIds = [1, 2, 3, 4, 6];
@@ -274,9 +274,10 @@ export default function Home() {
 
                 {/* Dot Indicators for Services */}
                 {
-                    renderData?.length > 1 &&
+                    filteredData?.length > 1 &&
                     <View style={styles.dotContainer}>
-                        {renderData.map((_, i) => (
+                        {
+                    filteredData.map((_, i) => (
                             <View
                                 key={i}
                                 style={[
@@ -521,7 +522,7 @@ const styles = StyleSheet.create({
         backgroundColor: COLORS.primaryColor
     },
     carouselContainer: {
-        marginTop: 20
+        marginTop: 10
     },
     offerCard: {
         height: 177,
@@ -543,14 +544,14 @@ const styles = StyleSheet.create({
         marginBottom: 20,
     },
     sectionContainer: {
-        marginTop: 10,
+        marginTop: 8,
         paddingStart: 20
     },
     sectionTitle: {
         color: 'white',
         fontSize: 18,
         fontWeight: 'bold',
-        marginBottom: 15,
+        marginBottom: 5,
     },
     servicesListContainer: {
         paddingRight: 20,
@@ -592,7 +593,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         paddingHorizontal: 30,
-        marginTop: 20,
+        marginTop: 10,
         marginBottom: 20,
     },
     linkItem: {
