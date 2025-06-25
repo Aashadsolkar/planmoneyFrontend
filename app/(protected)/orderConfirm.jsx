@@ -23,7 +23,7 @@ const OrderConfirm = () => {
   const [error, setError] = useState(null)
   const [paymentFailed, setPaymentFailed] = useState(false);
 
-  const { id, billing_cycle, serviceId } = selectedService || {}
+  const { id, billing_cycle, serviceId, new_arrival_id } = selectedService || {}
 
 
 
@@ -43,7 +43,8 @@ const OrderConfirm = () => {
           payment_status: orderData[0]?.payment_status,
           transaction_id: orderId,
           coupon_code: prePaymentDetails?.coupon_code,
-          referral_code: prePaymentDetails?.referral_code
+          referral_code: prePaymentDetails?.referral_code,
+          new_arrival_id: new_arrival_id
         }
 
 

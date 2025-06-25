@@ -16,7 +16,7 @@ const FastLane = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [fastlaneData, setFastlaneData] = useState([]);
     const navigation = useNavigation();
-    const { id } = useLocalSearchParams();
+    const { id, is_advisor_assign } = useLocalSearchParams();
 
 
     useFocusEffect(
@@ -43,7 +43,7 @@ const FastLane = () => {
                     setIsLoading(false);
                 }
             }
-            if (customerServiceData?.questionnaire_status == 1 && customerServiceData?.verification_status == 1) {
+            if (customerServiceData?.questionnaire_status == 1 && customerServiceData?.verification_status == 1 && is_advisor_assign == "true") {
                 callFastlaneApi()
             }
         }, [id])
@@ -72,8 +72,6 @@ const FastLane = () => {
 
     const renderCardList = (data) => {
         return fastlaneData?.map((data) => {
-            console.log(data?.stock?.company_logo, "------------------------------");
-            
             const dateStr = data?.created_at;
             const date = new Date(dateStr);
 
@@ -182,7 +180,7 @@ const FastLane = () => {
             </SafeAreaView>
         )
     }
-    if (customerServiceData?.verification_status == 0) {
+    if (customerServiceData?.verification_status == 0 || is_advisor_assign == "false") {
         return (
             <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.cardColor }}>
                 <StatusBar barStyle="light-content" backgroundColor={COLORS.cardColor} />

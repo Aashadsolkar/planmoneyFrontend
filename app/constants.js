@@ -37,4 +37,12 @@ export const util_style = {
         shadowOpacity: 0.50,
         shadowRadius: 15,
     }
-} 
+}
+
+export const serviceInfo = {
+    1: "High Quality Equity calls based on technical charts & fundamental strengths ranging from swing to Long term.",
+    2: "For those with capital upto 25 Lakh. Dedicated analyst for the client. All calls, entry, exits are personalised based on the risk factors. Goal is to generate 25% return on capital",
+    3: "For HNIs with capital from 25 Lakh to 5 Cr. - Portfolio will be fully handled by our team of analysts. All entries, exits, gains based on client’s risk appetite. Goal is wealth creation. Annual Fees + Performance Fee",
+    6: "Premium Research by PlanMoney is a focused equity advisory service offering one high-conviction stock recommendation every month. Each idea is the result of rigorous fundamental and technical research, carefully selected for its potential to deliver superior returns. Premium Research is ideal for those who prefer a steady, disciplined approach to wealth creation through equities.",
+    4: "QuantumVault is a premium investment strategy by PlanMoney, starting at ₹50 lakh, aimed at creating generational wealth through the power of compounding. With a target growth of 50% per cycle across 10 periods, the potential outcome can reach ₹28.83 crore. It features a high-performance hurdle rate of 50%, ensuring returns are meaningful before fees apply. Investors are charged an annual fee plus a performance fee based on returns above the hurdle. QuantumVault is tailored for serious wealth builders seeking strategic, long-term growth."
+}

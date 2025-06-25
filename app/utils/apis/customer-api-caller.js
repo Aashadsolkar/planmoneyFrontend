@@ -1,5 +1,5 @@
 import axios from "axios";
-import { CUSTOMER_API_ENDPOINTS } from "./apiEndPoints";
+import { CUSTOMER_API_ENDPOINTS, SERVICE_API_ENDPOINTS } from "./apiEndPoints";
 
 export const customerLogin = async (data) => {
   try {

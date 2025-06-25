@@ -5,7 +5,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { useAuth } from '../context/useAuth';
 import { router, useNavigation } from 'expo-router';
-import { COLORS } from '../constants';
+import { COLORS, serviceInfo } from '../constants';
 import { Ionicons } from '@expo/vector-icons';
 import Button from '../components/Button';
 import { leads } from '../utils/apiCaller';
@@ -234,7 +234,7 @@ const ServiceCard = ({
                     </TouchableOpacity>
                   </View>
                   <Text style={{ marginHorizontal: 20, fontSize: 18, color: COLORS.secondaryColor }}>About {name}</Text>
-                  <Text style={{ marginHorizontal: 20, color: COLORS.fontWhite, fontWeight: 400 }}>Please enter your query here.</Text>
+                  <Text style={{ marginHorizontal: 20, color: COLORS.fontWhite, fontWeight: 400 }}>{serviceInfo[serviceId]}</Text>
                   <TextInput
                     style={styles.searchInput}
                     placeholder="Type here..."

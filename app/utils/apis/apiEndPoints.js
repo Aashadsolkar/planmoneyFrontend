@@ -21,6 +21,7 @@ export const SERVICE_API_ENDPOINTS = {
   PRODUCT_SERVICES: `${BASE_URL}/services`,
   BUY_PMS_SERVICE: `${BASE_URL}/pms-data`,
   PRODUCT_NEWS: `${BASE_URL}/latest-news`,
+  NEW_ARRIVALS: `${BASE_URL}/new-arrivals-data`,
   GET_SINGLE_NEWS: (id) => `${BASE_URL}/latest-news/${id}`,
   PMS_PORTFOLIO_DATA: `${BASE_URL}/pms-data`,
   BUY_QUANTUM_SERVICE: `${BASE_URL}/quantumvault-data`,
