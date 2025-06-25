@@ -1,34 +1,131 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, SafeAreaView, StatusBar } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, SafeAreaView, StatusBar, Alert } from 'react-native';
+import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { COLORS } from '../constants';
 import Header from '../components/Header';
 import { router } from 'expo-router';
+import { useAuth } from '../context/useAuth';
+import { getFastLaneServiceData } from '../utils/apis/customer-api-caller';
+import { newArrivals } from '../utils/apiCaller';
 
 const HomeScreen = () => {
-  const services = [
-    {
-      id: '1',
-      title: '3 Stocks projected as Multibagger',
-      date: '11 Apr 2025',
-      timeframe: '18 Months',
-      type: 'multi',
-    },
-    {
-      id: '2',
-      title: '5 STOCKS WITH 50% UPSIDE',
-      date: '11 Apr 2025',
-      timeframe: '18 Months',
-      type: 'upside',
-    },
-    {
-      id: '3',
-      title: '3 Bluechip Stock expected 10% upside',
-      date: '11 Apr 2025',
-      timeframe: '3 Months',
-      type: 'bluechip',
-    },
-  ];
+  const { token, setNewArrivalsDetails, setSelectedService } = useAuth()
+  const [newArrivalsData, setNewArrivalsData] = useState([])
+  useEffect(() => {
+    getNewArrivalsData(token, 5)
+  }, [token])
+
+  const getNewArrivalsData = async (token, id) => {
+    try {
+      const response = await getFastLaneServiceData(token, id);
+      const newArrivalsUser = await newArrivals(token);
+      const availableService = response?.data?.services || []
+      const availableUserService = newArrivalsUser?.data?.new_arrival_data || [];
+
+      const mergedServices = [];
+
+      availableService.forEach(service => {
+        // Check if this service is purchased
+        const purchased = availableUserService.find(p => p.id === service.id);
+
+
+        if (purchased) {
+          // Merge both objects if found
+          mergedServices.push({ ...service, ...purchased });
+        } else {
+          // If not purchased, keep original
+          mergedServices.push(service);
+        }
+      });
+
+      if (availableService.length > 0 && availableUserService.length > 0) {
+        setNewArrivalsData(mergedServices);
+      } else if (availableService.length > 0) {
+        setNewArrivalsData(mergedServices);
+      } else {
+        console.log("no data found");
+      }
+    } catch (error) {
+      Alert.alert(
+        "Error",
+        error?.message || "Faild to get New Arrivals Data.",
+        [
+          {
+            text: "OK",
+            onPress: () => router.push("home"),
+          },
+        ]
+      );
+    }
+  }
+
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = date.toLocaleString('en-US', { month: 'short' }); // "Apr"
+    const year = date.getFullYear();
+    return `${day} ${month} ${year}`;
+  };
+
+  const getTimeframeLabel = (validTillDate) => {
+    const now = new Date();
+    const end = new Date(validTillDate);
+
+    // Ensure valid dates
+    if (isNaN(end.getTime())) return 'Invalid Date';
+
+    let years = end.getFullYear() - now.getFullYear();
+    let months = end.getMonth() - now.getMonth();
+    let days = end.getDate() - now.getDate();
+
+    // Adjust for negative days
+    if (days < 0) {
+      months--;
+      const prevMonth = new Date(end.getFullYear(), end.getMonth(), 0);
+      days += prevMonth.getDate();
+    }
+
+    // Adjust for negative months
+    if (months < 0) {
+      years--;
+      months += 12;
+    }
+
+    // Return based on values
+    if (years === 0 && months === 0) {
+      return `${days} Days`;
+    } else if (years === 0 && days === 0) {
+      return `${months} Month${months > 1 ? 's' : ''}`;
+    } else if (years === 0) {
+      return `${months} Month${months > 1 ? 's' : ''} ${days} Day${days > 1 ? 's' : ''}`;
+    } else if (months === 0 && days === 0) {
+      return `${years} Year${years > 1 ? 's' : ''}`;
+    } else {
+      return `${years} Year${years > 1 ? 's' : ''} ${months} Month${months > 1 ? 's' : ''}`;
+    }
+  };
+
+
+  const getRiskLevelColor = (riskLevel) => {
+    const colors = {
+      low: COLORS.profitColor,    // green
+      medium: COLORS.secondaryColor,// yellow
+      high: COLORS.lossColor   // red
+    };
+
+    return colors[riskLevel.toLowerCase()] || '#6c757d'; // fallback: gray
+  }
+
+  const getRiskLevellabel = (riskLevel) => {
+    const label = {
+      low: "LOW",
+      medium: "MED",
+      high: "HIGH"
+    };
+
+    return label[riskLevel.toLowerCase()]; // fallback: gray
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -36,36 +133,48 @@ const HomeScreen = () => {
       <Header showBackButton={true} />
 
       <ScrollView style={styles.scrollView}>
-        {services.map((service) => (
+        {newArrivalsData.map((service) => (
           <View key={service.id} style={styles.serviceCard}>
             <View style={styles.serviceHeader}>
               <Text style={styles.serviceTitle}>{service.title}</Text>
               <View style={[
-                styles.serviceTag, 
-                service.type === 'multi' ? styles.multiTag : 
-                service.type === 'upside' ? styles.upsideTag : styles.bluechipTag
+                styles.serviceTag,
+                styles.multiTag,
+                { backgroundColor: getRiskLevelColor(service?.risk_level) }
               ]}>
-                <Text style={styles.serviceTagText}>
-                  {service.type === 'multi' ? 'Multi' : 
-                   service.type === 'upside' ? 'Best' : 'High'}
+                <Text style={[styles.serviceTagText]}>
+                  {getRiskLevellabel(service?.risk_level)}
                 </Text>
               </View>
             </View>
             <View style={styles.serviceDetails}>
               <View style={styles.detailColumn}>
                 <Text style={styles.detailLabel}>As on</Text>
-                <Text style={styles.detailValue}>{service.date}</Text>
+                <Text style={styles.detailValue}>{formatDate(service.created_at)}</Text>
               </View>
               <View style={styles.detailColumn}>
                 <Text style={styles.detailLabel}>Timeframe</Text>
-                <Text style={styles.detailValue}>{service.timeframe}</Text>
+                <Text style={styles.detailValue}>{getTimeframeLabel(service.valid_till)}</Text>
               </View>
-              <TouchableOpacity 
-                style={styles.buyButton}
-                onPress={() => router.push('newArrivalsDetails')}
-              >
-                <Text style={styles.buyButtonText}>Buy Now</Text>
-              </TouchableOpacity>
+              {
+                service?.new_arrivals_recommendation ?
+                  <TouchableOpacity style={{ flexDirection: "row", alignItems: "center" }} onPress={() => {
+                    setNewArrivalsDetails(service);
+                    router.push('newArrivalsDetails')
+                  }}>
+                    <Text style={{ color: COLORS.secondaryColor }}>View Details</Text><MaterialIcons name="chevron-right" size={18} color={COLORS.secondaryColor} />
+                  </TouchableOpacity>
+                  :
+                  <TouchableOpacity
+                    style={styles.buyButton}
+                    onPress={() => {
+                      setSelectedService({ new_arrival_id: newArrivalsData?.id, name: service?.title, offer_price: 100 })
+                      router.push("checkout")
+                    }}
+                  >
+                    <Text style={styles.buyButtonText}>Buy Now</Text>
+                  </TouchableOpacity>
+              }
             </View>
           </View>
         ))}

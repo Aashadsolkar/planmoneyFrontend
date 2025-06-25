@@ -1,5 +1,6 @@
 // utils/apiCaller.js
 import axios from 'axios';
+import { SERVICE_API_ENDPOINTS } from './apis/apiEndPoints';
 
 export const login = async (data = null) => {
   try {
@@ -572,5 +573,47 @@ export const RegisterPushNotificationToken = async (deviceToken, token) => {
   } catch (error) {
     console.error('API Error:', error?.response?.data || error.message);
     throw error?.response?.data || { message: 'Something went wrong' };
+  }
+};
+
+export const newArrivals = async (token) => {
+  try {
+    const response = await axios.get(
+      SERVICE_API_ENDPOINTS.NEW_ARRIVALS,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer${token}`,
+        },
+      }
+    );
+    if (response.data?.status === false) {
+      throw new Error(response.data?.message || "Invalid Token");
+    }
+    return response.data;
+  } catch (error) {
+    console.error("API Error:", error?.response?.data || error.message);
+    throw error?.response?.data || { message: "Something went wrong" };
+  }
+};
+
+export const optionstocks = async (token) => {
+  try {
+    const response = await axios.get(
+      "https://admin.planmoney.in/api/optionstocks",
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer${token}`,
+        },
+      }
+    );
+    if (response.data?.status === false) {
+      throw new Error(response.data?.message || "Invalid Token");
+    }
+    return response.data;
+  } catch (error) {
+    console.error("API Error:", error?.response?.data || error.message);
+    throw error?.response?.data || { message: "Something went wrong" };
   }
 };

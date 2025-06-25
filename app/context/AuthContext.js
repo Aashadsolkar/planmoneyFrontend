@@ -27,6 +27,8 @@ const AuthProvider = ({ children }) => {
   const [getCustomerDataAgain, setGetCustomerDataAgain] = useState(true);
   const [newsData, setNewsData] = useState([]);
   const [isProfileLoading, setIsProfileLoading] = useState(false);
+  const [newArrivalsDetails, setNewArrivalsDetails] = useState([]);
+  const [optionStockData, setOptionStockData] = useState([]);
 
   useEffect(() => {
     const loadSession = async () => {
@@ -122,7 +124,11 @@ const AuthProvider = ({ children }) => {
       setNewsData,
       newsData,
       isProfileLoading,
-      setIsProfileLoading
+      setIsProfileLoading,
+      newArrivalsDetails,
+      setNewArrivalsDetails,
+      setOptionStockData,
+      optionStockData
     }}>
       {children}
     </AuthContext.Provider>
