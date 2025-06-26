@@ -6,7 +6,7 @@ import Header from '../components/Header';
 import { router } from 'expo-router';
 import { useAuth } from '../context/useAuth';
 import { getFastLaneServiceData } from '../utils/apis/customer-api-caller';
-import { newArrivals } from '../utils/apiCaller';
+import { newArrivals, service } from '../utils/apiCaller';
 import SkeletonList from '../components/ListSkeleton';
 import * as Animatable from 'react-native-animatable';
 import Entypo from '@expo/vector-icons/Entypo';
@@ -16,6 +16,7 @@ const HomeScreen = () => {
   const [newArrivalsData, setNewArrivalsData] = useState([]);
   const [noData, setNoData] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [newArrivalsPlan, setNewArrivalsPlan] = useState({});
   useEffect(() => {
     getNewArrivalsData(token, 5)
   }, [token])
@@ -24,6 +25,11 @@ const HomeScreen = () => {
     try {
       const response = await getFastLaneServiceData(token, id);
       const newArrivalsUser = await newArrivals(token);
+      // getting new arrivals plan details
+      const servicesResponse = await service();
+      const services = servicesResponse?.data?.services;
+      const plan = services.find(item => item.id === 5)?.plans?.[0];
+      setNewArrivalsPlan(plan);
       const availableService = response?.data?.services || []
       const availableUserService = newArrivalsUser?.data?.new_arrival_data || [];
 
@@ -201,7 +207,7 @@ const HomeScreen = () => {
               <TouchableOpacity
                 style={styles.buyButton}
                 onPress={() => {
-                  setSelectedService({ new_arrival_id: service?.id, name: service?.title, offer_price: service?.price, id: 1, billing_cycle: "yearly", serviceId: "5" })
+                  setSelectedService({ new_arrival_id: service?.id, name: service?.title, offer_price: 100, id: newArrivalsPlan?.id, billing_cycle: "yearly", serviceId: "5" })
                   router.push("checkout")
                 }}
               >
@@ -326,14 +332,14 @@ const styles = StyleSheet.create({
   },
   buyButton: {
     backgroundColor: COLORS.secondaryColor,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
     borderRadius: 20,
   },
   buyButtonText: {
     color: '#fff',
     fontWeight: '600',
-    fontSize: 14,
+    fontSize: 12,
   },
   content: {
     flex: 1,

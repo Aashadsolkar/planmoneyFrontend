@@ -617,3 +617,21 @@ export const optionstocks = async (token) => {
     throw error?.response?.data || { message: "Something went wrong" };
   }
 };
+
+export const verifyQuestioner = async (token, data) => {
+  try {
+    const response = await axios({
+      method: "POST",
+      url: "https://admin.planmoney.in/api/customer/verify-questionnarie",
+      data,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer${token}`
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('API Error:', error?.response?.data || error.message);
+    throw error?.response?.data || { message: 'Something went wrong' };
+  }
+};

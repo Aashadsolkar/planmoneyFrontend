@@ -29,6 +29,7 @@ const AuthProvider = ({ children }) => {
   const [isProfileLoading, setIsProfileLoading] = useState(false);
   const [newArrivalsDetails, setNewArrivalsDetails] = useState([]);
   const [optionStockData, setOptionStockData] = useState([]);
+  const [isQuestionerFillderByAdvisor, setIsQuestionerFillderByAdvisor] = useState(false);
 
   useEffect(() => {
     const loadSession = async () => {
@@ -128,7 +129,9 @@ const AuthProvider = ({ children }) => {
       newArrivalsDetails,
       setNewArrivalsDetails,
       setOptionStockData,
-      optionStockData
+      optionStockData,
+      setIsQuestionerFillderByAdvisor,
+      isQuestionerFillderByAdvisor
     }}>
       {children}
     </AuthContext.Provider>
