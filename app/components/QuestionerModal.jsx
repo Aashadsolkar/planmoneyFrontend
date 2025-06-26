@@ -11,7 +11,7 @@ const { height } = Dimensions.get('window');
 
 const QuestionerModal = ({ isVisible, handleClose, onRefresh }) => {
     const { profileData, token, setIsQuestionerFillderByAdvisor } = useAuth();
-    const [ isLoading, setIsLoading ] = useState();
+    const [isLoading, setIsLoading] = useState();
     const {
         occupation,
         income_range,
@@ -33,7 +33,11 @@ const QuestionerModal = ({ isVisible, handleClose, onRefresh }) => {
 
     const {
         dob,
-        address
+        address,
+        zip_code,
+        city,
+        state,
+        country
     } = profileData || {};
 
     const handleSubmitClick = async (val) => {
@@ -73,6 +77,12 @@ const QuestionerModal = ({ isVisible, handleClose, onRefresh }) => {
 
                     <ScrollView contentContainerStyle={styles.scrollContent}>
                         {[
+                            { label: "Date pinof birth", value: dob },
+                            { label: "Pincode", value: zip_code },
+                            { label: "Address", value: address },
+                            { label: "Country", value: country?.name },
+                            { label: "State", value: state?.name },
+                            { label: "City", value: city?.name },
                             { label: "Occupation", value: occupation },
                             { label: "Income Range", value: income_range },
                             { label: "Investment experience (years)", value: investment_experience },
@@ -82,13 +92,13 @@ const QuestionerModal = ({ isVisible, handleClose, onRefresh }) => {
                             { label: "How familiar are you with investment products like stocks, bonds, mutual funds, derivatives?", value: knowledge_of_investment },
                             { label: "What kind of returns are you expecting?", value: investment_return },
                             { label: "Which statement best describes your attitude towards investment risk?", value: attitude_towards_risk },
+                            { label: "Investment Represent", value: investment_represent },
                             { label: "Resident of India", value: resident_of_india },
                             { label: "Resident Of", value: resident_of || "India" },
-                            { label: "Investment Represent", value: investment_represent },
+                            { label: "FATCA Declaration and Compliance Documents", value: fatca_declaration },
+                            { label: "Risk Disclouser Agreement", value: "Yes" },
                             { label: "Risk Category", value: risk_category },
                             { label: "Risk Score", value: risk_score },
-                            { label: "Date of birth", value: dob },
-                            { label: "Address", value: address },
                         ].map((item, index) => (
                             <View style={styles.questionContaner} key={index}>
                                 <Text style={styles.label}>Question:</Text>
