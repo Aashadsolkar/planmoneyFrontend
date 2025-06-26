@@ -77,7 +77,7 @@ const QuestionerModal = ({ isVisible, handleClose, onRefresh }) => {
 
                     <ScrollView contentContainerStyle={styles.scrollContent}>
                         {[
-                            { label: "Date pinof birth", value: dob },
+                            { label: "Date of birth", value: dob },
                             { label: "Pincode", value: zip_code },
                             { label: "Address", value: address },
                             { label: "Country", value: country?.name },
