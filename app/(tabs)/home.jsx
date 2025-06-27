@@ -69,7 +69,6 @@ export default function Home() {
     const [showPullHint, setShowPullHint] = useState(true);
     const [activeServiceIndex, setActiveServiceIndex] = useState(0)
     const [activeIndex, setActiveIndex] = useState(0);
-    const [purchesAllserviceFlag, setPurchesAllserviceFlag] = useState(false);
     const [isQuestionerModalOpen, setIsQuestionerModalOpen] = useState(false);
     const screenWidth = Dimensions.get("window").width;
 
@@ -86,17 +85,6 @@ export default function Home() {
             setIsQuestionerModalOpen(false)
         }
     }, [isQuestionerFillderByAdvisor])
-
-    useEffect(() => {
-        const targetIds = [1, 2, 3, 4, 6];
-
-        // Get all ids from the data
-        const dataIds = purchesService.map(item => item.id);
-
-        // Check if every target ID is included in data
-        const allIncluded = targetIds.every(id => dataIds.includes(id));
-        setPurchesAllserviceFlag(allIncluded)
-    }, [purchesService])
 
 
     useEffect(() => {
@@ -367,7 +355,6 @@ export default function Home() {
         }
         return (
             <>
-                {purchesAllserviceFlag && <Text style={{ color: COLORS.fontWhite, marginHorizontal: 20, marginTop: 20, fontSize: 18, fontWeight: "bold" }}>You’ve subscribed to all our available services. Thank you for being a valued customer!</Text>}
                 {/* Offer Carousel Section */}
                 <View style={styles.carouselContainer}>
                     <FlatList

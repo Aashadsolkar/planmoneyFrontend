@@ -68,7 +68,8 @@ const PmsAndQuantom = () => {
                 stockId: data?.stock_id,
                 serviceID: id,
                 type: "BUY",
-                price: data?.buy_price
+                price: data?.buy_price,
+                name: data?.stock?.name
             },
         })
     }

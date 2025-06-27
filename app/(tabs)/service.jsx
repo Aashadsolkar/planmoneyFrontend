@@ -1,5 +1,5 @@
 import React, { use, useCallback, useEffect, useState } from 'react';
-import { Alert, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text } from 'react-native';
+import { Alert, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, View } from 'react-native';
 import ServiceCard from '../components/ServiceCard';
 import { useAuth } from '../context/useAuth';
 import Header from '../components/Header';
@@ -9,13 +9,14 @@ import { router, useNavigation } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
 import SkeletonList from '../components/ListSkeleton';
 import QuantomVoltIcon, { FastlaneIcon, PMSIcon, PSIcon } from '../../assets/images/SVG';
+import Ionicons from "@expo/vector-icons/Ionicons";
 
 const icon = {
-    1 : () => <FastlaneIcon height={33} width={33} />,
-    2 : () => <PSIcon height={33} width={33} />,
-    3 : () => <FastlaneIcon height={33} width={33} />,
-    4 : () => <QuantomVoltIcon height={33} width={33} />,
-    6 : () => <PMSIcon height={33} width={33} />
+    1: () => <FastlaneIcon height={33} width={33} />,
+    2: () => <PSIcon height={33} width={33} />,
+    3: () => <FastlaneIcon height={33} width={33} />,
+    4: () => <QuantomVoltIcon height={33} width={33} />,
+    6: () => <PMSIcon height={33} width={33} />
 }
 
 const Service = () => {
@@ -32,6 +33,19 @@ const Service = () => {
     const navigation = useNavigation();
     const [expandedService, setExpandedService] = useState();
     const [isLoading, setIsloading] = useState(true);
+    const [purchesAllserviceFlag, setPurchesAllserviceFlag] = useState(false);
+
+
+    useEffect(() => {
+        const targetIds = [1, 2, 3, 4, 6];
+
+        // Get all ids from the data
+        const dataIds = purchesService.map(item => item.id);
+
+        // Check if every target ID is included in data
+        const allIncluded = targetIds.every(id => dataIds.includes(id));
+        setPurchesAllserviceFlag(allIncluded)
+    }, [purchesService])
 
     useFocusEffect(
         useCallback(() => {
@@ -83,15 +97,15 @@ const Service = () => {
     };
 
 
-   const getLowestActualPricePlan = (plans) => {
-  if (!Array.isArray(plans) || plans.length === 0) return null;
+    const getLowestActualPricePlan = (plans) => {
+        if (!Array.isArray(plans) || plans.length === 0) return null;
 
-  return plans.reduce((minPlan, currentPlan) => {
-    return parseFloat(currentPlan.actual_price) < parseFloat(minPlan.actual_price)
-      ? currentPlan
-      : minPlan;
-  });  
-};
+        return plans.reduce((minPlan, currentPlan) => {
+            return parseFloat(currentPlan.actual_price) < parseFloat(minPlan.actual_price)
+                ? currentPlan
+                : minPlan;
+        });
+    };
 
 
     const renderService = () => {
@@ -124,14 +138,22 @@ const Service = () => {
     }
 
     const headerText = () => {
-    return <Text style={{ color: COLORS.fontWhite, fontWeight: 600, fontSize: 18 }}>Services</Text>
-  }
+        return <Text style={{ color: COLORS.fontWhite, fontWeight: 600, fontSize: 18 }}>Services</Text>
+    }
 
-    return (
-        <SafeAreaView style={styles.container}>
-            <StatusBar barStyle="light-content" backgroundColor={COLORS.cardColor} />
-            <Header showBackButton={true} backButtonText={headerText} />
-            <ScrollView style={{flex:1}} contentContainerStyle={styles.scrollContent}>
+    const renderServiceList = () => {
+        if (purchesAllserviceFlag) return (
+            <View style={{ flex: 1, justifyContent: "center", }}>
+                <Ionicons
+                    name={"happy-outline"}
+                    size={50}
+                    color={"white"}
+                />
+                <Text style={{ color: COLORS.fontWhite, marginHorizontal: 20, marginTop: 20, fontSize: 20, fontWeight: "bold", textAlign: "center" }}>You’ve subscribed to all our available services. Thank you for being a valued customer!</Text>
+            </View>
+        )
+        return (
+            <ScrollView style={{ flex: 1 }} contentContainerStyle={styles.scrollContent}>
                 <Text style={styles.sectionTitle}>Select the Services</Text>
                 {renderService()}
                 {
@@ -140,6 +162,14 @@ const Service = () => {
                     }}>Skip for now</Text>
                 }
             </ScrollView>
+        )
+    }
+
+    return (
+        <SafeAreaView style={styles.container}>
+            <StatusBar barStyle="light-content" backgroundColor={COLORS.cardColor} />
+            <Header showBackButton={true} backButtonText={headerText} />
+            {renderServiceList()}
         </SafeAreaView>
     );
 };
