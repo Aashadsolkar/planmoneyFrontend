@@ -97,6 +97,48 @@ const ServiceDetailScreen = () => {
     return label[riskLevel.toLowerCase()]; // fallback: gray
   }
 
+  const renderRecommendation = () => {
+    if(newArrivalsDetails?.new_arrivals_recommendation?.length == 0){
+      return <Text style={{color:COLORS.fontWhite, textAlign: "center", fontWeight: "bold", fontSize: 18, marginTop: 20}}>No recommendations are currently available.</Text>
+    }
+    return newArrivalsDetails?.new_arrivals_recommendation?.map((company) => (
+      <View key={company.id} style={styles.companyCard}>
+        <TouchableOpacity
+          style={styles.companyHeader}
+          onPress={() => toggleCompany(company.id)}
+        >
+          <View style={styles.companyIcon}>
+            <Text style={styles.companyIconText}>
+              {company?.stock?.name?.charAt(0)}
+            </Text>
+          </View>
+          <View style={styles.companyInfo}>
+            <Text style={styles.companyName}>{company?.stock?.name}</Text>
+            <View>
+              <Text style={styles.companyLabel}>CMP</Text>
+              <Text style={styles.companyPrice}>{company?.stock?.bse_price}</Text>
+            </View>
+          </View>
+          <Ionicons
+            name={expandedCompany === company.id ? "chevron-up" : "chevron-down"}
+            size={24}
+            color={expandedCompany === company.id ? COLORS.secondaryColor : COLORS.fontWhite}
+          />
+        </TouchableOpacity>
+
+        {expandedCompany === company.id && (
+          <View style={styles.companyDetails}>
+            <RenderHTML
+              contentWidth={width}
+              source={{ html: company.report }}
+              baseStyle={{ color: COLORS.fontWhite, fontSize: 14 }}
+            />
+          </View>
+        )}
+      </View>
+    ))
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor={COLORS.cardColor} />
@@ -135,42 +177,7 @@ const ServiceDetailScreen = () => {
         </TouchableOpacity>
 
         <View style={styles.companiesContainer}>
-          {newArrivalsDetails?.new_arrivals_recommendation?.map((company) => (
-            <View key={company.id} style={styles.companyCard}>
-              <TouchableOpacity
-                style={styles.companyHeader}
-                onPress={() => toggleCompany(company.id)}
-              >
-                <View style={styles.companyIcon}>
-                  <Text style={styles.companyIconText}>
-                    {company?.stock?.name?.charAt(0)}
-                  </Text>
-                </View>
-                <View style={styles.companyInfo}>
-                  <Text style={styles.companyName}>{company?.stock?.name}</Text>
-                  <View>
-                    <Text style={styles.companyLabel}>CMP</Text>
-                    <Text style={styles.companyPrice}>{company?.stock?.bse_price}</Text>
-                  </View>
-                </View>
-                <Ionicons
-                  name={expandedCompany === company.id ? "chevron-up" : "chevron-down"}
-                  size={24}
-                  color={expandedCompany === company.id ? COLORS.secondaryColor : COLORS.fontWhite}
-                />
-              </TouchableOpacity>
-
-              {expandedCompany === company.id && (
-                <View style={styles.companyDetails}>
-                  <RenderHTML
-                    contentWidth={width}
-                    source={{ html: company.report }}
-                    baseStyle={{ color: COLORS.fontWhite, fontSize: 14 }}
-                  />
-                </View>
-              )}
-            </View>
-          ))}
+          {renderRecommendation()}
         </View>
       </ScrollView>
     </SafeAreaView>

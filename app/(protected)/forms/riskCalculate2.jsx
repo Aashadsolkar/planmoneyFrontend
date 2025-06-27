@@ -57,7 +57,7 @@ const riskCalculate2 = () => {
                     style={{ padding: 20 }}
                 >
                     <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-                        <Ionicons name="arrow-back" size={ 24} color="#ffffff" />
+                        <Ionicons name="arrow-back" size={24} color="#ffffff" />
                     </TouchableOpacity>
                     <Text style={{ fontSize: 12, fontWeight: 600, color: COLORS.fontWhite, marginTop: 20 }}>Step <Text style={{ color: COLORS.secondaryColor }}>3</Text> to 5</Text>
                     <Text style={{ fontSize: 20, fontWeight: 600, color: COLORS.fontWhite }}>Investment Objectives & Risk Capacity</Text>

@@ -18,7 +18,8 @@ export const useHomeData = () => {
         newsData,
         setNewsData,
         setOptionStockData,
-        setIsProfileLoading
+        setIsProfileLoading,
+        setIsQuestionerFillderByAdvisor
     } = useAuth();
 
     const [isLoading, setIsLoading] = useState(false);
@@ -29,7 +30,7 @@ export const useHomeData = () => {
         if ((token && getCustomerDataAgain) || forceCall) {
             setIsLoading(true);
             try {
-                await fetchProfile();
+                // await fetchProfile();
                 await fetchNews();
                 await fetchCustomerServices();
                 await fetchOptionStockData();
@@ -59,34 +60,50 @@ export const useHomeData = () => {
 
     const fetchCustomerServices = async () => {
         try {
+
+            // get profile data
+            setIsProfileLoading(true);
+            const profileResponse = await getProfileData(token);
+            setProfileData(profileResponse?.data?.data);
+            setIsProfileLoading(false)
+
+            // get customer details data
             const response = await customerService(token);
             const services = response?.data?.services || [];
             setCustomerServiceData(response?.data);
 
             const purchased = services.filter(s => s.is_subscribed);
-            if (purchased.length > 0) {
-                setPurchesService(purchased);
-
-                const portfolio = purchased.filter(service =>
+            const filteredData = purchased.filter(item => item.id !== 5);
+            if (filteredData.length > 0) {
+                setPurchesService(filteredData);
+                const portfolio = filteredData.filter(service =>
                     ["Portfolio Management Subscription", "QuantumVault (For Above ₹50 lakh Capital)", "Personalised Investment Services"]
                         .includes(service.name)
                 );
                 setPortfolioServices(portfolio);
-
                 if (response?.data?.kyc_status === 0) {
                     router.push("forms/kyc");
                     return;
                 }
-
+                if (profileResponse?.data?.data?.customerfinanceinfo?.verified == 2) {
+                    setIsQuestionerFillderByAdvisor(true);
+                    return;
+                }
                 if (!skipQuestioniar && response?.data?.questionnaire_status === 0) {
                     router.push("forms/personalDetails");
                     return;
                 }
-            } else if (purchased.length === 0 && !skipServices) {
+            } else if (filteredData.length === 0 && !skipServices) {
+                if (profileResponse?.data?.data?.customerfinanceinfo?.verified == 2) {
+                    setIsQuestionerFillderByAdvisor(true);
+                    return;
+                }
                 router.push("service");
             }
 
+
         } catch (error) {
+            setIsProfileLoading(false);
             Alert.alert("Error", error?.message || "Failed to get customer data", [
                 { text: "OK", onPress: () => router.push("home") },
             ]);
@@ -104,7 +121,7 @@ export const useHomeData = () => {
         }
     };
 
-     const fetchOptionStockData = async () => {
+    const fetchOptionStockData = async () => {
         try {
             const response = await optionstocks(token);
             setOptionStockData(response?.data?.optionStock || []);
