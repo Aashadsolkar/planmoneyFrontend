@@ -207,7 +207,7 @@ const HomeScreen = () => {
               <TouchableOpacity
                 style={styles.buyButton}
                 onPress={() => {
-                  setSelectedService({ new_arrival_id: service?.id, name: service?.title, offer_price: 100, id: newArrivalsPlan?.id, billing_cycle: "yearly", serviceId: "5" })
+                  setSelectedService({ new_arrival_id: service?.id, name: service?.title, offer_price: service?.price, id: newArrivalsPlan?.id, billing_cycle: "yearly", serviceId: "5" })
                   router.push("checkout")
                 }}
               >
