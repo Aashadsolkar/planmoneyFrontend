@@ -15,7 +15,7 @@ import { Alert } from "react-native"
 const { height } = Dimensions.get("window")
 
 export default function BuyStock() {
-    const { stockId, serviceID, type, price } = useLocalSearchParams();
+    const { stockId, serviceID, type, price, name } = useLocalSearchParams();
     const { token } = useAuth();
     const [successfullModal, setSuccessfullModal] = useState(false);
     const [qty, setQty] = useState("");
@@ -69,7 +69,7 @@ export default function BuyStock() {
             <ScrollView style={{ backgroundColor: COLORS.primaryColor }}>
                 <View>
                     <View style={styles.stockInfoRow}>
-                        <Text style={styles.stockTitle}>State of India</Text>
+                        <Text style={styles.stockTitle}>{name}</Text>
                         <Text style={styles.stockPrice}><Text style={styles.cmp}>CMP  </Text>₹{price}</Text>
                     </View>
                     <View style={styles.inputRow}>

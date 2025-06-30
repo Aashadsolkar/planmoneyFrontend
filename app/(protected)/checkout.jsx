@@ -130,6 +130,35 @@ export default function Checkout() {
     }
   };
 
+  const getPlanExpiryDate = (planType) => {
+    const currentDate = new Date();
+    let futureDate = new Date(currentDate);
+
+    switch (planType.toLowerCase()) {
+      case 'monthly':
+        futureDate.setMonth(futureDate.getMonth() + 1);
+        break;
+      case 'quarterly':
+        futureDate.setMonth(futureDate.getMonth() + 3);
+        break;
+      case 'half-yearly':
+        futureDate.setMonth(futureDate.getMonth() + 6);
+        break;
+      case 'yearly':
+        futureDate.setFullYear(futureDate.getFullYear() + 1);
+        break;
+      default:
+        return 'Invalid plan type';
+    }
+
+    // Format as "Expires on 02 Jul 2025"
+    const options = { day: '2-digit', month: 'short', year: 'numeric' };
+    const formattedDate = futureDate.toLocaleDateString('en-GB', options).replace(/ /g, ' ');
+
+    return `Expires on ${formattedDate}`;
+  };
+
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor={COLORS.cardColor} />
@@ -217,7 +246,7 @@ export default function Checkout() {
               </Text>
             </View>
             <View style={[styles.subscriptionHeader]}>
-              <Text style={styles.expiryText}>Expires on 02 Jul 2025</Text>
+              <Text style={styles.expiryText}>{getPlanExpiryDate(selectedService?.billing_cycle)}</Text>
               <Text style={styles.subscriptionPrice}>
                 ₹{selectedService?.offer_price}
               </Text>
@@ -226,7 +255,7 @@ export default function Checkout() {
 
           <Text style={[styles.expiryText, { marginBottom: 10 }]}>
             If you Pay ₹{selectedService?.offer_price}/- now. The plan is valid
-            till 02 Jul 2025{" "}
+            till {getPlanExpiryDate(selectedService?.billing_cycle)}{" "}
           </Text>
           <Text
             style={[

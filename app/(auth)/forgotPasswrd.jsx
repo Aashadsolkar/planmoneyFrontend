@@ -63,11 +63,10 @@ const ForgotPassword = () => {
         return () => clearInterval(interval);
     }, [timer, resendDisabled]);
 
+
     const startResendTimer = () => {
         setResendDisabled(true);
         setTimer(30);
-        // Simulate OTP resend
-        // Alert.alert("OTP Sent", "A new OTP has been sent to your email");
     };
 
     const passwordRules = [
@@ -104,6 +103,25 @@ const ForgotPassword = () => {
         return true;
     };
 
+    const resendOtp = async () => {
+        setLoading(true);
+        try {
+            const payload = {
+                email: email
+            };
+            const response = await requestOtp(payload);
+            setLoading(false);
+            startResendTimer(); // Start timer after successful resend
+        } catch (error) {
+            setLoading(false);
+            if (error.errors?.email) {
+                setEmailError(error.errors.email[0]);
+            } else {
+                setSendOtpApiError(error?.message || "Failed to resend OTP");
+            }
+        }
+    };
+
 
     const handleSendOTP = async () => {
         if (!email) {
@@ -130,7 +148,7 @@ const ForgotPassword = () => {
         } catch (error) {
             if (error.errors.email) {
                 setEmailError(error.errors.email[0]);
-            }else{
+            } else {
                 setSendOtpApiError(error?.message || "Otp api failed")
             }
             setLoading(false);
@@ -323,7 +341,7 @@ const ForgotPassword = () => {
                                             <TouchableOpacity
                                                 disabled={resendDisabled}
                                                 style={styles.resendButton}
-                                                onPress={startResendTimer}
+                                                onPress={resendOtp}
                                                 activeOpacity={0.7}
                                             >
                                                 <Text style={[
@@ -383,7 +401,7 @@ const ForgotPassword = () => {
                                                 })}
                                             </View>
                                             {resetPasswordApiError && <Text style={styles.errorText}>{resetPasswordApiError}</Text>}
-                                            <Button isLoading={loading} onClick={() => handleResetPassword()} gradientColor={['#D36C32', '#F68F00']} label={"Reset Password"}/>
+                                            <Button isLoading={loading} onClick={() => handleResetPassword()} gradientColor={['#D36C32', '#F68F00']} label={"Reset Password"} />
                                         </View>
                                     )}
                                 </View>
