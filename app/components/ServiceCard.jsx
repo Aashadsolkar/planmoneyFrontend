@@ -118,7 +118,7 @@ const ServiceCard = ({
       <View style={styles.card}>
         <View style={styles.header}>
           <View style={styles.iconContainer}>
-            {renderIcon()}
+            {icon()}
           </View>
           <View style={styles.info}>
             <Text style={styles.name}>{name}</Text>
@@ -270,8 +270,8 @@ const styles = StyleSheet.create({
   iconContainer: {
     width: 40,
     height: 40,
-    borderRadius: 20,
-    backgroundColor: 'rgba(255, 152, 0, 0.1)',
+    borderRadius: 10,
+    backgroundColor: COLORS.primaryColor,
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 12,

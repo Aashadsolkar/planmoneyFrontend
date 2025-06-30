@@ -28,7 +28,9 @@ const PmsAndQuantom = () => {
                 try {
                     setIsLoading(true);
                     const response = await getFastlaneData(token, id);
-                    setFastlaneData(response?.data?.services);
+                    const data = response?.data?.services;
+                    const sortedData = data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+                    setFastlaneData(sortedData)
                 } catch (error) {
                     Alert.alert(
                         "Error",
@@ -66,7 +68,8 @@ const PmsAndQuantom = () => {
                 stockId: data?.stock_id,
                 serviceID: id,
                 type: "BUY",
-                price: data?.buy_price
+                price: data?.buy_price,
+                name: data?.stock?.name
             },
         })
     }
@@ -110,7 +113,7 @@ const PmsAndQuantom = () => {
                                 />}
                             </View>
                             <View>
-                                <Text style={[styles.boldText, { fontSize: 16 }]}>{data?.stock?.name}</Text>
+                                <Text style={[styles.boldText, { fontSize: 18 }]}>{data?.stock?.name}</Text>
                                 <Text style={styles.boldText}><Text style={styles.lightText}>CMP</Text> ₹{data?.cmp} </Text>
                             </View>
                         </View>
@@ -303,7 +306,7 @@ const PmsAndQuantom = () => {
                         </View>
                     </LinearGradient>
                 </TouchableOpacity>
-                <Text style={styles.heading}>Stock updates</Text>
+                <Text style={styles.heading}>Stock Recommendations</Text>
                 <View style={{ marginBottom: 50 }}>
                     {renderCardList()}
                 </View>
@@ -335,14 +338,14 @@ const styles = StyleSheet.create({
         justifyContent: "space-between"
     },
     lightText: {
-        fontSize: 14,
+        fontSize: 15,
         fontWeight: 400,
         color: COLORS.lightGray
     },
     boldText: {
         color: COLORS.fontWhite,
         fontWeight: 700,
-        fontSize: 14
+        fontSize: 15
     },
     greenText: {
         color: COLORS.profitColor

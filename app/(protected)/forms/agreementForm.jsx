@@ -39,7 +39,8 @@ const AgreementForm = () => {
           resident_of_india: questionFormData?.resident_of_india,
           resident_of: questionFormData?.resident_of,
           fatca_declaration: questionFormData?.fatca_declaration,
-          risk_disclouser_agreement: 1
+          risk_disclouser_agreement: 1,
+          verified: 1
         };
 
         const response = await quetionerApi(token, payload);

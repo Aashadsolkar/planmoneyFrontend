@@ -30,6 +30,7 @@ import * as Animatable from 'react-native-animatable';
 import ShimmerSkeleton from '../components/ListSkeleton';
 import { useHomeData } from '../hooks/useHomeData';
 import StockOptionSlider from '../components/StockOtionSlider';
+import QuestionerModal from '../components/QuestionerModal';
 
 
 const { height, width } = Dimensions.get("window");
@@ -54,7 +55,9 @@ export default function Home() {
         setServiceSelectedOnHomePage,
         portfolioServices,
         newsData,
-        optionStockData
+        optionStockData,
+        isQuestionerFillderByAdvisor,
+        profileData
     } = useAuth();
     const navigation = useNavigation();
     const {
@@ -66,24 +69,22 @@ export default function Home() {
     const [showPullHint, setShowPullHint] = useState(true);
     const [activeServiceIndex, setActiveServiceIndex] = useState(0)
     const [activeIndex, setActiveIndex] = useState(0);
-    const [purchesAllserviceFlag, setPurchesAllserviceFlag] = useState(false);
+    const [isQuestionerModalOpen, setIsQuestionerModalOpen] = useState(false);
     const screenWidth = Dimensions.get("window").width;
 
 
     const { width } = Dimensions.get('window');
-    const ITEM_WIDTH = width * 0.9; // 90% of screen width
-    const SPACING = (width - ITEM_WIDTH) / 2;
+    const ITEM_WIDTH = width * 0.93; // 90% of screen width
+    const SPACING = (width - ITEM_WIDTH) / 3;
 
     useEffect(() => {
-        const targetIds = [1, 2, 3, 4, 6];
-
-        // Get all ids from the data
-        const dataIds = purchesService.map(item => item.id);
-
-        // Check if every target ID is included in data
-        const allIncluded = targetIds.every(id => dataIds.includes(id));
-        setPurchesAllserviceFlag(allIncluded)
-    }, [purchesService])
+        if (isQuestionerFillderByAdvisor) {
+            setIsQuestionerModalOpen(true)
+        }
+        else {
+            setIsQuestionerModalOpen(false)
+        }
+    }, [isQuestionerFillderByAdvisor])
 
 
     useEffect(() => {
@@ -274,17 +275,18 @@ export default function Home() {
 
                 {/* Dot Indicators for Services */}
                 {
-                    renderData?.length > 1 &&
+                    filteredData?.length > 1 &&
                     <View style={styles.dotContainer}>
-                        {renderData.map((_, i) => (
-                            <View
-                                key={i}
-                                style={[
-                                    styles.dot,
-                                    { backgroundColor: i === activeServiceIndex ? COLORS.secondaryColor : COLORS.lightGray },
-                                ]}
-                            />
-                        ))}
+                        {
+                            filteredData.map((_, i) => (
+                                <View
+                                    key={i}
+                                    style={[
+                                        styles.dot,
+                                        { backgroundColor: i === activeServiceIndex ? COLORS.secondaryColor : COLORS.lightGray },
+                                    ]}
+                                />
+                            ))}
                     </View>
                 }
             </>
@@ -353,7 +355,6 @@ export default function Home() {
         }
         return (
             <>
-                {purchesAllserviceFlag && <Text style={{ color: COLORS.fontWhite, marginHorizontal: 20, marginTop: 20, fontSize: 18, fontWeight: "bold" }}>You’ve subscribed to all our available services. Thank you for being a valued customer!</Text>}
                 {/* Offer Carousel Section */}
                 <View style={styles.carouselContainer}>
                     <FlatList
@@ -507,6 +508,7 @@ export default function Home() {
 
                 {renderContent()}
             </ScrollView>
+            {profileData && <QuestionerModal isVisible={isQuestionerModalOpen} handleClose={() => setIsQuestionerModalOpen(false)} onRefresh={onRefresh}/>}
         </SafeAreaView>
     );
 }
@@ -521,7 +523,7 @@ const styles = StyleSheet.create({
         backgroundColor: COLORS.primaryColor
     },
     carouselContainer: {
-        marginTop: 20
+        marginTop: 10
     },
     offerCard: {
         height: 177,
@@ -543,14 +545,14 @@ const styles = StyleSheet.create({
         marginBottom: 20,
     },
     sectionContainer: {
-        marginTop: 10,
+        marginTop: 8,
         paddingStart: 20
     },
     sectionTitle: {
         color: 'white',
         fontSize: 18,
         fontWeight: 'bold',
-        marginBottom: 15,
+        marginBottom: 5,
     },
     servicesListContainer: {
         paddingRight: 20,
@@ -592,7 +594,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         paddingHorizontal: 30,
-        marginTop: 20,
+        marginTop: 10,
         marginBottom: 20,
     },
     linkItem: {

@@ -3,14 +3,15 @@ import { FlatList, Text, View, StyleSheet, Dimensions } from 'react-native';
 import { COLORS } from '../constants';
 
 const { width } = Dimensions.get('window');
+const CARD_WIDTH = (width - 50) / 2; // 20 padding on both sides + 10 gap = 50
 
 const StockOptionSlider = ({ marketData }) => {
-    const renderItem = ({ item, index }) => (
+    const renderItem = ({ item }) => (
         <View style={styles.card}>
             <Text style={styles.title}>{item?.option_stock_name || ""}</Text>
             <Text style={styles.label}>Opening Price</Text>
             <Text style={styles.price}>
-                {item?.start_price || ""}-{item?.end_price || ""}
+                {item?.start_price || ""} - {item?.end_price || ""}
             </Text>
         </View>
     );
@@ -22,7 +23,7 @@ const StockOptionSlider = ({ marketData }) => {
             keyExtractor={(_, index) => index.toString()}
             renderItem={renderItem}
             showsHorizontalScrollIndicator={false}
-            contentContainerStyle={{ paddingHorizontal: 20 }}
+            contentContainerStyle={styles.listContainer}
             ItemSeparatorComponent={() => <View style={{ width: 10 }} />}
         />
     );
@@ -31,11 +32,14 @@ const StockOptionSlider = ({ marketData }) => {
 export default StockOptionSlider;
 
 const styles = StyleSheet.create({
+    listContainer: {
+        paddingHorizontal: 20,
+    },
     card: {
-        padding: 20,
+        width: CARD_WIDTH,
+        padding: 16,
         backgroundColor: COLORS.cardColor,
-        width: width - 220,
-        borderRadius: 10,
+        borderRadius: 12,
         borderLeftWidth: 2,
         borderLeftColor: COLORS.secondaryColor,
     },
@@ -43,14 +47,16 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: '600',
         color: COLORS.fontWhite,
-        marginBottom: 5,
+        marginBottom: 6,
     },
     label: {
-        fontSize: 16,
+        fontSize: 14,
         color: COLORS.fontWhite,
     },
     price: {
         fontSize: 16,
+        fontWeight: '500',
         color: COLORS.fontWhite,
+        marginTop: 4,
     },
 });
