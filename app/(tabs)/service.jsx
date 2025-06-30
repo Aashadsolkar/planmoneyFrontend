@@ -9,7 +9,6 @@ import { router, useNavigation } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
 import SkeletonList from '../components/ListSkeleton';
 import QuantomVoltIcon, { FastlaneIcon, PMSIcon, PSIcon } from '../../assets/images/SVG';
-import Ionicons from "@expo/vector-icons/Ionicons";
 
 const icon = {
     1: () => <FastlaneIcon height={33} width={33} />,
@@ -144,11 +143,6 @@ const Service = () => {
     const renderServiceList = () => {
         if (purchesAllserviceFlag) return (
             <View style={{ flex: 1, justifyContent: "center", }}>
-                <Ionicons
-                    name={"happy-outline"}
-                    size={50}
-                    color={"white"}
-                />
                 <Text style={{ color: COLORS.fontWhite, marginHorizontal: 20, marginTop: 20, fontSize: 20, fontWeight: "bold", textAlign: "center" }}>You’ve subscribed to all our available services. Thank you for being a valued customer!</Text>
             </View>
         )

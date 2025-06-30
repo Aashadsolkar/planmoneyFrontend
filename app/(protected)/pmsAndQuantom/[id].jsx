@@ -113,7 +113,7 @@ const PmsAndQuantom = () => {
                                 />}
                             </View>
                             <View>
-                                <Text style={[styles.boldText, { fontSize: 16 }]}>{data?.stock?.name}</Text>
+                                <Text style={[styles.boldText, { fontSize: 18 }]}>{data?.stock?.name}</Text>
                                 <Text style={styles.boldText}><Text style={styles.lightText}>CMP</Text> ₹{data?.cmp} </Text>
                             </View>
                         </View>
@@ -338,14 +338,14 @@ const styles = StyleSheet.create({
         justifyContent: "space-between"
     },
     lightText: {
-        fontSize: 14,
+        fontSize: 15,
         fontWeight: 400,
         color: COLORS.lightGray
     },
     boldText: {
         color: COLORS.fontWhite,
         fontWeight: 700,
-        fontSize: 14
+        fontSize: 15
     },
     greenText: {
         color: COLORS.profitColor
