@@ -9,6 +9,7 @@ import AuthProvider from "./context/AuthContext";
 import NoInternetScreen from "./components/OfflineScreen";
 import NetInfo from "@react-native-community/netinfo";
 import CustomSplash from "./components/CustomSplashScreen";
+import { getExpoPushToken, configureNotificationChannel } from "../push-notification/notificationService";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -58,6 +59,17 @@ const RootLayout = () => {
     });
 
     return () => unsubscribe();
+  }, []);
+
+    useEffect(() => {
+    (async () => {
+      await configureNotificationChannel();
+      const token = await getExpoPushToken();
+      if (token) {
+        console.log("Expo Push Token in layout:", token);
+        // Optionally send token to backend here
+      }
+    })();
   }, []);
   if (showCustomSplash) {
     return <CustomSplash />;
