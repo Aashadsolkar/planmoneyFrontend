@@ -11,7 +11,6 @@
       "supportsTablet": true
     },
     "android": {
-      "package": "com.pallav1503.PlanMoney",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#012744"
@@ -19,7 +18,8 @@
       "permissions": [
         "NOTIFICATIONS"
       ],
-      "googleServicesFile": "./google-services.json"
+      "googleServicesFile": "./google-services.json",
+      "package": "com.aashadsolkar.PlanMoney"
     },
     "web": {
       "bundler": "metro",
@@ -34,7 +34,7 @@
           "image": "./assets/images/splash-icon-dark.png",
           "imageResizeMode": "contain",
           "backgroundColor": "#012744",
-          "imageWidth":200
+          "imageWidth": 200
         }
       ],
       [
@@ -54,7 +54,7 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "9b287878-2e94-496e-951f-a84bda272f44"
+        "projectId": "a5c5825f-1608-4a27-bc9a-08de576c1467"
       }
     }
   }
