@@ -295,7 +295,7 @@ export const registerNotificationToken = async (token, deviceToken) => {
       }
     );
     if (response.data?.status === false) {
-      throw new Error(response.data?.message || "Invalid Token");
+      throw new Error(response.data?.message || "Invalid Token check your token");
     }
     return response.data;
   } catch (error) {
