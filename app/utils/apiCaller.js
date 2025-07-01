@@ -635,3 +635,39 @@ export const verifyQuestioner = async (token, data) => {
     throw error?.response?.data || { message: 'Something went wrong' };
   }
 };
+
+
+export const sendRequestApi = async (token) => {
+  try {
+    const response = await axios({
+      method: "POST",
+      url: "https://admin.planmoney.in/api/customer/digilocker/send",
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer${token}`
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('API Error:', error?.response?.data || error.message);
+    throw error?.response?.data || { message: 'Something went wrong' };
+  }
+};
+
+export const verifyKYCApi = async (token, data) => {
+  try {
+    const response = await axios({
+      method: "POST",
+      url: "https://admin.planmoney.in/api/customer/digilocker/verify",
+      data,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer${token}`
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('API Error:', error?.response?.data || error.message);
+    throw error?.response?.data || { message: 'Something went wrong' };
+  }
+};

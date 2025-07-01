@@ -77,7 +77,6 @@ export default function BuyStock() {
                             <Input
                                 label={"Buy Price ₹"}
                                 value={String(price)}
-                                editable={false}
                             />
                         </View>
                         <View style={{ width: "50%" }}>

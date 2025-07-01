@@ -131,6 +131,16 @@ export default function Home() {
         },
         {
             id: '3',
+            serviceId: 2,
+            color: [COLORS.secondaryColor, COLORS.secondaryColor],
+            onClick: () => {
+                setServiceSelectedOnHomePage(2)
+                router.push("service");
+            },
+            banner: require('../../assets/images/PIS_Banner.png')
+        },
+        {
+            id: '4',
             serviceId: 3,
             color: [COLORS.secondaryColor, COLORS.secondaryColor],
             onClick: () => {
@@ -140,7 +150,7 @@ export default function Home() {
             banner: require('../../assets/images/portfolioBanner.png')
         },
         {
-            id: '4',
+            id: '5',
             title: 'QuantumVault (For Above ₹50 lakh Capital)',
             serviceId: 4,
             subtitle: 'Expert Stock Picks',
@@ -209,43 +219,45 @@ export default function Home() {
                 delay={item.id * 100}
                 duration={300}
             >
-                <LinearGradient
-                    start={{ x: 1, y: 0 }}
-                    end={{ x: 0, y: 0 }}
-                    colors={is__not_subscribed ? [COLORS.cardColor, COLORS.cardColor] : ['#AF125D', '#D36C32']}
-                    // style={}
-                    style={[styles.serviceCard]}
-                >
-                    <Text style={styles.serviceTitle}>{item?.name}</Text>
-                    <View style={styles.serviceInfoRow}>
-                    </View>
-                    <View style={styles.serviceFooter}>
-                        {
-                            is__not_subscribed ? <>
-                                <View style={{ flexDirection: "row", justifyContent: "space-between", width: "100%" }}>
-                                    <View style={{ justifyContent: "center", paddingEnd: 20 }}>
-                                        <Text style={{ fontSize: 10, color: COLORS.fontWhite }}>Start from</Text>
-                                        <Text style={{ fontSize: 12, color: COLORS.fontWhite }}>₹{item.plans?.[0]?.offer_price}</Text>
-                                    </View>
-                                    <View style={{ flex: 1 }}>
-                                        <Button onClick={() => handleServiceClick(item)}
-                                            label={"subscribe now"}
-                                            gradientColor={['#D36C32', '#F68F00']}
-                                            buttonStye={{ padding: 10 }}
+                <TouchableOpacity onPress={() => handleClick(item)}>
+                    <LinearGradient
+                        start={{ x: 1, y: 0 }}
+                        end={{ x: 0, y: 0 }}
+                        colors={is__not_subscribed ? [COLORS.cardColor, COLORS.cardColor] : ['#AF125D', '#D36C32']}
+                        // style={}
+                        style={[styles.serviceCard]}
+                    >
+                        <Text style={styles.serviceTitle}>{item?.name}</Text>
+                        <View style={styles.serviceInfoRow}>
+                        </View>
+                        <View style={styles.serviceFooter}>
+                            {
+                                is__not_subscribed ? <>
+                                    <View style={{ flexDirection: "row", justifyContent: "space-between", width: "100%" }}>
+                                        <View style={{ justifyContent: "center", paddingEnd: 20 }}>
+                                            <Text style={{ fontSize: 10, color: COLORS.fontWhite }}>Start from</Text>
+                                            <Text style={{ fontSize: 12, color: COLORS.fontWhite }}>₹{item.plans?.[0]?.offer_price}</Text>
+                                        </View>
+                                        <View style={{ flex: 1 }}>
+                                            <Button onClick={() => handleServiceClick(item)}
+                                                label={"subscribe now"}
+                                                gradientColor={['#D36C32', '#F68F00']}
+                                                buttonStye={{ padding: 10 }}
 
-                                        />
+                                            />
+                                        </View>
                                     </View>
-                                </View>
-                            </> : <>
-                                <View>
-                                    <Text style={styles.updateText}>Expire On</Text>
-                                    <Text style={styles.dateText}>{item?.subscription?.end_at}</Text>
-                                </View>
-                                <MaterialIcons onPress={() => handleClick(item)} name="chevron-right" size={40} color="#fff" />
-                            </>
-                        }
-                    </View>
-                </LinearGradient>
+                                </> : <>
+                                    <View>
+                                        <Text style={styles.updateText}>Expire On</Text>
+                                        <Text style={styles.dateText}>{item?.subscription?.end_at}</Text>
+                                    </View>
+                                    <MaterialIcons name="chevron-right" size={40} color="#fff" />
+                                </>
+                            }
+                        </View>
+                    </LinearGradient>
+                </TouchableOpacity>
             </Animatable.View>
         )
     };
@@ -508,7 +520,7 @@ export default function Home() {
 
                 {renderContent()}
             </ScrollView>
-            {profileData && <QuestionerModal isVisible={isQuestionerModalOpen} handleClose={() => setIsQuestionerModalOpen(false)} onRefresh={onRefresh}/>}
+            {profileData && <QuestionerModal isVisible={isQuestionerModalOpen} handleClose={() => setIsQuestionerModalOpen(false)} onRefresh={onRefresh} />}
         </SafeAreaView>
     );
 }

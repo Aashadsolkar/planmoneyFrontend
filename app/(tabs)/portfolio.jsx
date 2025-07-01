@@ -18,7 +18,7 @@ import { pisPortfolio, pmsPortfolio, quantomPortfolio } from '../utils/apiCaller
 import { useAuth } from '../context/useAuth';
 import { useLocalSearchParams } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
-import QuantomVoltIcon, { FastlaneIcon, PMSIcon, PSIcon } from '../../assets/images/SVG';
+import { PISIcon, PMSIcon, QuantomVoltIcon } from '../../assets/images/SVG';
 
 
 const Portfolio = () => {
@@ -30,7 +30,7 @@ const Portfolio = () => {
   // Define availableTabs based on subscription presence
   const availableTabs = [];
   const availableTabsIcone = {
-    "PIS": () => <FastlaneIcon height={20} width={20} />,
+    "PIS": () => <PISIcon height={20} width={20} />,
     "PMS": () => <PMSIcon height={20} width={20}/>,
     "QuantumVolt": () => <QuantomVoltIcon height={20} width={20}/>,
   };

@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Alert, Image, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, View } from 'react-native';
+import { Alert, Image, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { COLORS } from '../../constants';
 import { getFastlaneData } from '../../utils/apiCaller';
 import { useAuth } from '../../context/useAuth';
@@ -133,17 +133,15 @@ const FastLane = () => {
                             <Text style={styles.lightText}>Upside</Text>
                             <Text style={[styles.boldText, styles.greenText]}>{data?.upside}%</Text>
                         </View>
-                        <View style={{ alignSelf: "center", flexDirection: "row", alignItems: "center", gap: 2 }}>
-                            <Text onPress={() => {
+                        <View style={{alignItems: "center", justifyContent: "center"}}>
+                            <TouchableOpacity style={{ alignSelf: "center", flexDirection: "row", alignItems: "center", gap: 2 }}>
+                                <Text onPress={() => {
                                 setReportData({ "serviceData": data, "serviceID": id });
                                 router.push("fastLaneReport")
 
                             }} style={[styles.lightText, { color: COLORS.secondaryColor }]}>REPORT ANALYSIS</Text>
-                            <MaterialIcons onPress={() => {
-                                setReportData({ "serviceData": data, "serviceID": id });
-                                router.push("fastLaneReport")
-
-                            }} name="chevron-right" size={18} color={COLORS.secondaryColor} />
+                            <MaterialIcons name="chevron-right" size={18} color={COLORS.secondaryColor} />
+                            </TouchableOpacity>
                             {/* <Text style={styles.boldText}>₹700.00</Text> */}
                         </View>
                     </View>

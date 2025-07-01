@@ -1,5 +1,5 @@
 import React, { use, useCallback, useEffect, useState } from 'react';
-import { Alert, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, View } from 'react-native';
+import { Alert, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import ServiceCard from '../components/ServiceCard';
 import { useAuth } from '../context/useAuth';
 import Header from '../components/Header';
@@ -8,14 +8,14 @@ import { service } from '../utils/apiCaller';
 import { router, useNavigation } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
 import SkeletonList from '../components/ListSkeleton';
-import QuantomVoltIcon, { FastlaneIcon, PMSIcon, PSIcon } from '../../assets/images/SVG';
+import {QuantomVoltIcon, FastlaneIcon, PMSIcon, PSIcon, PISIcon } from '../../assets/images/SVG';
 
 const icon = {
     1: () => <FastlaneIcon height={33} width={33} />,
-    2: () => <PSIcon height={33} width={33} />,
-    3: () => <FastlaneIcon height={33} width={33} />,
+    2: () => <PISIcon height={33} width={33} />,
+    3: () => <PMSIcon height={33} width={33} />,
     4: () => <QuantomVoltIcon height={33} width={33} />,
-    6: () => <PMSIcon height={33} width={33} />
+    6: () => <PSIcon height={33} width={33} />
 }
 
 const Service = () => {
@@ -151,9 +151,9 @@ const Service = () => {
                 <Text style={styles.sectionTitle}>Select the Services</Text>
                 {renderService()}
                 {
-                    !isLoading && <Text style={{ textAlign: "center", color: COLORS.fontWhite, fontWeight: 500 }} onPress={() => {
-                        router.push("home")
-                    }}>Skip for now</Text>
+                    !isLoading && <TouchableOpacity onPress={() => router.push("home")}>
+                        <Text style={{ textAlign: "center", color: COLORS.fontWhite, fontWeight: 500 }} >Skip for now</Text>
+                    </TouchableOpacity>
                 }
             </ScrollView>
         )

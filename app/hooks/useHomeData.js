@@ -81,7 +81,7 @@ export const useHomeData = () => {
                         .includes(service.name)
                 );
                 setPortfolioServices(portfolio);
-                if (response?.data?.kyc_status === 0) {
+                if (response?.data?.kyc_status === 0 && portfolio.length > 0) {
                     router.push("forms/kyc");
                     return;
                 }

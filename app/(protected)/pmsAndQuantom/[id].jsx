@@ -20,7 +20,7 @@ const PmsAndQuantom = () => {
     const navigation = useNavigation();
     const { id, advisor_name, advisor_nummber, is_advisor_assign } = useLocalSearchParams();
 
-    
+
 
     useFocusEffect(
         useCallback(() => {
@@ -89,7 +89,7 @@ const PmsAndQuantom = () => {
         const label = {
             low: "LOW",
             medium: "MED",
-            high: "HIGH" 
+            high: "HIGH"
         };
 
         return label[riskLevel.toLowerCase()]; // fallback: gray
@@ -158,16 +158,16 @@ const PmsAndQuantom = () => {
                             <Text style={[styles.boldText, styles.greenText]}>{data?.upside}%</Text>
                         </View>
                         <View style={{ alignSelf: "center", flexDirection: "row", alignItems: "center", gap: 2 }}>
-                            <Text onPress={() => {
-                                setReportData({ "serviceData": data, "serviceID": id });
-                                router.push("fastLaneReport")
+                            <TouchableOpacity  onPress={() => {
+                                    setReportData({ "serviceData": data, "serviceID": id });
+                                    router.push("fastLaneReport")
 
-                            }} style={[styles.lightText, { color: COLORS.secondaryColor }]}>REPORT ANALYSIS</Text>
-                            <MaterialIcons onPress={() => {
-                                setReportData(data);
-                                router.push("fastLaneReport")
-
-                            }} name="chevron-right" size={18} color={COLORS.secondaryColor} />
+                                }}
+                                style={{alignSelf: "center", flexDirection: "row", alignItems: "center"}}
+                                >
+                                <Text style={[styles.lightText, { color: COLORS.secondaryColor }]}>REPORT ANALYSIS</Text>
+                                <MaterialIcons name="chevron-right" size={18} color={COLORS.secondaryColor} />
+                            </TouchableOpacity>
                         </View>
                     </View>
 
