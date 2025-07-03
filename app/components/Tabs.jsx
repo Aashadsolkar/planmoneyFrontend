@@ -17,7 +17,6 @@ export default function Tabs() {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* {renderScreen()} */}
       <View style={styles.tabBar}>
         {tabs.map((tab) => (
           <TouchableOpacity key={tab.name} style={styles.tabItem} onPress={() => {
@@ -35,7 +34,6 @@ export default function Tabs() {
 
 const styles = StyleSheet.create({
   container: {
-    // flex: 1,
     backgroundColor: "#f5f5f5",
   },
   screenContainer: {

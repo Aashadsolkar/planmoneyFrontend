@@ -198,7 +198,6 @@ export default function Checkout() {
               </Text>
               <Text style={styles.savedText}>Saved: ₹{discount}</Text>
             </View>
-            {/* <Text style={styles.withCouponText}>with {appliedCoupon}</Text> */}
             <View style={styles.appliedBadge}>
               <Text
                 style={styles.appliedText}

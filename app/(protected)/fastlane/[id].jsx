@@ -142,7 +142,6 @@ const FastLane = () => {
                             }} style={[styles.lightText, { color: COLORS.secondaryColor }]}>REPORT ANALYSIS</Text>
                             <MaterialIcons name="chevron-right" size={18} color={COLORS.secondaryColor} />
                             </TouchableOpacity>
-                            {/* <Text style={styles.boldText}>₹700.00</Text> */}
                         </View>
                     </View>
                 </View>
@@ -164,8 +163,6 @@ const FastLane = () => {
                     showsVerticalScrollIndicator={false}
                     style={{ paddingHorizontal: 20, backgroundColor: COLORS.primaryColor, paddingTop: 100 }}
                 >
-                    {/* <Text style={styles.heading}>Stock updates</Text> */}
-                    {/* {renderCardList()} */}
                     <View style={{ alignItems: 'center', width: "100%", }}>
                         <Image
                             source={require('../../../assets/images/questionCirlce.png')}

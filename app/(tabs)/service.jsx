@@ -120,7 +120,6 @@ const Service = () => {
             return (
                 <ServiceCard
                     name={service.name}
-                    // icon="line-chart"
                     iconType="fa"
                     startsAt={getLowestActualPricePlan(service?.plans)?.actual_price}
                     isExpanded={expandedService === service.id}

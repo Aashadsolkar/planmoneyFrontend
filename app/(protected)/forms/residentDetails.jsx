@@ -145,7 +145,6 @@ const ResidentDetails = () => {
                 <View style={[styles.checkbox, isChecked && styles.checkedBox]}>
                     {isChecked && <View style={styles.innerCheck} />}
                 </View>
-                {/* <Text style={styles.label}>{label === 'yes' ? 'Yes' : 'No'}</Text> */}
             </TouchableOpacity>
         );
     };
@@ -313,7 +312,6 @@ const styles = StyleSheet.create({
     errorText: {
         color: "red",
         fontSize: 12,
-        // marginTop: 4,
         marginBottom: 10
 
     },

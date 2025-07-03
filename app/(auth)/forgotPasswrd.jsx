@@ -163,12 +163,6 @@ const ForgotPassword = () => {
 
         setLoading(true);
 
-        // setTimeout(() => {
-        //     setLoading(false);
-        //     setStep(3);
-        // }, 1500);
-
-        // Simulate API call
         try {
             const payload = {
                 otp: otp,
@@ -185,7 +179,6 @@ const ForgotPassword = () => {
 
     const handleResetPassword = async () => {
         // Reset all error messages
-        // setConfirmPassword("");
         setPasswordError("");
         setPasswordConfirmError("");
 
@@ -364,8 +357,6 @@ const ForgotPassword = () => {
                                                     setNewPassword(value);
                                                     if (passwordError) setPasswordError("");
                                                 }}
-                                                // error={!!}
-                                                // errorMessage={errors.password}
                                                 isPassword={true}
                                                 error={!!passwordError}
                                                 errorMessage={passwordError}
@@ -456,8 +447,6 @@ const styles = StyleSheet.create({
         flex: 1,
         width: "100%",
         marginTop: 60,
-        // justifyContent: "center",
-        // alignItems: "center"
     },
     backButton: {
         position: "absolute",

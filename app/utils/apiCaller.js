@@ -42,7 +42,6 @@ export const service = async () => {
     const response = await axios({
       method: "GET",
       url: "https://admin.planmoney.in/api/services",
-      // data,
       headers: {
         'Content-Type': 'application/json',
       },
@@ -59,7 +58,6 @@ export const customerService = async (token) => {
     const response = await axios({
       method: "GET",
       url: "https://admin.planmoney.in/api/customer/customer-details",
-      // data,
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer${token}`
@@ -96,7 +94,6 @@ export const getFastlaneData = async (token, id) => {
     const response = await axios({
       method: "GET",
       url: `https://admin.planmoney.in/api/customer/services/${id}`,
-      // data,
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer${token}`
@@ -134,7 +131,7 @@ export const countryApi = async (token) => {
       url: "https://admin.planmoney.in/api/country",
       headers: {
         'Content-Type': 'application/json',
-        // 'Authorization': `Bearer${token}`
+        
       },
     });
     return response.data;
@@ -151,7 +148,6 @@ export const stateApi = async (stateId) => {
       url: `https://admin.planmoney.in/api/state/${stateId}`,
       headers: {
         'Content-Type': 'application/json',
-        // 'Authorization' : `Bearer${token}`
       },
     });
     return response.data;
@@ -168,7 +164,7 @@ export const cityApi = async (id) => {
       url: `https://admin.planmoney.in/api/cities/${id}`,
       headers: {
         'Content-Type': 'application/json',
-        // 'Authorization': `Bearer${token}`
+        
       },
     });
     return response.data;
@@ -317,7 +313,7 @@ export const requestOtp = async (data) => {
       data,
       headers: {
         'Content-Type': 'application/json',
-        // 'Authorization': `Bearer${token}`
+        
       },
     });
     return response.data;
@@ -335,7 +331,7 @@ export const resetPasswordPreLogin = async (data) => {
       data,
       headers: {
         'Content-Type': 'application/json',
-        // 'Authorization': `Bearer${token}`
+        
       },
     });
     return response.data;
@@ -353,7 +349,7 @@ export const verifyOtp = async (data) => {
       data,
       headers: {
         'Content-Type': 'application/json',
-        // 'Authorization': `Bearer${token}`
+        
       },
     });
     return response.data;

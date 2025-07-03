@@ -233,13 +233,6 @@ const OrderConfirm = () => {
       </View>
 
       {renderContent()}
-      {/* {
-        !subscriptionComplete && <View>
-          <TouchableOpacity onPress={() => router.push("checkout")}>
-            <Text style={{ color: COLORS.secondaryColor, textAlign: "center", paddingBottom: 15 }}>Try Againg</Text>
-          </TouchableOpacity>
-        </View>
-      } */}
       <View style={styles.buttonContainer}>
         <Button
           label={subscriptionComplete ? "Done" : "Back To Home"}

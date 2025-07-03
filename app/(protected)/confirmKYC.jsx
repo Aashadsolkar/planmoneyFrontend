@@ -1,4 +1,3 @@
-// app/verify/success.tsx
 import { router, useLocalSearchParams, useNavigation } from "expo-router";
 import { useEffect, useState } from "react";
 import {
@@ -115,11 +114,8 @@ export default function VerifySuccess() {
 
 const styles = StyleSheet.create({
     container: {
-        // padding: 16,
         backgroundColor: COLORS.primaryColor,
         flexGrow: 1,
-        // justifyContent: "center",
-        // marginHorizontal: 20
     },
     heading: {
         fontSize: 24,

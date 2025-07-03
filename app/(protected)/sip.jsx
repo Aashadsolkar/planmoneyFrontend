@@ -79,16 +79,6 @@ const CustomSlider = ({
   )
 }
 
-// export default function SIPCalculator() {
-//   const [monthlyAmount, setMonthlyAmount] = useState(5000)
-//   const [monthlyAmountInput, setMonthlyAmountInput] = useState(monthlyAmount.toString())
-//   const [interestRate, setInterestRate] = useState(12)
-//   const [years, setYears] = useState(10)
-//   const [maturityAmount, setMaturityAmount] = useState(0)
-//   const [totalInvested, setTotalInvested] = useState(0)
-//   const [totalReturns, setTotalReturns] = useState(0)
-//   const [useCustomSlider, setUseCustomSlider] = useState(Platform.OS === "android")
-
 // Calculate SIP maturity amount
 export default function SIPCalculator() {
   const [monthlyAmount, setMonthlyAmount] = useState(500)

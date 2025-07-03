@@ -9,31 +9,6 @@ export default function CheckoutWebView( props) {
   const { sessionId, orderId } = useLocalSearchParams();
   const hostedUrl = `https://hunger.webiknows.in/payment.html?session_id=${sessionId}`;
 
-  // const handleRedirect = (url) => {
-  //   debugger
-  //   console.log(url, ".......urlllllll");
-    
-  //   // const url = "https://sandbox.cashfree.com/checkout/billgo/v2/order/cancel";
-  //   debugger
-  //   // Handle deep link when the URL contains "cashfreegatway://"
-  //   const params = new URL(url).searchParams;
-  //   // const paymentStatus = params.get("status");
-  //   const paymentStatus = "success"
-  //   // const orderId = params.get("orderId");
-  //   const orderId = "ORDER_1747312858608";
-  //   // if (url.includes("cashfreegatway://")) {
-  //   if (url.includes("order_id")) {
-  //     if (paymentStatus === "success") {
-  //       setOrderCinfirmDetails({orderId})
-  //       navigation.replace("orderConfirm");
-  //     } else {
-  //       Alert.alert("Payment Failed", "There was an issue with your payment.");
-  //     }
-  //     return false; // Prevent WebView from loading this URL
-  //   }
-  //   return true; // Allow WebView to load the URL
-  // };
-
  const navigation = useNavigation();
 
  const handleRedirect = (url) => {

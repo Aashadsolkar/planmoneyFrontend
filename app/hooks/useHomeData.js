@@ -30,7 +30,6 @@ export const useHomeData = () => {
         if ((token && getCustomerDataAgain) || forceCall) {
             setIsLoading(true);
             try {
-                // await fetchProfile();
                 await fetchNews();
                 await fetchCustomerServices();
                 await fetchOptionStockData();

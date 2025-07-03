@@ -57,7 +57,6 @@ const FastLane = () => {
     };
 
     const getServiceName = (id) => {
-        // serviceID == 1 ? "FastLane" : "PMS"
 
         let serviceName = "";
         switch (id) {

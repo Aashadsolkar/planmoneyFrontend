@@ -224,7 +224,6 @@ export default function Home() {
                         start={{ x: 1, y: 0 }}
                         end={{ x: 0, y: 0 }}
                         colors={is__not_subscribed ? [COLORS.cardColor, COLORS.cardColor] : ['#AF125D', '#D36C32']}
-                        // style={}
                         style={[styles.serviceCard]}
                     >
                         <Text style={styles.serviceTitle}>{item?.name}</Text>
@@ -349,7 +348,6 @@ export default function Home() {
                 <View style={{ padding: 16 }}>
                     <ShimmerSkeleton height={180} />
                     <ShimmerSkeleton height={120} />
-                    {/* <ShimmerSkeleton height={50} /> */}
                     <View style={{ flexDirection: "row", justifyContent: "space-evenly" }}>
                         <ShimmerSkeleton height={60} width={60} />
                         <ShimmerSkeleton height={60} width={60} />
@@ -431,13 +429,6 @@ export default function Home() {
                             <Text style={styles.linkText}>Portfolio</Text>
                         </TouchableOpacity>
                     </Animatable.View>
-
-                    {/* <TouchableOpacity style={styles.linkItem} onPress={() => router.push("upcoming")}>
-                        <View style={styles.linkIconContainer}>
-                            <MaterialCommunityIcons name="wallet-outline" size={35} color="#FFA500" />
-                        </View>
-                        <Text style={styles.linkText}>Wallet</Text>
-                    </TouchableOpacity> */}
                     <Animatable.View animation="zoomIn" delay={200} duration={200} style={styles.linkItem}>
                         <TouchableOpacity onPress={() => router.push("sip")} style={styles.linkItem}>
                             <View style={styles.linkIconContainer}>
@@ -450,7 +441,6 @@ export default function Home() {
                     <Animatable.View animation="zoomIn" delay={300} duration={200} style={styles.linkItem}>
                         <TouchableOpacity style={styles.linkItem} onPress={() => router.push("newArrivals")}>
                             <View style={styles.linkIconContainer}>
-                                {/* <AntDesign name="trademark" size={35} color="#FFA500" /> */}
                                 <Foundation name="burst-new" size={50} style={{ transform: [{ rotate: "30deg" }] }} color="#FFA500" />
                             </View>
                             <Text style={styles.linkText}>New Arrivals</Text>
@@ -461,7 +451,6 @@ export default function Home() {
                     <Animatable.View animation="zoomIn" delay={300} duration={200} style={styles.linkItem}>
                         <TouchableOpacity style={styles.linkItem} onPress={() => router.push("upcoming")}>
                             <View style={styles.linkIconContainer}>
-                                {/* <AntDesign name="trademark" size={35} color="#FFA500" /> */}
                                 <MaterialIcons name="savings" size={38} color={COLORS.secondaryColor} />
                             </View>
                             <Text style={styles.linkText}>Mutual Fund</Text>

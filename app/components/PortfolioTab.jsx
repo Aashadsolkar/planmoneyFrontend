@@ -114,11 +114,6 @@ const PortfolioTab = ({ advisorName, stockAPi }) => {
     }, []);
 
 
-    // Handle sort toggle
-    const handleSortToggle = useCallback(() => {
-        setSortOrder(prev => prev === 'asc' ? 'desc' : 'asc');
-    }, []);
-
     // Format return percentage
     const formatReturnPercentage = useCallback((percentage) => {
         const sign = percentage >= 0 ? '+' : '';
@@ -280,7 +275,6 @@ const PortfolioTab = ({ advisorName, stockAPi }) => {
                                 ]}>
                                     {formatCurrency(investment.currentValue)}
                                 </Text>
-                                {/* <Text style={styles.investmentDate}>{investment.date}</Text> */}
                             </View>
                         </View>
 

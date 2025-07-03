@@ -118,7 +118,6 @@ const Portfolio = () => {
       <StatusBar barStyle="light-content" />
       <Header showBackButton={true} backButtonText={headerText} />
       {/* Header Tabs - Only show if more than one tab available */}
-      {/* {availableTabs.length == 0 } */}
       {availableTabs.length > 0 && (
         <View style={styles.tabContainer}>
           {availableTabs.map((tab) => (
@@ -160,8 +159,6 @@ const styles = StyleSheet.create({
   tab: {
     paddingHorizontal: 15,
     paddingVertical: 10,
-    // borderRadius: 25,
-    // borderColor: '#ff8c00',
     flexDirection: "row",
     alignItems: "center",
     gap: 5

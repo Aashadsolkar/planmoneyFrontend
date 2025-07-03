@@ -197,8 +197,6 @@ const PmsAndQuantom = () => {
                     showsVerticalScrollIndicator={false}
                     style={{ paddingHorizontal: 20, marginTop: 80 }}
                 >
-                    {/* <Text style={styles.heading}>Stock updates</Text> */}
-                    {/* {renderCardList()} */}
                     <View style={{ alignItems: 'center', width: "100%", marginTop: 100 }}>
                         <Image
                             source={require('../../../assets/images/questionCirlce.png')}
@@ -226,8 +224,6 @@ const PmsAndQuantom = () => {
                     showsVerticalScrollIndicator={false}
                     style={{ paddingHorizontal: 20, backgroundColor: COLORS.primaryColor }}
                 >
-                    {/* <Text style={styles.heading}>Stock updates</Text> */}
-                    {/* {renderCardList()} */}
                     <View style={{ alignItems: 'center', width: "100%", marginTop: 100 }}>
                         <Image
                             source={require('../../../assets/images/rightCircle.png')}

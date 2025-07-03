@@ -147,7 +147,6 @@ const ServiceCard = ({
             <View style={styles.subscriptions}>
               {sortedPlans.map((plan) => {
                 const isBest = plan?.is_bestseller == 0 ? false : true;
-                // de
                 const isSelected = selectedDuration?.id === plan?.id;
                 return (
                   <TouchableOpacity
@@ -213,7 +212,6 @@ const ServiceCard = ({
                       <Animatable.View animation="bounceIn">
                         <View style={{ alignItems: "center" }}>
                           <Text style={{ color: COLORS.fontWhite, fontSize: 25 }}>Thank you</Text>
-                          {/* <CheckCircle color="#D87129" size={60} /> */}
                           <Text style={{ color: COLORS.fontWhite, fontSize: 14, marginTop: 5 }}> for your Interest</Text>
                           <Text style={{ color: COLORS.secondaryColor, fontSize: 14, marginTop: 5 }}>Our Agent will contact you soon</Text>
                         </View>
@@ -324,10 +322,8 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   subscription: {
-    // width: '30%',
     backgroundColor: 'rgba(255, 255, 255, 0.05)',
     borderRadius: 8,
-    // padding: 12,
     paddingVertical: 12,
     paddingHorizontal: 8,
     alignItems: 'center',

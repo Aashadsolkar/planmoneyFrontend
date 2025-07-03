@@ -141,9 +141,6 @@ const Header = ({
             )}
           </View>
           <View style={styles.rightSection}>
-            {/* <TouchableOpacity onPress={toggleNotifications} style={styles.iconButton}>
-              <BellIcon />
-            </TouchableOpacity> */}
             <ProfileIcon onPress={toggleProfileDrawer} name={profileData?.name} isProfileLoading={isProfileLoading} />
           </View>
         </View>
@@ -377,7 +374,6 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     width: '70%',
-    // height: '100%',
     backgroundColor: 'white',
     zIndex: 1001,
     shadowColor: '#000',
@@ -422,7 +418,6 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   drawerContent: {
-    // padding: 16,
     flex: 1,
     backgroundColor: COLORS.cardColor,
     opacity: 0.9,
