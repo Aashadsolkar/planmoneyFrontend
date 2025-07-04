@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { KeyboardAvoidingView, Platform, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { KeyboardAvoidingView, Platform, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Button from '../../components/Button';
 import { router, useNavigation } from 'expo-router';
 import SelectBox from '../../components/Select';
@@ -42,6 +42,7 @@ const RiskCalculate1 = () => {
     }
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.primaryColor, paddingBottom: 20}}>
+            <StatusBar barStyle="light-content" backgroundColor={COLORS.primaryColor} />
             <KeyboardAvoidingView
                 style={{ flex: 1 }}
                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -55,7 +56,7 @@ const RiskCalculate1 = () => {
                     <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
                        <Ionicons name="arrow-back" size={ 24} color="#ffffff" />
                     </TouchableOpacity>
-                    <Text style={{ fontSize: 12, fontWeight: 600, color: COLORS.fontWhite, marginTop: 20 }}>Step <Text style={{ color: COLORS.secondaryColor }}>2</Text> to 5</Text>
+                    <Text style={{ fontSize: 12, fontWeight: 600, color: COLORS.fontWhite, marginTop: 20 }}>Step <Text style={{ color: COLORS.secondaryColor }}>3</Text> to 6</Text>
                     <Text style={{ fontSize: 20, fontWeight: 600, color: COLORS.fontWhite }}>Income & Earnings Profile</Text>
                     <SelectBox
                         selected={questionFormData?.occupation}

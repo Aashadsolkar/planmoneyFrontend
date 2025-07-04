@@ -14,6 +14,7 @@ import {
     SafeAreaView,
     KeyboardAvoidingView,
     Alert,
+    StatusBar,
 } from "react-native"
 import DateTimePicker from "@react-native-community/datetimepicker"
 import { Ionicons } from "@expo/vector-icons"
@@ -343,6 +344,7 @@ export default function PersonalDetailsForm() {
 
     return (
         <SafeAreaView style={styles.container}>
+            <StatusBar barStyle="light-content" backgroundColor={COLORS.primaryColor} />
             <KeyboardAvoidingView
                 behavior={Platform.OS === "ios" ? "padding" : "height"}
                 style={{ flex: 1 }}
@@ -355,7 +357,7 @@ export default function PersonalDetailsForm() {
                 >
                     <View style={styles.header}>
                         <Text style={styles.subtitle}>Need some details before you proceed with our Services</Text>
-                        <Text style={{ fontSize: 12, fontWeight: 600, color: COLORS.fontWhite, marginTop: 20 }}>Step <Text style={{ color: COLORS.secondaryColor }}>1</Text> to 5</Text>
+                        <Text style={{ fontSize: 12, fontWeight: 600, color: COLORS.fontWhite, marginTop: 20 }}>Step <Text style={{ color: COLORS.secondaryColor }}>2</Text> to 6</Text>
                         <Text style={{ fontSize: 20, fontWeight: 600, color: COLORS.fontWhite }}>Income & Earnings Profile</Text>
                     </View>
 

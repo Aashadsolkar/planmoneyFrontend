@@ -1,4 +1,4 @@
-import { View, Text, SafeAreaView, TouchableOpacity, StyleSheet, ScrollView, Dimensions, FlatList, Modal, Alert } from 'react-native';
+import { View, Text, SafeAreaView, TouchableOpacity, StyleSheet, ScrollView, Dimensions, FlatList, Modal, Alert, StatusBar } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { COLORS } from "../../constants";
 import Button from '../../components/Button';
@@ -165,13 +165,14 @@ const ResidentDetails = () => {
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.primaryColor, paddingBottom: 20 }}>
+            <StatusBar barStyle="light-content" backgroundColor={COLORS.primaryColor} />
             <View style={{ padding: 20, marginTop: 20 }}>
 
                 <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
                     <Ionicons name="arrow-back" size={ 24} color="#ffffff" />
                 </TouchableOpacity>
                 <Text style={{ fontSize: 12, fontWeight: "600", color: COLORS.fontWhite, marginTop: 20 }}>
-                    Step <Text style={{ color: COLORS.secondaryColor }}>4</Text> to 5
+                    Step <Text style={{ color: COLORS.secondaryColor }}>5</Text> to 6
                 </Text>
                 <Text style={{ fontSize: 20, fontWeight: "600", color: COLORS.fontWhite, marginBottom: 20 }}>
                     Tax Residence Details

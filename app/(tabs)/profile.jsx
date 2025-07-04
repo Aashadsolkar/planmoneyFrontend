@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react"
+import React, { useState, useRef, useEffect } from "react"
 import {
   View,
   Text,
@@ -12,6 +12,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   ActivityIndicator,
+  ScrollView,
 } from "react-native"
 import { LinearGradient } from "expo-linear-gradient"
 import { Ionicons } from "@expo/vector-icons"
@@ -19,7 +20,11 @@ import { COLORS } from "../constants"
 import Header from "../components/Header"
 import { router } from "expo-router"
 import { useAuth } from "../context/useAuth"
-import { generateVerifyEmailOpt, verifyEmailOpt } from "../utils/apiCaller"
+import { generateVerifyEmailOpt, updateCapital, verifyEmailOpt } from "../utils/apiCaller"
+import AntDesign from '@expo/vector-icons/AntDesign';
+import Input from '../components/Input';
+import * as Animatable from "react-native-animatable"
+
 
 const { width, height } = Dimensions.get("window")
 
@@ -32,10 +37,54 @@ export default function App() {
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const otpInputs = useRef([]);
   const [isEmailOtpLoading, setIsEmailOtpLoading] = useState(false);
+  const [errors, setErrors] = useState({});
+  const [isCapitalFormUpdate, setIsCapitalFormUpdate] = useState(false);
+  const [isUpdateCapitalLoading, setIsUpdateCapitalLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    captal_amount: String(profileData?.customerfinanceinfo?.capital_amount || "")
+  });
+
+  const mobileNumber = profileData?.phone;
+  const emailAddress = profileData?.email;
+
+  const handleChange = (value, name) => {
+    setErrors({})
+    const updatedForm = { ...formData, [name]: value };
+    setFormData(updatedForm);
+  };
+
+  const handleSubmit = async () => {
+    const newErrors = {};
+    if (formData?.captal_amount == "") {
+      newErrors.capital_amount = "Amount is required"
+    }
+    setErrors(newErrors);
+    if (Object.keys(newErrors).length === 0) {
+      try {
+        setIsUpdateCapitalLoading(true);
+        const payload = {
+          capital_amount: formData?.captal_amount || ""
+        }
+        const response = await updateCapital(token, payload);
+        setIsCapitalFormUpdate(false)
+        setIsUpdateCapitalLoading(false);
+      } catch (error) {
+        setIsUpdateCapitalLoading(false);
+        Alert.alert(
+          "Error",
+          error?.message || "Failed to update capital",
+          [
+            {
+              text: "OK",
+              onPress: () => router.push("home"),
+            },
+          ]
+        );
+      }
+    }
+  };
 
 
-  const mobileNumber = profileData?.phone
-  const emailAddress = profileData?.email
 
 
   const handleVerifyPress = async (type) => {
@@ -121,63 +170,134 @@ export default function App() {
     Alert.alert("OTP Sent", `OTP has been resent to your ${verificationType === "mobile" ? "mobile number" : "email address"}`)
   }
 
+  const renderCapitalSection = () => {
+    if (!isCapitalFormUpdate) {
+      return (
+        <TouchableOpacity onPress={() => setIsCapitalFormUpdate(true)} style={{ marginTop: 20 }}>
+          <View style={[styles.verificationCard, { marginBottom: 0 }]}>
+            <View style={[styles.cardHeader, { marginBottom: 0 }]}>
+              <View style={{ flexDirection: "row", justifyContent: "center" }}>
+                <Text style={styles.cardLabel}>Capital Amount: </Text>
+                <Text style={{ color: COLORS.fontWhite, paddingRight: 10, }}>{formData.captal_amount}</Text>
+              </View>
+              <AntDesign name="edit" size={20} color="#fff" />
+            </View>
+          </View>
+        </TouchableOpacity>
+      )
+    }
+    return (
+      <>
+        <Animatable.View
+          animation="zoomIn"
+          duration={200}
+        >
+          <View style={{ flexDirection: "row", alignItems: "center", marginTop: 15 }}>
+            <View style={{ flex: 1, height: 1, backgroundColor: "#fff" }}></View>
+            <TouchableOpacity onPress={() => setIsCapitalFormUpdate(false)}>
+              <Ionicons style={{ marginHorizontal: 20 }} name="close" size={24} color="#fff" />
+            </TouchableOpacity>
+          </View>
+        </Animatable.View>
+
+        <Animatable.View
+          animation="slideInRight"
+          duration={200}
+          easing="ease-out"
+        >
+          <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
+            <View style={{ flex: 1 }}>
+              <Input
+                label="Capital Amount"
+                value={formData.captal_amount}
+                onChangeText={val => handleChange(val, "captal_amount")}
+                error={!!errors?.captal_amount}
+                errorMessage={errors?.captal_amount}
+                isNumberOnly={true}
+              />
+            </View>
+            <TouchableOpacity onPress={() => handleSubmit()} style={styles.updateButton}>
+              {isUpdateCapitalLoading ? <ActivityIndicator style={{ paddingHorizontal: 16 }} color={"#fff"} size="small" /> : <Text style={styles.cardLabel}>UPDATE</Text>}
+            </TouchableOpacity>
+          </View>
+          <Text style={{ color: COLORS.lossColor }}>{errors?.capital_amount}</Text>
+        </Animatable.View>
+      </>
+
+    )
+
+  }
+
   return (
     <View style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor={COLORS.cardColor} />
       <Header showBackButton={true} backButtonText={() => <Text style={{ color: COLORS.fontWhite, fontWeight: 600, fontSize: 18 }}>Account</Text>} />
-      <View style={styles.content}>
-        <Text style={styles.title}>Verify your Mobile No & Email Address</Text>
 
-        {/* Mobile Section */}
-        <View style={styles.verificationCard}>
-          <View style={styles.cardHeader}>
-            <Text style={styles.cardLabel}>Mobile Number</Text>
-          </View>
-          <Text style={styles.contactInfo}>{mobileNumber}</Text>
-          <View style={styles.statusRow}>
-            {mobileVerified ? (
-              <View style={styles.verifiedStatus}>
-                <Ionicons name="checkmark-circle" size={16} color="#00ff88" />
-                <Text style={styles.verifiedText}>Verified</Text>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 10 : 20}
+      >
+        <ScrollView
+          contentContainerStyle={styles.scrollContent}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={styles.content}>
+            <Text style={styles.title}>Verify your Mobile No & Email Address</Text>
+
+            {/* Mobile Section */}
+            <View style={styles.verificationCard}>
+              <View style={styles.cardHeader}>
+                <Text style={styles.cardLabel}>Mobile Number</Text>
               </View>
-            ) : (
-              <TouchableOpacity style={styles.verifyButton} onPress={() => handleVerifyPress("mobile")}>
-                <Text style={styles.verifyButtonText}>Verify Now</Text>
-              </TouchableOpacity>
-            )}
-          </View>
-        </View>
-
-        {/* Email Section */}
-        <View style={styles.verificationCard}>
-          <View style={styles.cardHeader}>
-            <Text style={styles.cardLabel}>Email Address</Text>
-          </View>
-          <Text style={styles.contactInfo}>{emailAddress?.toLowerCase()}</Text>
-          <View style={styles.statusRow}>
-            {emailVerified ? (
-              <View style={styles.verifiedStatus}>
-                <Ionicons name="checkmark-circle" size={16} color="#00ff88" />
-                <Text style={styles.verifiedText}>Verified</Text>
+              <Text style={styles.contactInfo}>{mobileNumber}</Text>
+              <View style={styles.statusRow}>
+                {mobileVerified ? (
+                  <View style={styles.verifiedStatus}>
+                    <Ionicons name="checkmark-circle" size={16} color="#00ff88" />
+                    <Text style={styles.verifiedText}>Verified</Text>
+                  </View>
+                ) : (
+                  <TouchableOpacity style={styles.verifyButton} onPress={() => handleVerifyPress("mobile")}>
+                    <Text style={styles.verifyButtonText}>Verify Now</Text>
+                  </TouchableOpacity>
+                )}
               </View>
-            ) : (
-              <TouchableOpacity style={styles.verifyButton} onPress={() => handleVerifyPress("email")}>
-                {isEmailOtpLoading ? <ActivityIndicator color={"#fff"} size="small" /> : <Text style={styles.verifyButtonText}>Verify Now</Text>}
-              </TouchableOpacity>
-            )}
-          </View>
-        </View>
-
-        <TouchableOpacity onPress={() => router.push("changePassword")}>
-          <View style={[styles.verificationCard, { marginBottom: 0 }]}>
-            <View style={[styles.cardHeader, { marginBottom: 0 }]}>
-              <Text style={styles.cardLabel}>Change Password</Text>
-              <Ionicons name="chevron-forward" size={25} color="#fff" style={{ width: "10%" }} />
             </View>
-          </View>
-        </TouchableOpacity>
-      </View>
 
+            {/* Email Section */}
+            <View style={styles.verificationCard}>
+              <View style={styles.cardHeader}>
+                <Text style={styles.cardLabel}>Email Address</Text>
+              </View>
+              <Text style={styles.contactInfo}>{emailAddress?.toLowerCase()}</Text>
+              <View style={styles.statusRow}>
+                {emailVerified ? (
+                  <View style={styles.verifiedStatus}>
+                    <Ionicons name="checkmark-circle" size={16} color="#00ff88" />
+                    <Text style={styles.verifiedText}>Verified</Text>
+                  </View>
+                ) : (
+                  <TouchableOpacity style={styles.verifyButton} onPress={() => handleVerifyPress("email")}>
+                    {isEmailOtpLoading ? <ActivityIndicator color={"#fff"} size="small" /> : <Text style={styles.verifyButtonText}>Verify Now</Text>}
+                  </TouchableOpacity>
+                )}
+              </View>
+            </View>
+
+            <TouchableOpacity onPress={() => router.push("changePassword")}>
+              <View style={[styles.verificationCard, { marginBottom: 0 }]}>
+                <View style={[styles.cardHeader, { marginBottom: 0 }]}>
+                  <Text style={styles.cardLabel}>Change Password</Text>
+                  <Ionicons name="chevron-forward" size={25} color="#fff" />
+                </View>
+              </View>
+            </TouchableOpacity>
+            {renderCapitalSection()}
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
       {/* OTP Modal */}
       <Modal visible={showOTPModal} transparent animationType="slide" onRequestClose={() => setShowOTPModal(false)}>
         <KeyboardAvoidingView
@@ -267,7 +387,7 @@ const styles = StyleSheet.create({
   },
   cardLabel: {
     fontSize: width * 0.035,
-    color: "#ccc",
+    color: COLORS.fontWhite,
     fontWeight: "500",
   },
   contactInfo: {
@@ -370,4 +490,12 @@ const styles = StyleSheet.create({
     fontSize: width * 0.04,
     fontWeight: "700",
   },
+  updateButton: {
+    backgroundColor: COLORS.secondaryColor,
+    paddingHorizontal: 12,
+    paddingVertical: 20,
+    borderRadius: 10,
+    marginLeft: 10,
+    marginTop: 8
+  }
 })

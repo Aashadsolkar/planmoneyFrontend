@@ -89,7 +89,7 @@ export const useHomeData = () => {
                     return;
                 }
                 if (!skipQuestioniar && response?.data?.questionnaire_status === 0) {
-                    router.push("forms/personalDetails");
+                    router.push("forms/totalInvestmentForm");
                     return;
                 }
             } else if (filteredData.length === 0 && !skipServices) {

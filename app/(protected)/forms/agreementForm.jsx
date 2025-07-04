@@ -1,4 +1,4 @@
-import { View, Text, SafeAreaView, TouchableOpacity, StyleSheet, ScrollView, BackHandler, Alert } from 'react-native';
+import { View, Text, SafeAreaView, TouchableOpacity, StyleSheet, ScrollView, BackHandler, Alert, StatusBar } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { COLORS } from '../../constants';
 import Button from '../../components/Button';
@@ -40,7 +40,8 @@ const AgreementForm = () => {
           resident_of: questionFormData?.resident_of,
           fatca_declaration: questionFormData?.fatca_declaration,
           risk_disclouser_agreement: 1,
-          verified: 1
+          verified: 1,
+          capital_amount: questionFormData?.capital_amount
         };
 
         const response = await quetionerApi(token, payload);
@@ -83,6 +84,7 @@ const AgreementForm = () => {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.primaryColor, paddingBottom: 20, paddingTop: 20 }}>
+      <StatusBar barStyle="light-content" backgroundColor={COLORS.primaryColor} />
       <ScrollView
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
@@ -94,7 +96,7 @@ const AgreementForm = () => {
         </TouchableOpacity>
         {/* Removed back button since back is blocked */}
         <Text style={{ fontSize: 12, fontWeight: '600', color: COLORS.fontWhite, marginTop: 20 }}>
-          Step <Text style={{ color: COLORS.secondaryColor }}>5</Text> to 5
+          Step <Text style={{ color: COLORS.secondaryColor }}>6</Text> to 6
         </Text>
         <Text style={{ fontSize: 20, fontWeight: '600', color: COLORS.fontWhite, marginBottom: 20 }}>
           Tax Residence Details
