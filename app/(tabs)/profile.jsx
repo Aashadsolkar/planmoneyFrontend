@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react"
+import React, { useState, useRef, useEffect, useCallback } from "react"
 import {
   View,
   Text,
@@ -44,6 +44,8 @@ export default function App() {
     captal_amount: String(profileData?.customerfinanceinfo?.capital_amount || "")
   });
 
+  const [updatedCapitalAmount, setUpdatedCapitalAmount] = useState(null);
+
   const mobileNumber = profileData?.phone;
   const emailAddress = profileData?.email;
 
@@ -66,6 +68,8 @@ export default function App() {
           capital_amount: formData?.captal_amount || ""
         }
         const response = await updateCapital(token, payload);
+        setUpdatedCapitalAmount(formData?.captal_amount);
+
         setIsCapitalFormUpdate(false)
         setIsUpdateCapitalLoading(false);
       } catch (error) {
@@ -170,62 +174,57 @@ export default function App() {
     Alert.alert("OTP Sent", `OTP has been resent to your ${verificationType === "mobile" ? "mobile number" : "email address"}`)
   }
 
+  // Format currency
+  const formatCurrency = useCallback((amount) => {
+    return `₹ ${Math.abs(amount).toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
+  }, []);
+
   const renderCapitalSection = () => {
-    if (!isCapitalFormUpdate) {
-      return (
+    return (
+      <>
         <TouchableOpacity onPress={() => setIsCapitalFormUpdate(true)} style={{ marginTop: 20 }}>
           <View style={[styles.verificationCard, { marginBottom: 0 }]}>
             <View style={[styles.cardHeader, { marginBottom: 0 }]}>
               <View style={{ flexDirection: "row", justifyContent: "center" }}>
                 <Text style={styles.cardLabel}>Capital Amount: </Text>
-                <Text style={{ color: COLORS.fontWhite, paddingRight: 10, }}>{formData.captal_amount}</Text>
+                <Text style={{ color: COLORS.fontWhite, paddingRight: 10, }}>{formatCurrency(updatedCapitalAmount || formData.captal_amount)}</Text>
               </View>
               <AntDesign name="edit" size={20} color="#fff" />
             </View>
           </View>
         </TouchableOpacity>
-      )
-    }
-    return (
-      <>
-        <Animatable.View
-          animation="zoomIn"
-          duration={200}
-        >
-          <View style={{ flexDirection: "row", alignItems: "center", marginTop: 15 }}>
-            <View style={{ flex: 1, height: 1, backgroundColor: "#fff" }}></View>
-            <TouchableOpacity onPress={() => setIsCapitalFormUpdate(false)}>
-              <Ionicons style={{ marginHorizontal: 20 }} name="close" size={24} color="#fff" />
-            </TouchableOpacity>
-          </View>
-        </Animatable.View>
-
-        <Animatable.View
-          animation="slideInRight"
-          duration={200}
-          easing="ease-out"
-        >
-          <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
-            <View style={{ flex: 1 }}>
-              <Input
-                label="Capital Amount"
-                value={formData.captal_amount}
-                onChangeText={val => handleChange(val, "captal_amount")}
-                error={!!errors?.captal_amount}
-                errorMessage={errors?.captal_amount}
-                isNumberOnly={true}
-              />
+        <Modal visible={isCapitalFormUpdate} transparent animationType="slide">
+          <View style={styles.modalOverlay_capital_modal}>
+            <View style={styles.modalContent_capital_modal}>
+              <View style={[styles.modalHeader, { justifyContent: "flex-end" }]}>
+                <TouchableOpacity onPress={() => setIsCapitalFormUpdate(false)}>
+                  <Ionicons name="close" size={24} color="#fff" />
+                </TouchableOpacity>
+              </View>
+              <View>
+                <Text style={{ fontSize: 18, color: COLORS.fontWhite, fontWeight: 600, marginBottom: 10 }}>Update your Capital Amount.</Text>
+                <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
+                  <View style={{ flex: 1 }}>
+                    <Input
+                      label="Capital Amount"
+                      value={formData.captal_amount}
+                      onChangeText={val => handleChange(val, "captal_amount")}
+                      error={!!errors?.captal_amount}
+                      errorMessage={errors?.captal_amount}
+                      isNumberOnly={true}
+                    />
+                  </View>
+                  <TouchableOpacity onPress={() => handleSubmit()} style={styles.updateButton}>
+                    {isUpdateCapitalLoading ? <ActivityIndicator style={{ paddingHorizontal: 16 }} color={"#fff"} size="small" /> : <Text style={styles.cardLabel}>UPDATE</Text>}
+                  </TouchableOpacity>
+                </View>
+                <Text style={{ color: COLORS.lossColor }}>{errors?.capital_amount}</Text>
+              </View>
             </View>
-            <TouchableOpacity onPress={() => handleSubmit()} style={styles.updateButton}>
-              {isUpdateCapitalLoading ? <ActivityIndicator style={{ paddingHorizontal: 16 }} color={"#fff"} size="small" /> : <Text style={styles.cardLabel}>UPDATE</Text>}
-            </TouchableOpacity>
           </View>
-          <Text style={{ color: COLORS.lossColor }}>{errors?.capital_amount}</Text>
-        </Animatable.View>
+        </Modal>
       </>
-
     )
-
   }
 
   return (
@@ -428,11 +427,23 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
     alignItems: "center",
   },
+  modalOverlay_capital_modal: {
+    flex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.7)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
   modalContent: {
     backgroundColor: COLORS.cardColor,
     padding: width * 0.06,
     borderTopStartRadius: 20,
     borderTopRightRadius: 20
+  },
+  modalContent_capital_modal: {
+    backgroundColor: COLORS.cardColor,
+    padding: 20,
+    borderRadius: 20,
+    width: "90%"
   },
   modalHeader: {
     flexDirection: "row",
