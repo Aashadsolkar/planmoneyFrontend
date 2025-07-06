@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
@@ -10,27 +9,27 @@ import {
   View
 } from "react-native";
 import { WebView } from "react-native-webview";
-import { useAuth } from "../../context/useAuth"
+import { useAuth } from "../../context/useAuth";
 import { sendRequestApi } from "../../utils/apiCaller";
 import Header from "../../components/Header";
 import { COLORS } from "../../constants";
 import { useNavigation } from "expo-router";
-
+import * as Linking from "expo-linking";
 
 const KycVerifyPage = () => {
   const [loading, setLoading] = useState(false);
   const [sdkUrl, setSdkUrl] = useState(null);
   const [error, setError] = useState(null);
-  const { token, setDigiLockerRequestId, profileData } = useAuth();
+  const { token, setDigiLockerRequestId } = useAuth();
   const navigation = useNavigation();
 
-  // 🚫 Prevent back button and swipe gestures
+  // 🚫 Disable back button and navigation gestures
   useEffect(() => {
-    const unsubscribe = navigation.addListener('beforeRemove', (e) => {
-      e.preventDefault(); // Block back navigation
+    const unsubscribe = navigation.addListener("beforeRemove", (e) => {
+      e.preventDefault(); // Block navigation
     });
 
-    const backHandler = BackHandler.addEventListener('hardwareBackPress', () => true); // Block Android hardware back
+    const backHandler = BackHandler.addEventListener("hardwareBackPress", () => true); // Block Android back
 
     return () => {
       unsubscribe();
@@ -38,6 +37,7 @@ const KycVerifyPage = () => {
     };
   }, [navigation]);
 
+  // 🚀 Get SDK URL
   useEffect(() => {
     sendRequest();
   }, []);
@@ -49,17 +49,25 @@ const KycVerifyPage = () => {
       setDigiLockerRequestId(result?.data?.request_id);
       setSdkUrl(result?.data?.sdk_url);
     } catch (error) {
-      setError(error.message || "Faild to Verify Digi Locker, Please try again");
+      setError(error.message || "Failed to Verify Digi Locker, Please try again");
     } finally {
       setLoading(false);
     }
   };
 
+  // ✅ Handle redirection from WebView
   const handleRedirect = (url) => {
-    console.log("🔁 Full Redirect URL:", url);
-    return true;
+    console.log("🔁 Redirect URL:", url);
+
+    if (url.startsWith("planmoney://")) {
+      Linking.openURL(url); // 🚀 Open deep link in app
+      return false; // ❌ Prevent WebView from handling it
+    }
+
+    return true; // ✅ Allow WebView to load other URLs
   };
 
+  // ⏳ Show loading spinner
   if (loading) {
     return (
       <View style={styles.centered}>
@@ -69,21 +77,23 @@ const KycVerifyPage = () => {
     );
   }
 
+  // ❌ Show error screen
   if (error) {
     return (
       <View style={styles.centered}>
         <Text style={styles.errorText}>{error}</Text>
-        <Button title="Retry" onPress={() => sendRequest()} />
+        <Button title="Retry" onPress={sendRequest} />
       </View>
     );
   }
 
+  // ✅ Show WebView
   if (sdkUrl) {
     return (
       <>
         <Header />
-        <View style={{ marginHorizontal: 20, marginVertical: 20}}>
-          <Text style={{ fontSize: 18, fontWeight: 600 }}>Please complete your KYC</Text>
+        <View style={{ marginHorizontal: 20, marginVertical: 20 }}>
+          <Text style={{ fontSize: 18, fontWeight: "600" }}>Please complete your KYC</Text>
         </View>
         <WebView
           source={{
@@ -106,12 +116,10 @@ const KycVerifyPage = () => {
       </>
     );
   }
-  return (
-    <View>
 
-    </View>
-  );
+  return <View />; // fallback empty screen
 };
+
 const styles = StyleSheet.create({
   centered: {
     flex: 1,
