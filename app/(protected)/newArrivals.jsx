@@ -59,7 +59,7 @@ const HomeScreen = () => {
       setIsLoading(false);
       Alert.alert(
         "Error",
-        error?.message || "Faild to get New Arrivals Data.",
+        error?.message || "Failed to get New Arrivals Data.",
         [
           {
             text: "OK",
