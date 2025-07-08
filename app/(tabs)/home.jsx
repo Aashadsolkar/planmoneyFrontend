@@ -306,6 +306,11 @@ export default function Home() {
 
 
     const renderNews = () => {
+        if (newsData == null || newsData.length == 0) {
+            return (
+                <Text style={{ textAlign: "center", fontSize: 18, color: COLORS.fontWhite }}>No News Available.</Text>
+            )
+        }
         return (
             newsData.slice(0, 4).map((item) => {
                 return (

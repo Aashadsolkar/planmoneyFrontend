@@ -160,12 +160,16 @@ const Login = () => {
         </View>
 
         <View style={styles.bottomContainer}>
-          <Text style={styles.signupText}>
-            Don’t have an account?{" "}
-            <Text onPress={() => router.push("/")} style={styles.signupLink}>
-              Sign up
+          <View style={{ flexDirection: "row", justifyContent: "center" }}>
+            <Text style={styles.signupText}>
+              Don’t have an account?{" "}
             </Text>
-          </Text>
+            <TouchableOpacity onPress={() => router.push("/")} >
+              <Text style={styles.signupLink}>
+                Sign up
+              </Text>
+            </TouchableOpacity>
+          </View>
 
           <Button
             onClick={handleSubmit}

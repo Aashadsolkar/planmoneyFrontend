@@ -18,21 +18,20 @@ export default function News() {
             try {
                 const response = await news(token);
                 setIsLoading(false)
-                setNewsData(response?.data?.latest_news);
+                setNewsData(response?.data?.latest_news || []);
 
             } catch (error) {
                 setIsLoading(false);
                 Alert.alert(
-                        "Error",
-                        error?.message || "Failed to get news",
-                        [
-                          {
+                    "Error",
+                    error?.message || "Failed to get news",
+                    [
+                        {
                             text: "OK",
                             onPress: () => router.push("home"),
-                          },
-                        ]
-                      );
-
+                        },
+                    ]
+                );
             }
         }
         getNew()
@@ -40,21 +39,26 @@ export default function News() {
 
     const NewsCard = ({ title = "", summary = "", id }) => (
         <TouchableOpacity style={styles.card} onPress={() => router.push(`singleNews/${id}`)}>
-            <View style={{width: "90%"}}>
+            <View style={{ width: "90%" }}>
                 <Text style={styles.title} numberOfLines={1}>
-                {title}
-            </Text>
-            <Text style={styles.summary} numberOfLines={2}>
-                {summary}
-            </Text>
+                    {title}
+                </Text>
+                <Text style={styles.summary} numberOfLines={2}>
+                    {summary}
+                </Text>
             </View>
-            <Ionicons name="chevron-forward" size={20} color="#f5a623" style={{width: "10%"}} />
+            <Ionicons name="chevron-forward" size={20} color="#f5a623" style={{ width: "10%" }} />
         </TouchableOpacity>
     );
 
     const renderNews = () => {
         if (isLoading) {
-            return [1,2,3,4].map((item) => <SkeletonList height={60} key={item}/>)
+            return [1, 2, 3, 4].map((item) => <SkeletonList height={60} key={item} />)
+        }
+        if (newsData == null || newsData.length == 0) {
+            return (
+                <Text style={{ textAlign: "center", fontSize: 18, color: COLORS.fontWhite, marginTop: 10 }}>No News Available.</Text>
+            )
         }
         return (
             <FlatList

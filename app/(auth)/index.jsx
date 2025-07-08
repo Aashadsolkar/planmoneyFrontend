@@ -9,6 +9,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   StatusBar,
+  TouchableOpacity,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Button from "../components/Button";
@@ -201,15 +202,18 @@ const Register = () => {
         </ScrollView>
 
         <View style={styles.footer}>
-          <Text style={styles.footerText}>
-            Already have an account?{" "}
-            <Text
-              onPress={() => router.push("/login")}
-              style={styles.footerLink}
-            >
-              Sign in
+          <View style={{ flexDirection: "row", justifyContent: "center" }}>
+            <Text style={styles.footerText}>
+              Already have an account?{' '}
             </Text>
-          </Text>
+            <TouchableOpacity onPress={() => router.push('/login')}>
+              <Text
+                style={styles.footerLink}
+              >
+                Sign in
+              </Text>
+            </TouchableOpacity>
+          </View>
           <Button
             onClick={handleSubmit}
             isLoading={isLoading}
