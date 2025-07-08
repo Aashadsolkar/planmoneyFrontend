@@ -6,7 +6,7 @@ import {
   Button,
   StyleSheet,
   Text,
-  View
+  View,
 } from "react-native";
 import { WebView } from "react-native-webview";
 import { useAuth } from "../../context/useAuth";
@@ -29,7 +29,10 @@ const KycVerifyPage = () => {
       e.preventDefault(); // Block navigation
     });
 
-    const backHandler = BackHandler.addEventListener("hardwareBackPress", () => true); // Block Android back
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      () => true
+    ); // Block Android back
 
     return () => {
       unsubscribe();
@@ -49,22 +52,28 @@ const KycVerifyPage = () => {
       setDigiLockerRequestId(result?.data?.request_id);
       setSdkUrl(result?.data?.sdk_url);
     } catch (error) {
-      setError(error.message || "Failed to Verify Digi Locker, Please try again");
+      setError(
+        error.message || "Failed to Verify Digi Locker, Please try again"
+      );
     } finally {
       setLoading(false);
     }
   };
 
   // ✅ Handle redirection from WebView
-  const handleRedirect = (url) => {
+  const handleRedirect = (event) => {
+    const url = event.url;
     console.log("🔁 Redirect URL:", url);
 
     if (url.startsWith("planmoney://")) {
-      Linking.openURL(url); // 🚀 Open deep link in app
-      return false; // ❌ Prevent WebView from handling it
+      // Try to open deep link safely
+      Linking.openURL(url).catch((err) => {
+        console.warn("❌ Deep link error:", err);
+      });
+      return false; // prevent WebView from loading it
     }
 
-    return true; // ✅ Allow WebView to load other URLs
+    return true; // allow other URLs
   };
 
   // ⏳ Show loading spinner
@@ -93,7 +102,9 @@ const KycVerifyPage = () => {
       <>
         <Header />
         <View style={{ marginHorizontal: 20, marginVertical: 20 }}>
-          <Text style={{ fontSize: 18, fontWeight: "600" }}>Please complete your KYC</Text>
+          <Text style={{ fontSize: 18, fontWeight: "600" }}>
+            Please complete your KYC
+          </Text>
         </View>
         <WebView
           source={{
@@ -103,15 +114,15 @@ const KycVerifyPage = () => {
               "Content-Type": "application/x-www-form-urlencoded",
             },
           }}
-          onShouldStartLoadWithRequest={(event) => handleRedirect(event.url)}
-          onError={(syntheticEvent) => {
-            const { nativeEvent } = syntheticEvent;
-            Alert.alert("WebView error", nativeEvent.description);
+          onShouldStartLoadWithRequest={handleRedirect}
+          onError={({ nativeEvent }) => {
+            Alert.alert("WebView Error", nativeEvent.description);
+            console.error("❌ WebView Error:", nativeEvent);
           }}
           startInLoadingState={true}
           javaScriptEnabled={true}
           domStorageEnabled={true}
-          style={{ paddingTop: 50 }}
+          style={{ flex: 1 }} 
         />
       </>
     );
