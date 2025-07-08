@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   StyleSheet,
   View,
@@ -9,57 +9,58 @@ import {
   KeyboardAvoidingView,
   Platform,
   StatusBar,
-} from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import Button from '../components/Button';
-import { COLORS } from '../constants';
-import { router } from 'expo-router';
-import PassWordInput from '../components/Password';
-import Input from '../components/Input';
-import { validateField, validateForm } from '../utils/validator';
-import { registor } from '../utils/apiCaller';
-import { useAuth } from '../context/useAuth';
-import LogoSVG from '../components/LogoSVG';
-import * as Animatable from 'react-native-animatable';
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import Button from "../components/Button";
+import { COLORS } from "../constants";
+import { router } from "expo-router";
+import PassWordInput from "../components/Password";
+import Input from "../components/Input";
+import { validateField, validateForm } from "../utils/validator";
+import { RegisterPushNotificationToken, registor } from "../utils/apiCaller";
+import { useAuth } from "../context/useAuth";
+import LogoSVG from "../components/LogoSVG";
+import * as Animatable from "react-native-animatable";
+import { getExpoPushToken } from "../../push-notification/notificationService";
 
-
-const { height, width } = Dimensions.get('window');
+const { height, width } = Dimensions.get("window");
 
 const Register = () => {
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    address: '',
-    password: '',
-    confirmPassword: '',
+    name: "",
+    email: "",
+    phone: "",
+    address: "",
+    password: "",
+    confirmPassword: "",
   });
 
   const [errors, setErrors] = useState({});
-  const [apiError, setApiError] = useState('');
+  const [apiError, setApiError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { storeUserData } = useAuth();
 
   const handleChange = (value, name) => {
-    setApiError('');
+    setApiError("");
     const updatedForm = { ...formData, [name]: value };
     setFormData(updatedForm);
 
     const fieldError = validateField(name, value);
 
     let confirmPasswordError = errors.confirmPassword;
-    if (['password', 'confirmPassword'].includes(name)) {
+    if (["password", "confirmPassword"].includes(name)) {
       confirmPasswordError =
-        updatedForm.password && updatedForm.confirmPassword &&
-          updatedForm.password !== updatedForm.confirmPassword
-          ? 'Passwords do not match'
-          : '';
+        updatedForm.password &&
+        updatedForm.confirmPassword &&
+        updatedForm.password !== updatedForm.confirmPassword
+          ? "Passwords do not match"
+          : "";
     }
 
-    setErrors(prev => ({
+    setErrors((prev) => ({
       ...prev,
       [name]: fieldError,
-      ...(name === 'password' || name === 'confirmPassword'
+      ...(name === "password" || name === "confirmPassword"
         ? { confirmPassword: confirmPasswordError }
         : {}),
     }));
@@ -71,7 +72,7 @@ const Register = () => {
       formData.password !== formData.confirmPassword &&
       !newErrors.confirmPassword
     ) {
-      newErrors.confirmPassword = 'Passwords do not match';
+      newErrors.confirmPassword = "Passwords do not match";
     }
 
     setErrors(newErrors);
@@ -88,18 +89,27 @@ const Register = () => {
           terms_and_conditions: true,
         });
         storeUserData(response?.data?.user, response?.data?.token);
+        const deviceToken = await getExpoPushToken();
+        if (deviceToken) {
+          await RegisterPushNotificationToken(deviceToken, response.data.token);
+          console.log("Device token registered successfully");
+        } else {
+          console.warn("Device token is null, not sending to backend.");
+        }
         setIsLoading(false);
       } catch (error) {
         if (error.errors) {
           const serverErrors = {};
-          ['name', 'email', 'phone', 'password'].forEach(field => {
+          ["name", "email", "phone", "password"].forEach((field) => {
             if (error.errors[field]) {
               serverErrors[field] = error.errors[field][0];
             }
           });
-          setErrors(prev => ({ ...prev, ...serverErrors }));
+          setErrors((prev) => ({ ...prev, ...serverErrors }));
         } else {
-          setApiError(error.message || 'Registration failed. Please try again.');
+          setApiError(
+            error.message || "Registration failed. Please try again."
+          );
         }
         setIsLoading(false);
       }
@@ -108,11 +118,14 @@ const Register = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor={COLORS.primaryColor} />
+      <StatusBar
+        barStyle="light-content"
+        backgroundColor={COLORS.primaryColor}
+      />
       <KeyboardAvoidingView
         style={styles.flexContainer}
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        keyboardVerticalOffset={Platform.OS === 'ios' ? 10 : 0}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 10 : 0}
       >
         <ScrollView
           contentContainerStyle={styles.scrollContent}
@@ -121,9 +134,9 @@ const Register = () => {
           style={{ paddingTop: 40 }}
         >
           <Animatable.View animation="fadeIn" delay={200} duration={600}>
-          <View style={styles.logoContainer}>
-            <LogoSVG />
-          </View>
+            <View style={styles.logoContainer}>
+              <LogoSVG />
+            </View>
           </Animatable.View>
 
           <Text style={styles.titleText}>
@@ -134,7 +147,7 @@ const Register = () => {
             <Input
               label="Full Name"
               value={formData.name}
-              onChangeText={val => handleChange(val, 'name')}
+              onChangeText={(val) => handleChange(val, "name")}
               error={!!errors?.name}
               errorMessage={errors?.name}
             />
@@ -144,7 +157,7 @@ const Register = () => {
             <Input
               label="Email Address"
               value={formData.email}
-              onChangeText={val => handleChange(val, 'email')}
+              onChangeText={(val) => handleChange(val, "email")}
               error={!!errors?.email}
               errorMessage={errors?.email}
             />
@@ -154,7 +167,7 @@ const Register = () => {
             <Input
               label="Mobile Number"
               value={formData.phone}
-              onChangeText={val => handleChange(val, 'phone')}
+              onChangeText={(val) => handleChange(val, "phone")}
               error={!!errors?.phone}
               errorMessage={errors?.phone}
             />
@@ -164,7 +177,7 @@ const Register = () => {
             <PassWordInput
               label="Password"
               value={formData.password}
-              onChangeText={val => handleChange(val, 'password')}
+              onChangeText={(val) => handleChange(val, "password")}
               isPassword
               error={!!errors?.password}
               errorMessage={errors?.password}
@@ -175,13 +188,12 @@ const Register = () => {
             <PassWordInput
               label="Confirm Password"
               value={formData.confirmPassword}
-              onChangeText={val => handleChange(val, 'confirmPassword')}
+              onChangeText={(val) => handleChange(val, "confirmPassword")}
               isPassword
               error={!!errors?.confirmPassword}
               errorMessage={errors?.confirmPassword}
             />
           </Animatable.View>
-
 
           {apiError ? (
             <Text style={styles.apiErrorText}>{apiError}</Text>
@@ -190,9 +202,9 @@ const Register = () => {
 
         <View style={styles.footer}>
           <Text style={styles.footerText}>
-            Already have an account?{' '}
+            Already have an account?{" "}
             <Text
-              onPress={() => router.push('/login')}
+              onPress={() => router.push("/login")}
               style={styles.footerLink}
             >
               Sign in
@@ -202,7 +214,7 @@ const Register = () => {
             onClick={handleSubmit}
             isLoading={isLoading}
             label="SIGN UP"
-            gradientColor={['#D36C32', '#F68F00']}
+            gradientColor={["#D36C32", "#F68F00"]}
           />
         </View>
       </KeyboardAvoidingView>
@@ -213,7 +225,7 @@ const Register = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#012744',
+    backgroundColor: "#012744",
   },
   flexContainer: {
     flex: 1,
@@ -223,7 +235,7 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
   logoContainer: {
-    alignItems: 'center',
+    alignItems: "center",
     marginBottom: height * 0.05,
   },
   logo: {
@@ -231,15 +243,15 @@ const styles = StyleSheet.create({
     width: 200,
   },
   titleText: {
-    fontWeight: '500',
-    color: '#FFFFFF',
+    fontWeight: "500",
+    color: "#FFFFFF",
     marginBottom: 20,
     fontSize: 16,
   },
   apiErrorText: {
-    color: 'red',
+    color: "red",
     marginTop: 10,
-    textAlign: 'right',
+    textAlign: "right",
     fontSize: 12,
   },
   footer: {
@@ -249,11 +261,11 @@ const styles = StyleSheet.create({
   },
   footerText: {
     color: COLORS.fontWhite,
-    textAlign: 'center',
+    textAlign: "center",
     marginBottom: 10,
   },
   footerLink: {
-    color: '#D87129',
+    color: "#D87129",
   },
 });
 
