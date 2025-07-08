@@ -9,6 +9,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   StatusBar,
+  TouchableOpacity,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Button from '../components/Button';
@@ -121,9 +122,9 @@ const Register = () => {
           style={{ paddingTop: 40 }}
         >
           <Animatable.View animation="fadeIn" delay={200} duration={600}>
-          <View style={styles.logoContainer}>
-            <LogoSVG />
-          </View>
+            <View style={styles.logoContainer}>
+              <LogoSVG />
+            </View>
           </Animatable.View>
 
           <Text style={styles.titleText}>
@@ -189,15 +190,18 @@ const Register = () => {
         </ScrollView>
 
         <View style={styles.footer}>
-          <Text style={styles.footerText}>
-            Already have an account?{' '}
-            <Text
-              onPress={() => router.push('/login')}
-              style={styles.footerLink}
-            >
-              Sign in
+          <View style={{ flexDirection: "row", justifyContent: "center" }}>
+            <Text style={styles.footerText}>
+              Already have an account?{' '}
             </Text>
-          </Text>
+            <TouchableOpacity onPress={() => router.push('/login')}>
+              <Text
+                style={styles.footerLink}
+              >
+                Sign in
+              </Text>
+            </TouchableOpacity>
+          </View>
           <Button
             onClick={handleSubmit}
             isLoading={isLoading}

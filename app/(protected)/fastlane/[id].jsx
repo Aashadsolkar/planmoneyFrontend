@@ -45,7 +45,7 @@ const FastLane = () => {
                     setIsLoading(false);
                 }
             }
-            if (customerServiceData?.questionnaire_status == 1 && customerServiceData?.verification_status == 1 && is_advisor_assign == "true") {
+            if (customerServiceData?.questionnaire_status == 1) {
                 callFastlaneApi()
             }
         }, [id])
@@ -136,11 +136,11 @@ const FastLane = () => {
                         <View style={{alignItems: "center", justifyContent: "center"}}>
                             <TouchableOpacity style={{ alignSelf: "center", flexDirection: "row", alignItems: "center", gap: 2 }}>
                                 <Text onPress={() => {
-                                setReportData({ "serviceData": data, "serviceID": id });
-                                router.push("fastLaneReport")
+                                    setReportData({ "serviceData": data, "serviceID": id });
+                                    router.push("fastLaneReport")
 
-                            }} style={[styles.lightText, { color: COLORS.secondaryColor }]}>REPORT ANALYSIS</Text>
-                            <MaterialIcons name="chevron-right" size={18} color={COLORS.secondaryColor} />
+                                }} style={[styles.lightText, { color: COLORS.secondaryColor }]}>REPORT ANALYSIS</Text>
+                                <MaterialIcons name="chevron-right" size={18} color={COLORS.secondaryColor} />
                             </TouchableOpacity>
                         </View>
                     </View>
@@ -177,32 +177,7 @@ const FastLane = () => {
             </SafeAreaView>
         )
     }
-    if (customerServiceData?.verification_status == 0 || is_advisor_assign == "false") {
-        return (
-            <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.cardColor }}>
-                <StatusBar barStyle="light-content" backgroundColor={COLORS.cardColor} />
-                <Header
-                    title="Hi Vignesh"
-                    showBackButton={true}
-                />
-                <ScrollView
-                    keyboardShouldPersistTaps="handled"
-                    showsVerticalScrollIndicator={false}
-                    style={{ padding: 20, backgroundColor: COLORS.primaryColor, paddingTop: 100 }}
-                >
-                    <View style={{ alignItems: 'center', width: "100%" }}>
-                        <Image
-                            source={require('../../../assets/images/rightCircle.png')}
-                            style={styles.logo}
-                            resizeMode="contain"
-                        />
-                        <Text style={{ fontSize: 25, fontWeight: 600, color: COLORS.fontWhite, paddingVertical: 20, textAlign: "center", width: 220 }}>Your Profile is Under Verification</Text>
-                        <Text style={{ fontSize: 14, fontWeight: 400, color: COLORS.fontWhite, paddingVertical: 20, textAlign: "center", width: 250 }}>Please wait until our Advisor Approves your Profile</Text>
-                    </View>
-                </ScrollView>
-            </SafeAreaView>
-        )
-    }
+
     if (isLoading) {
         return (
             <FullScreenLoader visible={isLoading} />
