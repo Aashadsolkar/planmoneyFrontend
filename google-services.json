@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "580267731164",
-    "project_id": "nursi-connection-software",
-    "storage_bucket": "nursi-connection-software.firebasestorage.app"
+    "project_number": "820858051948",
+    "project_id": "planmoney-app",
+    "storage_bucket": "planmoney-app.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:580267731164:android:b7bedf1293ea27acb56c19",
+        "mobilesdk_app_id": "1:820858051948:android:c37e329e9564a6561d2749",
         "android_client_info": {
           "package_name": "com.aashadsolkar.PlanMoney"
         }
@@ -15,45 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyDdm8R6eXlIHD8ga0hGHSdI2g90e2aOW7Q"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": []
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:580267731164:android:3616522d0ce8215ab56c19",
-        "android_client_info": {
-          "package_name": "com.nursiPushNotificationTest"
-        }
-      },
-      "oauth_client": [],
-      "api_key": [
-        {
-          "current_key": "AIzaSyDdm8R6eXlIHD8ga0hGHSdI2g90e2aOW7Q"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": []
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:580267731164:android:0839504290e8e38cb56c19",
-        "android_client_info": {
-          "package_name": "com.pallav1503.exponotficationtest"
-        }
-      },
-      "oauth_client": [],
-      "api_key": [
-        {
-          "current_key": "AIzaSyDdm8R6eXlIHD8ga0hGHSdI2g90e2aOW7Q"
+          "current_key": "AIzaSyDB584S5Vcm64xB7WlAVbD89x0xhh4F14k"
         }
       ],
       "services": {
