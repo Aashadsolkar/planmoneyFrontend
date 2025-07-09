@@ -93,7 +93,7 @@ const Register = () => {
         const deviceToken = await getExpoPushToken();
         if (deviceToken) {
           await RegisterPushNotificationToken(deviceToken, response.data.token);
-          console.log("Device token registered successfully");
+          // console.log("Device token registered successfully");
         } else {
           console.warn("Device token is null, not sending to backend.");
         }
