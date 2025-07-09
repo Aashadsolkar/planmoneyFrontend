@@ -20,35 +20,31 @@ const FastLane = () => {
         return (
             <View style={styles.card} key={data?.id}>
                 <View style={styles.cardSections}>
-                    <View>
+                    <View style={{flex:1}}>
                         <Text style={styles.lightText}>Buy Price</Text>
                         <Text style={styles.boldText}>₹{data?.buy_price}</Text>
                     </View>
-                    <View>
-                        <Text style={styles.lightText}>Holding Period</Text>
+                    <View style={{flex:1}}>
+                        <Text style={styles.lightText}>Duration</Text>
                         <Text style={styles.boldText}>{data?.holding_period} days</Text>
                     </View>
-                    <View>
-                        <Text style={styles.lightText}>Valid till</Text>
-                        <Text style={styles.boldText}>{data?.valid_till}</Text>
-                    </View>
-                    <View>
+                    <View style={{flex:1}}>
                         <Text style={styles.lightText}>Upside</Text>
                         <Text style={[styles.boldText, styles.greenText]}>{data?.upside}%</Text>
                     </View>
                 </View>
                 <View style={[styles.cardSections, { borderBottomColor: COLORS.cardColor }]}>
-                    <View>
+                    <View style={{flex:1}}>
                         <Text style={styles.lightText}>Stop Loss</Text>
                         <Text style={[styles.boldText, styles.redText, styles.font12]}>₹{data?.stop_loss_price}</Text>
                     </View>
-                    <View>
-                        <Text style={styles.lightText}>Target 1</Text>
-                        <Text style={[styles.boldText, styles.greenText, styles.font12]}>₹{data?.target_1}</Text>
+                    <View style={{flex:1}}>
+                        <Text style={styles.lightText}>Target</Text>
+                        <Text style={[styles.boldText, styles.greenText, styles.font12]}>₹{data?.target_price}</Text>
                     </View>
-                    <View>
-                        <Text style={styles.lightText}>Target 2</Text>
-                        <Text style={[styles.boldText, styles.greenText, styles.font12]}>₹{data?.target_2}</Text>
+                    <View style={{flex:1}}>
+                        {/* <Text style={styles.lightText}>Target 2</Text>
+                        <Text style={[styles.boldText, styles.greenText, styles.font12]}>₹{data?.target_2}</Text> */}
                     </View>
 
                 </View>
@@ -85,7 +81,7 @@ const FastLane = () => {
         return (
             <>
                 <Text style={{ color: COLORS.fontWhite, fontSize: 18, fontWeight: 600 }}>{getServiceName(serviceID)}</Text>
-                <Text style={{ color: COLORS.fontWhite, fontSize: 12, fontWeight: 400 }}>CMP ₹{serviceData?.cmp}</Text>
+                {serviceData?.cmp && <Text style={{ color: COLORS.fontWhite, fontSize: 12, fontWeight: 400 }}>CMP ₹{serviceData?.cmp}</Text>}
             </>
         )
     }
@@ -135,14 +131,14 @@ const styles = StyleSheet.create({
         justifyContent: "space-between"
     },
     lightText: {
-        fontSize: 10,
+        fontSize: 16,
         fontWeight: 400,
         color: COLORS.lightGray
     },
     boldText: {
         color: COLORS.fontWhite,
         fontWeight: 700,
-        fontSize: 10
+        fontSize: 16
     },
     greenText: {
         color: "#4BDE9F"
@@ -150,9 +146,6 @@ const styles = StyleSheet.create({
     redText: {
         color: "#F85255"
     },
-    font12: {
-        fontSize: 12
-    }
 })
 
 export default FastLane;

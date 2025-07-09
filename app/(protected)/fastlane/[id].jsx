@@ -10,6 +10,8 @@ import Button from '../../components/Button';
 import { useLocalSearchParams } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
 import FullScreenLoader from '../../components/FullScreenLoader';
+import * as Animatable from "react-native-animatable";
+import Entypo from '@expo/vector-icons/Entypo';
 
 const FastLane = () => {
     const { token, customerServiceData, setReportData } = useAuth();
@@ -53,9 +55,9 @@ const FastLane = () => {
 
     const getRiskLevelColor = (riskLevel) => {
         const colors = {
-            low: COLORS.profitColor,    // green
-            medium: COLORS.secondaryColor,// yellow
-            high: COLORS.lossColor   // red
+            buy: COLORS.secondaryColor,    // green
+            sell: COLORS.profitColor,// yellow
+            hold: COLORS.lossColor   // red
         };
 
         return colors[riskLevel.toLowerCase()] || '#6c757d'; // fallback: gray
@@ -63,9 +65,9 @@ const FastLane = () => {
 
     const getRiskLevellabel = (riskLevel) => {
         const label = {
-            low: "LOW",
-            medium: "MED",
-            high: "HIGH"
+            buy: "BUY",
+            hold: "HOLD",
+            sell: "SELL"
         };
 
         return label[riskLevel.toLowerCase()]; // fallback: gray
@@ -73,6 +75,34 @@ const FastLane = () => {
 
 
     const renderCardList = (data) => {
+        if (fastlaneData.length == 0) {
+            return (
+                <View style={styles.content}>
+                    <Animatable.View
+                        animation="bounceInDown"
+                        delay={300}
+                        duration={1000}
+                        useNativeDriver
+                    >
+                        <Entypo
+                            name="new"
+                            size={100}
+                            color={COLORS.secondaryColor}
+                            style={{ marginBottom: 20 }}
+                        />
+                    </Animatable.View>
+
+                    <Animatable.Text
+                        animation="pulse"
+                        iterationCount="infinite"
+                        duration={2000}
+                        style={styles.text}
+                    >
+                        No Recommendations available.
+                    </Animatable.Text>
+                </View>
+            )
+        }
         return fastlaneData?.map((data) => {
             const dateStr = data?.created_at;
             const date = new Date(dateStr);
@@ -90,50 +120,45 @@ const FastLane = () => {
                                 />
                             </View>
                             <View>
-                                <Text style={[styles.boldText, { fontSize: 18, width: 200 }]}>{data?.stock?.name}</Text>
-                                <Text style={styles.boldText}><Text style={styles.lightText}>CMP</Text> ₹{data?.cmp} </Text>
+                                <Text style={[styles.boldText, { fontSize: 18, width: 200 }]}>{data?.stock?.name || "NA"}</Text>
                             </View>
                         </View>
                         <View style={{ gap: 5, }}>
-                            <Text style={[styles.lightText, {fontSize: 12}]}>{formattedDate}</Text>
-                            <Text style={[styles.boldText, { paddingHorizontal: 4, paddingVertical: 2, backgroundColor: getRiskLevelColor(data?.risk_level), borderRadius: 5, color: COLORS.fontWhite, textAlign: "center" }]} >{getRiskLevellabel(data?.risk_level)}</Text>
+                            <Text style={[styles.boldText, { paddingHorizontal: 4, paddingVertical: 2, backgroundColor: getRiskLevelColor(data?.recommendation_type), borderRadius: 5, color: COLORS.fontWhite, textAlign: "center" }]} >{getRiskLevellabel(data?.recommendation_type)}</Text>
+                            <Text style={[styles.lightText, { fontSize: 12 }]}>{formattedDate}</Text>
                         </View>
                     </View>
                     <View style={styles.cardSections}>
-                        <View style={{flex: 1}}>
+                        <View style={{ flex: 1 }}>
                             <Text style={styles.lightText}>Buy Price</Text>
-                            <Text style={styles.boldText}>₹{data?.buy_price}</Text>
+                            <Text style={styles.boldText}>₹{data?.buy_price || "NA"}</Text>
                         </View>
-                        <View style={{flex: 1}}>
-                            <Text style={styles.lightText}>Valid till</Text>
-                            <Text style={styles.boldText}>{data?.valid_till}</Text>
+                        <View style={{ flex: 1 }}>
+                            <Text style={styles.lightText}>Target</Text>
+                            <Text style={[styles.boldText, styles.greenText]}>₹{data?.target_price || ""}</Text>
                         </View>
-                        <View style={{flex: 1}}>
-                            <Text style={styles.lightText}>Holding Period</Text>
-                            <Text style={styles.boldText}>{data?.holding_period} days</Text>
+                        <View style={{ flex: 1 }}>
+                            <Text style={styles.lightText}>Upside</Text>
+                            <Text style={[styles.boldText, styles.greenText]}>{data?.upside || ""}%</Text>
                         </View>
-
                     </View>
                     <View style={[styles.cardSections]}>
-                        <View style={{flex: 1}}>
+                        <View style={{ flex: 1 }}>
                             <Text style={styles.lightText}>Stop Loss</Text>
-                            <Text style={[styles.boldText, styles.redText]}>₹{data?.stop_loss_price}</Text>
+                            <Text style={[styles.boldText, styles.redText]}>₹{data?.stop_loss_price || "NA"}</Text>
                         </View>
-                        <View style={{flex: 1}}>
-                            <Text style={styles.lightText}>Target 1</Text>
-                            <Text style={[styles.boldText, styles.greenText]}>₹{data?.target_1}</Text>
+                        <View style={{ flex: 1 }}>
+                            <Text style={styles.lightText}>Duration</Text>
+                            <Text style={styles.boldText}>{data?.holding_period || "NA"} days</Text>
                         </View>
-                        <View style={{flex: 1}}>
-                            <Text style={styles.lightText}>Target 2</Text>
-                            <Text style={[styles.boldText, styles.greenText]}>₹{data?.target_2}</Text>
+                        <View style={{ flex: 1 }}>
+                            {/* <Text style={styles.lightText}>Date of Recommendations</Text>
+                            <Text style={styles.boldText}>{data?.holding_period || "NA"} days</Text> */}
                         </View>
                     </View>
                     <View style={[styles.cardSections, { borderBottomColor: COLORS.cardColor }]}>
-                        <View>
-                            <Text style={styles.lightText}>Upside</Text>
-                            <Text style={[styles.boldText, styles.greenText]}>{data?.upside}%</Text>
-                        </View>
-                        <View style={{alignItems: "center", justifyContent: "center"}}>
+
+                        <View style={{ alignItems: "center", justifyContent: "center" }}>
                             <TouchableOpacity style={{ alignSelf: "center", flexDirection: "row", alignItems: "center", gap: 2 }}>
                                 <Text onPress={() => {
                                     setReportData({ "serviceData": data, "serviceID": id });
@@ -201,7 +226,7 @@ const FastLane = () => {
                 showsVerticalScrollIndicator={false}
                 style={{ paddingHorizontal: 20, backgroundColor: COLORS.primaryColor, paddingTop: 15 }}
             >
-                <Text style={styles.heading}>Stock Recommendations</Text>
+                {fastlaneData.length  > 0  && <Text style={styles.heading}>Stock Recommendations</Text>}
                 <View style={{ marginBottom: 50 }}>
 
                     {renderCardList()}
@@ -252,7 +277,21 @@ const styles = StyleSheet.create({
     },
     font12: {
         fontSize: 12
-    }
+    },
+
+    content: {
+        flex: 1,
+        marginTop: 100,
+        backgroundColor: COLORS.primaryColor,
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    text: {
+        color: COLORS.fontWhite,
+        fontWeight: "600",
+        fontSize: 20,
+        textAlign: "center"
+    },
 })
 
 export default FastLane;

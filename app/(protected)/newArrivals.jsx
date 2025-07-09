@@ -163,7 +163,7 @@ const HomeScreen = () => {
             duration={2000}
             style={styles.text}
           >
-            New services are currently unavailable.
+            No Recommendations available.
           </Animatable.Text>
         </View>
       )

@@ -35,21 +35,23 @@ const { width, height } = Dimensions.get("window");
 
 export default function App() {
   const { profileData, token, setGetCustomerDataAgain } = useAuth();
-  const [mobileVerified, setMobileVerified] = useState(false);
-  const [emailVerified, setEmailVerified] = useState(
-    profileData?.email_verified_at == null ? false : true
-  );
+  const [mobileVerified, setMobileVerified] = useState(() =>
+    profileData?.phone_verified_at == null ? false : true);
+  const [emailVerified, setEmailVerified] = useState(() =>
+    profileData?.email_verified_at == null ? false : true);
   const [showOTPModal, setShowOTPModal] = useState(false);
   const [verificationType, setVerificationType] = useState("");
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const otpInputs = useRef([]);
+  const [isSMSApiLoading, setIsSMSApiLoading] = useState(false);
+  const [isEMailApiLoading, setIsEMailApiLoading] = useState(false);
   const [isOtpLoading, setOtpLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const [isCapitalFormUpdate, setIsCapitalFormUpdate] = useState(false);
   const [isUpdateCapitalLoading, setIsUpdateCapitalLoading] = useState(false);
   const [formData, setFormData] = useState({
     captal_amount: String(
-      profileData?.customerfinanceinfo?.capital_amount || ""
+      profileData?.customerfinanceinfo?.capital_amount ?? ""
     ),
   });
 
@@ -128,6 +130,7 @@ export default function App() {
   const handleVerifyPress = async (type) => {
     try {
       if (type === "email") {
+        setIsEMailApiLoading(true)
         setOtpLoading(true);
         const payload = {
           email: profileData?.email,
@@ -138,17 +141,16 @@ export default function App() {
         setShowOTPModal(true);
         setOtp(["", "", "", "", "", ""]);
         setTimeout(() => otpInputs.current[0]?.focus(), 100);
-        setIsEmailOtpLoading(false);
+        setIsEMailApiLoading(false);
         setGetCustomerDataAgain(true);
       } else if (type === "mobile") {
-        setOtpLoading(true);
+        setIsSMSApiLoading(true);
         const response = await createMobileOTP(token);
-        console.log(response);
         setVerificationType(type);
         setShowOTPModal(true);
         setOtp(["", "", "", "", "", ""]);
         setTimeout(() => otpInputs.current[0]?.focus(), 100);
-        setIsMobileOtpLoading(false);
+        setIsSMSApiLoading(false);
         setGetCustomerDataAgain(true);
       }
     } catch (error) {
@@ -384,7 +386,8 @@ export default function App() {
                     style={styles.verifyButton}
                     onPress={() => handleVerifyPress("mobile")}
                   >
-                    <Text style={styles.verifyButtonText}>Verify Now</Text>
+                    {isSMSApiLoading ? <ActivityIndicator color={"#fff"} size="small" /> : <Text style={styles.verifyButtonText}>Verify Now</Text>}
+
                   </TouchableOpacity>
                 )}
               </View>
@@ -413,7 +416,7 @@ export default function App() {
                     style={styles.verifyButton}
                     onPress={() => handleVerifyPress("email")}
                   >
-                    {isEmailOtpLoading ? (
+                    {isEMailApiLoading ? (
                       <ActivityIndicator color={"#fff"} size="small" />
                     ) : (
                       <Text style={styles.verifyButtonText}>Verify Now</Text>

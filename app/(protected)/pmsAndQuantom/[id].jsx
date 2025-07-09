@@ -77,9 +77,9 @@ const PmsAndQuantom = () => {
 
     const getRiskLevelColor = (riskLevel) => {
         const colors = {
-            low: COLORS.profitColor,    // green
-            medium: COLORS.secondaryColor,// yellow
-            high: COLORS.lossColor   // red
+            buy: COLORS.secondaryColor,    // green
+            sell: COLORS.profitColor,// yellow
+            hold: COLORS.lossColor   // red
         };
 
         return colors[riskLevel.toLowerCase()] || '#6c757d'; // fallback: gray
@@ -87,15 +87,43 @@ const PmsAndQuantom = () => {
 
     const getRiskLevellabel = (riskLevel) => {
         const label = {
-            low: "LOW",
-            medium: "MED",
-            high: "HIGH"
+            buy: "BUY",
+            hold: "HOLD",
+            sell: "SELL"
         };
 
         return label[riskLevel.toLowerCase()]; // fallback: gray
     }
 
     const renderCardList = (data) => {
+        if (fastlaneData.length == 0) {
+            return (
+                <View style={styles.content}>
+                    <Animatable.View
+                        animation="bounceInDown"
+                        delay={300}
+                        duration={1000}
+                        useNativeDriver
+                    >
+                        <Entypo
+                            name="new"
+                            size={100}
+                            color={COLORS.secondaryColor}
+                            style={{ marginBottom: 20 }}
+                        />
+                    </Animatable.View>
+
+                    <Animatable.Text
+                        animation="pulse"
+                        iterationCount="infinite"
+                        duration={2000}
+                        style={styles.text}
+                    >
+                        No Recommendations available.
+                    </Animatable.Text>
+                </View>
+            )
+        }
         return fastlaneData?.map((data) => {
 
             const dateStr = data?.created_at;
@@ -113,65 +141,58 @@ const PmsAndQuantom = () => {
                                 />}
                             </View>
                             <View>
-                                <Text style={[styles.boldText, { fontSize: 18 }]}>{data?.stock?.name}</Text>
-                                <Text style={styles.boldText}><Text style={styles.lightText}>CMP</Text> ₹{data?.cmp} </Text>
+                                <Text style={[styles.boldText, { fontSize: 18 }]}>{data?.stock?.name || ""}</Text>
+                                {/* <Text style={styles.boldText}><Text style={styles.lightText}>CMP</Text> ₹{data?.cmp || ""} </Text> */}
                             </View>
                         </View>
                         <View style={{ gap: 5 }}>
+                            <Text style={[styles.boldText, { paddingHorizontal: 4, paddingVertical: 2, backgroundColor: getRiskLevelColor(data?.recommendation_type || ""), borderRadius: 5, color: COLORS.fontWhite, textAlign: "center" }]} >{getRiskLevellabel(data?.recommendation_type || "")}</Text>
                             <Text style={[styles.lightText, { fontSize: 12 }]}>{formattedDate}</Text>
-                            <Text style={[styles.boldText, { paddingHorizontal: 4, paddingVertical: 2, backgroundColor: getRiskLevelColor(data?.risk_level), borderRadius: 5, color: COLORS.fontWhite, textAlign: "center" }]} >{getRiskLevellabel(data?.risk_level)}</Text>
                         </View>
                     </View>
                     <View style={styles.cardSections}>
                         <View style={{ flex: 1 }}>
                             <Text style={styles.lightText}>Buy Price</Text>
-                            <Text style={styles.boldText}>₹{data?.buy_price}</Text>
+                            <Text style={styles.boldText}>₹{data?.buy_price || ""}</Text>
                         </View>
                         <View style={{ flex: 1 }}>
-                            <Text style={styles.lightText}>Valid till</Text>
-                            <Text style={styles.boldText}>{data?.valid_till}</Text>
+                            <Text style={styles.lightText}>Target</Text>
+                            <Text style={[styles.boldText, styles.greenText]}>₹{data?.target_price || ""}</Text>
                         </View>
                         <View style={{ flex: 1 }}>
-                            <Text style={styles.lightText}>Holding Period</Text>
-                            <Text style={styles.boldText}>{data?.holding_period} days</Text>
+                            <Text style={styles.lightText}>Upside</Text>
+                            <Text style={[styles.boldText, styles.greenText]}>{data?.upside || ""}%</Text>
                         </View>
                     </View>
                     <View style={[styles.cardSections]}>
                         <View style={{ flex: 1 }}>
                             <Text style={styles.lightText}>Stop Loss</Text>
-                            <Text style={[styles.boldText, styles.redText]}>₹{data?.stop_loss_price}</Text>
+                            <Text style={[styles.boldText, styles.redText]}>₹{data?.stop_loss_price || ""}</Text>
                         </View>
                         <View style={{ flex: 1 }}>
-                            <Text style={styles.lightText}>Target 1</Text>
-                            <Text style={[styles.boldText, styles.greenText]}>₹{data?.target_1}</Text>
+                            <Text style={styles.lightText}>Duration</Text>
+                            <Text style={styles.boldText}>{data?.holding_period || ""} days</Text>
                         </View>
                         <View style={{ flex: 1 }}>
-                            <Text style={styles.lightText}>Target 2</Text>
-                            <Text style={[styles.boldText, styles.greenText]}>₹{data?.target_2}</Text>
+                            {/* <Text style={styles.lightText}>Duration</Text>
+                            <Text style={styles.boldText}>{data?.holding_period || ""} days</Text> */}
                         </View>
 
                     </View>
 
                     <View style={[styles.cardSections]}>
-                        <View style={{ flex: 1 }}>
-                            <Text style={styles.lightText}>Upside</Text>
-                            <Text style={[styles.boldText, styles.greenText]}>{data?.upside}%</Text>
-                        </View>
                         <View style={{ alignSelf: "center", flexDirection: "row", alignItems: "center", gap: 2 }}>
-                            <TouchableOpacity  onPress={() => {
-                                    setReportData({ "serviceData": data, "serviceID": id });
-                                    router.push("fastLaneReport")
+                            <TouchableOpacity onPress={() => {
+                                setReportData({ "serviceData": data, "serviceID": id });
+                                router.push("fastLaneReport")
 
-                                }}
-                                style={{alignSelf: "center", flexDirection: "row", alignItems: "center"}}
-                                >
+                            }}
+                                style={{ alignSelf: "center", flexDirection: "row", alignItems: "center" }}
+                            >
                                 <Text style={[styles.lightText, { color: COLORS.secondaryColor }]}>REPORT ANALYSIS</Text>
                                 <MaterialIcons name="chevron-right" size={18} color={COLORS.secondaryColor} />
                             </TouchableOpacity>
                         </View>
-                    </View>
-
-                    <View style={[styles.cardSections, { borderBottomColor: COLORS.cardColor }]}>
                         <View style={{ flex: 1 }}>
                             <TouchableOpacity style={[styles.buttonWrapper, { alignSelf: "flex-end" }]} onPress={() => handleBuyButtonClick(data)}>
                                 <Text style={styles.buttonText}>Buy</Text>
@@ -206,7 +227,7 @@ const PmsAndQuantom = () => {
                         <Text style={{ fontSize: 25, fontWeight: 600, color: COLORS.fontWhite, paddingVertical: 20 }}>Oops..!</Text>
                         <Text style={{ fontSize: 14, fontWeight: 400, color: COLORS.fontWhite, paddingVertical: 20, textAlign: "center", width: 250 }}>Its look like you have not filled your Details after Subscription</Text>
                     </View>
-                    <Button onClick={() => router.push("forms/personalDetails")} label={"PROCEED"} gradientColor={['#D36C32', '#F68F00']} buttonStye={{ marginHorizontal: 20, }} />
+                    <Button onClick={() => router.push("forms/totalInvestmentForm")} label={"PROCEED"} gradientColor={['#D36C32', '#F68F00']} buttonStye={{ marginHorizontal: 20, }} />
                 </ScrollView>
             </SafeAreaView>
         )
@@ -302,7 +323,7 @@ const PmsAndQuantom = () => {
                         </View>
                     </LinearGradient>
                 </TouchableOpacity>
-                <Text style={styles.heading}>Stock Recommendations</Text>
+                {fastlaneData.length  > 0  && <Text style={styles.heading}>Stock Recommendations</Text>}
                 <View style={{ marginBottom: 50 }}>
                     {renderCardList()}
                 </View>
@@ -361,7 +382,21 @@ const styles = StyleSheet.create({
     buttonText: {
         color: COLORS.fontWhite,
         fontWeight: 600
-    }
+    },
+
+    content: {
+        flex: 1,
+        marginTop: 100,
+        backgroundColor: COLORS.primaryColor,
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    text: {
+        color: COLORS.fontWhite,
+        fontWeight: "600",
+        fontSize: 20,
+        textAlign: "center"
+    },
 })
 
 export default PmsAndQuantom;
