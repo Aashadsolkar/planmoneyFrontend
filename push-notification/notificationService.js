@@ -20,7 +20,6 @@ export async function getExpoPushToken() {
   try {
     const storedToken = await AsyncStorage.getItem(PUSH_TOKEN_KEY);
     if (storedToken) {
-      console.log("Using stored token:", storedToken);
       return storedToken;
     }
 
@@ -45,10 +44,8 @@ export async function getExpoPushToken() {
     const tokenData = await Notifications.getExpoPushTokenAsync();
     const token = tokenData.data;
     await AsyncStorage.setItem(PUSH_TOKEN_KEY, token);
-    console.log("New token saved:", token);
     return token;
   } catch (error) {
-    console.error("Error getting push token:", error);
     return null;
   }
 }

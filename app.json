@@ -6,7 +6,7 @@
     "orientation": "portrait",
     "scheme": "planmoney",
     "userInterfaceStyle": "automatic",
-    "deepLinking": true,
+   
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true
@@ -33,7 +33,7 @@
       ],
       "googleServicesFile": "./google-services.json",
       "package": "com.aashadsolkar.PlanMoney",
-      "usesCleartextTraffic": true
+     
     },
     "web": {
       "bundler": "metro",
@@ -61,8 +61,7 @@
           "enableBackgroundRemoteNotifications": true
         }
       ],
-      "expo-font",
-      "expo-web-browser"
+      "expo-font"
     ],
     "experiments": {
       "typedRoutes": true

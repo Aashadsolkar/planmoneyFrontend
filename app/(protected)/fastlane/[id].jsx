@@ -1,27 +1,27 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from "react";
 import {
-    Alert,
-    Image,
-    SafeAreaView,
-    ScrollView,
-    StatusBar,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
-} from 'react-native';
-import { COLORS } from '../../constants';
-import { getFastlaneData, getFastlaneHistoryData } from '../../utils/apiCaller';
-import { useAuth } from '../../context/useAuth';
-import { MaterialIcons } from '@expo/vector-icons';
-import { router } from 'expo-router';
-import Header from '../../components/Header';
-import Button from '../../components/Button';
-import { useLocalSearchParams } from 'expo-router';
-import { useFocusEffect } from '@react-navigation/native';
-import FullScreenLoader from '../../components/FullScreenLoader';
+  Alert,
+  SafeAreaView,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { COLORS } from "../../constants";
+import { getFastlaneData, getFastlaneHistoryData } from "../../utils/apiCaller";
+import { useAuth } from "../../context/useAuth";
+import { MaterialIcons } from "@expo/vector-icons";
+import { router, useNavigation } from "expo-router";
+import Header from "../../components/Header";
+import Button from "../../components/Button";
+import { useLocalSearchParams } from "expo-router";
+import { useFocusEffect } from "@react-navigation/native";
+import FullScreenLoader from "../../components/FullScreenLoader";
 import * as Animatable from "react-native-animatable";
-import Entypo from '@expo/vector-icons/Entypo';
+import Entypo from "@expo/vector-icons/Entypo";
+import { Image } from "expo-image";
 
 const FastLane = () => {
     const { token, customerServiceData, setReportData } = useAuth();
