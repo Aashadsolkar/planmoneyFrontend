@@ -1,5 +1,4 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { BaseToast, ErrorToast } from 'react-native-toast-message';
 
 export const toastConfig = {
@@ -39,15 +38,15 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffe6e6',
   },
   info: {
-    borderLeftColor: '#1e90ff',
-    backgroundColor: '#e6f0ff',
+    borderLeftColor: '#0262abff',
+    backgroundColor: '#c8e6fdff',
   },
   text: {
     fontWeight: 'bold',
-    fontSize: 16,
+    fontSize: 18,
   },
   subtext: {
-    fontSize: 14,
+    fontSize: 16,
     color: '#333',
   },
 });
