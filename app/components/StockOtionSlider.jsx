@@ -33,14 +33,16 @@ export default StockOptionSlider;
 
 const styles = StyleSheet.create({
     listContainer: {
-        paddingHorizontal: 20,
+        paddingHorizontal: 18,
     },
     card: {
         width: CARD_WIDTH,
         padding: 16,
         backgroundColor: COLORS.cardColor,
         borderRadius: 12,
-        borderLeftWidth: 2,
+        borderLeftWidth: 0.7,
+        borderBottomWidth:0.4,
+        borderBottomColor:COLORS.secondaryColor,
         borderLeftColor: COLORS.secondaryColor,
     },
     title: {

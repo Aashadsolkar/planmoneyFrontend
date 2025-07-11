@@ -95,37 +95,6 @@ export default function App() {
     }
   };
 
-  // const handleVerifyPress = async (type) => {
-  //   if (type == "email") {
-  //     try {
-  //       setIsEmailOtpLoading(true)
-  //       const payload = {
-  //         email: profileData?.email
-  //       }
-  //       const response = await generateVerifyEmailOpt(token, payload);
-  //       setVerificationType(type)
-  //       setShowOTPModal(true)
-  //       setOtp(["", "", "", "", "", ""])
-  //       setTimeout(() => otpInputs.current[0]?.focus(), 100)
-  //       setIsEmailOtpLoading(false)
-  //       setGetCustomerDataAgain(true);
-  //     } catch (error) {
-  //       setIsEmailOtpLoading(false);
-  //       Alert.alert(
-  //         "Error",
-  //         error?.message || "Failed to generate email otp",
-  //         [
-  //           {
-  //             text: "OK",
-  //             onPress: () => router.push("home"),
-  //           },
-  //         ]
-  //       );
-  //     }
-  //   } else {
-  //     router.push("upcoming");
-  //   }
-  // }
 
   const handleVerifyPress = async (type) => {
     try {
@@ -185,6 +154,7 @@ export default function App() {
       const response = await verifyEmailOpt(token, payload);
       setEmailVerified(true);
       setShowOTPModal(false);
+      setOtp(["", "", "", "", "", ""]);
       Alert.alert(
         "Success",
         `${
@@ -210,7 +180,7 @@ export default function App() {
 
       setMobileVerified(true);
       setShowOTPModal(false);
-
+      setOtp(["", "", "", "", "", ""]);
       Alert.alert("Success", "Mobile number verified successfully!");
     } catch (error) {
       Alert.alert("Error", error?.message || "Failed to verify OTP", [

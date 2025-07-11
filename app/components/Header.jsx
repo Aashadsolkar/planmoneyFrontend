@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -11,41 +11,49 @@ import {
   Dimensions,
   Pressable,
   Modal,
-  Image,
-} from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { COLORS } from '../constants';
-import { router, useNavigation } from 'expo-router';
-import { useAuth } from '../context/useAuth';
-import { Ionicons } from '@expo/vector-icons';
-import Button from './Button';
-import IconSVG from './IconSVG';
-import ShimmerSkeleton from './ListSkeleton';
-const { height } = Dimensions.get("window")
-// Icons - you'll need to install a library like react-native-vector-icons
-// or use your own image assets
-const BellIcon = () => (
-  <View style={styles.iconContainer}>
-    <Text style={styles.icon}>🔔</Text>
-  </View>
-);
+  StatusBar,
+} from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { COLORS } from "../constants";
+import { router, useNavigation } from "expo-router";
+import { useAuth } from "../context/useAuth";
+import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+import Button from "./Button";
+import IconSVG from "./IconSVG";
+import ShimmerSkeleton from "./ListSkeleton";
+import { LinearGradient } from "expo-linear-gradient";
+import { BlurView } from "expo-blur";
+const { height } = Dimensions.get("window");
+
+const menuItems = [
+  { icon: "home", label: "Home", route: "home" },
+  { icon: "briefcase", label: "Portfolio", route: "portfolio" },
+  { icon: "add-circle", label: "Buy New Service", route: "service" },
+  { icon: "calculator", label: "SIP Calculator", route: "sip" },
+  { icon: "person", label: "Account", route: "profile" },
+  { icon: "help-circle", label: "Contact us", route: "support" },
+];
 
 const getInitials = (fullName) => {
   if (!fullName?.trim()) return "";
   const names = fullName.trim().split(/\s+/);
-  return names[0][0].toUpperCase() + (names[names.length - 1][0]?.toUpperCase() || "");
+  return (
+    names[0][0].toUpperCase() +
+    (names[names.length - 1][0]?.toUpperCase() || "")
+  );
 };
-
 
 const ProfileIcon = ({ onPress, name, isProfileLoading }) => (
   <TouchableOpacity onPress={onPress} style={styles.profileContainer}>
     <View style={styles.profileCircle}>
-      {isProfileLoading ? <ShimmerSkeleton height={40} width={40} radius={"50%"} /> : <Text style={styles.profileInitial}>{name && getInitials(name)}</Text>}
+      {isProfileLoading ? (
+        <ShimmerSkeleton height={40} width={40} radius={"50%"} />
+      ) : (
+        <Text style={styles.profileInitial}>{name && getInitials(name)}</Text>
+      )}
     </View>
   </TouchableOpacity>
 );
-
-
 
 const NotificationItem = ({ item }) => (
   <View style={styles.notificationItem}>
@@ -57,23 +65,21 @@ const NotificationItem = ({ item }) => (
   </View>
 );
 
-const Header = ({
-  showBackButton = false,
-  backButtonText = () => { }
-}) => {
-
+const Header = ({ showBackButton = false, backButtonText = () => {} }) => {
   const insets = useSafeAreaInsets();
   const [showNotifications, setShowNotifications] = useState(false);
   const [showProfileDrawer, setShowProfileDrawer] = useState(false);
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
-  const drawerAnimation = useState(new Animated.Value(Dimensions.get('window').width))[0];
+  const drawerAnimation = useState(
+    new Animated.Value(Dimensions.get("window").width)
+  )[0];
   const navigation = useNavigation();
   const { logout, profileData, isProfileLoading } = useAuth();
   // Sample notifications data
   const notifications = [
-    { id: '1', title: 'Your order has been shipped', time: '5 min ago' },
-    { id: '2', title: 'Payment successful', time: '1 hour ago' },
-    { id: '3', title: 'New feature available', time: '2 hours ago' },
+    { id: "1", title: "Your order has been shipped", time: "5 min ago" },
+    { id: "2", title: "Payment successful", time: "1 hour ago" },
+    { id: "3", title: "New feature available", time: "2 hours ago" },
   ];
 
   const toggleNotifications = () => {
@@ -105,7 +111,7 @@ const Header = ({
 
   const closeProfileDrawer = () => {
     Animated.timing(drawerAnimation, {
-      toValue: Dimensions.get('window').width,
+      toValue: Dimensions.get("window").width,
       duration: 300,
       useNativeDriver: true,
     }).start(() => {
@@ -119,7 +125,9 @@ const Header = ({
         <View style={styles.header}>
           <View style={styles.leftSection}>
             {showBackButton ? (
-              <View style={{ flexDirection: "row", alignItems: "center", gap: 20 }}>
+              <View
+                style={{ flexDirection: "row", alignItems: "center", gap: 20 }}
+              >
                 <TouchableOpacity
                   style={styles.backButton}
                   onPress={() => router.back()}
@@ -130,33 +138,58 @@ const Header = ({
                 <View>{backButtonText()}</View>
               </View>
             ) : (
-              <View style={{ flexDirection: "row", alignItems: "center", gap: 15 }}>
-                <View style={{ backgroundColor: "#004B8869", borderRadius: "50%", height: 45, width: 45, justifyContent: "center", alignItems: "center" }}>
+              <View
+                style={{ flexDirection: "row", alignItems: "center", gap: 15 }}
+              >
+                <View
+                  style={{
+                    backgroundColor: "#004B8869",
+                    borderRadius: "50%",
+                    height: 45,
+                    width: 45,
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
                   <IconSVG />
                 </View>
                 <Text style={styles.title}>
-                  {isProfileLoading ? <ShimmerSkeleton height={23} width={180} /> : <>Hi <Text style={styles.highlightedName}>{profileData?.name}</Text></>}
+                  {isProfileLoading ? (
+                    <ShimmerSkeleton height={23} width={180} />
+                  ) : (
+                    <>
+                      Hi{" "}
+                      <Text style={styles.highlightedName}>
+                        {profileData?.name}
+                      </Text>
+                    </>
+                  )}
                 </Text>
               </View>
             )}
           </View>
           <View style={styles.rightSection}>
-            <ProfileIcon onPress={toggleProfileDrawer} name={profileData?.name} isProfileLoading={isProfileLoading} />
+            <ProfileIcon
+              onPress={toggleProfileDrawer}
+              name={profileData?.name}
+              isProfileLoading={isProfileLoading}
+            />
           </View>
         </View>
-
 
         {/* Notifications dropdown */}
         {showNotifications && (
           <View style={styles.notificationsContainer}>
             <View style={styles.notificationsHeader}>
               <Text style={styles.notificationsTitle}>Notifications</Text>
-              <Text style={styles.notificationsSubtitle}>You have {notifications.length} unread messages</Text>
+              <Text style={styles.notificationsSubtitle}>
+                You have {notifications.length} unread messages
+              </Text>
             </View>
             <FlatList
               data={notifications}
               renderItem={({ item }) => <NotificationItem item={item} />}
-              keyExtractor={item => item.id}
+              keyExtractor={(item) => item.id}
               style={styles.notificationsList}
             />
           </View>
@@ -164,74 +197,446 @@ const Header = ({
       </SafeAreaView>
 
       {/* Profile Drawer */}
-      {showProfileDrawer && <Pressable style={styles.overlay} onPress={closeProfileDrawer} />}
+      {showProfileDrawer && (
+        <Pressable style={styles.overlay} onPress={closeProfileDrawer} />
+      )}
 
       <Animated.View
-        style={[
-          styles.profileDrawer,
-          {
-            transform: [{ translateX: drawerAnimation }],
-          },
-        ]}
+        style={{
+          position: "absolute",
+          top: 0,
+          right: 0,
+          width: 300,
+          height: "100%",
+          backgroundColor: "#093557ff",
+          transform: [{ translateX: drawerAnimation }],
+          shadowColor: "#000",
+          shadowOffset: { width: 2, height: 0 },
+          shadowOpacity: 0.25,
+          shadowRadius: 10,
+          elevation: 10,
+          zIndex: 1000,
+        }}
       >
-        <View style={styles.drawerHeader}>
-          <View style={styles.drawerProfileSection}>
-            <View style={styles.drawerProfileImage}>
-              <Text style={styles.drawerProfileInitial}>{profileData?.name && getInitials(profileData?.name)}</Text>
+        {/* Header with Gradient */}
+        <LinearGradient
+          colors={["#093658", "#052b47ff"]}
+          style={{
+            paddingTop: StatusBar.currentHeight + 20,
+            paddingHorizontal: 20,
+            paddingBottom: 25,
+            borderBottomWidth: 1,
+            borderBottomColor: "rgba(255,255,255,0.1)",
+          }}
+        >
+          {/* Profile Section */}
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              marginBottom: 15,
+            }}
+          >
+            {/* Profile Avatar with Gradient Border */}
+            <View
+              style={{
+                width: 60,
+                height: 60,
+                borderRadius: 30,
+                padding: 2,
+                marginRight: 15,
+              }}
+            >
+              <LinearGradient
+                colors={["#D36C32", "#F68F00"]}
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  borderRadius: 30,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <View
+                  style={{
+                    width: 54,
+                    height: 54,
+                    borderRadius: 27,
+                    backgroundColor: "#2d2d44",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Text
+                    style={{
+                      fontSize: 20,
+                      fontWeight: "600",
+                      color: "#F68F00",
+                    }}
+                  >
+                    {profileData?.name && getInitials(profileData?.name)}
+                  </Text>
+                </View>
+              </LinearGradient>
             </View>
-            <View style={styles.drawerProfileInfo}>
-              <Text style={styles.drawerProfileName}>{profileData?.name}</Text>
+
+            {/* Profile Info */}
+            <View style={{ flex: 1 }}>
               <Text
-                style={styles.drawerProfileEmail}>{profileData?.email?.length > 20
-                  ? profileData.email.slice(0, 20) + '...'
-                  : profileData?.email}</Text>
+                style={{
+                  fontSize: 18,
+                  fontWeight: "600",
+                  color: "#ffffff",
+                  marginBottom: 4,
+                }}
+              >
+                {profileData?.name}
+              </Text>
+              <Text
+                style={{
+                  fontSize: 13,
+                  color: "#a0a0b8",
+                  opacity: 0.8,
+                }}
+              >
+                {profileData?.email?.length > 22
+                  ? profileData.email.slice(0, 22) + "..."
+                  : profileData?.email}
+              </Text>
             </View>
           </View>
-        </View>
-        <View style={styles.drawerContent}>
 
-          <TouchableOpacity style={styles.drawerItem} onPress={() => { router.push("home") }}>
-            <Text style={styles.drawerItemText}>Home</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.drawerItem} onPress={() => router.push("portfolio")}>
-            <Text style={styles.drawerItemText}>Portfolio</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.drawerItem} onPress={() => router.push("service")}>
-            <Text style={styles.drawerItemText}>Buy New Service</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.drawerItem} onPress={() => router.push("sip")}>
-            <Text style={styles.drawerItemText}>SIP Calculator</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.drawerItem} onPress={() => router.push("profile")}>
-            <Text style={styles.drawerItemText}>Account</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.drawerItem} onPress={() => router.push("support")}>
-            <Text style={styles.drawerItemText}>Contact us</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.drawerItem} onPress={() => setIsLogoutModalOpen(true)}>
-            <Text style={styles.drawerItemText}>Logout</Text>
+          {/* Online Status Indicator */}
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              backgroundColor: "rgba(76, 175, 80, 0.15)",
+              paddingHorizontal: 12,
+              paddingVertical: 6,
+              borderRadius: 20,
+              alignSelf: "flex-start",
+            }}
+          >
+            <View
+              style={{
+                width: 8,
+                height: 8,
+                borderRadius: 4,
+                backgroundColor: "#4CAF50",
+                marginRight: 8,
+              }}
+            />
+            <Text
+              style={{
+                fontSize: 12,
+                color: "#4CAF50",
+                fontWeight: "500",
+              }}
+            >
+              Online
+            </Text>
+          </View>
+        </LinearGradient>
+
+        {/* Menu Items */}
+        <View
+          style={{
+            flex: 1,
+            paddingTop: 5,
+            // alignItems: "center",
+          }}
+        >
+          {menuItems.map((item, index) => (
+            <TouchableOpacity
+              key={index}
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                paddingHorizontal: 20,
+                paddingVertical: 16,
+                marginHorizontal: 10,
+                marginVertical: 1,
+                borderRadius: 12,
+                backgroundColor: "transparent",
+              }}
+              onPress={() => router.push(item.route)}
+              activeOpacity={0.7}
+            >
+              <View
+                style={{
+                  width: 40,
+                  height: 40,
+                  borderRadius: 10,
+                  backgroundColor: "rgba(255,255,255,0.08)",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  marginRight: 15,
+                }}
+              >
+                <Ionicons name={item.icon} size={20} color="#a0a0b8" />
+              </View>
+              <Text
+                style={{
+                  fontSize: 16,
+                  color: "#ffffff",
+                  fontWeight: "500",
+                  flex: 1,
+                }}
+              >
+                {item.label}
+              </Text>
+              <Ionicons name="chevron-forward" size={16} color="#a0a0b8" />
+            </TouchableOpacity>
+          ))}
+
+          {/* Logout Button */}
+          <TouchableOpacity
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              paddingHorizontal: 10,
+              paddingVertical: 10,
+              marginHorizontal: 25,
+              marginVertical: 5,
+              borderRadius: 12,
+              width:180,
+              backgroundColor: "#fd8301a5",
+              borderWidth: 1,
+              borderColor: "#F68F00",
+            }}
+            onPress={() => setIsLogoutModalOpen(true)}
+            activeOpacity={0.7}
+          >
+            <View
+              style={{
+                width: 40,
+                height: 40,
+                borderRadius: 10,
+                backgroundColor: "#F68F00",
+                justifyContent: "center",
+                alignItems: "center",
+                marginRight: 15,
+              }}
+            >
+              <MaterialIcons name="logout" size={20} color="#ffffffff" />
+            </View>
+            <Text
+              style={{
+                fontSize: 16,
+                color: "#ffffffff",
+                fontWeight: "500",
+                flex: 1,
+              }}
+            >
+              Logout
+            </Text>
           </TouchableOpacity>
         </View>
-        <Modal visible={isLogoutModalOpen} transparent animationType="slide">
-          <View style={styles.modalOverlay}>
-            <View style={styles.modalContent}>
-              <View style={styles.modalHeader}>
-                <Text style={styles.modalTitle}>Logout ?</Text>
-                <TouchableOpacity onPress={() => setIsLogoutModalOpen(false)}>
-                  <Ionicons name="close" size={24} color="#fff" />
+
+        {/* Footer */}
+        <View
+          style={{
+            paddingHorizontal: 20,
+            paddingVertical: 15,
+            borderTopWidth: 1,
+            borderTopColor: "rgba(255,255,255,0.1)",
+          }}
+        >
+          <Text
+            style={{
+              fontSize: 12,
+              color: "#bdbdd0ff",
+              textAlign: "center",
+              opacity: 0.6,
+            }}
+          >
+            Version 1.0.0
+          </Text>
+        </View>
+      </Animated.View>
+
+      {/* Enhanced Logout Modal */}
+      <Modal
+        visible={isLogoutModalOpen}
+        transparent
+        animationType="fade"
+        statusBarTranslucent
+      >
+        <BlurView
+          intensity={20}
+          style={{
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: "rgba(0,0,0,0.5)",
+          }}
+        >
+          <View
+            style={{
+              width: "85%",
+              maxWidth: 320,
+              backgroundColor: "#0b2b43ff",
+              borderRadius: 20,
+              overflow: "hidden",
+              shadowColor: "#000",
+              shadowOffset: { width: 0, height: 10 },
+              shadowOpacity: 0.3,
+              shadowRadius: 20,
+              elevation: 20,
+            }}
+          >
+            {/* Modal Header */}
+            <LinearGradient
+              colors={["#093658", "#112637ff"]}
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+                paddingHorizontal: 20,
+                paddingVertical: 18,
+                borderBottomWidth: 1,
+                borderBottomColor: "rgba(255,255,255,0.1)",
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: 20,
+                  fontWeight: "600",
+                  color: "#ffffff",
+                }}
+              >
+                Confirm Logout
+              </Text>
+              <TouchableOpacity
+                onPress={() => setIsLogoutModalOpen(false)}
+                style={{
+                  width: 32,
+                  height: 32,
+                  borderRadius: 16,
+                  backgroundColor: "rgba(255,255,255,0.1)",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Ionicons name="close" size={18} color="#fff" />
+              </TouchableOpacity>
+            </LinearGradient>
+
+            {/* Modal Content */}
+            <View
+              style={{
+                paddingHorizontal: 20,
+                paddingVertical: 25,
+                alignItems: "center",
+              }}
+            >
+              {/* Logout Icon */}
+              <View
+                style={{
+                  width: 60,
+                  height: 60,
+                  borderRadius: 30,
+                  backgroundColor: "rgba(244, 67, 54, 0.15)",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  marginBottom: 20,
+                }}
+              >
+                <MaterialIcons name="logout" size={28} color="#F44336" />
+              </View>
+
+              <Text
+                style={{
+                  fontSize: 16,
+                  color: "#ffffff",
+                  fontWeight: "500",
+                  textAlign: "center",
+                  marginBottom: 8,
+                }}
+              >
+                Are you sure you want to logout?
+              </Text>
+
+              <Text
+                style={{
+                  fontSize: 14,
+                  color: "#a0a0b8",
+                  textAlign: "center",
+                  marginBottom: 25,
+                  lineHeight: 20,
+                }}
+              >
+                You'll need to sign in again to access your account
+              </Text>
+
+              {/* Action Buttons */}
+              <View
+                style={{
+                  flexDirection: "row",
+                  width: "100%",
+                  gap: 12,
+                }}
+              >
+                <TouchableOpacity
+                  style={{
+                    flex: 1,
+                    paddingVertical: 14,
+                    borderRadius: 12,
+                    backgroundColor: "rgba(255,255,255,0.1)",
+                    alignItems: "center",
+                  }}
+                  onPress={() => setIsLogoutModalOpen(false)}
+                  activeOpacity={0.8}
+                >
+                  <Text
+                    style={{
+                      fontSize: 16,
+                      fontWeight: "600",
+                      color: "#ffffff",
+                    }}
+                  >
+                    Cancel
+                  </Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  onPress={() => logout()}
+                  activeOpacity={0.8}
+                  style={{
+                    borderRadius: 12,
+                    overflow: "hidden",
+                    alignSelf: "center",
+                  }}
+                >
+                  <LinearGradient
+                    colors={["#D36C32", "#F68F00"]}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 0 }}
+                    style={{
+                      paddingVertical: 14,
+                      paddingHorizontal: 30,
+                      borderRadius: 12,
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Text
+                      style={{
+                        fontSize: 16,
+                        fontWeight: "600",
+                        color: "#ffffff",
+                      }}
+                    >
+                      Logout
+                    </Text>
+                  </LinearGradient>
                 </TouchableOpacity>
               </View>
-              <View style={{ padding: 20, flexDirection: "column", justifyContent: "center" }}>
-                <Text style={{ fontSize: 16, color: COLORS.fontWhite, fontWeight: 600, marginBottom: 20, textAlign: "center" }}>Are you sure you want to logout?</Text>
-                <View style={{ flexDirection: "row", justifyContent: "center" }}>
-                  <Button onClick={() => setIsLogoutModalOpen(false)} label={"cancel"} gradientColor={['#D36C32', '#F68F00']} buttonStye={{ width: 100, marginRight: 10 }} />
-                  <Button onClick={() => logout()} label={"Logout"} gradientColor={['#D36C32', '#F68F00']} buttonStye={{ width: 100 }} />
-                </View>
-              </View>
             </View>
           </View>
-        </Modal>
-      </Animated.View>
+        </BlurView>
+      </Modal>
     </>
   );
 };
@@ -240,34 +645,34 @@ const styles = StyleSheet.create({
   safeArea: {
     backgroundColor: COLORS.cardColor,
     zIndex: 10,
-    width: '100%',
+    width: "100%",
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     paddingHorizontal: 16,
     paddingVertical: 20,
     backgroundColor: COLORS.cardColor,
 
-    elevation: 5
+    elevation: 5,
   },
   leftSection: {
     flex: 1,
   },
   rightSection: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   title: {
-    color: 'white',
+    color: "white",
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   highlightedName: {
-    color: '#FFA500',
-    fontWeight: '600',
-    textTransform: "capitalize"
+    color: "#FFA500",
+    fontWeight: "600",
+    textTransform: "capitalize",
   },
   iconButton: {
     marginRight: 16,
@@ -275,12 +680,12 @@ const styles = StyleSheet.create({
   iconContainer: {
     width: 24,
     height: 24,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   icon: {
     fontSize: 18,
-    color: 'white',
+    color: "white",
   },
   profileContainer: {
     marginLeft: 8,
@@ -290,26 +695,26 @@ const styles = StyleSheet.create({
     height: 40,
     borderRadius: "50%",
     backgroundColor: "#890E49",
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   profileInitial: {
     color: "#fff",
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   backIcon: {
     fontSize: 20,
-    color: 'white',
+    color: "white",
   },
   notificationsContainer: {
-    position: 'absolute',
-    top: Platform.OS === 'ios' ? 90 : 70,
+    position: "absolute",
+    top: Platform.OS === "ios" ? 90 : 70,
     right: 10,
     width: 300,
-    backgroundColor: 'white',
+    backgroundColor: "white",
     borderRadius: 8,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
@@ -319,31 +724,31 @@ const styles = StyleSheet.create({
   notificationsHeader: {
     padding: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
+    borderBottomColor: "#f0f0f0",
   },
   notificationsTitle: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   notificationsSubtitle: {
     fontSize: 12,
-    color: '#666',
+    color: "#666",
     marginTop: 4,
   },
   notificationsList: {
     maxHeight: 300,
   },
   notificationItem: {
-    flexDirection: 'row',
+    flexDirection: "row",
     padding: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
+    borderBottomColor: "#f0f0f0",
   },
   notificationDot: {
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: '#002952',
+    backgroundColor: "#002952",
     marginTop: 6,
     marginRight: 12,
   },
@@ -352,31 +757,31 @@ const styles = StyleSheet.create({
   },
   notificationTitle: {
     fontSize: 14,
-    fontWeight: '500',
+    fontWeight: "500",
   },
   notificationTime: {
     fontSize: 12,
-    color: '#666',
+    color: "#666",
     marginTop: 4,
   },
   overlay: {
-    position: 'absolute',
+    position: "absolute",
     top: 0,
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
     zIndex: 100,
   },
   profileDrawer: {
-    position: 'absolute',
+    position: "absolute",
     top: 0,
     right: 0,
     bottom: 0,
-    width: '70%',
-    backgroundColor: 'white',
+    width: "70%",
+    backgroundColor: "white",
     zIndex: 1001,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: -2, height: 0 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
@@ -387,33 +792,33 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.cardColor,
   },
   drawerProfileSection: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: Platform.OS === 'ios' ? 40 : 20,
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: Platform.OS === "ios" ? 40 : 20,
   },
   drawerProfileImage: {
     width: 60,
     height: 60,
     borderRadius: 30,
-    backgroundColor: '#7a1ea1',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "#7a1ea1",
+    justifyContent: "center",
+    alignItems: "center",
   },
   drawerProfileInitial: {
-    color: 'white',
+    color: "white",
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   drawerProfileInfo: {
     marginLeft: 16,
   },
   drawerProfileName: {
-    color: 'white',
+    color: "white",
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   drawerProfileEmail: {
-    color: 'rgba(255, 255, 255, 0.8)',
+    color: "rgba(255, 255, 255, 0.8)",
     fontSize: 14,
     marginTop: 4,
   },
@@ -430,8 +835,7 @@ const styles = StyleSheet.create({
   drawerItemText: {
     fontSize: 16,
     color: COLORS.fontWhite,
-    paddingHorizontal: 20
-
+    paddingHorizontal: 20,
   },
   backButton: {
     zIndex: 10,
@@ -454,7 +858,7 @@ const styles = StyleSheet.create({
     maxHeight: height * 0.7,
     paddingBottom: 20,
     width: "90%",
-    marginHorizontal: "auto"
+    marginHorizontal: "auto",
   },
   modalHeader: {
     flexDirection: "row",

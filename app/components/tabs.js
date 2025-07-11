@@ -12,8 +12,8 @@ export default function ProtectedTabs() {
         tabBarStyle: {
           backgroundColor: COLORS.primaryColor,
           paddingTop: 10,      // ✅ Apply top padding
-          paddingBottom: 20,   // optional: give space from bottom
-          height: 90,
+          paddingBottom: 15,   // optional: give space from bottom
+          height: 80,
           borderTopWidth: 1,           // ✅ Remove top border line
           elevation: 0,                // ✅ Remove shadow on Android
           shadowOpacity: 0,
