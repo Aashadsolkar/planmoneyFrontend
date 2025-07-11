@@ -721,3 +721,38 @@ export const verifyMobileOTP = async (token, data) => {
     throw error?.response?.data || { message: 'Something went wrong' };
   }
 };
+
+export const getFastlaneHistoryData = async (token, id) => {
+  // url https://admin.planmoney.in/api/customer/services/1
+  try {
+    const response = await axios({
+      method: "GET",
+      url: `https://admin.planmoney.in/api/customer/services-recommeded-history/${id}`,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer${token}`
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('API Error:', error?.response?.data || error.message);
+    throw error?.response?.data || { message: 'Something went wrong' };
+  }
+};
+
+export const getAdvertisementData = async (token) => {
+  try {
+    const response = await axios({
+      method: "GET",
+      url: `https://admin.planmoney.in/api/get-advertisement`,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer${token}`
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('API Error:', error?.response?.data || error.message);
+    throw error?.response?.data || { message: 'Something went wrong' };
+  }
+};

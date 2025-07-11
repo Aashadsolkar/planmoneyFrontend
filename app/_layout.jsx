@@ -61,7 +61,7 @@ const RootLayout = () => {
     return () => unsubscribe();
   }, []);
 
-    useEffect(() => {
+  useEffect(() => {
     (async () => {
       await configureNotificationChannel();
       const token = await getExpoPushToken();

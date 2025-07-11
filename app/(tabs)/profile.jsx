@@ -57,8 +57,8 @@ export default function App() {
 
   const [updatedCapitalAmount, setUpdatedCapitalAmount] = useState(null);
 
-  const mobileNumber = profileData?.phone;
-  const emailAddress = profileData?.email;
+  const mobileNumber = profileData?.phone || "";
+  const emailAddress = profileData?.email || "";
 
   const handleChange = (value, name) => {
     setErrors({});

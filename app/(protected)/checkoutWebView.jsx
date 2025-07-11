@@ -12,7 +12,7 @@ export default function CheckoutWebView( props) {
  const navigation = useNavigation();
 
  const handleRedirect = (url) => {
-  console.log("🔁 Full Redirect URL:", url);
+  // console.log("🔁 Full Redirect URL:", url);
 
   // Parse query params from the full URL
   const parsed = Linking.parse(url);
@@ -25,7 +25,7 @@ export default function CheckoutWebView( props) {
     // Extract path from return URL
     const path = returnUrl.replace("planmoney://", "");
 
-    console.log("🔀 Navigating to:", path, "with order_id:", order_Id);
+    // console.log("🔀 Navigating to:", path, "with order_id:", order_Id);
 
     // Navigate using expo-router
     router.push({

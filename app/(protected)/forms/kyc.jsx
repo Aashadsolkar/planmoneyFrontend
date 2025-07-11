@@ -63,7 +63,7 @@ const KycVerifyPage = () => {
   // ✅ Handle redirection from WebView
   const handleRedirect = (event) => {
     const url = event.url;
-    console.log("🔁 Redirect URL:", url);
+    // console.log("🔁 Redirect URL:", url);
 
     if (url.startsWith("planmoney://")) {
       // Try to open deep link safely

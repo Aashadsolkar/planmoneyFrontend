@@ -29,11 +29,11 @@ const PortfolioTab = ({ advisorName, stockAPi }) => {
             }
 
             if (sortKey === 'returnPercentage') {
-            // Reverse logic: asc means high to low, desc means low to high
-            return sortDirection === 'asc'
-                ? b.returnPercentage - a.returnPercentage
-                : a.returnPercentage - b.returnPercentage;
-        }
+                // Reverse logic: asc means high to low, desc means low to high
+                return sortDirection === 'asc'
+                    ? b.returnPercentage - a.returnPercentage
+                    : a.returnPercentage - b.returnPercentage;
+            }
 
             const valA = a[sortKey];
             const valB = b[sortKey];
@@ -320,7 +320,7 @@ const styles = StyleSheet.create({
     },
     // Main Card Styles
     mainCard: {
-        backgroundColor: 'rgba(255, 255, 255, 0.08)',
+        backgroundColor: COLORS.cardColor,
         borderRadius: 16,
         padding: 20,
         marginTop: 10,
@@ -451,7 +451,7 @@ const styles = StyleSheet.create({
         marginBottom: 12,
     },
     investmentCard: {
-        backgroundColor: 'rgba(255, 255, 255, 0.06)',
+        backgroundColor: COLORS.cardColor,
         borderRadius: 14,
         padding: 16,
         borderWidth: 1,
