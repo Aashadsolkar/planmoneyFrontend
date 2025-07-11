@@ -49,6 +49,8 @@ const NewsCard = ({ title = "", summary = "", id }) => (
     </TouchableOpacity>
 );
 
+const SERVICE_CARD_WIDTH = 250
+
 export default function Home() {
     const { purchesService,
         allServices,
@@ -57,7 +59,8 @@ export default function Home() {
         newsData,
         optionStockData,
         isQuestionerFillderByAdvisor,
-        profileData
+        profileData,
+        advertisement
     } = useAuth();
     const navigation = useNavigation();
     const {
@@ -69,6 +72,7 @@ export default function Home() {
     const [showPullHint, setShowPullHint] = useState(true);
     const [activeServiceIndex, setActiveServiceIndex] = useState(0)
     const [activeIndex, setActiveIndex] = useState(0);
+    const [activeAdverismentIndex, setActiveAdverismentIndex] = useState(0);
     const [isQuestionerModalOpen, setIsQuestionerModalOpen] = useState(false);
     const screenWidth = Dimensions.get("window").width;
 
@@ -193,8 +197,8 @@ export default function Home() {
                 pathname: `/pmsAndQuantom/${item?.id}`,
                 params: {
                     is_advisor_assign: item?.subscription?.is_advisor_assign,
-                    advisor_name: item?.subscription?.advisor?.name,
-                    advisor_nummber: item?.subscription?.advisor?.phone,
+                    advisor_name: item?.subscription?.advisor?.name ?? "NA",
+                    advisor_nummber: item?.subscription?.advisor?.phone ?? "NA",
                 },
             });
 
@@ -267,7 +271,7 @@ export default function Home() {
         const filteredData = renderData.filter(item => item.id !== 5);
         const handleServiceScroll = (event) => {
             const scrollX = event.nativeEvent.contentOffset.x;
-            const index = Math.round(scrollX / 250); // adjust 180 based on your service card width
+            const index = Math.round(scrollX / SERVICE_CARD_WIDTH); // adjust 180 based on your service card width
             setActiveServiceIndex(index);
         };
 
@@ -317,18 +321,13 @@ export default function Home() {
                     <NewsCard title={item?.title}
                         summary={item?.summary}
                         id={item?.id}
-                        key={item?.id}
+                        key={`news/${item?.id}`}
                     />
                 )
             })
         )
     }
 
-    const handleScroll = (event) => {
-        const scrollX = event.nativeEvent.contentOffset.x;
-        const index = Math.round(scrollX / screenWidth);
-        setActiveIndex(index);
-    };
     const showOffterSliderDots = () => {
         if (offerData.length > 1) {
             return (
@@ -345,6 +344,117 @@ export default function Home() {
                 </View>
             )
         }
+    }
+
+    const showAdverismentSliderDots = () => {
+        if (advertisement.length > 1) {
+            return (
+                <View style={styles.dotContainer}>
+                    {advertisement.map((_, i) => (
+                        <View
+                            key={i}
+                            style={[
+                                styles.dot,
+                                { backgroundColor: i === activeAdverismentIndex ? COLORS.secondaryColor : COLORS.lightGray },
+                            ]}
+                        />
+                    ))}
+                </View>
+            )
+        }
+    }
+
+    const renderBanner = () => {
+        if (offerData.length !== 0) {
+            return (
+                <View style={styles.carouselContainer}>
+                    <FlatList
+                        data={offerData}
+                        keyExtractor={(item, index) => item?.id?.toString() ?? index.toString()}
+                        horizontal
+                        showsHorizontalScrollIndicator={false}
+                        snapToInterval={ITEM_WIDTH}
+                        decelerationRate="fast"
+                        contentContainerStyle={{
+                            paddingHorizontal: SPACING
+                        }}
+                        renderItem={({ item, index }) => (
+                            <Animatable.View
+                                animation="fadeInRight"
+                                delay={index * 100}
+                                duration={300}
+                            >
+                                <TouchableOpacity onPress={() => item.onClick()}>
+                                    <Image
+                                        source={typeof item.banner === 'string' ? { uri: item.banner } : item.banner}
+                                        style={{
+                                            width: ITEM_WIDTH,
+                                            height: 177,
+                                            borderRadius: 10,
+                                            overflow: 'hidden',
+                                            marginHorizontal: 5,
+                                        }}
+                                        resizeMode="stretch"
+                                    />
+                                </TouchableOpacity>
+                            </Animatable.View>
+                        )}
+                        onScroll={(e) => {
+                            // const index = Math.round(e.nativeEvent.contentOffset.x / ITEM_WIDTH);
+                            const maxIndex = Math.max(0, offerData.length - 1);
+                            const index = Math.min(maxIndex, Math.round(e.nativeEvent.contentOffset.x / ITEM_WIDTH));
+                            setActiveIndex(index); // use this for dot indicators
+                        }}
+
+                    />
+                    {/* Dot Indicators */}
+                    {showOffterSliderDots()}
+                </View>
+            )
+        }
+        return (
+            <View style={styles.carouselContainer}>
+                <FlatList
+                    data={advertisement || []}
+                    keyExtractor={(item) => item.id.toString()}
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    snapToInterval={ITEM_WIDTH}
+                    decelerationRate="fast"
+                    contentContainerStyle={{
+                        paddingHorizontal: SPACING
+                    }}
+                    renderItem={({ item, index }) => (
+                        <Animatable.View
+                            animation="fadeInRight"
+                            delay={index * 100}
+                            duration={300}
+                        >
+                            <TouchableOpacity>
+                                <Image
+                                    source={item?.banner_url ? { uri: item.banner_url } : require('../../assets/images/placeholder.jpg')}
+                                    style={{
+                                        width: ITEM_WIDTH,
+                                        height: 177,
+                                        borderRadius: 10,
+                                        overflow: 'hidden',
+                                        marginHorizontal: 5,
+                                    }}
+                                    resizeMode="stretch"
+                                />
+                            </TouchableOpacity>
+                        </Animatable.View>
+                    )}
+                    onScroll={(e) => {
+                        const index = Math.round(e.nativeEvent.contentOffset.x / ITEM_WIDTH);
+                        setActiveAdverismentIndex(index); // use this for dot indicators
+                    }}
+
+                />
+                {/* Dot Indicators */}
+                {showAdverismentSliderDots()}
+            </View>
+        )
     }
 
     const renderContent = () => {
@@ -371,47 +481,7 @@ export default function Home() {
         return (
             <>
                 {/* Offer Carousel Section */}
-                <View style={styles.carouselContainer}>
-                    <FlatList
-                        data={offerData}
-                        keyExtractor={(item) => item.id.toString()}
-                        horizontal
-                        showsHorizontalScrollIndicator={false}
-                        snapToInterval={ITEM_WIDTH}
-                        decelerationRate="fast"
-                        contentContainerStyle={{
-                            paddingHorizontal: SPACING
-                        }}
-                        renderItem={({ item, index }) => (
-                            <Animatable.View
-                                animation="fadeInRight"
-                                delay={index * 100}
-                                duration={300}
-                            >
-                                <TouchableOpacity onPress={() => item.onClick()}>
-                                    <Image
-                                        source={item.banner}
-                                        style={{
-                                            width: ITEM_WIDTH,
-                                            height: 177,
-                                            borderRadius: 10,
-                                            overflow: 'hidden',
-                                            marginHorizontal: 5,
-                                        }}
-                                        resizeMode="stretch"
-                                    />
-                                </TouchableOpacity>
-                            </Animatable.View>
-                        )}
-                        onScroll={(e) => {
-                            const index = Math.round(e.nativeEvent.contentOffset.x / ITEM_WIDTH);
-                            setActiveIndex(index); // use this for dot indicators
-                        }}
-
-                    />
-                    {/* Dot Indicators */}
-                    {showOffterSliderDots()}
-                </View>
+                {renderBanner()}
 
                 {/* Option stock section */}
                 <View style={{ marginTop: 10 }}>
@@ -564,7 +634,7 @@ const styles = StyleSheet.create({
         paddingRight: 20,
     },
     serviceCard: {
-        width: 250,
+        width: SERVICE_CARD_WIDTH,
         height: 150,
         borderRadius: 10,
         padding: 15,

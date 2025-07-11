@@ -31,6 +31,7 @@ const AuthProvider = ({ children }) => {
   const [optionStockData, setOptionStockData] = useState([]);
   const [isQuestionerFillderByAdvisor, setIsQuestionerFillderByAdvisor] = useState(false);
   const [digiLockerRequestId, setDigiLockerRequestId] = useState(false);
+  const [advertisement, setAdvertisement] = useState([]);
 
   useEffect(() => {
     const loadSession = async () => {
@@ -84,7 +85,7 @@ const AuthProvider = ({ children }) => {
     await AsyncStorage.clear();
   };
 
- 
+
 
   return (
     <AuthContext.Provider value={{
@@ -134,7 +135,9 @@ const AuthProvider = ({ children }) => {
       setIsQuestionerFillderByAdvisor,
       isQuestionerFillderByAdvisor,
       setDigiLockerRequestId,
-      digiLockerRequestId
+      digiLockerRequestId,
+      setAdvertisement,
+      advertisement
     }}>
       {children}
     </AuthContext.Provider>

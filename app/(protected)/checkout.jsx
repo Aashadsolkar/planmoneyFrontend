@@ -109,7 +109,7 @@ export default function Checkout() {
   const applyReferral = async () => {
     try {
       const payload = {
-        referral_code: "asdaskjh",
+        referral_code: referral,
       };
       const ReferralResponse = await applyReferralApi(token, payload);
       handlePay();

@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import { Alert } from 'react-native';
-import { getProfileData, customerService, news, optionstocks } from '../utils/apiCaller'; // adjust path as needed
+import { getProfileData, customerService, news, optionstocks, getAdvertisementData } from '../utils/apiCaller'; // adjust path as needed
 import { useAuth } from '../context/useAuth'; // adjust path as needed
 import { useRouter } from 'expo-router';
 
@@ -19,7 +19,8 @@ export const useHomeData = () => {
         setNewsData,
         setOptionStockData,
         setIsProfileLoading,
-        setIsQuestionerFillderByAdvisor
+        setIsQuestionerFillderByAdvisor,
+        setAdvertisement
     } = useAuth();
 
     const [isLoading, setIsLoading] = useState(false);
@@ -31,6 +32,7 @@ export const useHomeData = () => {
             setIsLoading(true);
             try {
                 await fetchNews();
+                await getAdvertisement();
                 await fetchCustomerServices();
                 await fetchOptionStockData();
             } catch (error) {
@@ -119,6 +121,19 @@ export const useHomeData = () => {
             ]);
         }
     };
+
+
+    const getAdvertisement = async () => {
+        try {
+            const response = await getAdvertisementData(token);
+            setAdvertisement(response?.data?.data || []);
+        } catch (error) {
+            Alert.alert("Error", error?.message || "Failed to advertisment", [
+                { text: "OK", onPress: () => router.push("home") },
+            ]);
+        }
+    };
+
 
     const fetchOptionStockData = async () => {
         try {

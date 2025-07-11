@@ -13,7 +13,6 @@ const NewArrivalPDF = () => {
                 <Text style={{ color: COLORS.fontWhite, fontSize: 18, fontWeight: 600 }}>PDF</Text>
             )
         }
-        console.log(report, "reportreportreportreportreportreportreportreportreportreportreportreportreportreportreport");
         
     return (
         <SafeAreaView style={{flex: 1, backgroundColor: COLORS.primaryColor}}>

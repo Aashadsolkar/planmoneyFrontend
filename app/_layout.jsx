@@ -61,12 +61,12 @@ const RootLayout = () => {
     return () => unsubscribe();
   }, []);
 
-    useEffect(() => {
+  useEffect(() => {
     (async () => {
       await configureNotificationChannel();
       const token = await getExpoPushToken();
       if (token) {
-        console.log("Expo Push Token in layout:", token);
+        // console.log("Expo Push Token in layout:", token);
         // Optionally send token to backend here
       }
     })();
