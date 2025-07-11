@@ -81,7 +81,7 @@ const FastLane = () => {
         return (
             <>
                 <Text style={{ color: COLORS.fontWhite, fontSize: 18, fontWeight: 600 }}>{getServiceName(serviceID)}</Text>
-                {serviceData?.cmp && <Text style={{ color: COLORS.fontWhite, fontSize: 12, fontWeight: 400 }}>CMP ₹{serviceData?.cmp}</Text>}
+                {/* {serviceData?.cmp && <Text style={{ color: COLORS.fontWhite, fontSize: 12, fontWeight: 400 }}>CMP ₹{serviceData?.cmp}</Text>} */}
             </>
         )
     }

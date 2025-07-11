@@ -188,7 +188,7 @@ const PmsAndQuantom = () => {
                         </View>
                         <View style={{ flex: 1 }} />
                     </View>
-                    <View style={[styles.cardSections, {borderBottomColor: COLORS.cardColor}]}>
+                    <View style={[styles.cardSections, { borderBottomColor: COLORS.cardColor }]}>
                         <TouchableOpacity
                             onPress={() => {
                                 setReportData({ serviceData: data, serviceID: id });
@@ -230,6 +230,67 @@ const PmsAndQuantom = () => {
         )
     }
 
+    const openDialer = () => {
+        const url = `tel:${advisor_nummber}`;
+        Linking.openURL(url).catch((err) =>
+            Alert.alert('Error', 'Unable to open dialer')
+        );
+    };
+
+    if (customerServiceData?.questionnaire_status == 0) {
+        return (
+            <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.primaryColor }}>
+                <StatusBar barStyle="light-content" backgroundColor={COLORS.cardColor} />
+                <Header
+                    title="Hi Vignesh"
+                    showBackButton={true}
+                />
+                <ScrollView
+                    keyboardShouldPersistTaps="handled"
+                    showsVerticalScrollIndicator={false}
+                    style={{ paddingHorizontal: 20, marginTop: 80 }}
+                >
+                    <View style={{ alignItems: 'center', width: "100%", marginTop: 100 }}>
+                        <Image
+                            source={require('../../../assets/images/questionCirlce.png')}
+                            style={styles.logo}
+                            resizeMode="contain"
+                        />
+                        <Text style={{ fontSize: 25, fontWeight: 600, color: COLORS.fontWhite, paddingVertical: 20 }}>Oops..!</Text>
+                        <Text style={{ fontSize: 14, fontWeight: 400, color: COLORS.fontWhite, paddingVertical: 20, textAlign: "center", width: 250 }}>Its look like you have not filled your Details after Subscription</Text>
+                    </View>
+                    <Button onClick={() => router.push("forms/totalInvestmentForm")} label={"PROCEED"} gradientColor={['#D36C32', '#F68F00']} buttonStye={{ marginHorizontal: 20, }} />
+                </ScrollView>
+            </SafeAreaView>
+        )
+    }
+    if (customerServiceData?.verification_status == 0 || is_advisor_assign == "false") {
+        return (
+            <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.cardColor, }}>
+                <StatusBar barStyle="light-content" backgroundColor={COLORS.cardColor} />
+                <Header
+                    title="Hi Vignesh"
+                    showBackButton={true}
+                />
+                <ScrollView
+                    keyboardShouldPersistTaps="handled"
+                    showsVerticalScrollIndicator={false}
+                    style={{ paddingHorizontal: 20, backgroundColor: COLORS.primaryColor }}
+                >
+                    <View style={{ alignItems: 'center', width: "100%", marginTop: 100 }}>
+                        <Image
+                            source={require('../../../assets/images/rightCircle.png')}
+                            style={styles.logo}
+                            resizeMode="contain"
+                        />
+                        <Text style={{ fontSize: 25, fontWeight: 600, color: COLORS.fontWhite, paddingVertical: 20, textAlign: "center", width: 220 }}>Your Profile is Under Verification</Text>
+                        <Text style={{ fontSize: 14, fontWeight: 400, color: COLORS.fontWhite, paddingVertical: 20, textAlign: "center", width: 250 }}>Please wait until our Advisor Approves your Profile</Text>
+                    </View>
+                </ScrollView>
+            </SafeAreaView>
+        )
+    }
+
     if (isLoading || isHistoryLoading) return <FullScreenLoader visible={isLoading} />;
 
     return (
@@ -240,7 +301,29 @@ const PmsAndQuantom = () => {
                 showBackButton={true}
                 backButtonText={backButtonText}
             />
-            <ScrollView keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false} style={{ paddingHorizontal: 20, backgroundColor: COLORS.primaryColor, paddingTop: 15 }}>
+            <ScrollView keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false} style={{ paddingHorizontal: 20, backgroundColor: COLORS.primaryColor }}>
+                <TouchableOpacity style={{ marginVertical: 10}}
+                    onPress={openDialer}
+                >
+                    <LinearGradient
+                        start={{ x: 1, y: 0 }}
+                        end={{ x: 0, y: 0 }}
+                        colors={['#AF125D', '#F68F00']}
+                        style={{ padding: 15, borderRadius: 10, width: "100%", textAlign: "center", flexDirection: "row", justifyContent: "space-between" }}
+                    >
+                        <View>
+                            <Text style={{ fontSize: 12, color: COLORS.fontWhite }}>Call our Advisor</Text>
+                            <Text style={{ fontSize: 16, color: COLORS.fontWhite, fontWeight: 600 }}>{advisor_name}</Text>
+                        </View>
+                        <View>
+                            <Image
+                                source={require('../../../assets/images/phone-call.png')}
+                                style={styles.logo}
+                                resizeMode="contain"
+                            />
+                        </View>
+                    </LinearGradient>
+                </TouchableOpacity>
                 {/* Tabs */}
                 <View style={styles.tabContainer}>
                     <TouchableOpacity
