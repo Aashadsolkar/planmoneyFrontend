@@ -72,7 +72,9 @@ const PmsAndQuantom = () => {
                     setIsHistoryLoading(false);
                 }
             };
-            if (customerServiceData?.questionnaire_status == 1) {
+            if (customerServiceData?.questionnaire_status == 1 &&
+                customerServiceData?.verification_status == 1 &&
+                is_advisor_assign == "true") {
                 callFastlaneHistoryApi();
             }
         }, [id])
@@ -302,7 +304,7 @@ const PmsAndQuantom = () => {
                 backButtonText={backButtonText}
             />
             <ScrollView keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false} style={{ paddingHorizontal: 20, backgroundColor: COLORS.primaryColor }}>
-                <TouchableOpacity style={{ marginVertical: 10}}
+                <TouchableOpacity style={{ marginVertical: 10 }}
                     onPress={openDialer}
                 >
                     <LinearGradient
