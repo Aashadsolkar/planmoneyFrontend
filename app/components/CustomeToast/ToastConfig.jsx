@@ -31,11 +31,11 @@ export const toastConfig = {
 const styles = StyleSheet.create({
   success: {
     borderLeftColor: 'green',
-    backgroundColor: '#e6ffed',
+    backgroundColor: '#d2ffdfff',
   },
   error: {
-    borderLeftColor: 'red',
-    backgroundColor: '#ffe6e6',
+    borderLeftColor: '#ff6d6dff',
+    backgroundColor: '#ff8686ff',
   },
   info: {
     borderLeftColor: '#0262abff',

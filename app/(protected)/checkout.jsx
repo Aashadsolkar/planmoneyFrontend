@@ -25,6 +25,7 @@ import {
 import { router, useNavigation } from "expo-router";
 import Input from "../components/Input";
 import * as Linking from "expo-linking";
+import { showToast } from "../components/CustomeToast/ToastService";
 
 export default function Checkout() {
   const [couponCode, setCouponCode] = useState("");
@@ -53,10 +54,9 @@ export default function Checkout() {
         order_amount: parseFloat(totalPrice),
         customer_id: profileData?.customer_id,
         customer_email: profileData?.email,
-        customer_phone: profileData?.phone,
+        customer_phone: profileData?.phone?.replace(/\D/g, ""),
         app_return_url: `https://hunger.webiknows.in/payment.html?order_id={order_id}&return_url=${userReturnURL}`,
       };
-
       const response = await pgCreateOrder(token, payload);
       setIsLoading(false);
       let prePaymentDetails = {
@@ -78,12 +78,17 @@ export default function Checkout() {
       });
     } catch (error) {
       setIsLoading(false);
-      Alert.alert("Error", error?.message || "Create Order Api failed", [
-        {
-          text: "OK",
-          onPress: () => router.push("home"),
-        },
-      ]);
+      // Alert.alert("Error", error?.message || "Create Order Api failed", [
+      //   {
+      //     text: "OK",
+      //     onPress: () => router.push("home"),
+      //   },
+      // ]);
+      showToast({
+        type: "error",
+        title:`Order Failed! 😥`,
+        message:`${error?.message}`
+      });
     }
   };
 
@@ -135,29 +140,30 @@ export default function Checkout() {
     let futureDate = new Date(currentDate);
 
     switch (planType.toLowerCase()) {
-      case 'monthly':
+      case "monthly":
         futureDate.setMonth(futureDate.getMonth() + 1);
         break;
-      case 'quarterly':
+      case "quarterly":
         futureDate.setMonth(futureDate.getMonth() + 3);
         break;
-      case 'half-yearly':
+      case "half-yearly":
         futureDate.setMonth(futureDate.getMonth() + 6);
         break;
-      case 'yearly':
+      case "yearly":
         futureDate.setFullYear(futureDate.getFullYear() + 1);
         break;
       default:
-        return 'Invalid plan type';
+        return "Invalid plan type";
     }
 
     // Format as "Expires on 02 Jul 2025"
-    const options = { day: '2-digit', month: 'short', year: 'numeric' };
-    const formattedDate = futureDate.toLocaleDateString('en-GB', options).replace(/ /g, ' ');
+    const options = { day: "2-digit", month: "short", year: "numeric" };
+    const formattedDate = futureDate
+      .toLocaleDateString("en-GB", options)
+      .replace(/ /g, " ");
 
     return `Expires on ${formattedDate}`;
   };
-
 
   return (
     <SafeAreaView style={styles.container}>
@@ -241,11 +247,14 @@ export default function Checkout() {
                   },
                 ]}
               >
-                {selectedService?.actual_price && "₹" + selectedService?.actual_price}
+                {selectedService?.actual_price &&
+                  "₹" + selectedService?.actual_price}
               </Text>
             </View>
             <View style={[styles.subscriptionHeader]}>
-              <Text style={styles.expiryText}>{getPlanExpiryDate(selectedService?.billing_cycle)}</Text>
+              <Text style={styles.expiryText}>
+                {getPlanExpiryDate(selectedService?.billing_cycle)}
+              </Text>
               <Text style={styles.subscriptionPrice}>
                 ₹{selectedService?.offer_price}
               </Text>
