@@ -332,7 +332,7 @@ const PmsAndQuantom = () => {
                         style={[styles.tab, activeTab === 'recommendations' && styles.activeTab]}
                         onPress={() => setActiveTab('recommendations')}
                     >
-                        <Text style={[styles.tabText, activeTab === 'recommendations' && styles.activeTabText]}>Recommendations</Text>
+                        <Text style={[styles.tabText, activeTab === 'recommendations' && styles.activeTabText]}>Active</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
                         style={[styles.tab, activeTab === 'history' && styles.activeTab]}

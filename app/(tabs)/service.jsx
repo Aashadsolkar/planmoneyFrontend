@@ -8,7 +8,7 @@ import { service } from '../utils/apiCaller';
 import { router, useNavigation } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
 import SkeletonList from '../components/ListSkeleton';
-import {QuantomVoltIcon, FastlaneIcon, PMSIcon, PSIcon, PISIcon } from '../../assets/images/SVG';
+import { QuantomVoltIcon, FastlaneIcon, PMSIcon, PSIcon, PISIcon } from '../../assets/images/SVG';
 
 const icon = {
     1: () => <FastlaneIcon height={33} width={33} />,
@@ -26,7 +26,7 @@ const Service = () => {
         setSkipServices,
         serviceSelectedOnHomePage,
         setServiceSelectedOnHomePage,
-        purchesService
+        purchesService,
     } = useAuth();
 
     const navigation = useNavigation();
@@ -56,8 +56,22 @@ const Service = () => {
                     setIsloading(false)
                     const services = serviceResponse?.data?.services;
                     if (purchesService?.length > 0) {
+                        let tempObj = {};
                         const purchesServiceId = purchesService.map(item => item.id);
-                        const filteredArray = services.filter(item => !purchesServiceId.includes(item.id));
+                        purchesService.forEach(element => tempObj[element?.id] = element);
+
+                        const filteredArray = services.map(item => {
+                            const isPurchased = purchesServiceId.includes(item.id);
+                            const subscription = tempObj?.[item.id]?.subscription;
+
+                            return {
+                                ...item,
+                                purchesed: isPurchased,
+                                advisor_nummber: isPurchased ? subscription?.advisor?.phone || null : null,
+                                advisor_name: isPurchased ? subscription?.advisor?.name || null : null,
+                                is_advisor_assign: isPurchased ? subscription?.is_advisor_assign ?? false : false
+                            };
+                        });
                         const filteredData = filteredArray.filter(item => item.id !== 5);
                         setAllServices(filteredData);
                     } else {
@@ -130,6 +144,10 @@ const Service = () => {
                     key={service?.id}
                     serviceId={service?.id}
                     icon={icon[service?.id]}
+                    isPurchesed={service?.purchesed ?? false}
+                    is_advisor_assign={service?.is_advisor_assign ?? false}
+                    advisor_number={service?.advisor_number ?? ""}
+                    advisor_name={service?.advisor_name ?? ""}
                 />
             )
         })
