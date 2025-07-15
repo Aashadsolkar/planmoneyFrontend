@@ -23,7 +23,11 @@ const ServiceCard = ({
   showDetails,
   showSubscriptions,
   plans,
-  serviceId
+  serviceId,
+  isPurchesed,
+  advisor_name,
+  is_advisor_assign,
+  advisor_number
 }) => {
   const [selectedDuration, setSelectedDuration] = useState(null);
   const [isVisible, setIsVisible] = useState(false);
@@ -47,13 +51,13 @@ const ServiceCard = ({
   useEffect(() => {
     const sortPlans = sortPlansByActualPrice(plans)
     setSortedPlans(sortPlans)
-  },[])
+  }, [])
 
   const sortPlansByActualPrice = (plans) => {
-  if (!Array.isArray(plans)) return [];
+    if (!Array.isArray(plans)) return [];
 
-  return plans.sort((a, b) => parseFloat(a.actual_price) - parseFloat(b.actual_price));
-};
+    return plans.sort((a, b) => parseFloat(a.actual_price) - parseFloat(b.actual_price));
+  };
 
 
 
@@ -92,26 +96,87 @@ const ServiceCard = ({
   }
 
   const renderOfferPrice = (actual, offer) => {
+
+    // If no offer price, show only actual price
+    if (!offer) {
+      return <Text style={[styles.discounted, { paddingTop: 10 }]}>₹{actual}</Text>;
+    }
+
+    // If both prices are same, show only one
+    if (actual === offer) {
+      return <Text style={[styles.discounted, { paddingTop: 10 }]}>₹{offer}</Text>;
+    }
+
+    // Show original (strikethrough) and discounted
+    return (
+      <>
+        <Text style={styles.original}>₹{actual}</Text>
+        <Text style={styles.discounted}>₹{offer}</Text>
+      </>
+    );
+  };
+
+  const renderPurchesOrNot = () => {
+    if (!isPurchesed) {
+      return (
+        <TouchableOpacity onPress={onToggle}>
+          <View style={styles.details}>
+            <Text style={styles.detailsText}>View Details</Text>
+            <MaterialIcons name="chevron-right" size={16} color="#FF9800" />
+          </View>
+        </TouchableOpacity>
+      )
+    }
+    return (<TouchableOpacity onPress={() => { }}>
+      <View style={styles.details}>
+        <Text style={styles.detailsText}>Purchesed</Text>
+        {/* <MaterialIcons name="chevron-right" size={16} color="#FF9800" /> */}
+      </View>
+    </TouchableOpacity>)
+  }
+
+  const handleOpen = (item) => {
     
-  // If no offer price, show only actual price
-  if (!offer) {
-    return <Text style={[styles.discounted, {paddingTop: 10}]}>₹{actual}</Text>;
+    if ([1, 6].includes(serviceId)) {
+      router.push({
+        pathname: `/fastlane/${serviceId}`
+      });
+    } else {
+      // router.push(`pmsAndQuantom/${id}`)
+      router.push({
+        pathname: `/pmsAndQuantom/${serviceId}`,
+        params: {
+          is_advisor_assign: is_advisor_assign,
+          advisor_name: advisor_name ?? "NA",
+          advisor_nummber: advisor_number ?? "NA",
+        },
+      });
+    }
   }
 
-  // If both prices are same, show only one
-  if (actual === offer) {
-    return <Text style={[styles.discounted, {paddingTop: 10}]}>₹{offer}</Text>;
+  const renderPriceContainer = () => {
+    if (!isPurchesed) {
+      return (
+        <View style={styles.priceContainer}>
+          <Text style={styles.priceLabel}>
+            {startsAt ? 'Starts at' : 'Based on'}
+          </Text>
+          <Text style={styles.price}>
+            {startsAt || basedOn}
+          </Text>
+        </View>
+      )
+    }
+    return (
+      <View style={styles.priceContainer}>
+        <TouchableOpacity onPress={() => handleOpen()}>
+          <Text style={{ color: COLORS.fontWhite, backgroundColor: COLORS.secondaryColor, paddingHorizontal: 8, paddingVertical: 5, borderRadius: 8, fontWeight: 600 }}>
+            Open
+          </Text>
+        </TouchableOpacity>
+      </View>
+    )
   }
-
-  // Show original (strikethrough) and discounted
-  return (
-    <>
-      <Text style={styles.original}>₹{actual}</Text>
-      <Text style={styles.discounted}>₹{offer}</Text>
-    </>
-  );
-};
-
 
   return (
     <>
@@ -122,23 +187,9 @@ const ServiceCard = ({
           </View>
           <View style={styles.info}>
             <Text style={styles.name}>{name}</Text>
-            {showDetails && !isExpanded && (
-              <TouchableOpacity onPress={onToggle}>
-                <View style={styles.details}>
-                  <Text style={styles.detailsText}>View Details</Text>
-                  <MaterialIcons name="chevron-right" size={16} color="#FF9800" />
-                </View>
-              </TouchableOpacity>
-            )}
+            {showDetails && !isExpanded && renderPurchesOrNot()}
           </View>
-          <View style={styles.priceContainer}>
-            <Text style={styles.priceLabel}>
-              {startsAt ? 'Starts at' : 'Based on'}
-            </Text>
-            <Text style={styles.price}>
-              {startsAt || basedOn}
-            </Text>
-          </View>
+          {renderPriceContainer()}
         </View>
 
         {isExpanded && showSubscriptions && (

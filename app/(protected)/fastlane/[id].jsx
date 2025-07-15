@@ -1,13 +1,13 @@
 import React, { useCallback, useEffect, useState } from "react";
 import {
-  Alert,
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
+    Alert,
+    SafeAreaView,
+    ScrollView,
+    StatusBar,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
 } from "react-native";
 import { COLORS } from "../../constants";
 import { getFastlaneData, getFastlaneHistoryData } from "../../utils/apiCaller";
@@ -41,7 +41,7 @@ const FastLane = () => {
                     const response = await getFastlaneData(token, id);
                     const data = response?.data?.services || [];
                     const sortedData = data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-                    
+
                     setFastlaneData(sortedData || []);
                 } catch (error) {
                     Alert.alert(
@@ -244,7 +244,7 @@ const FastLane = () => {
                         onPress={() => setActiveTab('recommendations')}
                     >
                         <Text style={[styles.tabText, activeTab === 'recommendations' && styles.activeTabText]}>
-                            Recommendations
+                            Active
                         </Text>
                     </TouchableOpacity>
                     <TouchableOpacity
