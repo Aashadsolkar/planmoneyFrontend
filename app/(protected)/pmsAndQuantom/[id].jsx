@@ -127,7 +127,7 @@ const PmsAndQuantom = () => {
                         <Entypo name="new" size={100} color={COLORS.secondaryColor} style={{ marginBottom: 20 }} />
                     </Animatable.View>
                     <Animatable.Text animation="pulse" iterationCount="infinite" duration={2000} style={styles.text}>
-                        No Recommendations available.
+                        {status == "active" ? "No Recommendations available.": "No history found."}
                     </Animatable.Text>
                 </View>
             );
