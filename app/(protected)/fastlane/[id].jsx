@@ -102,7 +102,7 @@ const FastLane = () => {
         return label[riskLevel?.toLowerCase()] || "NA";
     };
 
-    const renderCardList = (dataList) => {
+    const renderCardList = (dataList, status) => {
         if (dataList.length === 0) {
             return (
                 <View style={styles.content}>
@@ -115,7 +115,7 @@ const FastLane = () => {
                         duration={2000}
                         style={styles.text}
                     >
-                        No Recommendations available.
+                        {status == "active" ? "No Recommendations available.": "No history found."}
                     </Animatable.Text>
                 </View>
             );
@@ -261,7 +261,7 @@ const FastLane = () => {
                 {activeTab === 'history' && historyData.length > 0 && <Text style={styles.heading}>Recommendation History</Text>}
 
                 <View style={{ marginBottom: 50 }}>
-                    {activeTab === 'recommendations' ? renderCardList(fastlaneData) : renderCardList(historyData)}
+                    {activeTab === 'recommendations' ? renderCardList(fastlaneData,"active") : renderCardList(historyData, "inActive")}
                 </View>
             </ScrollView>
         </SafeAreaView>
