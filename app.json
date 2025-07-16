@@ -6,7 +6,6 @@
     "orientation": "portrait",
     "scheme": "planmoney",
     "userInterfaceStyle": "automatic",
-   
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true
@@ -33,6 +32,7 @@
       ],
       "googleServicesFile": "./google-services.json",
       "package": "com.aashadsolkar.PlanMoney",
+      "softwareKeyboardLayoutMode": "pan"
      
     },
     "web": {
