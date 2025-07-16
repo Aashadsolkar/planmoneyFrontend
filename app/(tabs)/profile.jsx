@@ -30,15 +30,18 @@ import {
 import AntDesign from "@expo/vector-icons/AntDesign";
 import Input from "../components/Input";
 import * as Animatable from "react-native-animatable";
+import { showToast } from "../components/CustomeToast/ToastService";
 
 const { width, height } = Dimensions.get("window");
 
 export default function App() {
   const { profileData, token, setGetCustomerDataAgain } = useAuth();
   const [mobileVerified, setMobileVerified] = useState(() =>
-    profileData?.phone_verified_at == null ? false : true);
+    profileData?.phone_verified_at == null ? false : true
+  );
   const [emailVerified, setEmailVerified] = useState(() =>
-    profileData?.email_verified_at == null ? false : true);
+    profileData?.email_verified_at == null ? false : true
+  );
   const [showOTPModal, setShowOTPModal] = useState(false);
   const [verificationType, setVerificationType] = useState("");
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
@@ -95,42 +98,10 @@ export default function App() {
     }
   };
 
-  // const handleVerifyPress = async (type) => {
-  //   if (type == "email") {
-  //     try {
-  //       setIsEmailOtpLoading(true)
-  //       const payload = {
-  //         email: profileData?.email
-  //       }
-  //       const response = await generateVerifyEmailOpt(token, payload);
-  //       setVerificationType(type)
-  //       setShowOTPModal(true)
-  //       setOtp(["", "", "", "", "", ""])
-  //       setTimeout(() => otpInputs.current[0]?.focus(), 100)
-  //       setIsEmailOtpLoading(false)
-  //       setGetCustomerDataAgain(true);
-  //     } catch (error) {
-  //       setIsEmailOtpLoading(false);
-  //       Alert.alert(
-  //         "Error",
-  //         error?.message || "Failed to generate email otp",
-  //         [
-  //           {
-  //             text: "OK",
-  //             onPress: () => router.push("home"),
-  //           },
-  //         ]
-  //       );
-  //     }
-  //   } else {
-  //     router.push("upcoming");
-  //   }
-  // }
-
   const handleVerifyPress = async (type) => {
     try {
       if (type === "email") {
-        setIsEMailApiLoading(true)
+        setIsEMailApiLoading(true);
         setOtpLoading(true);
         const payload = {
           email: profileData?.email,
@@ -185,6 +156,7 @@ export default function App() {
       const response = await verifyEmailOpt(token, payload);
       setEmailVerified(true);
       setShowOTPModal(false);
+      setOtp(["", "", "", "", "", ""]);
       Alert.alert(
         "Success",
         `${
@@ -210,7 +182,7 @@ export default function App() {
 
       setMobileVerified(true);
       setShowOTPModal(false);
-
+      setOtp(["", "", "", "", "", ""]);
       Alert.alert("Success", "Mobile number verified successfully!");
     } catch (error) {
       Alert.alert("Error", error?.message || "Failed to verify OTP", [
@@ -231,7 +203,12 @@ export default function App() {
         verifyEmailOtp();
       }
     } else {
-      Alert.alert("Error", "Please enter complete OTP");
+      showToast({
+        type: "Error",
+        title: "OTP error",
+        message: "Please enter complete OTP!",
+      });
+      // Alert.alert("Error", "Please enter complete OTP");
     }
   };
 
@@ -386,8 +363,11 @@ export default function App() {
                     style={styles.verifyButton}
                     onPress={() => handleVerifyPress("mobile")}
                   >
-                    {isSMSApiLoading ? <ActivityIndicator color={"#fff"} size="small" /> : <Text style={styles.verifyButtonText}>Verify Now</Text>}
-
+                    {isSMSApiLoading ? (
+                      <ActivityIndicator color={"#fff"} size="small" />
+                    ) : (
+                      <Text style={styles.verifyButtonText}>Verify Now</Text>
+                    )}
                   </TouchableOpacity>
                 )}
               </View>

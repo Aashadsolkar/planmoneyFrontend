@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { View } from "react-native";
 import { Slot, useRouter } from "expo-router";
-
+import Toast from "react-native-toast-message";
 import { Provider as PaperProvider } from "react-native-paper";
 import * as SplashScreen from "expo-splash-screen";
 import * as Linking from "expo-linking";
@@ -9,7 +9,11 @@ import AuthProvider from "./context/AuthContext";
 import NoInternetScreen from "./components/OfflineScreen";
 import NetInfo from "@react-native-community/netinfo";
 import CustomSplash from "./components/CustomSplashScreen";
-import { getExpoPushToken, configureNotificationChannel } from "../push-notification/notificationService";
+import {
+  getExpoPushToken,
+  configureNotificationChannel,
+} from "../push-notification/notificationService";
+import { toastConfig } from "./components/CustomeToast/ToastConfig";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -80,6 +84,7 @@ const RootLayout = () => {
         <View style={{ flex: 1 }}>
           <Slot />
         </View>
+        <Toast config={toastConfig} />
       </PaperProvider>
     </AuthProvider>
   ) : (

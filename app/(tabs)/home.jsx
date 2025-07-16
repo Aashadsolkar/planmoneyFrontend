@@ -708,7 +708,7 @@ const styles = StyleSheet.create({
   },
   sectionContainer: {
     marginTop: 8,
-    paddingStart: 20,
+    paddingStart: 18,
   },
   sectionTitle: {
     color: "white",
@@ -717,7 +717,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   servicesListContainer: {
-    paddingRight: 20,
+    paddingRight: 18,
   },
   serviceCard: {
     width: SERVICE_CARD_WIDTH,
@@ -753,11 +753,11 @@ const styles = StyleSheet.create({
     marginTop: "auto",
   },
   linksContainer: {
+    flex:1,
     flexDirection: "row",
     justifyContent: "space-between",
-    paddingHorizontal: 30,
-    marginTop: 10,
-    marginBottom: 20,
+    marginHorizontal:20,
+    marginVertical:15,
   },
   linkItem: {
     alignItems: "center",
@@ -777,7 +777,7 @@ const styles = StyleSheet.create({
   },
   newsContainer: {
     paddingHorizontal: 20,
-    marginBottom: 30,
+    marginVertical: 10,
   },
   newsHeader: {
     flexDirection: "row",
