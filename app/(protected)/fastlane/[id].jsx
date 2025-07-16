@@ -202,7 +202,7 @@ const FastLane = () => {
                         <Image
                             source={require('../../../assets/images/questionCirlce.png')}
                             style={styles.logo}
-                            resizeMode="contain"
+                            contentFit="contain"
                         />
                         <Text style={{ fontSize: 25, fontWeight: 600, color: COLORS.fontWhite, paddingVertical: 20 }}>Oops..!</Text>
                         <Text style={{ fontSize: 14, color: COLORS.fontWhite, paddingVertical: 20, textAlign: "center", width: 250 }}>

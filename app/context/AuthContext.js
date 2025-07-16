@@ -1,8 +1,8 @@
-import React, { createContext, useEffect, useState } from 'react';
-import { Alert, StyleSheet, View } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { customerService } from '../utils/apiCaller';
-import { router } from 'expo-router';
+import React, { createContext, useEffect, useState } from "react";
+import { Alert, StyleSheet, View } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { customerService } from "../utils/apiCaller";
+import { router } from "expo-router";
 
 export const AuthContext = createContext();
 
@@ -15,33 +15,41 @@ const AuthProvider = ({ children }) => {
   const [allServices, setAllServices] = useState([]);
   const [skipServices, setSkipServices] = useState(false);
   const [skipQuestioniar, setSkipQuestioniar] = useState(false);
-  const [serviceSelectedOnHomePage, setServiceSelectedOnHomePage] = useState(null);
+  const [serviceSelectedOnHomePage, setServiceSelectedOnHomePage] =
+    useState(null);
   const [profileData, setProfileData] = useState({});
-  const [orderConfirmDetails, setOrderCinfirmDetails] = useState({})
-  const [questionFormData, setQuestionFormData] = useState(null)
+  const [orderConfirmDetails, setOrderCinfirmDetails] = useState({});
+  const [questionFormData, setQuestionFormData] = useState(null);
   const [prePaymentDetails, setPrePaymentDetails] = useState(null);
-  const [customerServiceData, setCustomerServiceData] = useState("")
-  const [riskData, setRiskData] = useState("")
-  const [reportData, setReportData] = useState({})
-  const [portfolioServices, setPortfolioServices] = useState([])
+  const [customerServiceData, setCustomerServiceData] = useState("");
+  const [riskData, setRiskData] = useState("");
+  const [reportData, setReportData] = useState({});
+  const [portfolioServices, setPortfolioServices] = useState([]);
   const [getCustomerDataAgain, setGetCustomerDataAgain] = useState(true);
   const [newsData, setNewsData] = useState([]);
   const [isProfileLoading, setIsProfileLoading] = useState(false);
   const [newArrivalsDetails, setNewArrivalsDetails] = useState([]);
   const [optionStockData, setOptionStockData] = useState([]);
-  const [isQuestionerFillderByAdvisor, setIsQuestionerFillderByAdvisor] = useState(false);
+  const [isQuestionerFillderByAdvisor, setIsQuestionerFillderByAdvisor] =
+    useState(false);
   const [digiLockerRequestId, setDigiLockerRequestId] = useState(false);
   const [advertisement, setAdvertisement] = useState([]);
 
   useEffect(() => {
     const loadSession = async () => {
-      const storedToken = await AsyncStorage.getItem('token');
-      const storedUser = await AsyncStorage.getItem('user');
-      if (storedToken && storedUser) {
-        setToken(storedToken);
-        setUser(JSON.parse(storedUser || {}));
+      try {
+        const storedToken = await AsyncStorage.getItem("token");
+        const storedUser = await AsyncStorage.getItem("user");
+
+        if (storedToken && storedUser) {
+          setToken(storedToken);
+          setUser(JSON.parse(storedUser));
+        }
+      } catch (e) {
+        console.error("Failed to load auth session", e);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
 
     loadSession();
@@ -50,18 +58,20 @@ const AuthProvider = ({ children }) => {
   const storeUserData = async (user, token) => {
     setToken(token);
     setUser(user);
-    await AsyncStorage.setItem('token', token);
-    await AsyncStorage.setItem('user', JSON.stringify(user));
+    await AsyncStorage.setItem("token", token);
+    await AsyncStorage.setItem("user", JSON.stringify(user));
   };
 
   const verifyOtp = async (phone, otp) => {
-    const { token, user } = { token: "1231231312asda", user: { name: "Aashad" } };
+    const { token, user } = {
+      token: "1231231312asda",
+      user: { name: "Aashad" },
+    };
     setToken(token);
     setUser(user);
-    await AsyncStorage.setItem('token', token);
-    await AsyncStorage.setItem('user', JSON.stringify(user));
+    await AsyncStorage.setItem("token", token);
+    await AsyncStorage.setItem("user", JSON.stringify(user));
   };
-
 
   const logout = async () => {
     setToken(null);
@@ -74,75 +84,75 @@ const AuthProvider = ({ children }) => {
     setQuestionFormData(null);
     setPrePaymentDetails(null);
     setCustomerServiceData("");
-    setRiskData("")
+    setRiskData("");
     setPortfolioServices([]);
-    setReportData({})
+    setReportData({});
     setPurchesService([]);
     setSelectedService([]);
     setAllServices([]);
-    setGetCustomerDataAgain(true)
-    router.push("login")
+    setGetCustomerDataAgain(true);
+    router.push("login");
     await AsyncStorage.clear();
   };
 
-
-
   return (
-    <AuthContext.Provider value={{
-      user,
-      token, storeUserData,
-      verifyOtp,
-      logout,
-      loading,
-      setSelectedService,
-      selectedService,
-      setPurchesService,
-      purchesService,
-      setAllServices,
-      allServices,
-      skipServices,
-      setSkipServices,
-      serviceSelectedOnHomePage,
-      setServiceSelectedOnHomePage,
-      setProfileData,
-      profileData,
-      setOrderCinfirmDetails,
-      orderConfirmDetails,
-      questionFormData,
-      setQuestionFormData,
-      setPrePaymentDetails,
-      prePaymentDetails,
-      customerServiceData,
-      setCustomerServiceData,
-      riskData,
-      setRiskData,
-      setReportData,
-      reportData,
-      setSkipQuestioniar,
-      skipQuestioniar,
-      portfolioServices,
-      setGetCustomerDataAgain,
-      getCustomerDataAgain,
-      setPortfolioServices,
-      setNewsData,
-      newsData,
-      isProfileLoading,
-      setIsProfileLoading,
-      newArrivalsDetails,
-      setNewArrivalsDetails,
-      setOptionStockData,
-      optionStockData,
-      setIsQuestionerFillderByAdvisor,
-      isQuestionerFillderByAdvisor,
-      setDigiLockerRequestId,
-      digiLockerRequestId,
-      setAdvertisement,
-      advertisement
-    }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        token,
+        storeUserData,
+        verifyOtp,
+        logout,
+        loading,
+        setSelectedService,
+        selectedService,
+        setPurchesService,
+        purchesService,
+        setAllServices,
+        allServices,
+        skipServices,
+        setSkipServices,
+        serviceSelectedOnHomePage,
+        setServiceSelectedOnHomePage,
+        setProfileData,
+        profileData,
+        setOrderCinfirmDetails,
+        orderConfirmDetails,
+        questionFormData,
+        setQuestionFormData,
+        setPrePaymentDetails,
+        prePaymentDetails,
+        customerServiceData,
+        setCustomerServiceData,
+        riskData,
+        setRiskData,
+        setReportData,
+        reportData,
+        setSkipQuestioniar,
+        skipQuestioniar,
+        portfolioServices,
+        setGetCustomerDataAgain,
+        getCustomerDataAgain,
+        setPortfolioServices,
+        setNewsData,
+        newsData,
+        isProfileLoading,
+        setIsProfileLoading,
+        newArrivalsDetails,
+        setNewArrivalsDetails,
+        setOptionStockData,
+        optionStockData,
+        setIsQuestionerFillderByAdvisor,
+        isQuestionerFillderByAdvisor,
+        setDigiLockerRequestId,
+        digiLockerRequestId,
+        setAdvertisement,
+        advertisement,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
-}
+};
 
-export default AuthProvider
-
+export default AuthProvider;
