@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, SafeAreaView, StatusBar, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, SafeAreaView, StatusBar } from 'react-native';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { COLORS } from '../constants';
 import Header from '../components/Header';
@@ -10,6 +10,7 @@ import { newArrivals, service } from '../utils/apiCaller';
 import SkeletonList from '../components/ListSkeleton';
 import * as Animatable from 'react-native-animatable';
 import Entypo from '@expo/vector-icons/Entypo';
+import { showToast } from "../components/CustomeToast/ToastService";
 
 const HomeScreen = () => {
   const { token, setNewArrivalsDetails, setSelectedService } = useAuth()
@@ -57,16 +58,12 @@ const HomeScreen = () => {
       setIsLoading(false);
     } catch (error) {
       setIsLoading(false);
-      Alert.alert(
-        "Error",
-        error?.message || "Failed to get New Arrivals Data.",
-        [
-          {
-            text: "OK",
-            onPress: () => router.push("home"),
-          },
-        ]
-      );
+      showToast({
+        type: "error",
+        title: `Something went wrong! 😥`,
+        message: `${error?.message || "Failed to get New Arrivals Data."}`,
+        redirectPath: "home",
+      });
     }
   }
 

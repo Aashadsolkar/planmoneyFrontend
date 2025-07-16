@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Alert,  SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { COLORS } from '../../constants';
 import { getFastlaneData, getFastlaneHistoryData } from '../../utils/apiCaller';
 import { useAuth } from '../../context/useAuth';
@@ -14,6 +14,7 @@ import * as Linking from "expo-linking";
 import * as Animatable from "react-native-animatable";
 import Entypo from '@expo/vector-icons/Entypo';
 import { Image } from 'expo-image';
+import { showToast } from "../../components/CustomeToast/ToastService";
 
 const PmsAndQuantom = () => {
     const { id, advisor_name, advisor_nummber, is_advisor_assign } = useLocalSearchParams();
@@ -36,9 +37,12 @@ const PmsAndQuantom = () => {
                     setFastlaneData(sortedData);
                     setHistoryData(sortedData.slice(1, 3)); // Dummy history
                 } catch (error) {
-                    Alert.alert("Error", error?.message || "Failed to get service data", [
-                        { text: "OK", onPress: () => router.push("home") },
-                    ]);
+                    showToast({
+                        type: "error",
+                        title: `Something went wrong! 😥`,
+                        message: `${error?.message || "Failed to get service data"}`,
+                        redirectPath: "home",
+                    });
                 } finally {
                     setIsLoading(false);
                 }
@@ -64,11 +68,12 @@ const PmsAndQuantom = () => {
 
                     setHistoryData(sortedData || []);
                 } catch (error) {
-                    Alert.alert(
-                        "Error",
-                        error?.message || "Failed to get service history data",
-                        [{ text: "OK", onPress: () => router.push("home") }],
-                    );
+                    showToast({
+                        type: "error",
+                        title: `Something went wrong! 😥`,
+                        message: `${error?.message || "Failed to get service history data"}`,
+                        redirectPath: "home",
+                    });
                 } finally {
                     setIsHistoryLoading(false);
                 }
@@ -128,7 +133,7 @@ const PmsAndQuantom = () => {
                         <Entypo name="new" size={100} color={COLORS.secondaryColor} style={{ marginBottom: 20 }} />
                     </Animatable.View>
                     <Animatable.Text animation="pulse" iterationCount="infinite" duration={2000} style={styles.text}>
-                        {status == "active" ? "No Recommendations available.": "No history found."}
+                        {status == "active" ? "No Recommendations available." : "No history found."}
                     </Animatable.Text>
                 </View>
             );
@@ -189,7 +194,10 @@ const PmsAndQuantom = () => {
                             <Text style={styles.lightText}>Duration</Text>
                             <Text style={styles.boldText}>{data?.holding_period || ""} days</Text>
                         </View>
-                        <View style={{ flex: 1 }} />
+                        <View style={{ flex: 1 }}>
+                            <Text style={styles.lightText}>Quantity</Text>
+                            <Text style={styles.boldText}>{data?.qty || ""}</Text>
+                        </View>
                     </View>
                     <View style={[styles.cardSections, { borderBottomColor: COLORS.cardColor }]}>
                         <TouchableOpacity
@@ -236,7 +244,12 @@ const PmsAndQuantom = () => {
     const openDialer = () => {
         const url = `tel:${advisor_nummber}`;
         Linking.openURL(url).catch((err) =>
-            Alert.alert('Error', 'Unable to open dialer')
+            showToast({
+                type: "error",
+                title: `Something went wrong! 😥`,
+                message: `Unable to open dialer`,
+                redirectPath: "home",
+            })
         );
     };
 
@@ -284,7 +297,7 @@ const PmsAndQuantom = () => {
                         <Image
                             source={require('../../../assets/images/rightCircle.png')}
                             style={styles.logo}
-                           contentFit="contain"
+                            contentFit="contain"
                         />
                         <Text style={{ fontSize: 25, fontWeight: 600, color: COLORS.fontWhite, paddingVertical: 20, textAlign: "center", width: 220 }}>Your Profile is Under Verification</Text>
                         <Text style={{ fontSize: 14, fontWeight: 400, color: COLORS.fontWhite, paddingVertical: 20, textAlign: "center", width: 250 }}>Please wait until our Advisor Approves your Profile</Text>

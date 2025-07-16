@@ -6,7 +6,6 @@ import {
   TouchableOpacity,
   Modal,
   TextInput,
-  Alert,
   Dimensions,
   StatusBar,
   KeyboardAvoidingView,
@@ -88,12 +87,12 @@ export default function App() {
         setIsUpdateCapitalLoading(false);
       } catch (error) {
         setIsUpdateCapitalLoading(false);
-        Alert.alert("Error", error?.message || "Failed to update capital", [
-          {
-            text: "OK",
-            onPress: () => router.push("home"),
-          },
-        ]);
+        showToast({
+          type: "error",
+          title: `Something went wrong! 😥`,
+          message: `${error?.message || "Failed to update capital"}`,
+          redirectPath: "home",
+        });
       }
     }
   };
@@ -125,15 +124,13 @@ export default function App() {
         setGetCustomerDataAgain(true);
       }
     } catch (error) {
-      setIsEmailOtpLoading(false);
       setIsMobileOtpLoading(false);
-
-      Alert.alert("Error", error?.message || "Failed to generate OTP", [
-        {
-          text: "OK",
-          onPress: () => router.push("home"),
-        },
-      ]);
+      showToast({
+        type: "error",
+        title: `Something went wrong! 😥`,
+        message: `${error?.message || "Failed to generate OTP"}`,
+        redirectPath: "home",
+      });
     }
   };
 
@@ -157,19 +154,16 @@ export default function App() {
       setEmailVerified(true);
       setShowOTPModal(false);
       setOtp(["", "", "", "", "", ""]);
-      Alert.alert(
-        "Success",
-        `${
-          verificationType === "mobile" ? "Mobile number" : "Email address"
-        } verified successfully!`
-      );
+      showToast({
+        message: `${verificationType === "mobile" ? "Mobile number" : "Email address"} verified successfully!`,
+      });
     } catch (error) {
-      Alert.alert("Error", error?.message || "Failed to verify otp", [
-        {
-          text: "OK",
-          onPress: () => router.push("home"),
-        },
-      ]);
+      showToast({
+        type: "error",
+        title: `Something went wrong! 😥`,
+        message: `${error?.message || "Failed to verify otp"}`,
+        redirectPath: "home",
+      });
     }
   };
 
@@ -183,14 +177,16 @@ export default function App() {
       setMobileVerified(true);
       setShowOTPModal(false);
       setOtp(["", "", "", "", "", ""]);
-      Alert.alert("Success", "Mobile number verified successfully!");
+      showToast({
+        message: "Mobile number verified successfully!",
+      });
     } catch (error) {
-      Alert.alert("Error", error?.message || "Failed to verify OTP", [
-        {
-          text: "OK",
-          onPress: () => router.push("home"),
-        },
-      ]);
+      showToast({
+        type: "error",
+        title: `Something went wrong! 😥`,
+        message: `${error?.message || "Failed to verify OTP"}`,
+        redirectPath: "home",
+      });
     }
   };
 
@@ -212,14 +208,6 @@ export default function App() {
     }
   };
 
-  const handleResendOTP = () => {
-    Alert.alert(
-      "OTP Sent",
-      `OTP has been resent to your ${
-        verificationType === "mobile" ? "mobile number" : "email address"
-      }`
-    );
-  };
 
   // Format currency
   const formatCurrency = useCallback((amount) => {

@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
 import {
-    Alert,
     SafeAreaView,
     ScrollView,
     StatusBar,
@@ -22,6 +21,7 @@ import FullScreenLoader from "../../components/FullScreenLoader";
 import * as Animatable from "react-native-animatable";
 import Entypo from "@expo/vector-icons/Entypo";
 import { Image } from "expo-image";
+import { showToast } from "../../components/CustomeToast/ToastService";
 
 const FastLane = () => {
     const { token, customerServiceData, setReportData } = useAuth();
@@ -44,11 +44,12 @@ const FastLane = () => {
 
                     setFastlaneData(sortedData || []);
                 } catch (error) {
-                    Alert.alert(
-                        "Error",
-                        error?.message || "Failed to get service data",
-                        [{ text: "OK", onPress: () => router.push("home") }],
-                    );
+                    showToast({
+                        type: "error",
+                        title: `Something went wrong! 😥`,
+                        message: `${error?.message || "Failed to get service data"}`,
+                        redirectPath: "home",
+                    });
                 } finally {
                     setIsLoading(false);
                 }
@@ -69,11 +70,12 @@ const FastLane = () => {
                     const sortedData = data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
                     setHistoryData(sortedData || []);
                 } catch (error) {
-                    Alert.alert(
-                        "Error",
-                        error?.message || "Failed to get service history data",
-                        [{ text: "OK", onPress: () => router.push("home") }],
-                    );
+                    showToast({
+                        type: "error",
+                        title: `Something went wrong! 😥`,
+                        message: `${error?.message || "Failed to get service history data"}`,
+                        redirectPath: "home",
+                    });
                 } finally {
                     setIsHistoryLoading(false);
                 }
@@ -115,7 +117,7 @@ const FastLane = () => {
                         duration={2000}
                         style={styles.text}
                     >
-                        {status == "active" ? "No Recommendations available.": "No history found."}
+                        {status == "active" ? "No Recommendations available." : "No history found."}
                     </Animatable.Text>
                 </View>
             );
@@ -261,7 +263,7 @@ const FastLane = () => {
                 {activeTab === 'history' && historyData.length > 0 && <Text style={styles.heading}>Recommendation History</Text>}
 
                 <View style={{ marginBottom: 50 }}>
-                    {activeTab === 'recommendations' ? renderCardList(fastlaneData,"active") : renderCardList(historyData, "inActive")}
+                    {activeTab === 'recommendations' ? renderCardList(fastlaneData, "active") : renderCardList(historyData, "inActive")}
                 </View>
             </ScrollView>
         </SafeAreaView>

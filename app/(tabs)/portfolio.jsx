@@ -2,7 +2,6 @@ import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
-  Alert,
   SafeAreaView,
   ScrollView,
   StatusBar,
