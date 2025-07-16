@@ -92,7 +92,8 @@ export default function Checkout() {
     }
   };
 
-  const totalPrice = selectedService.offer_price - discount;
+  const basePrice = selectedService.offer_price ?? selectedService.actual_price;
+  const totalPrice = basePrice - discount;
 
   const applyCoupon = async () => {
     try {
@@ -165,6 +166,32 @@ export default function Checkout() {
     return `Expires on ${formattedDate}`;
   };
 
+  const renderOfferPrice = (actual, offer) => {
+
+    // If no offer price, show only actual price
+    if (!offer) {
+      // return <Text style={[styles.discounted, { paddingTop: 10 }]}>₹{actual}</Text>;
+      return <Text style={styles.subscriptionPrice}>₹{actual}</Text>
+    }
+
+    // If both prices are same, show only one
+    if (actual === offer) {
+      return <Text style={styles.subscriptionPrice}>₹{offer}</Text>;
+    }
+
+    // Show original (strikethrough) and discounted
+    return (
+      <>
+        <Text style={[styles.subscriptionPrice, {
+          fontWeight: 400,
+          color: COLORS.lightGray,
+          textDecorationLine: "line-through",
+        },]}>₹{actual}</Text>
+        <Text style={styles.subscriptionPrice}>₹{offer}</Text>
+      </>
+    );
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor={COLORS.cardColor} />
@@ -230,34 +257,21 @@ export default function Checkout() {
               marginBottom: 10,
             }}
           >
-            <View style={styles.subscriptionHeader}>
-              <Text style={styles.subscriptionTitle}>
-                {selectedService?.name}
-              </Text>
-              <Text style={styles.subscriptionDuration}>
-                {selectedService?.billing_cycle || ""}
-              </Text>
-              <Text
-                style={[
-                  styles.subscriptionPrice,
-                  {
-                    fontWeight: 400,
-                    color: COLORS.lightGray,
-                    textDecorationLine: "line-through",
-                  },
-                ]}
-              >
-                {selectedService?.actual_price &&
-                  "₹" + selectedService?.actual_price}
-              </Text>
-            </View>
-            <View style={[styles.subscriptionHeader]}>
-              <Text style={styles.expiryText}>
-                {getPlanExpiryDate(selectedService?.billing_cycle)}
-              </Text>
-              <Text style={styles.subscriptionPrice}>
-                ₹{selectedService?.offer_price}
-              </Text>
+            <View style={[styles.subscriptionHeader, { alignItems: "flex-start" }]}>
+              <View style={{ flex: 1 }}>
+                <Text style={[styles.subscriptionTitle]}>
+                  {selectedService?.name}
+                </Text>
+                <Text style={styles.expiryText}>
+                  {getPlanExpiryDate(selectedService?.billing_cycle)}
+                </Text>
+              </View>
+              <View style={{}}>
+                {renderOfferPrice(selectedService?.actual_price, selectedService?.offer_price)}
+                <Text style={[styles.subscriptionDuration]}>
+                  {selectedService?.billing_cycle || ""}
+                </Text>
+              </View>
             </View>
           </View>
 
@@ -492,9 +506,11 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   subscriptionDuration: {
-    color: "#CCC",
-    fontSize: 10,
-    marginLeft: 4,
+    color: "#ccc",
+    fontSize: 12,
+    textTransform: "capitalize",
+    fontWeight: "bold",
+    textAlign: "right"
   },
   subscriptionPrice: {
     color: "white",
