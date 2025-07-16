@@ -49,15 +49,6 @@ export default function ProtectedTabs() {
         }}
       />
       <Tabs.Screen
-        name="profile"
-        options={{
-          title: 'Account',
-          tabBarIcon: ({ color }) => (
-            <FontAwesome size={28} name="user-circle-o" color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
         name="mutualFund"
         options={{
           title: 'Mututal Fund',
@@ -66,6 +57,16 @@ export default function ProtectedTabs() {
           ),
         }}
       />
+      <Tabs.Screen
+        name="profile"
+        options={{
+          title: 'Account',
+          tabBarIcon: ({ color }) => (
+            <FontAwesome size={28} name="user-circle-o" color={color} />
+          ),
+        }}
+      />
+
     </Tabs>
   );
 }
