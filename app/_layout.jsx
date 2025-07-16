@@ -14,6 +14,7 @@ import {
   configureNotificationChannel,
 } from "../push-notification/notificationService";
 import { toastConfig } from "./components/CustomeToast/ToastConfig";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -43,7 +44,7 @@ const RootLayout = () => {
         console.warn("Error hiding splash screen:", error);
         setShowCustomSplash(true);
       }
-    }, 50);
+    }, 30);
 
     // Timer 2: Hide custom splash after 2100ms total (100ms + 2000ms)
     const hideCustomSplashTimer = setTimeout(() => {
@@ -64,7 +65,6 @@ const RootLayout = () => {
 
     return () => unsubscribe();
   }, []);
-
   useEffect(() => {
     (async () => {
       await configureNotificationChannel();

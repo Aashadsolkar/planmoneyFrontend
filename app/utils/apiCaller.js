@@ -1,12 +1,16 @@
-// utils/apiCaller.js
+
 import axios from 'axios';
 import { SERVICE_API_ENDPOINTS } from './apis/apiEndPoints';
+import Constants from "expo-constants";
+
+const { API_URL } = Constants.expoConfig.extra;
+
 
 export const login = async (data = null) => {
   try {
     const response = await axios({
       method: "POST",
-      url: "https://admin.planmoney.in/api/customer/login",
+      url: `${API_URL}/api/customer/login`,
       data,
       headers: {
         'Content-Type': 'application/json',
@@ -23,7 +27,7 @@ export const registor = async (data = null) => {
   try {
     const response = await axios({
       method: "POST",
-      url: "https://admin.planmoney.in/api/customer/register",
+      url: `${API_URL}/api/customer/register`,
       data,
       headers: {
         'Content-Type': 'application/json',
@@ -41,7 +45,7 @@ export const service = async () => {
   try {
     const response = await axios({
       method: "GET",
-      url: "https://admin.planmoney.in/api/services",
+      url: `${API_URL}/api/services`,
       headers: {
         'Content-Type': 'application/json',
       },
@@ -57,7 +61,7 @@ export const customerService = async (token) => {
   try {
     const response = await axios({
       method: "GET",
-      url: "https://admin.planmoney.in/api/customer/customer-details",
+      url: `${API_URL}/api/customer/customer-details`,
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer${token}`
@@ -74,7 +78,7 @@ export const applyCouponApi = async (token, data) => {
   try {
     const response = await axios({
       method: "POST",
-      url: "https://admin.planmoney.in/api/customer/apply-coupon",
+      url: `${API_URL}/api/customer/apply-coupon`,
       data,
       headers: {
         'Content-Type': 'application/json',
@@ -89,11 +93,10 @@ export const applyCouponApi = async (token, data) => {
 };
 
 export const getFastlaneData = async (token, id) => {
-  // url https://admin.planmoney.in/api/customer/services/1
   try {
     const response = await axios({
       method: "GET",
-      url: `https://admin.planmoney.in/api/customer/services/${id}`,
+      url: `${API_URL}/api/customer/services/${id}`,
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer${token}`
@@ -111,7 +114,7 @@ export const getProfileData = async (token) => {
   try {
     const response = await axios({
       method: "GET",
-      url: "https://admin.planmoney.in/api/customer/profile",
+      url: `${API_URL}/api/customer/profile`,
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer${token}`
@@ -128,7 +131,7 @@ export const countryApi = async (token) => {
   try {
     const response = await axios({
       method: "GET",
-      url: "https://admin.planmoney.in/api/country",
+      url: `${API_URL}/api/country`,
       headers: {
         'Content-Type': 'application/json',
         
@@ -145,7 +148,7 @@ export const stateApi = async (stateId) => {
   try {
     const response = await axios({
       method: "GET",
-      url: `https://admin.planmoney.in/api/state/${stateId}`,
+      url: `${API_URL}/api/state/${stateId}`,
       headers: {
         'Content-Type': 'application/json',
       },
@@ -161,7 +164,7 @@ export const cityApi = async (id) => {
   try {
     const response = await axios({
       method: "GET",
-      url: `https://admin.planmoney.in/api/cities/${id}`,
+      url: `${API_URL}/api/cities/${id}`,
       headers: {
         'Content-Type': 'application/json',
         
@@ -179,7 +182,7 @@ export const quetionerApi = async (token, data) => {
   try {
     const response = await axios({
       method: "POST",
-      url: "https://admin.planmoney.in/api/customer/questionnaire",
+      url: `${API_URL}/api/customer/questionnaire`,
       data,
       headers: {
         'Content-Type': 'application/json',
@@ -197,7 +200,7 @@ export const pgCreateOrder = async (token, data) => {
   try {
     const response = await axios({
       method: "POST",
-      url: "https://admin.planmoney.in/api/cashfree/create-order",
+      url: `${API_URL}/api/cashfree/create-order`,
       data,
       headers: {
         'Content-Type': 'application/json',
@@ -216,7 +219,7 @@ export const pgVerifyOrder = async (token, orderId) => {
   try {
     const response = await axios({
       method: "GET",
-      url: `https://admin.planmoney.in/api/cashfree/verify/${orderId}`,
+      url: `${API_URL}/api/cashfree/verify/${orderId}`,
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer${token}`
@@ -233,7 +236,7 @@ export const buySubscription = async (token, data) => {
   try {
     const response = await axios({
       method: "POST",
-      url: `https://admin.planmoney.in/api/customer/subscribe`,
+      url: `${API_URL}/api/customer/subscribe`,
       data,
       headers: {
         'Content-Type': 'application/json',
@@ -252,7 +255,7 @@ export const leads = async (token, data) => {
   try {
     const response = await axios({
       method: "POST",
-      url: `https://admin.planmoney.in/api/customer/lead`,
+      url: `${API_URL}/api/customer/lead`,
       data,
       headers: {
         'Content-Type': 'application/json',
@@ -270,7 +273,7 @@ export const applyReferralApi = async (token, data) => {
   try {
     const response = await axios({
       method: "POST",
-      url: "https://admin.planmoney.in/api/customer/apply-referral",
+      url: `${API_URL}/api/customer/apply-referral`,
       data,
       headers: {
         'Content-Type': 'application/json',
@@ -288,7 +291,7 @@ export const BuyPmsStock = async (token, data) => {
   try {
     const response = await axios({
       method: "POST",
-      url: "https://admin.planmoney.in/api/pms-data",
+      url: `${API_URL}/api/pms-data`,
       data,
       headers: {
         'Content-Type': 'application/json',
@@ -309,7 +312,7 @@ export const requestOtp = async (data) => {
   try {
     const response = await axios({
       method: "POST",
-      url: "https://admin.planmoney.in/api/forgot-password/request-otp",
+      url: `${API_URL}/api/forgot-password/request-otp`,
       data,
       headers: {
         'Content-Type': 'application/json',
@@ -327,7 +330,7 @@ export const resetPasswordPreLogin = async (data) => {
   try {
     const response = await axios({
       method: "POST",
-      url: "https://admin.planmoney.in/api/forgot-password/reset",
+      url: `${API_URL}/api/forgot-password/reset`,
       data,
       headers: {
         'Content-Type': 'application/json',
@@ -345,7 +348,7 @@ export const verifyOtp = async (data) => {
   try {
     const response = await axios({
       method: "POST",
-      url: "https://admin.planmoney.in/api/forgot-password/verify-otp",
+      url: `${API_URL}/api/forgot-password/verify-otp`,
       data,
       headers: {
         'Content-Type': 'application/json',
@@ -364,7 +367,7 @@ export const changePassword = async (data, token) => {
   try {
     const response = await axios({
       method: "POST",
-      url: "https://admin.planmoney.in/api/customer/update-password",
+      url: `${API_URL}/api/customer/update-password`,
       data,
       headers: {
         'Content-Type': 'application/json',
@@ -382,7 +385,7 @@ export const generateVerifyEmailOpt = async (token, data) => {
   try {
     const response = await axios({
       method: "POST",
-      url: "https://admin.planmoney.in/api/customer/email/send-otp",
+      url: `${API_URL}/api/customer/email/send-otp`,
       data,
       headers: {
         'Content-Type': 'application/json',
@@ -400,7 +403,7 @@ export const verifyEmailOpt = async (token, data) => {
   try {
     const response = await axios({
       method: "POST",
-      url: "https://admin.planmoney.in/api/customer/email/verify-otp",
+      url: `${API_URL}/api/customer/email/verify-otp`,
       data,
       headers: {
         'Content-Type': 'application/json',
@@ -418,7 +421,7 @@ export const news = async (token) => {
   try {
     const response = await axios({
       method: "GET",
-      url: `https://admin.planmoney.in/api/latest-news`,
+      url: `${API_URL}/api/latest-news`,
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer${token}`
@@ -435,7 +438,7 @@ export const singleNews = async (token, id) => {
   try {
     const response = await axios({
       method: "GET",
-      url: `https://admin.planmoney.in/api/latest-news/${id}`,
+      url: `${API_URL}/api/latest-news/${id}`,
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer${token}`
@@ -452,7 +455,7 @@ export const pmsPortfolio = async (token) => {
   try {
     const response = await axios({
       method: "GET",
-      url: "https://admin.planmoney.in/api/pms-data",
+      url: `${API_URL}/api/pms-data`,
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer${token}`
@@ -469,7 +472,7 @@ export const quantomPortfolio = async (token) => {
   try {
     const response = await axios({
       method: "GET",
-      url: "https://admin.planmoney.in/api/quantumvault-data",
+      url: `${API_URL}/api/quantumvault-data`,
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer${token}`
@@ -486,7 +489,7 @@ export const BuyQuantomStock = async (token, data) => {
   try {
     const response = await axios({
       method: "POST",
-      url: "https://admin.planmoney.in/api/quantumvault-data",
+      url: `${API_URL}/api/quantumvault-data`,
       data,
       headers: {
         'Content-Type': 'application/json',
@@ -503,7 +506,7 @@ export const getCmpStock = async (token) => {
   try {
     const response = await axios({
       method: "GET",
-      url: "https://admin.planmoney.in/api/stock-daily-price",
+      url: `${API_URL}/api/stock-daily-price`,
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer${token}`
@@ -520,7 +523,7 @@ export const pisPortfolio = async (token) => {
   try {
     const response = await axios({
       method: "GET",
-      url: "https://admin.planmoney.in/api/pis-data",
+      url: `${API_URL}/api/pis-data`,
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer${token}`
@@ -537,7 +540,7 @@ export const BuyPISStock = async (token, data) => {
   try {
     const response = await axios({
       method: "POST",
-      url: "https://admin.planmoney.in/api/pis-data",
+      url: `${API_URL}/api/pis-data`,
       data,
       headers: {
         'Content-Type': 'application/json',
@@ -555,7 +558,7 @@ export const RegisterPushNotificationToken = async (deviceToken, token) => {
   try {
     const response = await axios({
       method: "POST",
-      url: "https://admin.planmoney.in/api/customer/save-device-token",
+      url: `${API_URL}/api/customer/save-device-token`,
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`, // space is important here
@@ -596,7 +599,7 @@ export const newArrivals = async (token) => {
 export const optionstocks = async (token) => {
   try {
     const response = await axios.get(
-      "https://admin.planmoney.in/api/optionstocks",
+      `${API_URL}/api/optionstocks`,
       {
         headers: {
           "Content-Type": "application/json",
@@ -618,7 +621,7 @@ export const verifyQuestioner = async (token, data) => {
   try {
     const response = await axios({
       method: "POST",
-      url: "https://admin.planmoney.in/api/customer/verify-questionnarie",
+      url: `${API_URL}/api/customer/verify-questionnarie`,
       data,
       headers: {
         'Content-Type': 'application/json',
@@ -637,7 +640,7 @@ export const sendRequestApi = async (token) => {
   try {
     const response = await axios({
       method: "POST",
-      url: "https://admin.planmoney.in/api/customer/digilocker/send",
+      url: `${API_URL}/api/customer/digilocker/send`,
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer${token}`
@@ -654,7 +657,7 @@ export const verifyKYCApi = async (token, data) => {
   try {
     const response = await axios({
       method: "POST",
-      url: "https://admin.planmoney.in/api/customer/digilocker/verify",
+      url: `${API_URL}/api/customer/digilocker/verify`,
       data,
       headers: {
         'Content-Type': 'application/json',
@@ -672,7 +675,7 @@ export const updateCapital = async (token, data) => {
   try {
     const response = await axios({
       method: "POST",
-      url: "https://admin.planmoney.in/api/customer/update-questionnaire-capitalAmount",
+      url: `${API_URL}/api/customer/update-questionnaire-capitalAmount`,
       data,
       headers: {
         'Content-Type': 'application/json',
@@ -690,7 +693,7 @@ export const createMobileOTP = async (token) => {
   try {
     const response = await axios({
       method: "POST",
-      url: "https://admin.planmoney.in/api/customer/sms/send-otp",
+      url: `${API_URL}/api/customer/sms/send-otp`,
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer${token}`
@@ -708,7 +711,7 @@ export const verifyMobileOTP = async (token, data) => {
   try {
     const response = await axios({
       method: "POST",
-      url: "https://admin.planmoney.in/api/customer/sms/verify-otp",
+      url: `${API_URL}/api/customer/sms/verify-otp`,
       data,
       headers: {
         'Content-Type': 'application/json',
@@ -723,11 +726,11 @@ export const verifyMobileOTP = async (token, data) => {
 };
 
 export const getFastlaneHistoryData = async (token, id) => {
-  // url https://admin.planmoney.in/api/customer/services/1
+  // url ${API_URL}/api/customer/services/1
   try {
     const response = await axios({
       method: "GET",
-      url: `https://admin.planmoney.in/api/customer/services-recommeded-history/${id}`,
+      url: `${API_URL}/api/customer/services-recommeded-history/${id}`,
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer${token}`
@@ -744,7 +747,7 @@ export const getAdvertisementData = async (token) => {
   try {
     const response = await axios({
       method: "GET",
-      url: `https://admin.planmoney.in/api/get-advertisement`,
+      url: `${API_URL}/api/get-advertisement`,
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer${token}`

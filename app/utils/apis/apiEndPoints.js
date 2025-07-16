@@ -1,4 +1,6 @@
-const BASE_URL = "https://admin.planmoney.in/api";
+import Constants from "expo-constants";
+const { API_URL } = Constants.expoConfig.extra;
+const BASE_URL = `${API_URL}/api`;
 
 export const CUSTOMER_API_ENDPOINTS = {
   CUSTOMER_LOGIN: `${BASE_URL}/customer/login`,

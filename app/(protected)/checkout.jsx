@@ -78,16 +78,11 @@ export default function Checkout() {
       });
     } catch (error) {
       setIsLoading(false);
-      // Alert.alert("Error", error?.message || "Create Order Api failed", [
-      //   {
-      //     text: "OK",
-      //     onPress: () => router.push("home"),
-      //   },
-      // ]);
       showToast({
         type: "error",
-        title:`Order Failed! 😥`,
-        message:`${error?.message}`
+        title: `Order Failed! 😥`,
+        message: `${error?.message}`,
+        redirectPath: "home",
       });
     }
   };

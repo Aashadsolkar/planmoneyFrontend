@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Alert, Image, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Alert,  SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { COLORS } from '../../constants';
 import { getFastlaneData, getFastlaneHistoryData } from '../../utils/apiCaller';
 import { useAuth } from '../../context/useAuth';
@@ -13,6 +13,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import * as Linking from "expo-linking";
 import * as Animatable from "react-native-animatable";
 import Entypo from '@expo/vector-icons/Entypo';
+import { Image } from 'expo-image';
 
 const PmsAndQuantom = () => {
     const { id, advisor_name, advisor_nummber, is_advisor_assign } = useLocalSearchParams();
@@ -256,7 +257,7 @@ const PmsAndQuantom = () => {
                         <Image
                             source={require('../../../assets/images/questionCirlce.png')}
                             style={styles.logo}
-                            resizeMode="contain"
+                            contentFit="contain"
                         />
                         <Text style={{ fontSize: 25, fontWeight: 600, color: COLORS.fontWhite, paddingVertical: 20 }}>Oops..!</Text>
                         <Text style={{ fontSize: 14, fontWeight: 400, color: COLORS.fontWhite, paddingVertical: 20, textAlign: "center", width: 250 }}>Its look like you have not filled your Details after Subscription</Text>
@@ -283,7 +284,7 @@ const PmsAndQuantom = () => {
                         <Image
                             source={require('../../../assets/images/rightCircle.png')}
                             style={styles.logo}
-                            resizeMode="contain"
+                           contentFit="contain"
                         />
                         <Text style={{ fontSize: 25, fontWeight: 600, color: COLORS.fontWhite, paddingVertical: 20, textAlign: "center", width: 220 }}>Your Profile is Under Verification</Text>
                         <Text style={{ fontSize: 14, fontWeight: 400, color: COLORS.fontWhite, paddingVertical: 20, textAlign: "center", width: 250 }}>Please wait until our Advisor Approves your Profile</Text>
@@ -321,7 +322,7 @@ const PmsAndQuantom = () => {
                             <Image
                                 source={require('../../../assets/images/phone-call.png')}
                                 style={styles.logo}
-                                resizeMode="contain"
+                                contentFit="contain"
                             />
                         </View>
                     </LinearGradient>
