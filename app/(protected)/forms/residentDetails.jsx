@@ -1,4 +1,4 @@
-import { View, Text, SafeAreaView, TouchableOpacity, StyleSheet, ScrollView, Dimensions, FlatList, Modal, Alert, StatusBar } from 'react-native';
+import { View, Text, SafeAreaView, TouchableOpacity, StyleSheet, Dimensions, FlatList, Modal, StatusBar } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { COLORS } from "../../constants";
 import Button from '../../components/Button';
@@ -9,6 +9,7 @@ import { TextInput } from 'react-native';
 import { countryApi } from '../../utils/apiCaller';
 import { useAuth } from '../../context/useAuth';
 const { height } = Dimensions.get("window")
+import { showToast } from "../../components/CustomeToast/ToastService";
 
 const SearchableDropdown = ({ data, value, placeholder, onSelect, searchKey, displayKey }) => {
     const [isVisible, setIsVisible] = useState(false);
@@ -84,16 +85,12 @@ const ResidentDetails = () => {
                 const response = await countryApi();
                 setCountryData(response?.data?.country)
             } catch (error) {
-                Alert.alert(
-                    "Error",
-                    error?.message || "Failed to get country data",
-                    [
-                        {
-                            text: "OK",
-                            onPress: () => router.push("home"),
-                        },
-                    ]
-                );
+                showToast({
+                    type: "error",
+                    title: `Something went wrong! 😥`,
+                    message: `${error?.message || "Failed to get country data"}`,
+                    redirectPath: "home",
+                });
 
             }
         }

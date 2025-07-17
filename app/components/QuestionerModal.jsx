@@ -1,11 +1,12 @@
 import { Ionicons } from '@expo/vector-icons';
 import React, { useState } from 'react';
-import { Alert, Dimensions, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Dimensions, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Button from './Button';
 import { COLORS } from '../constants';
 import { useAuth } from '../context/useAuth';
 import { verifyQuestioner } from '../utils/apiCaller';
 import { router } from 'expo-router';
+import { showToast } from "../components/CustomeToast/ToastService";
 
 const { height } = Dimensions.get('window');
 
@@ -53,13 +54,12 @@ const QuestionerModal = ({ isVisible, handleClose, onRefresh }) => {
             setIsLoading(false);
         } catch (error) {
             setIsLoading(false);
-            Alert.alert(
-                "Error",
-                error?.message || "Failed to submit data",
-                [
-                    { text: "OK", onPress: () => router.push("home") },
-                ]
-            );
+            showToast({
+                type: "error",
+                title: `Something went wrong! 😥`,
+                message: `${error?.message || "Failed to submit data"}`,
+                redirectPath: "home",
+            });
         }
     }
 

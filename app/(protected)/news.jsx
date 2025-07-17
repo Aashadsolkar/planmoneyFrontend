@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, SafeAreaView, ScrollView, StatusBar, Dimensions, Modal, FlatList, Alert } from "react-native"
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, SafeAreaView, ScrollView, StatusBar, Dimensions, Modal, FlatList } from "react-native"
 import { Ionicons } from "@expo/vector-icons"
 import Header from "../components/Header"
 import { COLORS } from "../constants"
@@ -7,6 +7,7 @@ import { news } from "../utils/apiCaller"
 import { useAuth } from "../context/useAuth"
 import SkeletonList from '../components/ListSkeleton';
 import { router } from "expo-router"
+import { showToast } from "../components/CustomeToast/ToastService";
 
 export default function News() {
     const { token } = useAuth();
@@ -22,16 +23,12 @@ export default function News() {
 
             } catch (error) {
                 setIsLoading(false);
-                Alert.alert(
-                    "Error",
-                    error?.message || "Failed to get news",
-                    [
-                        {
-                            text: "OK",
-                            onPress: () => router.push("home"),
-                        },
-                    ]
-                );
+                showToast({
+                    type: "error",
+                    title: `Something went wrong! 😥`,
+                    message: `${error?.message || "Failed to get news"}`,
+                    redirectPath: "home",
+                });
             }
         }
         getNew()

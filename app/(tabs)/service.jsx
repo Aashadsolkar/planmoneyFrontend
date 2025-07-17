@@ -1,5 +1,5 @@
 import React, { use, useCallback, useEffect, useState } from 'react';
-import { Alert, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import ServiceCard from '../components/ServiceCard';
 import { useAuth } from '../context/useAuth';
 import Header from '../components/Header';
@@ -9,6 +9,7 @@ import { router, useNavigation } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
 import SkeletonList from '../components/ListSkeleton';
 import { QuantomVoltIcon, FastlaneIcon, PMSIcon, PSIcon, PISIcon } from '../../assets/images/SVG';
+import { showToast } from "../components/CustomeToast/ToastService";
 
 const icon = {
     1: () => <FastlaneIcon height={33} width={33} />,
@@ -79,16 +80,13 @@ const Service = () => {
                         setAllServices(filteredData);
                     }
                 } catch (error) {
-                    Alert.alert(
-                        "Error",
-                        error?.message || "Failed to get service data",
-                        [
-                            {
-                                text: "OK",
-                                onPress: () => router.push("home"),
-                            },
-                        ]
-                    );
+                    setIsloading(false)
+                    showToast({
+                        type: "error",
+                        title: `Something went wrong! 😥`,
+                        message: `${error?.message || "Failed to get service data"}`,
+                        redirectPath: "home",
+                    });
                 }
 
             };

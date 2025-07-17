@@ -1,4 +1,4 @@
-import { View, Text, SafeAreaView, TouchableOpacity, StyleSheet, ScrollView, BackHandler, Alert, StatusBar } from 'react-native';
+import { View, Text, SafeAreaView, TouchableOpacity, StyleSheet, ScrollView, BackHandler, StatusBar } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { COLORS } from '../../constants';
 import Button from '../../components/Button';
@@ -7,6 +7,7 @@ import { router, useNavigation } from 'expo-router';
 import { quetionerApi } from '../../utils/apiCaller';
 import { useAuth } from '../../context/useAuth';
 import { Ionicons } from '@expo/vector-icons';
+import { showToast } from "../../components/CustomeToast/ToastService";
 
 const AgreementForm = () => {
   const [fatcaSeclect, setFatcaSelect] = useState(null);
@@ -49,16 +50,12 @@ const AgreementForm = () => {
         setFatcaError("");
         router.push("riskResult");
       } catch (error) {
-        Alert.alert(
-          "Error",
-          error?.message || "Questioner Api Failed",
-          [
-            {
-              text: "OK",
-              // onPress: () => router.push("home"),
-            },
-          ]
-        );
+        showToast({
+          type: "error",
+          title: `Something went wrong! 😥`,
+          message: `${error?.message || "Questioner Api Failed"}`,
+          redirectPath: "home",
+        });
       }
     } else {
       setFatcaError("Please select");

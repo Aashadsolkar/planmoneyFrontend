@@ -10,7 +10,7 @@ import { router, useLocalSearchParams } from "expo-router"
 import Input from '../components/Input';
 import * as Animatable from "react-native-animatable"
 import { CheckCircle } from "lucide-react-native"
-import { Alert } from "react-native"
+import { showToast } from "../components/CustomeToast/ToastService";
 
 const { height } = Dimensions.get("window")
 
@@ -47,16 +47,12 @@ export default function BuyStock() {
             setIsLoading(false)
         } catch (error) {
             setIsLoading(false)
-            Alert.alert(
-                "Error",
-                error?.message || "Buy Stock Api Failed",
-                [
-                    {
-                        text: "OK",
-                        onPress: () => router.push("home"),
-                    },
-                ]
-            );
+            showToast({
+                type: "error",
+                title: `Something went wrong! 😥`,
+                message: `${error?.message || "Buy Stock Api Failed"}`,
+                redirectPath: "home",
+            });
         }
     }
 

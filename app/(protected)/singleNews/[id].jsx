@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react"
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, SafeAreaView, ScrollView, StatusBar, Dimensions, Modal, FlatList, Alert } from "react-native"
+import { StyleSheet, Text, View, SafeAreaView, ScrollView, StatusBar } from "react-native"
 import Header from "../../components/Header"
 import { COLORS } from "../../constants"
 import { singleNews } from "../../utils/apiCaller"
 import { useAuth } from "../../context/useAuth"
 import { useLocalSearchParams } from "expo-router"
 import SkeletonList from '../../components/ListSkeleton';
+import { showToast } from "../../components/CustomeToast/ToastService";
 
 export default function SingleNew() {
     const { token } = useAuth();
@@ -21,16 +22,12 @@ export default function SingleNew() {
                 setNewsData(response?.data?.latest_news[0]);
             } catch (error) {
                 setIsLoading(false);
-                Alert.alert(
-                    "Error",
-                    error?.message || "Failed to get new",
-                    [
-                        {
-                            text: "OK",
-                            onPress: () => router.push("home"),
-                        },
-                    ]
-                );
+                showToast({
+                    type: "error",
+                    title: `Something went wrong! 😥`,
+                    message: `${error?.message || "Failed to get new"}`,
+                    redirectPath: "home",
+                });
 
             }
         }

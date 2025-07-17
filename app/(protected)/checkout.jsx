@@ -8,7 +8,6 @@ import {
   SafeAreaView,
   ScrollView,
   StatusBar,
-  Alert,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import Header from "../components/Header";
@@ -81,7 +80,7 @@ export default function Checkout() {
       showToast({
         type: "error",
         title: `Order Failed! 😥`,
-        message: `${error?.message}`,
+        message: `${error?.message || "Failed to generate payment" }`,
         redirectPath: "home",
       });
     }

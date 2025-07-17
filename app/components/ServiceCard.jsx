@@ -10,6 +10,7 @@ import { Ionicons } from '@expo/vector-icons';
 import Button from '../components/Button';
 import { leads } from '../utils/apiCaller';
 import * as Animatable from "react-native-animatable"
+import { showToast } from "../components/CustomeToast/ToastService";
 const { height } = Dimensions.get("window")
 
 const ServiceCard = ({
@@ -81,16 +82,12 @@ const ServiceCard = ({
       setSearchText("Need more details...")
     } catch (error) {
       setIsLeadApiLoading(false);
-      Alert.alert(
-        "Error",
-        error?.message || "Failed to generate Query",
-        [
-          {
-            text: "OK",
-            onPress: () => router.push("home"),
-          },
-        ]
-      );
+      showToast({
+        type: "error",
+        title: `Something went wrong! 😥`,
+        message: `${error?.message || "Failed to generate Query"}`,
+        redirectPath: "home",
+      });
 
     }
   }
@@ -136,7 +133,7 @@ const ServiceCard = ({
   }
 
   const handleOpen = (item) => {
-    
+
     if ([1, 6].includes(serviceId)) {
       router.push({
         pathname: `/fastlane/${serviceId}`

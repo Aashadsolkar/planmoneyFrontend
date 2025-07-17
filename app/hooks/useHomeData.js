@@ -1,8 +1,8 @@
 import { useEffect, useState, useCallback } from 'react';
-import { Alert } from 'react-native';
 import { getProfileData, customerService, news, optionstocks, getAdvertisementData } from '../utils/apiCaller'; // adjust path as needed
 import { useAuth } from '../context/useAuth'; // adjust path as needed
 import { useRouter } from 'expo-router';
+import { showToast } from "../components/CustomeToast/ToastService";
 
 export const useHomeData = () => {
     const {
@@ -53,9 +53,12 @@ export const useHomeData = () => {
             setIsProfileLoading(false)
         } catch (error) {
             setIsProfileLoading(false)
-            Alert.alert("Error", error?.message || "Failed to get profile data", [
-                { text: "OK", onPress: () => router.push("home") },
-            ]);
+            showToast({
+                type: "error",
+                title: `Something went wrong! 😥`,
+                message: `${error?.message || "Failed to get profile data"}`,
+                redirectPath: "home",
+            });
         }
     };
 
@@ -105,9 +108,12 @@ export const useHomeData = () => {
 
         } catch (error) {
             setIsProfileLoading(false);
-            Alert.alert("Error", error?.message || "Failed to get customer data", [
-                { text: "OK", onPress: () => router.push("home") },
-            ]);
+            showToast({
+                type: "error",
+                title: `Something went wrong! 😥`,
+                message: `${error?.message || "Failed to get customer data"}`,
+                redirectPath: "home",
+            });
         }
     };
 
@@ -116,9 +122,12 @@ export const useHomeData = () => {
             const response = await news(token);
             setNewsData(response?.data?.latest_news || []);
         } catch (error) {
-            Alert.alert("Error", error?.message || "Failed to get news", [
-                { text: "OK", onPress: () => router.push("home") },
-            ]);
+            showToast({
+                type: "error",
+                title: `Something went wrong! 😥`,
+                message: `${error?.message || "Failed to get news"}`,
+                redirectPath: "home",
+            });
         }
     };
 
@@ -128,9 +137,12 @@ export const useHomeData = () => {
             const response = await getAdvertisementData(token);
             setAdvertisement(response?.data?.data || []);
         } catch (error) {
-            Alert.alert("Error", error?.message || "Failed to advertisment", [
-                { text: "OK", onPress: () => router.push("home") },
-            ]);
+            showToast({
+                type: "error",
+                title: `Something went wrong! 😥`,
+                message: `${error?.message || "Failed to get advertisment"}`,
+                redirectPath: "home",
+            });
         }
     };
 
@@ -140,9 +152,12 @@ export const useHomeData = () => {
             const response = await optionstocks(token);
             setOptionStockData(response?.data?.optionStock || []);
         } catch (error) {
-            Alert.alert("Error", error?.message || "Failed to get news", [
-                { text: "OK", onPress: () => router.push("home") },
-            ]);
+            showToast({
+                type: "error",
+                title: `Something went wrong! 😥`,
+                message: `${error?.message || "Failed to get option stock data"}`,
+                redirectPath: "home",
+            });
         }
     };
 

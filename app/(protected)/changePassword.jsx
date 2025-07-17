@@ -12,7 +12,6 @@ import {
     TouchableWithoutFeedback,
     Keyboard,
     ActivityIndicator,
-    Alert,
     SafeAreaView,
     StatusBar
 } from "react-native";
@@ -30,6 +29,7 @@ import * as Animatable from "react-native-animatable"
 import { CheckCircle } from "lucide-react-native"
 import Header from "../components/Header";
 import { useAuth } from "../context/useAuth";
+import { showToast } from "../components/CustomeToast/ToastService";
 
 const { height, width } = Dimensions.get("window");
 
@@ -129,7 +129,7 @@ const ChangePassword = () => {
             setOldPasswordError("Old password is required");
             valid = false;
         }
-        
+
 
         if (!newPassword) {
             setPasswordError("New password is required");
@@ -177,7 +177,12 @@ const ChangePassword = () => {
                     setConfirmPasswordError("Password update failed. Please check your inputs.");
                 }
             } else {
-                Alert.alert("Error", res?.message || "Something went wrong.");
+                showToast({
+                    type: "error",
+                    title: `Something went wrong! 😥`,
+                    message: `${error?.message || "Failed to chanage password!"}`,
+                    redirectPath: "home",
+                });
             }
         } finally {
             setLoading(false);
@@ -266,7 +271,7 @@ const ChangePassword = () => {
                                                 );
                                             })}
                                         </View>
-                                        <Button isLoading={loading} onClick={() => handleUpdatePassword()} gradientColor={['#D36C32', '#F68F00']} label={"Change Password"}/>
+                                        <Button isLoading={loading} onClick={() => handleUpdatePassword()} gradientColor={['#D36C32', '#F68F00']} label={"Change Password"} />
                                     </View>
                                 </View>
                             </View>

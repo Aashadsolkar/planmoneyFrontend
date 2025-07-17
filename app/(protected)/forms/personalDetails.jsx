@@ -13,7 +13,6 @@ import {
     Dimensions,
     SafeAreaView,
     KeyboardAvoidingView,
-    Alert,
     StatusBar,
 } from "react-native"
 import DateTimePicker from "@react-native-community/datetimepicker"
@@ -25,53 +24,10 @@ import Button from "../../components/Button"
 import { router } from "expo-router"
 import { cityApi, countryApi, stateApi } from "../../utils/apiCaller"
 import { useAuth } from "../../context/useAuth"
+import { showToast } from "../../components/CustomeToast/ToastService";
 
 
 const { width, height } = Dimensions.get("window")
-
-// Sample data - replace with your actual data source
-const countries = [
-    { id: "1", name: "India", code: "IN" },
-    { id: "2", name: "United States", code: "US" },
-    { id: "3", name: "United Kingdom", code: "UK" },
-    { id: "4", name: "Canada", code: "CA" },
-    { id: "5", name: "Australia", code: "AU" },
-]
-
-const states = {
-    "1": [
-        { id: "1", name: "Maharashtra" },
-        { id: "2", name: "Karnataka" },
-        { id: "3", name: "Tamil Nadu" },
-        { id: "4", name: "Gujarat" },
-        { id: "5", name: "Rajasthan" },
-    ],
-    "2": [
-        { id: "6", name: "California" },
-        { id: "7", name: "New York" },
-        { id: "8", name: "Texas" },
-        { id: "9", name: "Florida" },
-    ],
-}
-
-const cities = {
-    "1": [
-        { id: "1", name: "Mumbai" },
-        { id: "2", name: "Pune" },
-        { id: "3", name: "Nashik" },
-    ],
-    "2": [
-        { id: "4", name: "Bangalore" },
-        { id: "5", name: "Mysore" },
-    ],
-    "6": [
-        { id: "6", name: "Los Angeles" },
-        { id: "7", name: "San Francisco" },
-    ],
-}
-
-
-
 
 const SearchableDropdown = ({ data, value, placeholder, onSelect, searchKey, displayKey }) => {
     const [isVisible, setIsVisible] = useState(false)
@@ -161,16 +117,12 @@ export default function PersonalDetailsForm() {
                 const response = await countryApi(token);
                 setCountryData(response?.data?.country);
             } catch (error) {
-                Alert.alert(
-                    "Error",
-                    error?.message || "Failed to get country data",
-                    [
-                        {
-                            text: "OK",
-                            onPress: () => router.push("home"),
-                        },
-                    ]
-                );
+                showToast({
+                    type: "error",
+                    title: `Something went wrong! 😥`,
+                    message: `${error?.message || "Failed to get country data"}`,
+                    redirectPath: "home",
+                });
 
             }
         }
@@ -183,16 +135,12 @@ export default function PersonalDetailsForm() {
                 const response = await stateApi(id);
                 setStateData(response?.data?.state);
             } catch (error) {
-                Alert.alert(
-                    "Error",
-                    error?.message || "Failed to get state data",
-                    [
-                        {
-                            text: "OK",
-                            onPress: () => router.push("home"),
-                        },
-                    ]
-                );
+                showToast({
+                    type: "error",
+                    title: `Something went wrong! 😥`,
+                    message: `${error?.message || "Failed to get state data"}`,
+                    redirectPath: "home",
+                });
 
             }
         }
@@ -208,16 +156,12 @@ export default function PersonalDetailsForm() {
                 const response = await cityApi(id);
                 setCityData(response?.data?.cities);
             } catch (error) {
-                Alert.alert(
-                    "Error",
-                    error?.message || "Failed to get city data",
-                    [
-                        {
-                            text: "OK",
-                            onPress: () => router.push("home"),
-                        },
-                    ]
-                );
+                showToast({
+                    type: "error",
+                    title: `Something went wrong! 😥`,
+                    message: `${error?.message || "Failed to get city data"}`,
+                    redirectPath: "home",
+                });
             }
         }
         if (selectedState) {

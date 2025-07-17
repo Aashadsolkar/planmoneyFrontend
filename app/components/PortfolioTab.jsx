@@ -8,6 +8,7 @@ import { useAuth } from '../context/useAuth';
 import { COLORS } from '../constants';
 import { getCmpStock, pmsPortfolio } from '../utils/apiCaller';
 import { router } from 'expo-router';
+import { showToast } from "../components/CustomeToast/ToastService";
 
 const PortfolioTab = ({ advisorName, stockAPi }) => {
 
@@ -100,13 +101,12 @@ const PortfolioTab = ({ advisorName, stockAPi }) => {
                 setInvestments(merged);
                 setIsLoading(false)
             } catch (error) {
-                Alert.alert(
-                    "Error",
-                    error?.message || "Portfolio Api Failed",
-                    [
-                        { text: "OK", onPress: () => router.push("home") },
-                    ]
-                );
+                showToast({
+                    type: "error",
+                    title: `Something went wrong! 😥`,
+                    message: `${error?.message || "Portfolio Api Failed"}`,
+                    redirectPath: "home",
+                });
             }
         };
 
