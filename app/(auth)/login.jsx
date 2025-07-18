@@ -164,7 +164,7 @@ console.log(response)
             <Text style={styles.signupText}>
               Don’t have an account?{" "}
             </Text>
-            <TouchableOpacity onPress={() => router.push("/")} >
+            <TouchableOpacity onPress={() => router.push("/register")} >
               <Text style={styles.signupLink}>
                 Sign up
               </Text>

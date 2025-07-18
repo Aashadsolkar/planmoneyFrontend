@@ -30,7 +30,7 @@ import { Modal } from "react-native";
 import * as Animatable from "react-native-animatable";
 import { CheckCircle } from "lucide-react-native";
 
-const { height, width } = Dimensions.get("window");
+const {  width } = Dimensions.get("window");
 
 const ForgotPassword = () => {
   const [step, setStep] = useState(1);
