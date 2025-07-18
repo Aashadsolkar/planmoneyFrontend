@@ -1,15 +1,15 @@
  
 import { View, Text, Image, SafeAreaView, ActivityIndicator, StyleSheet, ScrollView, TouchableOpacity } from "react-native"
 import { useEffect, useState } from "react"
-import Button from "../components/Button"
+import Button from "@components/Button"
 import { COLORS } from "../constants"
-import { useAuth } from '../context/useAuth';
-import { buySubscription, pgVerifyOrder } from "../utils/apiCaller"
+import { useAuth } from '@context/useAuth';
+import { buySubscription, pgVerifyOrder } from "@utils/apiCaller"
 import { useNavigation, useRoute } from "@react-navigation/native"
 import { CheckCircle, Clock } from "lucide-react-native"
 import * as Animatable from "react-native-animatable"
 import { router } from "expo-router";
-import LogoSVG from '../components/LogoSVG';
+import LogoSVG from '@components/LogoSVG';
 
 const OrderConfirm = () => {
   const route = useRoute()

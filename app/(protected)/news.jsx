@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react"
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, SafeAreaView, ScrollView, StatusBar, Dimensions, Modal, FlatList } from "react-native"
 import { Ionicons } from "@expo/vector-icons"
-import Header from "../components/Header"
+import Header from "@components/Header"
 import { COLORS } from "../constants"
-import { news } from "../utils/apiCaller"
-import { useAuth } from "../context/useAuth"
-import SkeletonList from '../components/ListSkeleton';
+import { news } from "@utils/apiCaller"
+import { useAuth } from "@context/useAuth"
+import SkeletonList from '@components/ListSkeleton';
 import { router } from "expo-router"
-import { showToast } from "../components/CustomeToast/ToastService";
+import { showToast } from "@components/CustomToast/ToastService";
 
 export default function News() {
     const { token } = useAuth();

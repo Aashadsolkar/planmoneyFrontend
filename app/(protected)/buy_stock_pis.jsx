@@ -1,16 +1,16 @@
 import { useEffect, useState } from "react"
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, SafeAreaView, ScrollView, StatusBar, Dimensions, Modal } from "react-native"
 import { Ionicons } from "@expo/vector-icons"
-import Header from "../components/Header"
+import Header from "@components/Header"
 import { COLORS } from "../constants"
-import Button from "../components/Button"
-import { useAuth } from '../context/useAuth';
-import { BuyPISStock } from "../utils/apiCaller"
+import Button from "@components/Button"
+import { useAuth } from '@context/useAuth';
+import { BuyPISStock } from "@utils/apiCaller"
 import { router, useLocalSearchParams } from "expo-router"
-import Input from '../components/Input';
+import Input from '@components/Input';
 import * as Animatable from "react-native-animatable"
 import { CheckCircle } from "lucide-react-native"
-import { showToast } from "../components/CustomeToast/ToastService";
+import { showToast } from "@components/CustomToast/ToastService";
 
 const { height } = Dimensions.get("window")
 

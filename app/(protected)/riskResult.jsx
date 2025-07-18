@@ -1,10 +1,10 @@
 
 import { useState, useEffect } from "react"
 import { View, Text, StyleSheet, SafeAreaView, ScrollView, TouchableOpacity, BackHandler } from "react-native"
-import { useAuth } from '../context/useAuth';
+import { useAuth } from '@context/useAuth';
 import { COLORS } from "../constants";
-import Header from "../components/Header";
-import Button from "../components/Button";
+import Header from "@components/Header";
+import Button from "@components/Button";
 import { router, useNavigation } from "expo-router";
 
 

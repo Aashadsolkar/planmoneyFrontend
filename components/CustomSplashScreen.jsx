@@ -10,7 +10,7 @@ export default function HtmlViewer() {
 
   useEffect(() => {
     const loadHtml = async () => {
-      const asset = Asset.Asset.fromModule(require('../../assets/custom-screen.html'));
+      const asset = Asset.Asset.fromModule(require('../assets/custom-screen.html'));
       await asset.downloadAsync();
       const fileUri = asset.localUri || asset.uri;
       const content = await FileSystem.readAsStringAsync(fileUri);

@@ -6,7 +6,7 @@ import {
   Text,
   FlatList,
 } from "react-native";
-import { COLORS } from "../constants";
+import { COLORS } from "../app/constants";
 
 const Dropdown = ({ options, onOptionSelected, label }) => {
   const [searchText, setSearchText] = useState("");

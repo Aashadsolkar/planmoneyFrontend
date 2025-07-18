@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, SafeAreaView, StatusBar } from "react-native";
-import Header from "../components/Header";
+import Header from "@components/Header";
 import { COLORS } from "../constants";
 import Entypo from '@expo/vector-icons/Entypo';
 import * as Animatable from 'react-native-animatable';

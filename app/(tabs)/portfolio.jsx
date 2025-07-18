@@ -10,11 +10,11 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import Header from '../components/Header';
-import PortfolioTab from '../components/PortfolioTab';
+import Header from '@components/Header';
+import PortfolioTab from '@components/PortfolioTab';
 import { COLORS } from '../constants';
-import { pisPortfolio, pmsPortfolio, quantomPortfolio } from '../utils/apiCaller';
-import { useAuth } from '../context/useAuth';
+import { pisPortfolio, pmsPortfolio, quantomPortfolio } from '@utils/apiCaller';
+import { useAuth } from '@context/useAuth';
 import { useLocalSearchParams } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
 import { PISIcon, PMSIcon, QuantomVoltIcon } from '../../assets/images/SVG';

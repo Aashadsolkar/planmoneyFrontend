@@ -15,8 +15,8 @@ import {
 } from "react-native"
 import { router } from "expo-router"
 import { COLORS } from '../../constants'
-import Button from "../../components/Button"
-import { useAuth } from "../../context/useAuth"
+import Button from "@components/Button"
+import { useAuth } from "@context/useAuth"
 
 const { width, height } = Dimensions.get("window")
 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, TextInput, Animated, StyleSheet } from 'react-native';
-import { COLORS, util_style } from '../constants';
+import { COLORS, util_style } from '../app/constants';
 
 const FloatingLabelInput = ({
   label,

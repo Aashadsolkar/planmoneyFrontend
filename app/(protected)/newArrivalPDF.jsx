@@ -3,7 +3,7 @@ import React from 'react'
 import RenderHTML from 'react-native-render-html';
 import { COLORS } from '../constants';
 import { useLocalSearchParams } from 'expo-router';
-import Header from '../components/Header';
+import Header from '@components/Header';
 
 const NewArrivalPDF = () => {
     const { width } = useWindowDimensions();

@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Image, SafeAreaView, ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import { COLORS } from '../constants';
-import { getFastlaneData } from '../utils/apiCaller';
-import { useAuth } from '../context/useAuth';
+import { getFastlaneData } from '@utils/apiCaller';
+import { useAuth } from '@context/useAuth';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from 'expo-router';
-import Header from '../components/Header';
-import Button from '../components/Button';
+import Header from '@components/Header';
+import Button from '@components/Button';
 import RenderHTML from 'react-native-render-html';
 import { StatusBar } from 'expo-status-bar';
 

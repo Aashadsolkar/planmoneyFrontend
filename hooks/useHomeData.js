@@ -1,8 +1,8 @@
 import { useEffect, useState, useCallback } from 'react';
-import { getProfileData, customerService, news, optionstocks, getAdvertisementData } from '../utils/apiCaller'; // adjust path as needed
-import { useAuth } from '../context/useAuth'; // adjust path as needed
+import { getProfileData, customerService, news, optionstocks, getAdvertisementData } from '../utils/apiCaller'; 
+import { useAuth } from '@context/useAuth'; 
 import { useRouter } from 'expo-router';
-import { showToast } from "../components/CustomeToast/ToastService";
+import { showToast } from "@components/CustomToast/ToastService";
 
 export const useHomeData = () => {
     const {

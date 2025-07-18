@@ -10,9 +10,9 @@ import {
   useWindowDimensions
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import Header from '../components/Header';
+import Header from '@components/Header';
 import { COLORS } from '../constants';
-import { useAuth } from '../context/useAuth';
+import { useAuth } from '@context/useAuth';
 import RenderHTML from 'react-native-render-html';
 import { router } from 'expo-router';
 

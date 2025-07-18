@@ -2,15 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, SafeAreaView, StatusBar } from 'react-native';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { COLORS } from '../constants';
-import Header from '../components/Header';
+import Header from '@components/Header';
 import { router } from 'expo-router';
-import { useAuth } from '../context/useAuth';
-import { getFastLaneServiceData } from '../utils/apis/customer-api-caller';
-import { newArrivals, service } from '../utils/apiCaller';
-import SkeletonList from '../components/ListSkeleton';
+import { useAuth } from '@context/useAuth';
+import { getFastLaneServiceData } from '@utils/apis/customer-api-caller';
+import { newArrivals, service } from '@utils/apiCaller';
+import SkeletonList from '@components/ListSkeleton';
 import * as Animatable from 'react-native-animatable';
 import Entypo from '@expo/vector-icons/Entypo';
-import { showToast } from "../components/CustomeToast/ToastService";
+import { showToast } from "@components/CustomToast/ToastService";
 
 const HomeScreen = () => {
   const { token, setNewArrivalsDetails, setSelectedService } = useAuth()

@@ -16,20 +16,20 @@ import {
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
 import { COLORS } from "../constants";
-import Header from "../components/Header";
+import Header from "@components/Header";
 import { router } from "expo-router";
-import { useAuth } from "../context/useAuth";
+import { useAuth } from "@context/useAuth";
 import {
   createMobileOTP,
   generateVerifyEmailOpt,
   updateCapital,
   verifyEmailOpt,
   verifyMobileOTP,
-} from "../utils/apiCaller";
+} from "@utils/apiCaller";
 import AntDesign from "@expo/vector-icons/AntDesign";
-import Input from "../components/Input";
+import Input from "@components/Input";
 import * as Animatable from "react-native-animatable";
-import { showToast } from "../components/CustomeToast/ToastService";
+import { showToast } from "@components/CustomToast/ToastService";
 
 const { width, height } = Dimensions.get("window");
 

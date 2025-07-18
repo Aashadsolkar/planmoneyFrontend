@@ -1,13 +1,13 @@
 import { View, Text, SafeAreaView, TouchableOpacity, StyleSheet, ScrollView, BackHandler, StatusBar } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { COLORS } from '../../constants';
-import Button from '../../components/Button';
-import Input from '../../components/Input';
+import Button from '@components/Button';
+import Input from '@components/Input';
 import { router, useNavigation } from 'expo-router';
-import { quetionerApi } from '../../utils/apiCaller';
-import { useAuth } from '../../context/useAuth';
+import { quetionerApi } from '@utils/apiCaller';
+import { useAuth } from '@context/useAuth';
 import { Ionicons } from '@expo/vector-icons';
-import { showToast } from "../../components/CustomeToast/ToastService";
+import { showToast } from "@components/CustomToast/ToastService";
 
 const AgreementForm = () => {
   const [fatcaSeclect, setFatcaSelect] = useState(null);

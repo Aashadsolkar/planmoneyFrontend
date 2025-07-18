@@ -9,9 +9,9 @@ import {
   View,
 } from "react-native";
 import { WebView } from "react-native-webview";
-import { useAuth } from "../../context/useAuth";
-import { sendRequestApi } from "../../utils/apiCaller";
-import Header from "../../components/Header";
+import { useAuth } from "@context/useAuth";
+import { sendRequestApi } from "@utils/apiCaller";
+import Header from "@components/Header";
 import { COLORS } from "../../constants";
 import { useNavigation } from "expo-router";
 import * as Linking from "expo-linking";

@@ -1,15 +1,15 @@
 import { View, Text, SafeAreaView, TouchableOpacity, StyleSheet, Dimensions, FlatList, Modal, StatusBar } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { COLORS } from "../../constants";
-import Button from '../../components/Button';
-import Input from '../../components/Input';
+import Button from '@components/Button';
+import Input from '@components/Input';
 import { router, useNavigation } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { TextInput } from 'react-native';
-import { countryApi } from '../../utils/apiCaller';
-import { useAuth } from '../../context/useAuth';
+import { countryApi } from '@utils/apiCaller';
+import { useAuth } from '@context/useAuth';
 const { height } = Dimensions.get("window")
-import { showToast } from "../../components/CustomeToast/ToastService";
+import { showToast } from "@components/CustomToast/ToastService";
 
 const SearchableDropdown = ({ data, value, placeholder, onSelect, searchKey, displayKey }) => {
     const [isVisible, setIsVisible] = useState(false);

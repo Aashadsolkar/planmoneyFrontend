@@ -1,7 +1,7 @@
-import React, { createContext, useEffect, useState } from "react";
-import { Alert, StyleSheet, View } from "react-native";
+import  { createContext, useEffect, useState } from "react";
+
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { customerService } from "../utils/apiCaller";
+
 import { router } from "expo-router";
 
 export const AuthContext = createContext();

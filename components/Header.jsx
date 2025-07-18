@@ -14,9 +14,9 @@ import {
   StatusBar,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { COLORS } from "../constants";
+import { COLORS } from "../app/constants";
 import { router, useNavigation } from "expo-router";
-import { useAuth } from "../context/useAuth";
+import { useAuth } from "@context/useAuth";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import Button from "./Button";
 import IconSVG from "./IconSVG";

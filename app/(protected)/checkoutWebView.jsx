@@ -1,7 +1,7 @@
 import React from "react";
 import { WebView } from "react-native-webview";
 import { Alert } from "react-native";
-import { useAuth } from '../context/useAuth';
+import { useAuth } from '@context/useAuth';
 import { router, useLocalSearchParams } from "expo-router";
 import { useNavigation } from "@react-navigation/native";
 import * as Linking from 'expo-linking';

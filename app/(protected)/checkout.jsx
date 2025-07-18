@@ -10,21 +10,21 @@ import {
   StatusBar,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import Header from "../components/Header";
+import Header from "@components/Header";
 import { COLORS } from "../constants";
 import { LinearGradient } from "expo-linear-gradient";
-import Button from "../components/Button";
-import { useAuth } from "../context/useAuth";
+import Button from "@components/Button";
+import { useAuth } from "@context/useAuth";
 import {
   applyCouponApi,
   applyReferralApi,
   buySubscription,
   pgCreateOrder,
-} from "../utils/apiCaller";
+} from "@utils/apiCaller";
 import { router, useNavigation } from "expo-router";
-import Input from "../components/Input";
+import Input from "@components/Input";
 import * as Linking from "expo-linking";
-import { showToast } from "../components/CustomeToast/ToastService";
+import { showToast } from "@components/CustomToast/ToastService";
 
 export default function Checkout() {
   const [couponCode, setCouponCode] = useState("");

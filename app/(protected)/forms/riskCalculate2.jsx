@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { KeyboardAvoidingView, Platform, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import Button from '../../components/Button';
+import Button from '@components/Button';
 import { router, useNavigation } from 'expo-router';
-import SelectBox from '../../components/Select';
+import SelectBox from '@components/Select';
 import { COLORS } from '../../constants';
-import { useAuth } from '../../context/useAuth';
+import { useAuth } from '@context/useAuth';
 import { Ionicons } from '@expo/vector-icons';
 
 const riskCalculate2 = () => {

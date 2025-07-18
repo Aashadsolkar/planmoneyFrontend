@@ -18,14 +18,14 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 
 import { LinearGradient } from "expo-linear-gradient";
 import { COLORS } from "../constants";
-import PassWordInput from "../components/Password";
-import Input from "../components/Input";
-import Button from "../components/Button";
+import PassWordInput from "@components/Password";
+import Input from "@components/Input";
+import Button from "@components/Button";
 import {
   requestOtp,
   resetPasswordPreLogin,
   verifyOtp,
-} from "../utils/apiCaller";
+} from "@utils/apiCaller";
 import { Modal } from "react-native";
 import * as Animatable from "react-native-animatable";
 import { CheckCircle } from "lucide-react-native";

@@ -1,6 +1,6 @@
 import React from 'react';
 import { FlatList, Text, View, StyleSheet, Dimensions } from 'react-native';
-import { COLORS } from '../constants';
+import { COLORS } from '../app/constants';
 
 const { width } = Dimensions.get('window');
 const CARD_WIDTH = (width - 50) / 2; // 20 padding on both sides + 10 gap = 50

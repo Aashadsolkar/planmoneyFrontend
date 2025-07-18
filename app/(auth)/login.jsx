@@ -12,16 +12,16 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
-import { useAuth } from "../context/useAuth";
-import PassWordInput from "../components/Password";
-import Input from "../components/Input";
-import Button from "../components/Button";
-import { validateField, validateForm } from "../utils/validator";
-import { login, RegisterPushNotificationToken } from "../utils/apiCaller";
+import { useAuth } from "@context/useAuth";
+import PassWordInput from "@components/Password";
+import Input from "@components/Input";
+import Button from "@components/Button";
+import { validateField, validateForm } from "@utils/validator";
+import { login, RegisterPushNotificationToken } from "@utils/apiCaller";
 import { COLORS } from "../constants";
-import LogoSVG from "../components/LogoSVG";
+import LogoSVG from "@components/LogoSVG";
 import * as Animatable from "react-native-animatable";
-import { customerLogin } from "../utils/apis/customer-api-caller";
+import { customerLogin } from "@utils/apis/customer-api-caller";
 import { getExpoPushToken } from "../../push-notification/notificationService";
 
 const { height, width } = Dimensions.get("window");

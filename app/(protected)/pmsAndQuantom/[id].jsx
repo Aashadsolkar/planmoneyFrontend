@@ -1,20 +1,20 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { COLORS } from '../../constants';
-import { getFastlaneData, getFastlaneHistoryData } from '../../utils/apiCaller';
-import { useAuth } from '../../context/useAuth';
+import { getFastlaneData, getFastlaneHistoryData } from '@utils/apiCaller';
+import { useAuth } from '@context/useAuth';
 import { FontAwesome, MaterialIcons } from '@expo/vector-icons';
 import { router, useNavigation, useLocalSearchParams } from 'expo-router';
-import Header from '../../components/Header';
-import Button from '../../components/Button';
+import Header from '@components/Header';
+import Button from '@components/Button';
 import { useFocusEffect } from '@react-navigation/native';
-import FullScreenLoader from '../../components/FullScreenLoader';
+import FullScreenLoader from '@components/FullScreenLoader';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as Linking from "expo-linking";
 import * as Animatable from "react-native-animatable";
 import Entypo from '@expo/vector-icons/Entypo';
 import { Image } from 'expo-image';
-import { showToast } from "../../components/CustomeToast/ToastService";
+import { showToast } from "@components/CustomToast/ToastService";
 
 const PmsAndQuantom = () => {
     const { id, advisor_name, advisor_nummber, is_advisor_assign } = useLocalSearchParams();

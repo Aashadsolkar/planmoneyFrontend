@@ -4,11 +4,11 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Alert } from 'react-native';
-import { useAuth } from '../context/useAuth';
-import { COLORS } from '../constants';
-import { getCmpStock, pmsPortfolio } from '../utils/apiCaller';
+import { useAuth } from '@context/useAuth';
+import { COLORS } from '../app/constants';
+import { getCmpStock, pmsPortfolio } from '@utils/apiCaller';
 import { router } from 'expo-router';
-import { showToast } from "../components/CustomeToast/ToastService";
+import { showToast } from "@components/CustomToast/ToastService";
 
 const PortfolioTab = ({ advisorName, stockAPi }) => {
 

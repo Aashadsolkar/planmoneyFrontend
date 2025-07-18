@@ -2,11 +2,11 @@ import { Ionicons } from '@expo/vector-icons';
 import React, { useState } from 'react';
 import { Dimensions, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Button from './Button';
-import { COLORS } from '../constants';
-import { useAuth } from '../context/useAuth';
-import { verifyQuestioner } from '../utils/apiCaller';
+import { COLORS } from '../app/constants';
+import { useAuth } from '@context/useAuth';
+import { verifyQuestioner } from '@utils/apiCaller';
 import { router } from 'expo-router';
-import { showToast } from "../components/CustomeToast/ToastService";
+import { showToast } from "@components/CustomToast/ToastService";
 
 const { height } = Dimensions.get('window');
 

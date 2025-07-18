@@ -12,20 +12,20 @@ import {
   RefreshControl,
 } from "react-native";
 import { Ionicons, AntDesign, FontAwesome6 } from "@expo/vector-icons";
-import Header from "../components/Header";
+import Header from "@components/Header";
 import { LinearGradient } from "expo-linear-gradient";
 import { COLORS } from "../constants";
-import { useAuth } from "../context/useAuth";
+import { useAuth } from "@context/useAuth";
 import { router, useNavigation } from "expo-router";
-import Button from "../components/Button";
+import Button from "@components/Button";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import Foundation from "@expo/vector-icons/Foundation";
 import { BackHandler } from "react-native";
 import * as Animatable from "react-native-animatable";
-import ShimmerSkeleton from "../components/ListSkeleton";
-import { useHomeData } from "../hooks/useHomeData";
-import StockOptionSlider from "../components/StockOtionSlider";
-import QuestionerModal from "../components/QuestionerModal";
+import ShimmerSkeleton from "@components/ListSkeleton";
+import { useHomeData } from "@hooks/useHomeData";
+import StockOptionSlider from "@components/StockOtionSlider";
+import QuestionerModal from "@components/QuestionerModal";
 import { Image } from "expo-image";
 
 const { height, width } = Dimensions.get("window");

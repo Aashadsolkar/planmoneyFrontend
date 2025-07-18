@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { Menu, Button } from 'react-native-paper';
 import { MaterialIcons } from '@expo/vector-icons';
-import { COLORS } from '../constants';
+import { COLORS } from '../app/constants';
 
 const SelectBox = ({ label, options = [], selected, setSelected, placeHolder, error }) => {
   const [visible, setVisible] = useState(false);

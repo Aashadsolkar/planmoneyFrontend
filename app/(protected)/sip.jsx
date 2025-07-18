@@ -16,7 +16,7 @@ import {
 import Slider from '@react-native-community/slider';
 import { LinearGradient } from "expo-linear-gradient"
 import { Ionicons } from "@expo/vector-icons"
-import Header from "../components/Header";
+import Header from "@components/Header";
 import { COLORS } from "../constants";
 
 const { width } = Dimensions.get("window")

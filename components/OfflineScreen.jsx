@@ -5,7 +5,7 @@ const NoInternetScreen = () => {
   return (
     <View style={styles.container}>
       <LottieView
-        source={require("../../assets/images/offlineScreen.json")}
+        source={require("../assets/images/offlineScreen.json")}
         autoPlay
         loop
         style={styles.animation}

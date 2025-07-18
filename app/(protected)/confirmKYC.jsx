@@ -8,11 +8,11 @@ import {
   Text,
   View,
 } from "react-native";
-import { useAuth } from "../context/useAuth";
-import { verifyKYCApi } from "../utils/apiCaller";
+import { useAuth } from "@context/useAuth";
+import { verifyKYCApi } from "@utils/apiCaller";
 import { COLORS } from "../constants";
-import Header from "../components/Header";
-import Button from "../components/Button";
+import Header from "@components/Header";
+import Button from "@components/Button";
 import { CheckCircle } from "lucide-react-native";
 import { Image } from "expo-image";
 

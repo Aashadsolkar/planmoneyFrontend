@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, TextInput, Animated, StyleSheet, TouchableOpacity } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { util_style, COLORS } from '../constants';
+import { util_style, COLORS } from '../app/constants';
 
 const PasswordInput = ({
   label,

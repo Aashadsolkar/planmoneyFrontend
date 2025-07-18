@@ -20,16 +20,16 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { Image } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { COLORS } from "../constants";
-import PassWordInput from '../components/Password';
-import Input from '../components/Input';
-import Button from '../components/Button';
-import { changePassword, requestOtp, resetPasswordPreLogin, verifyOtp } from "../utils/apiCaller";
+import PassWordInput from '@components/Password';
+import Input from '@components/Input';
+import Button from '@components/Button';
+import { changePassword, requestOtp, resetPasswordPreLogin, verifyOtp } from "@utils/apiCaller";
 import { Modal } from "react-native";
 import * as Animatable from "react-native-animatable"
 import { CheckCircle } from "lucide-react-native"
-import Header from "../components/Header";
-import { useAuth } from "../context/useAuth";
-import { showToast } from "../components/CustomeToast/ToastService";
+import Header from "@components/Header";
+import { useAuth } from "@context/useAuth";
+import { showToast } from "@components/CustomToast/ToastService";
 
 const { height, width } = Dimensions.get("window");
 

@@ -19,12 +19,12 @@ import DateTimePicker from "@react-native-community/datetimepicker"
 import { Ionicons } from "@expo/vector-icons"
 import { LinearGradient } from "expo-linear-gradient"
 import { COLORS } from '../../constants'
-import Header from "../../components/Header"
-import Button from "../../components/Button"
+import Header from "@components/Header"
+import Button from "@components/Button"
 import { router } from "expo-router"
-import { cityApi, countryApi, stateApi } from "../../utils/apiCaller"
-import { useAuth } from "../../context/useAuth"
-import { showToast } from "../../components/CustomeToast/ToastService";
+import { cityApi, countryApi, stateApi } from "@utils/apiCaller"
+import { useAuth } from "@context/useAuth"
+import { showToast } from "@components/CustomToast/ToastService";
 
 
 const { width, height } = Dimensions.get("window")

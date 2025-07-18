@@ -3,14 +3,14 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Dimensions, Modal, TextInput, Image } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import { useAuth } from '../context/useAuth';
+import { useAuth } from '@context/useAuth';
 import { router, useNavigation } from 'expo-router';
-import { COLORS, serviceInfo } from '../constants';
+import { COLORS, serviceInfo } from '../app/constants';
 import { Ionicons } from '@expo/vector-icons';
-import Button from '../components/Button';
-import { leads } from '../utils/apiCaller';
+import Button from '@components/Button';
+import { leads } from '@utils/apiCaller';
 import * as Animatable from "react-native-animatable"
-import { showToast } from "../components/CustomeToast/ToastService";
+import { showToast } from "@components/CustomToast/ToastService";
 const { height } = Dimensions.get("window")
 
 const ServiceCard = ({
@@ -251,7 +251,7 @@ const ServiceCard = ({
                     <View style={{ justifyContent: "center", alignItems: "center", marginBottom: 15 }}>
                       <View style={{ backgroundColor: COLORS.primaryColor, height: 80, width: 80, borderRadius: "50%", justifyContent: "center", alignItems: "center", marginBottom: 20 }}>
                         <Image
-                          source={require('../../assets/images/custmer_care.png')}
+                          source={require('../assets/images/custmer_care.png')}
                           style={styles.logo}
                           resizeMode="contain"
                           height={50}

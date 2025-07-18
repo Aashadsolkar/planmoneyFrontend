@@ -12,15 +12,15 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import Button from "../components/Button";
+import Button from "@components/Button";
 import { COLORS } from "../constants";
 import { router } from "expo-router";
-import PassWordInput from "../components/Password";
-import Input from "../components/Input";
-import { validateField, validateForm } from "../utils/validator";
-import { RegisterPushNotificationToken, registor } from "../utils/apiCaller";
-import { useAuth } from "../context/useAuth";
-import LogoSVG from "../components/LogoSVG";
+import PassWordInput from "@components/Password";
+import Input from "@components/Input";
+import { validateField, validateForm } from "@utils/validator";
+import { RegisterPushNotificationToken, registor } from "@utils/apiCaller";
+import { useAuth } from "@context/useAuth";
+import LogoSVG from "@components/LogoSVG";
 import * as Animatable from "react-native-animatable";
 import { getExpoPushToken } from "../../push-notification/notificationService";
 

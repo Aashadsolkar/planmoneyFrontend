@@ -8,10 +8,10 @@ import {
   BackHandler,
 } from "react-native";
 import { COLORS } from "../constants";
-import Button from "../components/Button";
+import Button from "@components/Button";
 import { router, useNavigation } from "expo-router";
 import { useEffect } from "react";
-import { useAuth } from "../context/useAuth";
+import { useAuth } from "@context/useAuth";
 import { Image } from "expo-image";
 
 export default function App() {

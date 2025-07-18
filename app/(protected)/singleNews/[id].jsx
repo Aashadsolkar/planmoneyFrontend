@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react"
 import { StyleSheet, Text, View, SafeAreaView, ScrollView, StatusBar } from "react-native"
-import Header from "../../components/Header"
+import Header from "@components/Header"
 import { COLORS } from "../../constants"
-import { singleNews } from "../../utils/apiCaller"
-import { useAuth } from "../../context/useAuth"
+import { singleNews } from "@utils/apiCaller"
+import { useAuth } from "@context/useAuth"
 import { useLocalSearchParams } from "expo-router"
-import SkeletonList from '../../components/ListSkeleton';
-import { showToast } from "../../components/CustomeToast/ToastService";
+import SkeletonList from '@components/ListSkeleton';
+import { showToast } from "@components/CustomToast/ToastService";
 
 export default function SingleNew() {
     const { token } = useAuth();

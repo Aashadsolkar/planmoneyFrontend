@@ -1,7 +1,7 @@
 import { FontAwesome, FontAwesome6 } from '@expo/vector-icons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { Tabs } from 'expo-router';
-import { COLORS } from '../constants';
+import { COLORS } from '../app/constants';
 
 export default function ProtectedTabs() {
   return (
