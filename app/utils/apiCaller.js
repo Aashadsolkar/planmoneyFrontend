@@ -1,10 +1,10 @@
 
 import axios from 'axios';
 import { SERVICE_API_ENDPOINTS } from './apis/apiEndPoints';
-import Constants from "expo-constants";
+// import Constants from "expo-constants";
 
-const { API_URL } = Constants.expoConfig.extra;
-
+// const { API_URL } = Constants.expoConfig.extra;
+const API_URL ='https://admin.planmoney.in'
 
 export const login = async (data = null) => {
   try {

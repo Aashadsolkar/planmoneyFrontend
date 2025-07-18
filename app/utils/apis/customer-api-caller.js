@@ -2,6 +2,7 @@ import axios from "axios";
 import { CUSTOMER_API_ENDPOINTS, SERVICE_API_ENDPOINTS } from "./apiEndPoints";
 
 export const customerLogin = async (data) => {
+  console.log(data);
   try {
     const response = await axios.post(
       CUSTOMER_API_ENDPOINTS.CUSTOMER_LOGIN,

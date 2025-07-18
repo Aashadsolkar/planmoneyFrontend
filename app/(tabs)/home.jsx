@@ -422,7 +422,7 @@ export default function Home() {
                       overflow: 'hidden',
                       marginHorizontal: 5,
                     }}
-                    resizeMode="stretch"
+                    contentFit="stretch"
                   />
                 </TouchableOpacity>
               </Animatable.View>
@@ -468,7 +468,7 @@ export default function Home() {
                     overflow: 'hidden',
                     marginHorizontal: 5,
                   }}
-                  resizeMode="stretch"
+                  contentFit="stretch"
                 />
               </TouchableOpacity>
             </Animatable.View>
