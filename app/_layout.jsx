@@ -1,3 +1,4 @@
+// app/_layout.tsx
 import { useEffect, useState } from "react";
 import { View } from "react-native";
 import { Slot, useRouter } from "expo-router";
@@ -9,12 +10,17 @@ import AuthProvider from "@context/AuthContext";
 import NoInternetScreen from "@components/OfflineScreen";
 import NetInfo from "@react-native-community/netinfo";
 import CustomSplash from "@components/CustomSplashScreen";
+import BiometricAuth from "../components/BiometricAuth/Index";
 import {
   getExpoPushToken,
   configureNotificationChannel,
 } from "../push-notification/notificationService";
 import { toastConfig } from "@components/CustomToast/ToastConfig";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import {
+  isUserLoggedIn,
+  isBiometricEnabled,
+} from "../utils/auth"; 
 
 SplashScreen.preventAutoHideAsync();
 
@@ -34,12 +40,17 @@ const clearOnFirstInstall = async () => {
 const RootLayout = () => {
   const [showCustomSplash, setShowCustomSplash] = useState(false);
   const [isConnected, setIsConnected] = useState(true);
+  const [isAppReady, setIsAppReady] = useState(false);
+  const [authPassed, setAuthPassed] = useState(false);
+
   const router = useRouter();
 
+  // Handle first install
   useEffect(() => {
     clearOnFirstInstall();
   }, []);
 
+  // Handle deep linking
   useEffect(() => {
     const subscription = Linking.addEventListener("url", ({ url }) => {
       const { path } = Linking.parse(url);
@@ -51,8 +62,8 @@ const RootLayout = () => {
     return () => subscription.remove();
   }, []);
 
+  // Splash screen logic
   useEffect(() => {
-    // Timer 1: Hide default splash after 100ms and show custom splash
     const hideDefaultSplashTimer = setTimeout(async () => {
       try {
         await SplashScreen.hideAsync();
@@ -63,18 +74,17 @@ const RootLayout = () => {
       }
     }, 30);
 
-    // Timer 2: Hide custom splash after 2100ms total (100ms + 2000ms)
     const hideCustomSplashTimer = setTimeout(() => {
       setShowCustomSplash(false);
     }, 4000);
 
-    // Cleanup timers
     return () => {
       clearTimeout(hideDefaultSplashTimer);
       clearTimeout(hideCustomSplashTimer);
     };
   }, []);
 
+  // Internet connection check
   useEffect(() => {
     const unsubscribe = NetInfo.addEventListener((state) => {
       setIsConnected(state.isConnected);
@@ -82,21 +92,45 @@ const RootLayout = () => {
 
     return () => unsubscribe();
   }, []);
+
+  // Push notification setup
   useEffect(() => {
     (async () => {
       await configureNotificationChannel();
       const token = await getExpoPushToken();
       if (token) {
-        // console.log("Expo Push Token in layout:", token);
-        // Optionally send token to backend here
+        // Optionally send token to backend
       }
     })();
   }, []);
 
-  if (showCustomSplash) {
-    return <CustomSplash />;
+  // 🔐 Biometric + Login check
+  useEffect(() => {
+    const checkAuth = async () => {
+      const loggedIn = await isUserLoggedIn();
+      const biometric = await isBiometricEnabled();
+
+      if (loggedIn && biometric) {
+        setAuthPassed(false); // trigger biometric prompt
+      } else {
+        setAuthPassed(true); // skip biometric
+      }
+
+      setIsAppReady(true);
+    };
+
+    checkAuth();
+  }, []);
+
+  if (showCustomSplash || !isAppReady) return <CustomSplash />;
+  if (!isConnected) return <NoInternetScreen />;
+
+  // 🔐 If biometric needed but not passed, show BiometricAuth
+  if (!authPassed) {
+    return <BiometricAuth onSuccess={() => setAuthPassed(true)} />;
   }
-  return isConnected ? (
+
+  return (
     <AuthProvider>
       <PaperProvider>
         <View style={{ flex: 1 }}>
@@ -105,8 +139,6 @@ const RootLayout = () => {
         <Toast config={toastConfig} />
       </PaperProvider>
     </AuthProvider>
-  ) : (
-    <NoInternetScreen />
   );
 };
 

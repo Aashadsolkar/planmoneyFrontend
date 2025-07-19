@@ -12,13 +12,15 @@ import {
   Platform,
   ActivityIndicator,
   ScrollView,
+  Switch,
 } from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
+
 import { Ionicons } from "@expo/vector-icons";
 import { COLORS } from "../constants";
 import Header from "@components/Header";
 import { router } from "expo-router";
 import { useAuth } from "@context/useAuth";
+import { isBiometricEnabled, setBiometricEnabled } from "@utils/auth";
 import {
   createMobileOTP,
   generateVerifyEmailOpt,
@@ -28,7 +30,7 @@ import {
 } from "@utils/apiCaller";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import Input from "@components/Input";
-import * as Animatable from "react-native-animatable";
+
 import { showToast } from "@components/CustomToast/ToastService";
 
 const { width, height } = Dimensions.get("window");
@@ -58,7 +60,7 @@ export default function App() {
   });
 
   const [updatedCapitalAmount, setUpdatedCapitalAmount] = useState(null);
-
+  const [enabled, setEnabled] = useState(false);
   const mobileNumber = profileData?.phone || "";
   const emailAddress = profileData?.email || "";
 
@@ -155,7 +157,9 @@ export default function App() {
       setShowOTPModal(false);
       setOtp(["", "", "", "", "", ""]);
       showToast({
-        message: `${verificationType === "mobile" ? "Mobile number" : "Email address"} verified successfully!`,
+        message: `${
+          verificationType === "mobile" ? "Mobile number" : "Email address"
+        } verified successfully!`,
       });
     } catch (error) {
       showToast({
@@ -208,7 +212,6 @@ export default function App() {
     }
   };
 
-
   // Format currency
   const formatCurrency = useCallback((amount) => {
     return `₹ ${Math.abs(amount).toLocaleString("en-IN", {
@@ -216,6 +219,14 @@ export default function App() {
     })}`;
   }, []);
 
+  useEffect(() => {
+    isBiometricEnabled().then(setEnabled);
+  }, []);
+
+  const toggle = async (value) => {
+    setEnabled(value);
+    await setBiometricEnabled(value);
+  };
   const renderCapitalSection = () => {
     return (
       <>
@@ -403,6 +414,16 @@ export default function App() {
               </View>
             </TouchableOpacity>
             {renderCapitalSection()}
+
+            <View style={styles.card}>
+              <Text style={styles.label}>Use Biometric Authentication</Text>
+              <Switch
+                value={enabled}
+                onValueChange={toggle}
+                trackColor={{ false: "#555", true: "#4cd964" }}
+                thumbColor={enabled ? "#fff" : "#ff4444"}
+              />
+            </View>
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
@@ -638,5 +659,25 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginLeft: 10,
     marginTop: 8,
+  },
+  card: {
+    padding: 10,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    shadowColor: "#000",
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    elevation: 3,
+    backgroundColor: COLORS.cardColor,
+    borderRadius: 12,
+    marginVertical:20,
+    borderWidth: 1,
+    borderColor: "rgba(255, 255, 255, 0.2)",
+  },
+  label: {
+    color: "#ffffff",
+    fontSize: 16,
+    fontWeight: "500",
   },
 });
