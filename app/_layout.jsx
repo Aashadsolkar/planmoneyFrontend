@@ -1,4 +1,4 @@
-import  {  useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { View } from "react-native";
 import { Slot, useRouter } from "expo-router";
 import Toast from "react-native-toast-message";
@@ -14,14 +14,31 @@ import {
   configureNotificationChannel,
 } from "../push-notification/notificationService";
 import { toastConfig } from "@components/CustomToast/ToastConfig";
-
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 SplashScreen.preventAutoHideAsync();
+
+const clearOnFirstInstall = async () => {
+  try {
+    const hasLaunched = await AsyncStorage.getItem("hasLaunched");
+    if (!hasLaunched) {
+      await AsyncStorage.clear();
+      await AsyncStorage.setItem("hasLaunched", "true");
+      console.log("First launch — cleared AsyncStorage");
+    }
+  } catch (e) {
+    console.warn("Error clearing AsyncStorage:", e);
+  }
+};
 
 const RootLayout = () => {
   const [showCustomSplash, setShowCustomSplash] = useState(false);
   const [isConnected, setIsConnected] = useState(true);
   const router = useRouter();
+
+  useEffect(() => {
+    clearOnFirstInstall();
+  }, []);
 
   useEffect(() => {
     const subscription = Linking.addEventListener("url", ({ url }) => {
@@ -75,6 +92,7 @@ const RootLayout = () => {
       }
     })();
   }, []);
+
   if (showCustomSplash) {
     return <CustomSplash />;
   }

@@ -12,6 +12,7 @@ import {
   Pressable,
   Modal,
   StatusBar,
+  ScrollView,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { COLORS } from "../app/constants";
@@ -24,6 +25,7 @@ import ShimmerSkeleton from "./ListSkeleton";
 import { LinearGradient } from "expo-linear-gradient";
 import { BlurView } from "expo-blur";
 const { height } = Dimensions.get("window");
+import Constants from 'expo-constants';
 
 const menuItems = [
   { icon: "home", label: "Home", route: "home" },
@@ -99,7 +101,6 @@ const Header = ({ showBackButton = false, backButtonText = () => {} }) => {
       setShowNotifications(false);
     }
   };
-
   const openProfileDrawer = () => {
     setShowProfileDrawer(true);
     Animated.timing(drawerAnimation, {
@@ -118,7 +119,7 @@ const Header = ({ showBackButton = false, backButtonText = () => {} }) => {
       setShowProfileDrawer(false);
     });
   };
-
+const versionCode = Constants?.manifest2?.extra?.expoClient?.version ?? "unknown";
   return (
     <>
       <SafeAreaView style={[styles.safeArea, { paddingTop: insets.top }]}>
@@ -206,8 +207,8 @@ const Header = ({ showBackButton = false, backButtonText = () => {} }) => {
           position: "absolute",
           top: 0,
           right: 0,
-          width: 300,
           height: "100%",
+          width:"70%",
           backgroundColor: "#093557ff",
           transform: [{ translateX: drawerAnimation }],
           shadowColor: "#000",
@@ -340,99 +341,106 @@ const Header = ({ showBackButton = false, backButtonText = () => {} }) => {
         </LinearGradient>
 
         {/* Menu Items */}
-        <View
-          style={{
-            flex: 1,
+        <ScrollView
+          contentContainerStyle={{
             paddingTop: 5,
-            // alignItems: "center",
+            paddingBottom: 20, // space at bottom
+            paddingHorizontal: 10,
+            flexGrow: 1,
+            justifyContent: "space-between",
           }}
+          showsVerticalScrollIndicator={false}
         >
-          {menuItems.map((item, index) => (
+          <View
+            style={{
+              flex: 1,
+              paddingTop: 5,
+              // alignItems: "center",
+            }}
+          >
+            {menuItems.map((item, index) => (
+              <TouchableOpacity
+                key={index}
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  paddingHorizontal: 20,
+                  paddingVertical: 16,
+                  marginHorizontal: 10,
+                  marginVertical: 1,
+                  borderRadius: 12,
+                  backgroundColor: "transparent",
+                }}
+                onPress={() => router.push(item.route)}
+                activeOpacity={0.7}
+              >
+                <View
+                  style={{
+                    width: 40,
+                    height: 40,
+                    borderRadius: 10,
+                    backgroundColor: "rgba(255,255,255,0.08)",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    marginRight: 15,
+                  }}
+                >
+                  <Ionicons name={item.icon} size={20} color="#a0a0b8" />
+                </View>
+                <Text
+                  style={{
+                    fontSize: 16,
+                    color: "#ffffff",
+                    fontWeight: "500",
+                    flex: 1,
+                  }}
+                >
+                  {item.label}
+                </Text>
+                <Ionicons name="chevron-forward" size={16} color="#a0a0b8" />
+              </TouchableOpacity>
+            ))}
+
+            {/* Logout Button */}
             <TouchableOpacity
-              key={index}
               style={{
                 flexDirection: "row",
                 alignItems: "center",
-                paddingHorizontal: 20,
-                paddingVertical: 16,
-                marginHorizontal: 10,
-                marginVertical: 1,
-                borderRadius: 12,
-                backgroundColor: "transparent",
+                paddingHorizontal: 10,
+                paddingVertical: 10,
+                marginHorizontal: 25,
+                marginVertical: 5,
+                borderRadius: 20,
+                width:"160",
+                backgroundColor: "#F68F00",
               }}
-              onPress={() => router.push(item.route)}
+              onPress={() => setIsLogoutModalOpen(true)}
               activeOpacity={0.7}
             >
               <View
                 style={{
                   width: 40,
                   height: 40,
-                  borderRadius: 10,
-                  backgroundColor: "rgba(255,255,255,0.08)",
                   justifyContent: "center",
                   alignItems: "center",
                   marginRight: 15,
                 }}
               >
-                <Ionicons name={item.icon} size={20} color="#a0a0b8" />
+                <MaterialIcons name="logout" size={20} color="#ffffffff" />
               </View>
               <Text
                 style={{
                   fontSize: 16,
-                  color: "#ffffff",
+                  color: "#ffffffff",
                   fontWeight: "500",
                   flex: 1,
                 }}
               >
-                {item.label}
+                Logout
               </Text>
-              <Ionicons name="chevron-forward" size={16} color="#a0a0b8" />
             </TouchableOpacity>
-          ))}
-
-          {/* Logout Button */}
-          <TouchableOpacity
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              paddingHorizontal: 10,
-              paddingVertical: 10,
-              marginHorizontal: 25,
-              marginVertical: 5,
-              borderRadius: 12,
-              width:180,
-              backgroundColor: "#fd8301a5",
-              borderWidth: 1,
-              borderColor: "#F68F00",
-            }}
-            onPress={() => setIsLogoutModalOpen(true)}
-            activeOpacity={0.7}
-          >
-            <View
-              style={{
-                width: 40,
-                height: 40,
-                borderRadius: 10,
-                backgroundColor: "#F68F00",
-                justifyContent: "center",
-                alignItems: "center",
-                marginRight: 15,
-              }}
-            >
-              <MaterialIcons name="logout" size={20} color="#ffffffff" />
-            </View>
-            <Text
-              style={{
-                fontSize: 16,
-                color: "#ffffffff",
-                fontWeight: "500",
-                flex: 1,
-              }}
-            >
-              Logout
-            </Text>
-          </TouchableOpacity>
-        </View>
+          </View>
+        </ScrollView>
 
         {/* Footer */}
         <View
@@ -451,7 +459,7 @@ const Header = ({ showBackButton = false, backButtonText = () => {} }) => {
               opacity: 0.6,
             }}
           >
-            Version 1.0.0
+            Version {versionCode}
           </Text>
         </View>
       </Animated.View>

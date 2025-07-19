@@ -11,6 +11,7 @@
       "supportsTablet": true
     },
     "android": {
+      "allowBackup": false,
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#012744"
@@ -33,7 +34,6 @@
       "googleServicesFile": "./google-services.json",
       "package": "com.aashadsolkar.PlanMoney",
       "softwareKeyboardLayoutMode": "pan"
-     
     },
     "web": {
       "bundler": "metro",

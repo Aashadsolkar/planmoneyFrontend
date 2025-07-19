@@ -10,15 +10,16 @@ export default function AuthLayout() {
     if (!loading && user && token) {
       router.replace("/home");
     }
-  }, [user, token, loading]);
+  }, [loading, user, token]);
 
   if (loading) {
     return <CustomAppLoader />;
   }
 
-  if (user && token) {
-    return null; 
+  if (!user || !token) {
+    return <Stack screenOptions={{ headerShown: false }} />;
   }
 
-  return <Stack screenOptions={{ headerShown: false }} />;
+  
+  return <CustomAppLoader />;
 }
