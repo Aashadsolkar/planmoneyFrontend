@@ -33,19 +33,7 @@ const Service = () => {
     const navigation = useNavigation();
     const [expandedService, setExpandedService] = useState();
     const [isLoading, setIsloading] = useState(true);
-    const [purchesAllserviceFlag, setPurchesAllserviceFlag] = useState(false);
 
-
-    useEffect(() => {
-        const targetIds = [1, 2, 3, 4, 6];
-
-        // Get all ids from the data
-        const dataIds = purchesService.map(item => item.id);
-
-        // Check if every target ID is included in data
-        const allIncluded = targetIds.every(id => dataIds.includes(id));
-        setPurchesAllserviceFlag(allIncluded)
-    }, [purchesService])
 
     useFocusEffect(
         useCallback(() => {
@@ -156,11 +144,6 @@ const Service = () => {
     }
 
     const renderServiceList = () => {
-        if (purchesAllserviceFlag) return (
-            <View style={{ flex: 1, justifyContent: "center", }}>
-                <Text style={{ color: COLORS.fontWhite, marginHorizontal: 20, marginTop: 20, fontSize: 20, fontWeight: "bold", textAlign: "center" }}>You’ve subscribed to all our available services. Thank you for being a valued customer!</Text>
-            </View>
-        )
         return (
             <ScrollView style={{ flex: 1 }} contentContainerStyle={styles.scrollContent}>
                 <Text style={styles.sectionTitle}>Select the Services</Text>

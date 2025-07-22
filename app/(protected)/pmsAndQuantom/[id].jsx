@@ -145,7 +145,7 @@ const PmsAndQuantom = () => {
             return (
                 <View style={styles.card} key={data?.id}>
                     <View style={styles.cardSections}>
-                        <View style={{ flexDirection: "row", gap: 3 }}>
+                        <View style={{ flex: 1, flexDirection: "row", gap: 3 }}>
                             <View style={{ marginRight: 10 }}>
                                 {!data?.stock?.company_logo ? (
                                     <FontAwesome size={28} name="signal" color={"white"} />
