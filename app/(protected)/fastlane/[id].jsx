@@ -134,7 +134,7 @@ const FastLane = () => {
                                 source={{ uri: data?.stock?.company_logo || "" }}
                                 style={{ width: 30, height: 30, borderRadius: 50, marginRight: 10 }}
                             />
-                            <Text style={[styles.boldText, { fontSize: 18, width: 200 }]}>
+                            <Text style={[styles.boldText, { fontSize: 18, width: "75%" }]}>
                                 {data?.stock?.name || "NA"}
                             </Text>
                         </View>

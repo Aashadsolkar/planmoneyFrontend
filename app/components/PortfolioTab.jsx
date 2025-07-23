@@ -5,14 +5,14 @@ import { TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Alert } from 'react-native';
 import { useAuth } from '../context/useAuth';
-import { COLORS } from '../constants';
+import { COLORS, serviceInfo } from '../constants';
 import { getCmpStock, pmsPortfolio } from '../utils/apiCaller';
 import { router } from 'expo-router';
 import { showToast } from "../components/CustomeToast/ToastService";
 
-const PortfolioTab = ({ advisorName, stockAPi }) => {
+const PortfolioTab = ({ advisorName, stockAPi, isPurchesed, serviceID }) => {
 
-    const { token } = useAuth();
+    const { token, setServiceSelectedOnHomePage } = useAuth();
     const [sortOrder, setSortOrder] = useState('asc');
     const [investments, setInvestments] = useState([]);
     const [isLoading, setIsLoading] = useState(true)
@@ -109,8 +109,11 @@ const PortfolioTab = ({ advisorName, stockAPi }) => {
                 });
             }
         };
-
-        getPmsData();
+        if (isPurchesed) {
+            getPmsData();
+        } else {
+            setIsLoading(false)
+        }
     }, []);
 
 
@@ -150,6 +153,35 @@ const PortfolioTab = ({ advisorName, stockAPi }) => {
         return (
             <View style={styles.contentContainer}>
                 <ActivityIndicator color={"#fff"} size="small" />
+            </View>
+        )
+    }
+
+    const getServiceName = (id) => {
+        const services = {
+            2: "Personalised Investment Services",
+            3: "Portfolio Management Subscription",
+            4: "QuantumVault (For Above ₹50 lakh Capital)",
+        };
+
+        return services[Number(id)] || "Service Name";
+    };
+
+    if (!isPurchesed) {
+        return (
+            <View style={{ flex: 1, backgroundColor: COLORS.primaryColor, paddingHorizontal: 20,}}>
+                <View>
+                    <Text style={{ fontSize: 22, fontWeight: 600, color: COLORS.fontWhite, textAlign: "center", marginTop: 20 }}>{getServiceName(serviceID)}</Text>
+                <Text style={{ color: COLORS.fontWhite, marginTop: 10, textAlign:"justify",  }}>{serviceInfo[serviceID]}</Text>
+                <TouchableOpacity onPress={() => {
+                    setServiceSelectedOnHomePage(serviceID);
+                    router.push("service");
+                }}
+                    style={{ backgroundColor: COLORS.secondaryColor, padding: 15, borderRadius: 50, marginTop: 20 }}
+                >
+                    <Text style={{textAlign: "center", fontWeight: 600, fontSize: 18, color: COLORS.fontWhite}}>Buy</Text>
+                </TouchableOpacity>
+                </View>
             </View>
         )
     }

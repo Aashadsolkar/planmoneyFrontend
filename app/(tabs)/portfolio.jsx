@@ -27,7 +27,7 @@ const Portfolio = () => {
   // Determine available tabs based on configuration
 
   // Define availableTabs based on subscription presence
-  const availableTabs = [];
+  const availableTabs = ["PMS", "PIS", "QuantumVolt"];
   const availableTabsIcone = {
     "PIS": () => <PISIcon height={20} width={20} />,
     "PMS": () => <PMSIcon height={20} width={20}/>,
@@ -37,17 +37,17 @@ const Portfolio = () => {
   const hasPMS = portfolioServices.some(
     (sub) => sub.name === "Portfolio Management Subscription" && sub.is_subscribed
   );
-  if (hasPMS) availableTabs.push("PMS");
+  // if (hasPMS) availableTabs.push("PMS");
 
   const hasQuantumVoltz = portfolioServices.some(
     (sub) => sub.name === "QuantumVault (For Above ₹50 lakh Capital)" && sub.is_subscribed
   );
-  if (hasQuantumVoltz) availableTabs.push("QuantumVolt");
+  // if (hasQuantumVoltz) availableTabs.push("QuantumVolt");
 
   const hasPIS = portfolioServices.some(
     (sub) => sub.name === "Personalised Investment Services" && sub.is_subscribed //need to change
   );
-  if (hasPIS) availableTabs.push("PIS");
+  // if (hasPIS) availableTabs.push("PIS");
 
   // Map service IDs to tab names
   const serviceIdToTab = {
@@ -102,11 +102,11 @@ const Portfolio = () => {
   const renderContent = () => {
     switch (activeTab) {
       case 'PMS':
-        return <PortfolioTab  key="pms" stockAPi={pmsPortfolio} />;
+        return <PortfolioTab serviceID={3} key="pms" stockAPi={pmsPortfolio} isPurchesed={hasPMS} />;
       case 'QuantumVolt':
-        return <PortfolioTab  key="quantum" stockAPi={quantomPortfolio} />;
+        return <PortfolioTab serviceID={4} key="quantum" stockAPi={quantomPortfolio} isPurchesed={hasQuantumVoltz}/>;
       case 'PIS':
-        return <PortfolioTab key="pis" stockAPi={pisPortfolio} />;
+        return <PortfolioTab serviceID={2} key="pis" stockAPi={pisPortfolio} isPurchesed={hasPIS}/>;
       default:
         return null;
     }
@@ -172,7 +172,7 @@ const styles = StyleSheet.create({
   },
   tabText: {
     color: '#fff',
-    fontSize: 15,
+    fontSize: 14,
     fontWeight: '600',
   },
   activeTabText: {

@@ -19,24 +19,45 @@ export default function BuyStock() {
     const { token } = useAuth();
     const [successfullModal, setSuccessfullModal] = useState(false);
     const [qty, setQty] = useState("");
+    const [buyPriceError, setBuyPriceError] = useState("");
+    const [buyPirce, setBuyPrice] = useState(price || 0);
     const [qtyError, setQtyError] = useState("");
     const [isLoading, setIsLoading] = useState(false);
 
-    const parsedPrice = parseFloat(price) || 0;
+    const parsedPrice = parseFloat(buyPirce) || 0;
     const parsedQty = parseInt(qty) || 0;
     const totalBuyValue = parsedPrice * parsedQty;
 
     const buyPmsTock = async () => {
-        if (!qty || isNaN(qty) || parseInt(qty) <= 0) {
-            setQtyError("Please enter a valid quantity.");
-            return;
+        // if (!qty || isNaN(qty) || parseInt(qty) <= 0) {
+        //     setQtyError("Please enter a valid quantity.");
+        //     return;
+        // }
+
+        // Validate Buy Price
+        let hasError = false;
+        if (!buyPirce || isNaN(buyPirce) || parseFloat(buyPirce) <= 0) {
+            setBuyPriceError("Please enter a valid buy price.");
+            hasError = true;
+        } else {
+            setBuyPriceError("");
         }
+
+        // Validate Quantity
+        if (!qty || isNaN(qty) || parseFloat(qty) <= 0) {
+            setQtyError("Please enter a valid quantity.");
+            hasError = true;
+        } else {
+            setQtyError("");
+        }
+
+        if (hasError) return;
 
         setQtyError(""); // clear error if valid
         setIsLoading(true)
         try {
             const payload = {
-                price,
+                price: buyPirce,
                 qty,
                 service_id: serviceID,
                 type,
@@ -64,13 +85,23 @@ export default function BuyStock() {
                 <View>
                     <View style={styles.stockInfoRow}>
                         <Text style={styles.stockTitle}>{name}</Text>
-                        <Text style={styles.stockPrice}><Text style={styles.cmp}>CMP  </Text>₹{price}</Text>
+                    </View>
+                    <View style={[styles.stockInfoRow, {paddingTop: 0, justifyContent: "flex-end"}]}>
+                        <Text style={styles.stockPrice}><Text style={styles.cmp}>Buy Price  </Text>₹{price}21233 3</Text>
                     </View>
                     <View style={styles.inputRow}>
                         <View style={{ width: "50%" }}>
                             <Input
                                 label={"Buy Price ₹"}
-                                value={String(price)}
+                                value={String(buyPirce)}
+                                onChangeText={(val) => {
+                                    setBuyPrice(val)
+                                    setBuyPriceError("")
+                                }}
+                                keyboardType="numeric"
+                                error={!!buyPriceError}
+                                errorMessage={buyPriceError}
+                                isNumberOnly={true}
                             />
                         </View>
                         <View style={{ width: "50%" }}>
@@ -140,17 +171,20 @@ const styles = StyleSheet.create({
     stockInfoRow: {
         flexDirection: "row",
         justifyContent: "space-between",
-        padding: 20,
+        paddingHorizontal: 20,
+        paddingTop: 20
     },
     stockTitle: {
         fontSize: 20,
         fontWeight: "600",
         color: COLORS.fontWhite,
+        width: "80%"
     },
     stockPrice: {
-        fontSize: 20,
+        fontSize: 16,
         fontWeight: "600",
         color: COLORS.fontWhite,
+        // width: "20%"
     },
     cmp: {
         fontSize: 12,
