@@ -52,7 +52,7 @@ const NewsCard = ({ title = "", summary = "", id }) => (
   </TouchableOpacity>
 );
 
-const SERVICE_CARD_WIDTH = 250;
+const SERVICE_CARD_WIDTH = 230;
 
 export default function Home() {
   const {
@@ -328,7 +328,7 @@ export default function Home() {
     if (newsData == null || newsData.length == 0) {
       return (
         <Text
-          style={{ textAlign: "center", fontSize: 18, color: COLORS.fontWhite }}
+          style={{ textAlign: "center", fontSize: 16, color: COLORS.fontWhite }}
         >
           No News Available.
         </Text>
@@ -618,7 +618,7 @@ export default function Home() {
               onPress={() => router.push("news")}
             >
               <Text style={styles.viewMoreText}>View More</Text>
-              <AntDesign name="right" size={14} color="#FFA500" />
+              <AntDesign name="right" size={12} color="#FFA500" />
             </TouchableOpacity>
           </View>
 
@@ -712,7 +712,7 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     color: "white",
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: "bold",
     marginBottom: 5,
   },
@@ -721,14 +721,14 @@ const styles = StyleSheet.create({
   },
   serviceCard: {
     width: SERVICE_CARD_WIDTH,
-    height: 150,
+    height: 130,
     borderRadius: 10,
     padding: 15,
     marginRight: 15,
   },
   serviceTitle: {
     color: "white",
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: "bold",
     marginBottom: 10,
   },
@@ -739,12 +739,12 @@ const styles = StyleSheet.create({
   },
   updateText: {
     color: "#ccc",
-    fontSize: 14,
+    fontSize: 12,
   },
   dateText: {
     marginTop: 3,
     color: "white",
-    fontSize: 16,
+    fontSize: 14,
   },
   serviceFooter: {
     flexDirection: "row",
@@ -757,7 +757,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     marginHorizontal:20,
-    marginVertical:15,
+    // marginVertical:15,
+    marginTop: 15,
+    marginBottom: 10
   },
   linkItem: {
     alignItems: "center",
@@ -777,17 +779,17 @@ const styles = StyleSheet.create({
   },
   newsContainer: {
     paddingHorizontal: 20,
-    marginVertical: 10,
+    // marginVertical: 10,
   },
   newsHeader: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 15,
+    marginBottom: 8,
   },
   newsTitle: {
     color: "white",
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: "bold",
   },
   viewMoreButton: {
@@ -796,7 +798,7 @@ const styles = StyleSheet.create({
   },
   viewMoreText: {
     color: "#FFA500",
-    fontSize: 14,
+    fontSize: 12,
     marginRight: 5,
   },
   card: {
@@ -811,7 +813,7 @@ const styles = StyleSheet.create({
   },
   title: {
     color: "#fff",
-    fontSize: 16,
+    fontSize: 15,
     flex: 1,
     marginRight: 8,
     fontWeight: 600,
@@ -819,7 +821,7 @@ const styles = StyleSheet.create({
   summary: {
     marginTop: 10,
     color: "#fff",
-    fontSize: 14,
+    fontSize: 13,
     flex: 1,
     marginRight: 8,
   },

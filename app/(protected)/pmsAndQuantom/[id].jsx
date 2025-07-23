@@ -153,7 +153,7 @@ const PmsAndQuantom = () => {
                                     <Image source={{ uri: data?.stock?.company_logo }} style={{ width: 30, height: 30, borderRadius: 50 }} />
                                 )}
                             </View>
-                            <View>
+                            <View style={{ width: "75%"}}>
                                 <Text style={[styles.boldText, { fontSize: 18 }]}>{data?.stock?.name || ""}</Text>
                             </View>
                         </View>

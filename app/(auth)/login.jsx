@@ -67,7 +67,6 @@ const Login = () => {
           email_or_phone: formData.email_or_phone,
           password: formData.password,
         });
-console.log(response)
         if (response?.data?.user && response?.data?.token) {
           storeUserData(response.data.user, response.data.token);
           const deviceToken = await getExpoPushToken();

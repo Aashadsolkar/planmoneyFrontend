@@ -46,17 +46,17 @@ const styles = StyleSheet.create({
         borderLeftColor: COLORS.secondaryColor,
     },
     title: {
-        fontSize: 16,
+        fontSize: 15,
         fontWeight: '600',
         color: COLORS.fontWhite,
         marginBottom: 6,
     },
     label: {
-        fontSize: 14,
+        fontSize: 13,
         color: COLORS.fontWhite,
     },
     price: {
-        fontSize: 16,
+        fontSize: 13,
         fontWeight: '500',
         color: COLORS.fontWhite,
         marginTop: 4,
