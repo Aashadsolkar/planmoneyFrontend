@@ -415,6 +415,8 @@ export default function App() {
             </TouchableOpacity>
             {renderCapitalSection()}
 
+            {/* ************Local auth setup ********************* */}
+{/* 
             <View style={styles.card}>
               <Text style={styles.label}>Use Biometric Authentication</Text>
               <Switch
@@ -423,7 +425,7 @@ export default function App() {
                 trackColor={{ false: "#555", true: "#4cd964" }}
                 thumbColor={enabled ? "#fff" : "#ff4444"}
               />
-            </View>
+            </View> */}
           </View>
         </ScrollView>
       </KeyboardAvoidingView>

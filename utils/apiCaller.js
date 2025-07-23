@@ -504,7 +504,7 @@ export const getCmpStock = async (token) => {
   try {
     const response = await axios({
       method: "GET",
-      url: `${API_URL}/api/stock-daily-price`,
+      url: `${API_URL}/api/stock`,
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer${token}`
