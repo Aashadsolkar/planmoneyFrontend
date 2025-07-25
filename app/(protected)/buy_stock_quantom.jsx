@@ -87,7 +87,7 @@ export default function BuyStock() {
                         <Text style={styles.stockTitle}>{name}</Text>
                     </View>
                     <View style={[styles.stockInfoRow, {paddingTop: 0, justifyContent: "flex-end"}]}>
-                        <Text style={styles.stockPrice}><Text style={styles.cmp}>Buy Price  </Text>₹{price}21233 3</Text>
+                        <Text style={styles.stockPrice}><Text style={styles.cmp}>Buy Price  </Text>₹{price}</Text>
                     </View>
                     <View style={styles.inputRow}>
                         <View style={{ width: "50%" }}>
