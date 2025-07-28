@@ -85,7 +85,7 @@ export const useHomeData = () => {
                         .includes(service.name)
                 );
                 setPortfolioServices(portfolio);
-                if (response?.data?.kyc_status === 0 && portfolio.length > 0) {
+                if (response?.data?.kyc_status === 0) {
                     router.push("forms/kyc");
                     return;
                 }
@@ -93,7 +93,7 @@ export const useHomeData = () => {
                     setIsQuestionerFillderByAdvisor(true);
                     return;
                 }
-                if (!skipQuestioniar && response?.data?.questionnaire_status === 0) {
+                if (!skipQuestioniar && response?.data?.questionnaire_status === 0 && portfolio.length > 0) {
                     router.push("forms/totalInvestmentForm");
                     return;
                 }
@@ -126,7 +126,7 @@ export const useHomeData = () => {
                 type: "error",
                 title: `Something went wrong! 😥`,
                 message: `${error?.message || "Failed to get news"}`,
-                redirectPath: "home",
+                // redirectPath: "home",
             });
         }
     };
@@ -141,7 +141,7 @@ export const useHomeData = () => {
                 type: "error",
                 title: `Something went wrong! 😥`,
                 message: `${error?.message || "Failed to get advertisment"}`,
-                redirectPath: "home",
+                // redirectPath: "home",
             });
         }
     };
@@ -156,7 +156,7 @@ export const useHomeData = () => {
                 type: "error",
                 title: `Something went wrong! 😥`,
                 message: `${error?.message || "Failed to get option stock data"}`,
-                redirectPath: "home",
+                // redirectPath: "home",
             });
         }
     };

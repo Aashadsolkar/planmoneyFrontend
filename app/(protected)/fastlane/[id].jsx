@@ -54,9 +54,9 @@ const FastLane = () => {
                     setIsLoading(false);
                 }
             };
-            if (customerServiceData?.questionnaire_status == 1) {
+            // if (customerServiceData?.questionnaire_status == 1) {
                 callFastlaneApi();
-            }
+            // }
         }, [id])
     );
 
@@ -80,9 +80,9 @@ const FastLane = () => {
                     setIsHistoryLoading(false);
                 }
             };
-            if (customerServiceData?.questionnaire_status == 1) {
+            // if (customerServiceData?.questionnaire_status == 1) {
                 callFastlaneHistoryApi();
-            }
+            // }
         }, [id])
     );
 
@@ -194,33 +194,33 @@ const FastLane = () => {
         });
     };
 
-    if (customerServiceData?.questionnaire_status == 0) {
-        return (
-            <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.cardColor }}>
-                <StatusBar barStyle="light-content" backgroundColor={COLORS.cardColor} />
-                <Header title="Hi Vignesh" showBackButton />
-                <ScrollView style={{ paddingHorizontal: 20, backgroundColor: COLORS.primaryColor, paddingTop: 100 }}>
-                    <View style={{ alignItems: 'center', width: "100%" }}>
-                        <Image
-                            source={require('../../../assets/images/questionCirlce.png')}
-                            style={styles.logo}
-                            contentFit="contain"
-                        />
-                        <Text style={{ fontSize: 25, fontWeight: 600, color: COLORS.fontWhite, paddingVertical: 20 }}>Oops..!</Text>
-                        <Text style={{ fontSize: 14, color: COLORS.fontWhite, paddingVertical: 20, textAlign: "center", width: 250 }}>
-                            Its look like you have not filled your Details after Subscription
-                        </Text>
-                    </View>
-                    <Button
-                        onClick={() => router.push("forms/totalInvestmentForm")}
-                        label={"PROCEED"}
-                        gradientColor={['#D36C32', '#F68F00']}
-                        buttonStye={{ marginHorizontal: 20 }}
-                    />
-                </ScrollView>
-            </SafeAreaView>
-        );
-    }
+    // if (customerServiceData?.questionnaire_status == 0) {
+    //     return (
+    //         <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.cardColor }}>
+    //             <StatusBar barStyle="light-content" backgroundColor={COLORS.cardColor} />
+    //             <Header title="Hi Vignesh" showBackButton />
+    //             <ScrollView style={{ paddingHorizontal: 20, backgroundColor: COLORS.primaryColor, paddingTop: 100 }}>
+    //                 <View style={{ alignItems: 'center', width: "100%" }}>
+    //                     <Image
+    //                         source={require('../../../assets/images/questionCirlce.png')}
+    //                         style={styles.logo}
+    //                         contentFit="contain"
+    //                     />
+    //                     <Text style={{ fontSize: 25, fontWeight: 600, color: COLORS.fontWhite, paddingVertical: 20 }}>Oops..!</Text>
+    //                     <Text style={{ fontSize: 14, color: COLORS.fontWhite, paddingVertical: 20, textAlign: "center", width: 250 }}>
+    //                         Its look like you have not filled your Details after Subscription
+    //                     </Text>
+    //                 </View>
+    //                 <Button
+    //                     onClick={() => router.push("forms/totalInvestmentForm")}
+    //                     label={"PROCEED"}
+    //                     gradientColor={['#D36C32', '#F68F00']}
+    //                     buttonStye={{ marginHorizontal: 20 }}
+    //                 />
+    //             </ScrollView>
+    //         </SafeAreaView>
+    //     );
+    // }
 
     if (isLoading || isHistoryLoading) {
         return <FullScreenLoader visible={isLoading} />;
