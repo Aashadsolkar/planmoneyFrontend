@@ -9,7 +9,7 @@ const CustomTextInput = ({ label, value, onChangeText, error, errorMessage, isNu
     <View style={styles.container}>
       <TextInput
         mode="outlined"
-        label={<Text style={{ color: error ? "red" :isFocused ? 'orange' : 'white' }}>{label}</Text>}
+        label={<Text style={{ fontSize: 14,color: error ? "red" :isFocused ? 'orange' : '#ccc' }}>{label}</Text>}
         value={value}
         onChangeText={onChangeText}
         onFocus={() => setIsFocused(true)}

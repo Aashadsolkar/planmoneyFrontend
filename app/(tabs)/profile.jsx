@@ -36,7 +36,7 @@ import { showToast } from "@components/CustomToast/ToastService";
 const { width, height } = Dimensions.get("window");
 
 export default function App() {
-  const { profileData, token, setGetCustomerDataAgain } = useAuth();
+  const { profileData, token, setGetCustomerDataAgain, logout } = useAuth();
   const [mobileVerified, setMobileVerified] = useState(() =>
     profileData?.phone_verified_at == null ? false : true
   );
@@ -92,8 +92,10 @@ export default function App() {
         showToast({
           type: "error",
           title: `Something went wrong! 😥`,
-          message: `${error?.message || "Failed to update capital"}`,
+          message: `${error?.error || error?.message || "Failed to update capital"}`,
           redirectPath: "home",
+          sessionExired: error?.error == "Another session is active." ? true : false,
+          logout: logout
         });
       }
     }
@@ -130,8 +132,10 @@ export default function App() {
       showToast({
         type: "error",
         title: `Something went wrong! 😥`,
-        message: `${error?.message || "Failed to generate OTP"}`,
+        message: `${error?.error || error?.message || "Failed to generate OTP"}`,
         redirectPath: "home",
+        sessionExired: error?.error == "Another session is active." ? true : false,
+        logout: logout
       });
     }
   };
@@ -165,8 +169,10 @@ export default function App() {
       showToast({
         type: "error",
         title: `Something went wrong! 😥`,
-        message: `${error?.message || "Failed to verify otp"}`,
+        message: `${error?.error || error?.message || "Failed to verify otp"}`,
         redirectPath: "home",
+        sessionExired: error?.error == "Another session is active." ? true : false,
+        logout: logout
       });
     }
   };
@@ -188,8 +194,10 @@ export default function App() {
       showToast({
         type: "error",
         title: `Something went wrong! 😥`,
-        message: `${error?.message || "Failed to verify OTP"}`,
+        message: `${error?.error || error?.message || "Failed to verify OTP"}`,
         redirectPath: "home",
+        sessionExired: error?.error == "Another session is active." ? true : false,
+        logout: logout
       });
     }
   };
@@ -514,7 +522,7 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     paddingHorizontal: width * 0.05,
-    paddingTop: height * 0.05,
+    paddingTop: height * 0.03,
   },
   title: {
     fontSize: width * 0.045,
@@ -656,11 +664,11 @@ const styles = StyleSheet.create({
   },
   updateButton: {
     backgroundColor: COLORS.secondaryColor,
-    paddingHorizontal: 12,
-    paddingVertical: 20,
+    paddingHorizontal: 20,
+    paddingVertical: 23,
     borderRadius: 10,
     marginLeft: 10,
-    marginTop: 8,
+    marginTop: 5,
   },
   card: {
     padding: 10,

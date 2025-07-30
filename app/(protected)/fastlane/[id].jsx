@@ -24,7 +24,7 @@ import { Image } from "expo-image";
 import { showToast } from "@components/CustomToast/ToastService";
 
 const FastLane = () => {
-    const { token, customerServiceData, setReportData } = useAuth();
+    const { token, customerServiceData, setReportData, logout } = useAuth();
     const [isLoading, setIsLoading] = useState(true);
     const [isHistoryLoading, setIsHistoryLoading] = useState(true);
     const [fastlaneData, setFastlaneData] = useState([]);
@@ -47,8 +47,10 @@ const FastLane = () => {
                     showToast({
                         type: "error",
                         title: `Something went wrong! 😥`,
-                        message: `${error?.message || "Failed to get service data"}`,
+                        message: `${error?.error || error?.message || "Failed to get service data"}`,
                         redirectPath: "home",
+                        sessionExired: error?.error == "Another session is active." ? true : false,
+                        logout: logout
                     });
                 } finally {
                     setIsLoading(false);
@@ -73,8 +75,10 @@ const FastLane = () => {
                     showToast({
                         type: "error",
                         title: `Something went wrong! 😥`,
-                        message: `${error?.message || "Failed to get service history data"}`,
+                        message: `${error?.error|| error?.message || "Failed to get service history data"}`,
                         redirectPath: "home",
+                        sessionExired: error?.error == "Another session is active." ? true : false,
+                        logout: logout
                     });
                 } finally {
                     setIsHistoryLoading(false);

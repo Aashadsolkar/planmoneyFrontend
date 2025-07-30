@@ -11,7 +11,7 @@ import { showToast } from "@components/CustomToast/ToastService";
 const { height } = Dimensions.get('window');
 
 const QuestionerModal = ({ isVisible, handleClose, onRefresh }) => {
-    const { profileData, token, setIsQuestionerFillderByAdvisor } = useAuth();
+    const { profileData, token, setIsQuestionerFillderByAdvisor, logout } = useAuth();
     const [isLoading, setIsLoading] = useState();
     const {
         occupation,
@@ -57,8 +57,10 @@ const QuestionerModal = ({ isVisible, handleClose, onRefresh }) => {
             showToast({
                 type: "error",
                 title: `Something went wrong! 😥`,
-                message: `${error?.message || "Failed to submit data"}`,
+                message: `${error?.error || error?.message || "Failed to submit data"}`,
                 redirectPath: "home",
+                sessionExired: error?.error == "Another session is active." ? true : false,
+                logout: logout
             });
         }
     }

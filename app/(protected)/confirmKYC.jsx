@@ -15,13 +15,14 @@ import Header from "@components/Header";
 import Button from "@components/Button";
 import { CheckCircle } from "lucide-react-native";
 import { Image } from "expo-image";
+import { showToast } from "@components/CustomToast/ToastService";
 
 export default function VerifySuccess() {
   const { txnId } = useLocalSearchParams();
   const [loading, setLoading] = useState(true);
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
-  const { token, digiLockerRequestId } = useAuth();
+  const { token, digiLockerRequestId, logout } = useAuth();
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -47,7 +48,18 @@ export default function VerifySuccess() {
         const response = await verifyKYCApi(token, payload);
         setResult(response);
       } catch (err) {
-        setError(err.message || "Something went wrong...");
+        if (error.error) {
+          showToast({
+            type: "error",
+            title: `Something went wrong! 😥`,
+            message: `${error?.error || error?.message || "Verify Api failed!"}`,
+            redirectPath: "home",
+            sessionExired: error?.error == "Another session is active." ? true : false,
+            logout: logout
+          });
+        } else {
+          setError(err.message || "Something went wrong...");
+        }
       } finally {
         setLoading(false);
       }

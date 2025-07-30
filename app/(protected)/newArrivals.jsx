@@ -13,7 +13,7 @@ import Entypo from '@expo/vector-icons/Entypo';
 import { showToast } from "@components/CustomToast/ToastService";
 
 const HomeScreen = () => {
-  const { token, setNewArrivalsDetails, setSelectedService } = useAuth()
+  const { token, setNewArrivalsDetails, setSelectedService, logout } = useAuth()
   const [newArrivalsData, setNewArrivalsData] = useState([]);
   const [noData, setNoData] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -61,8 +61,10 @@ const HomeScreen = () => {
       showToast({
         type: "error",
         title: `Something went wrong! 😥`,
-        message: `${error?.message || "Failed to get New Arrivals Data."}`,
+        message: `${error?.error || error?.message || "Failed to get New Arrivals Data."}`,
         redirectPath: "home",
+        sessionExired: error?.error == "Another session is active." ? true : false,
+        logout: logout
       });
     }
   }

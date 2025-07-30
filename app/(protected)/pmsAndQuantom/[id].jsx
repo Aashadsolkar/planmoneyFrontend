@@ -18,7 +18,7 @@ import { showToast } from "@components/CustomToast/ToastService";
 
 const PmsAndQuantom = () => {
     const { id, advisor_name, advisor_nummber, is_advisor_assign } = useLocalSearchParams();
-    const { token, customerServiceData, setReportData } = useAuth();
+    const { token, customerServiceData, setReportData, logout } = useAuth();
     const [isLoading, setIsLoading] = useState(true);
     const [fastlaneData, setFastlaneData] = useState([]);
     const [historyData, setHistoryData] = useState([]);
@@ -40,8 +40,10 @@ const PmsAndQuantom = () => {
                     showToast({
                         type: "error",
                         title: `Something went wrong! 😥`,
-                        message: `${error?.message || "Failed to get service data"}`,
+                        message: `${error.error ||error?.message || "Failed to get service data"}`,
                         redirectPath: "home",
+                        sessionExired: error?.error == "Another session is active." ? true : false,
+                        logout: logout
                     });
                 } finally {
                     setIsLoading(false);
@@ -71,8 +73,10 @@ const PmsAndQuantom = () => {
                     showToast({
                         type: "error",
                         title: `Something went wrong! 😥`,
-                        message: `${error?.message || "Failed to get service history data"}`,
+                        message: `${error.error ||error?.message || "Failed to get service history data"}`,
                         redirectPath: "home",
+                        sessionExired: error?.error == "Another session is active." ? true : false,
+                        logout: logout
                     });
                 } finally {
                     setIsHistoryLoading(false);
@@ -269,7 +273,7 @@ const PmsAndQuantom = () => {
                     <View style={{ alignItems: 'center', width: "100%", marginTop: 100 }}>
                         <Image
                             source={require('../../../assets/images/questionCirlce.png')}
-                            style={styles.logo}
+                            style={{height: 100, width: 100}}
                             contentFit="contain"
                         />
                         <Text style={{ fontSize: 25, fontWeight: 600, color: COLORS.fontWhite, paddingVertical: 20 }}>Oops..!</Text>
@@ -295,8 +299,8 @@ const PmsAndQuantom = () => {
                 >
                     <View style={{ alignItems: 'center', width: "100%", marginTop: 100 }}>
                         <Image
-                            source={require('../../../assets/images/rightCircle.png')}
-                            style={styles.logo}
+                            source={require('../../../assets/images/questionCirlce.png')}
+                            style={{height: 100, width: 100}}
                             contentFit="contain"
                         />
                         <Text style={{ fontSize: 25, fontWeight: 600, color: COLORS.fontWhite, paddingVertical: 20, textAlign: "center", width: 220 }}>Your Profile is Under Verification</Text>

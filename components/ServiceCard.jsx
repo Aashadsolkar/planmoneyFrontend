@@ -39,7 +39,8 @@ const ServiceCard = ({
   const {
     setSelectedService,
     token,
-    profileData
+    profileData,
+    logout
   } = useAuth();
   const navigation = useNavigation();
   const renderIcon = () => {
@@ -85,8 +86,10 @@ const ServiceCard = ({
       showToast({
         type: "error",
         title: `Something went wrong! 😥`,
-        message: `${error?.message || "Failed to generate Query"}`,
+        message: `${error?.error || error?.message || "Failed to generate Query"}`,
         redirectPath: "home",
+        sessionExired: error?.error == "Another session is active." ? true : false,
+        logout: logout
       });
 
     }

@@ -47,7 +47,7 @@ const ChangePassword = () => {
     const [oldPasswordError, setOldPasswordError] = useState("");
     const [passwordError, setPasswordError] = useState("");
     const [successfullModal, setSuccessfullModal] = useState(false);
-    const { token } = useAuth();
+    const { token, logout } = useAuth();
 
     const scrollViewRef = useRef(null);
 
@@ -180,8 +180,10 @@ const ChangePassword = () => {
                 showToast({
                     type: "error",
                     title: `Something went wrong! 😥`,
-                    message: `${error?.message || "Failed to chanage password!"}`,
+                    message: `${error?.error || error?.message || "Failed to chanage password!"}`,
                     redirectPath: "home",
+                    sessionExired: error?.error == "Another session is active." ? true : false,
+                    logout: logout
                 });
             }
         } finally {
@@ -325,7 +327,7 @@ const styles = StyleSheet.create({
     contentContainer: {
         flex: 1,
         width: "100%",
-        marginTop: 10,
+        marginTop: 16,
     },
     backButton: {
         position: "absolute",

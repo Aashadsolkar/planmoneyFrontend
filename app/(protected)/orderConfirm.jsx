@@ -10,12 +10,13 @@ import { CheckCircle, Clock } from "lucide-react-native"
 import * as Animatable from "react-native-animatable"
 import { router } from "expo-router";
 import LogoSVG from '@components/LogoSVG';
+import { showToast } from "@components/CustomToast/ToastService";
 
 const OrderConfirm = () => {
   const route = useRoute()
   const { orderId } = route.params || {}
   // const { orderId } = useSearchParams();
-  const { orderConfirmDetails, token, profileData, selectedService, prePaymentDetails, setGetCustomerDataAgain } = useAuth()
+  const { orderConfirmDetails, token, profileData, selectedService, prePaymentDetails, setGetCustomerDataAgain, logout } = useAuth()
   const [orderDetails, setOrderDetails] = useState(null)
   const [loading, setLoading] = useState(true)
   const [verifyComplete, setVerifyComplete] = useState(false)
@@ -59,9 +60,20 @@ const OrderConfirm = () => {
         }
         setSubscriptionComplete(true)
       } catch (error) {
-        setError(
-          "Your payment was successful, but we couldn't activate your subscription. Our team will resolve this shortly.",
-        )
+        if (error?.error) {
+          showToast({
+            type: "error",
+            title: `Something went wrong! 😥`,
+            message: `${error?.error || error?.message || "Failed to chanage password!"}`,
+            redirectPath: "home",
+            sessionExired: error?.error == "Another session is active." ? true : false,
+            logout: logout
+          });
+        } else {
+          setError(
+            "Your payment was successful, but we couldn't activate your subscription. Our team will resolve this shortly.",
+          )
+        }
       } finally {
         setLoading(false)
       }

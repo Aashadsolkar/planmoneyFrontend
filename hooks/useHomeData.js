@@ -20,7 +20,8 @@ export const useHomeData = () => {
         setOptionStockData,
         setIsProfileLoading,
         setIsQuestionerFillderByAdvisor,
-        setAdvertisement
+        setAdvertisement,
+        logout
     } = useAuth();
 
     const [isLoading, setIsLoading] = useState(false);
@@ -111,8 +112,10 @@ export const useHomeData = () => {
             showToast({
                 type: "error",
                 title: `Something went wrong! 😥`,
-                message: `${error?.message || "Failed to get customer data"}`,
+                message: `${error?.error || error?.message || "Failed to get customer data"}`,
                 redirectPath: "home",
+                sessionExired: error?.error == "Another session is active." ? true : false,
+                logout: logout
             });
         }
     };

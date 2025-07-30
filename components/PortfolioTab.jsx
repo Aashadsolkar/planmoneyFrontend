@@ -12,7 +12,7 @@ import { showToast } from "@components/CustomToast/ToastService";
 
 const PortfolioTab = ({ advisorName, stockAPi, isPurchesed, serviceID }) => {
 
-    const { token, setServiceSelectedOnHomePage } = useAuth();
+    const { token, setServiceSelectedOnHomePage, logout } = useAuth();
     const [sortOrder, setSortOrder] = useState('asc');
     const [investments, setInvestments] = useState([]);
     const [isLoading, setIsLoading] = useState(true)
@@ -74,6 +74,10 @@ const PortfolioTab = ({ advisorName, stockAPi, isPurchesed, serviceID }) => {
                 const cmpStocks = cmpRes.data.stocks;
                 const buyData = buyStockData.data;
 
+                console.log(cmpStocks, "cmpStocks");
+                console.log(buyData, "buyData");
+                
+
                 const merged = buyData.map(buy => {
                     const stockDetails = cmpStocks.find(stock => stock.stock_id === buy.stock_id);
                     if (!stockDetails) return null;
@@ -104,8 +108,10 @@ const PortfolioTab = ({ advisorName, stockAPi, isPurchesed, serviceID }) => {
                 showToast({
                     type: "error",
                     title: `Something went wrong! 😥`,
-                    message: `${error?.message || "Portfolio Api Failed"}`,
+                    message: `${error?.error || error?.message || "Portfolio Api Failed"}`,
                     redirectPath: "home",
+                    sessionExired: error?.error == "Another session is active." ? true : false,
+                    logout: logout
                 });
             }
         };
@@ -171,15 +177,15 @@ const PortfolioTab = ({ advisorName, stockAPi, isPurchesed, serviceID }) => {
         return (
             <View style={{ flex: 1, backgroundColor: COLORS.primaryColor, paddingHorizontal: 20,}}>
                 <View>
-                    <Text style={{ fontSize: 22, fontWeight: 600, color: COLORS.fontWhite, textAlign: "center", marginTop: 20 }}>{getServiceName(serviceID)}</Text>
-                <Text style={{ color: COLORS.fontWhite, marginTop: 10, textAlign:"justify",  }}>{serviceInfo[serviceID]}</Text>
+                    <Text style={{ fontSize: 18, fontWeight: 600, color: COLORS.fontWhite, marginTop: 20 }}>{getServiceName(serviceID)}</Text>
+                <Text style={{ color: "#ccc", marginTop: 10, textAlign:"justify", fontSize: 16  }}>{serviceInfo[serviceID]}</Text>
                 <TouchableOpacity onPress={() => {
                     setServiceSelectedOnHomePage(serviceID);
                     router.push("service");
                 }}
                     style={{ backgroundColor: COLORS.secondaryColor, padding: 15, borderRadius: 50, marginTop: 20 }}
                 >
-                    <Text style={{textAlign: "center", fontWeight: 600, fontSize: 18, color: COLORS.fontWhite}}>Buy</Text>
+                    <Text style={{textAlign: "center", fontWeight: 600, fontSize: 16, color: COLORS.fontWhite}}>Buy</Text>
                 </TouchableOpacity>
                 </View>
             </View>
@@ -371,7 +377,7 @@ const styles = StyleSheet.create({
     },
     currentRateValue: {
         color: COLORS.profitColor,
-        fontSize: 36,
+        fontSize: 30,
         fontWeight: '800',
         letterSpacing: -1,
     },
@@ -397,17 +403,17 @@ const styles = StyleSheet.create({
     },
     summaryLabel: {
         color: '#a0a0a0',
-        fontSize: 13,
+        fontSize: 14,
         marginBottom: 6,
         fontWeight: '500',
     },
     summaryValue: {
         color: '#fff',
-        fontSize: 18,
+        fontSize: 16,
         fontWeight: '700',
     },
     returnsValue: {
-        fontSize: 18,
+        fontSize: 16,
         fontWeight: '700',
         textAlign: 'center',
     },
@@ -458,7 +464,7 @@ const styles = StyleSheet.create({
     },
     investmentsTitle: {
         color: '#fff',
-        fontSize: 20,
+        fontSize: 18,
         fontWeight: '700',
     },
     sortContainer: {
@@ -536,7 +542,7 @@ const styles = StyleSheet.create({
     },
     investmentFooterLabel: {
         color: '#a0a0a0',
-        fontSize: 12,
+        fontSize: 14,
         fontWeight: '500',
         marginBottom: 4,
     },

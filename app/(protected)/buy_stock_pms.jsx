@@ -16,7 +16,7 @@ const { height } = Dimensions.get("window")
 
 export default function BuyStock() {
     const { stockId, serviceID, type, price, name } = useLocalSearchParams();
-    const { token } = useAuth();
+    const { token, logout } = useAuth();
     const [successfullModal, setSuccessfullModal] = useState(false);
     const [qty, setQty] = useState("");
     const [buyPirce, setBuyPrice] = useState(price || 0);
@@ -71,8 +71,10 @@ export default function BuyStock() {
             showToast({
                 type: "error",
                 title: `Something went wrong! 😥`,
-                message: `${error?.message || "Buy Stock Api Failed"}`,
+                message: `${error?.error || error?.message || "Buy Stock Api Failed"}`,
                 redirectPath: "home",
+                sessionExired: error?.error == "Another session is active." ? true : false,
+                logout: logout
             });
         }
     }

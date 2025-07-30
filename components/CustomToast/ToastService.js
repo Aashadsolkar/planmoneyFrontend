@@ -6,6 +6,8 @@ export const showToast = ({
   title = "",
   message = "",
   redirectPath = "",
+  sessionExired = false,
+  logout =  () => {},
 }) => {
   Toast.show({
     type,
@@ -15,8 +17,14 @@ export const showToast = ({
     visibilityTime: 3000,
     autoHide: true,
     topOffset: 60,
+    sessionExired,
+    logout
   });
-  if (redirectPath) {
+  if(sessionExired){
+     setTimeout(() => {
+      logout()
+    },1000);
+  }else if (redirectPath) {
     setTimeout(() => {
       router.push(`${redirectPath}`);
     },3500);

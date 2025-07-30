@@ -19,7 +19,7 @@ const PassWordInput = ({
       <TextInput
         mode="outlined"
         label={
-          <Text style={{ color: error ? 'red' : isFocused ? 'orange' : 'white' }}>
+          <Text style={{ fontSize: 14,color: error ? 'red' : isFocused ? 'orange' : '#ccc' }}>
             {label}
           </Text>
         }

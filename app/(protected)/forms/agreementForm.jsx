@@ -12,7 +12,7 @@ import { showToast } from "@components/CustomToast/ToastService";
 const AgreementForm = () => {
   const [fatcaSeclect, setFatcaSelect] = useState(null);
   const navigation = useNavigation();
-  const { token, setRiskData, questionFormData } = useAuth();
+  const { token, setRiskData, questionFormData, logout } = useAuth();
   const [fatcaError, setFatcaError] = useState("");
 
   const handleSubmit = async () => {
@@ -53,8 +53,10 @@ const AgreementForm = () => {
         showToast({
           type: "error",
           title: `Something went wrong! 😥`,
-          message: `${error?.message || "Questioner Api Failed"}`,
+          message: `${error?.error || error?.message || "Questioner Api Failed"}`,
           redirectPath: "home",
+          sessionExired: error?.error == "Another session is active." ? true : false,
+          logout: logout
         });
       }
     } else {

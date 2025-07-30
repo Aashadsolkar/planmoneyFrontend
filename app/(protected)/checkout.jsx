@@ -31,7 +31,7 @@ export default function Checkout() {
   const [appliedCoupon, setAppliedCoupon] = useState("");
   const [discount, setDiscount] = useState(0);
   const [showCouponDiscount, setShowCouponDiscount] = useState(false);
-  const { selectedService, token, profileData, setPrePaymentDetails } =
+  const { selectedService, token, profileData, setPrePaymentDetails, logout } =
     useAuth();
   const [couponErrorMsg, setCouponErrorMsg] = useState("");
   const [referralError, setReferralError] = useState(null);
@@ -80,8 +80,10 @@ export default function Checkout() {
       showToast({
         type: "error",
         title: `Order Failed! 😥`,
-        message: `${error?.message || "Failed to generate payment" }`,
+        message: `${error?.error || error?.message || "Failed to generate payment" }`,
         redirectPath: "home",
+        sessionExired: error?.error == "Another session is active." ? true : false,
+        logout: logout
       });
     }
   };

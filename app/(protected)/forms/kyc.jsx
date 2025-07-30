@@ -15,12 +15,13 @@ import Header from "@components/Header";
 import { COLORS } from "../../constants";
 import { useNavigation } from "expo-router";
 import * as Linking from "expo-linking";
+import { showToast } from "@components/CustomToast/ToastService";
 
 const KycVerifyPage = () => {
   const [loading, setLoading] = useState(false);
   const [sdkUrl, setSdkUrl] = useState(null);
   const [error, setError] = useState(null);
-  const { token, setDigiLockerRequestId } = useAuth();
+  const { token, setDigiLockerRequestId, logout } = useAuth();
   const navigation = useNavigation();
 
   // 🚫 Disable back button and navigation gestures
@@ -52,9 +53,20 @@ const KycVerifyPage = () => {
       setDigiLockerRequestId(result?.data?.request_id);
       setSdkUrl(result?.data?.sdk_url);
     } catch (error) {
-      setError(
-        error.message || "Failed to Verify Digi Locker, Please try again"
-      );
+      if (error?.error) {
+        showToast({
+          type: "error",
+          title: `Something went wrong! 😥`,
+          message: `${error?.error || error?.message || "Failed to chanage password!"}`,
+          // redirectPath: "home",
+          sessionExired: error?.error == "Another session is active." ? true : false,
+          logout: logout
+        });
+      } else {
+        setError(
+          error.message || "Failed to Verify Digi Locker, Please try again"
+        );
+      }
     } finally {
       setLoading(false);
     }
