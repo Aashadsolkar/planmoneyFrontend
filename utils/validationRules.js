@@ -19,6 +19,10 @@ export const validationRules = {
             rule: (val) => val.length >= 3,
             message: 'Name must be at least 3 characters',
         },
+        {
+            rule: (val) => /^[a-zA-Z\s'-]+$/.test(val),
+            message: 'Name can only contain letters, spaces, hyphens, and apostrophes',
+        }
     ],
     email: [
         {

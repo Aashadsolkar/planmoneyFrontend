@@ -160,9 +160,11 @@ const versionCode = Constants?.manifest2?.extra?.expoClient?.version ?? "unknown
                   ) : (
                     <>
                       Hi{" "}
-                      <Text style={styles.highlightedName}>
-                        {profileData?.name}
-                      </Text>
+                          <Text style={styles.highlightedName}>
+                            {profileData?.name?.length > 18
+                              ? `${profileData.name.slice(0, 18)}...`
+                              : profileData?.name}
+                          </Text>
                     </>
                   )}
                 </Text>
@@ -681,6 +683,7 @@ const styles = StyleSheet.create({
     color: "#FFA500",
     fontWeight: "600",
     textTransform: "capitalize",
+    width: 201
   },
   iconButton: {
     marginRight: 16,
