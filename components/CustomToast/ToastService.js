@@ -11,8 +11,8 @@ export const showToast = ({
 }) => {
   Toast.show({
     type,
-    text1: title,
-    text2: message,
+    text1: !sessionExired ? title : "Session Expired",
+    text2: !sessionExired ?  message: "Logged in from another device.",
     position: "top",
     visibilityTime: 3000,
     autoHide: true,

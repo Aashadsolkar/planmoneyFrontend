@@ -126,11 +126,12 @@ const Login = () => {
 
           <Animatable.View animation="fadeInUp" delay={100} duration={600}>
             <Input
-              label="Email OR mobile"
+              label="Mobile Number"
               value={formData.email_or_phone}
               onChangeText={(value) => handleChange(value, "email_or_phone")}
               error={!!errors?.email_or_phone}
               errorMessage={errors?.email_or_phone}
+              isNumberOnly={true}
             />
           </Animatable.View>
 

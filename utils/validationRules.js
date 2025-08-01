@@ -2,12 +2,11 @@ export const validationRules = {
     email_or_phone: [
         {
             rule: (val) => val.trim() !== '',
-            message: 'Email or Mobile is required',
+            message: 'Mobile number is required',
         },
         {
-            rule: (val) =>
-                /^(\d{10})$|^([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})$/.test(val),
-            message: 'Enter a valid email or 10-digit mobile number',
+            rule: (val) => /^[6-9]\d{9}$/.test(val),
+            message: 'Invalid mobile number',
         },
     ],
     name: [

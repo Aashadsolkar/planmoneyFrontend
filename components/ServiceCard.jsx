@@ -129,7 +129,7 @@ const ServiceCard = ({
     }
     return (<TouchableOpacity onPress={() => { }}>
       <View style={styles.details}>
-        <Text style={styles.detailsText}>Purchesed</Text>
+        <Text style={styles.detailsText}>purchased</Text>
         {/* <MaterialIcons name="chevron-right" size={16} color="#FF9800" /> */}
       </View>
     </TouchableOpacity>)
