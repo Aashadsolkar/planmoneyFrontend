@@ -27,6 +27,7 @@ import { useHomeData } from "@hooks/useHomeData";
 import StockOptionSlider from "@components/StockOtionSlider";
 import QuestionerModal from "@components/QuestionerModal";
 import { Image } from "expo-image";
+import { formatDateToDDMMYYYY } from "../../utils/commonFunctions";
 
 const { height, width } = Dimensions.get("window");
 
@@ -110,64 +111,7 @@ export default function Home() {
     };
   }, [navigation]);
 
-  // Offer carousel data
-  const initialOfferData = [
-    {
-      id: "1",
-      serviceId: 1,
-      color: [COLORS.secondaryColor, COLORS.secondaryColor],
-      onClick: () => {
-        setServiceSelectedOnHomePage(1);
-        router.push("service");
-      },
-      banner: require("../../assets/images/fastlaneBanner.png"),
-    },
-    {
-      id: "2",
-      serviceId: 6,
-      color: [COLORS.secondaryColor, COLORS.secondaryColor],
-      onClick: () => {
-        setServiceSelectedOnHomePage(6);
-        router.push("service");
-      },
-      banner: require("../../assets/images/premiumResearchbanner.png"),
-    },
-    {
-      id: "3",
-      serviceId: 2,
-      color: [COLORS.secondaryColor, COLORS.secondaryColor],
-      onClick: () => {
-        setServiceSelectedOnHomePage(2);
-        router.push("service");
-      },
-      banner: require("../../assets/images/PIS_Banner.png"),
-    },
-    {
-      id: "4",
-      serviceId: 3,
-      color: [COLORS.secondaryColor, COLORS.secondaryColor],
-      onClick: () => {
-        setServiceSelectedOnHomePage(3);
-        router.push("service");
-      },
-      banner: require("../../assets/images/portfolioBanner.png"),
-    },
-    {
-      id: "5",
-      title: "QuantumVault (For Above ₹50 lakh Capital)",
-      serviceId: 4,
-      subtitle: "Expert Stock Picks",
-      buttonText: "Subscribe Now",
-      color: [COLORS.secondaryColor, COLORS.secondaryColor],
-      onClick: () => {
-        setServiceSelectedOnHomePage(4);
-        router.push("service");
-      },
-      banner: require("../../assets/images/qauntomBanner.png"),
-    },
-  ];
-
-  const [offerData, setOfferData] = useState(initialOfferData);
+  const [offerData, setOfferData] = useState(advertisement);
   useEffect(() => {
     // Create a set of purchased service IDs
     const purchasedServiceIds = new Set(
@@ -175,11 +119,17 @@ export default function Home() {
     );
 
     // Filter offer data
-    const filteredOffers = initialOfferData.filter(
-      (offer) => !offer.serviceId || !purchasedServiceIds.has(offer.serviceId)
+    const filteredOffers = advertisement.filter(
+      (offer) => !offer.service_id || !purchasedServiceIds.has(offer.service_id)
     );
 
-    setOfferData(filteredOffers);
+    const sortedData = filteredOffers.sort((a, b) => {
+      if (a.service_id === null && b.service_id !== null) return 1; // a ko last le jao
+      if (a.service_id !== null && b.service_id === null) return -1; // b ko last le jao
+      return 0; // order same rahe agar dono same type ke hain
+    });
+
+    setOfferData(sortedData);
   }, [portfolioServices]);
 
   const handleClick = (item) => {
@@ -265,7 +215,7 @@ export default function Home() {
                   <View>
                     <Text style={styles.updateText}>Expire On</Text>
                     <Text style={styles.dateText}>
-                      {item?.subscription?.end_at}
+                      {formatDateToDDMMYYYY(item?.subscription?.end_at)}
                     </Text>
                   </View>
                   <MaterialIcons name="chevron-right" size={40} color="#fff" />
@@ -346,11 +296,6 @@ export default function Home() {
     });
   };
 
-  const handleScroll = (event) => {
-    const scrollX = event.nativeEvent.contentOffset.x;
-    const index = Math.round(scrollX / screenWidth);
-    setActiveIndex(index);
-  };
   const showOffterSliderDots = () => {
     if (offerData.length > 1) {
       return (
@@ -374,24 +319,6 @@ export default function Home() {
     }
   };
 
-  const showAdverismentSliderDots = () => {
-    if (advertisement.length > 1) {
-      return (
-        <View style={styles.dotContainer}>
-          {advertisement.map((_, i) => (
-            <View
-              key={i}
-              style={[
-                styles.dot,
-                { backgroundColor: i === activeAdverismentIndex ? COLORS.secondaryColor : COLORS.lightGray },
-              ]}
-            />
-          ))}
-        </View>
-      )
-    }
-  }
-
   const renderBanner = () => {
     if (offerData.length !== 0) {
       return (
@@ -412,9 +339,18 @@ export default function Home() {
                 delay={index * 100}
                 duration={300}
               >
-                <TouchableOpacity onPress={() => item.onClick()}>
+                <TouchableOpacity 
+                  onPress={
+                    item?.service_id
+                      ? () => {
+                        setServiceSelectedOnHomePage(item?.service_id);
+                        router.push("service");
+                      }
+                      : () => { }
+                  }
+                >
                   <Image
-                    source={typeof item.banner === 'string' ? { uri: item.banner } : item.banner}
+                    source={typeof item.banner_url === 'string' ? { uri: item.banner_url } : item.banner_url}
                     style={{
                       width: ITEM_WIDTH,
                       height: 177,
@@ -440,49 +376,6 @@ export default function Home() {
         </View>
       )
     }
-    return (
-      <View style={styles.carouselContainer}>
-        <FlatList
-          data={advertisement || []}
-          keyExtractor={(item, index) => item?.id?.toString() ?? index.toString()}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          snapToInterval={ITEM_WIDTH}
-          decelerationRate="fast"
-          contentContainerStyle={{
-            paddingHorizontal: SPACING
-          }}
-          renderItem={({ item, index }) => (
-            <Animatable.View
-              animation="fadeInRight"
-              delay={index * 100}
-              duration={300}
-            >
-              <TouchableOpacity>
-                <Image
-                  source={item?.banner_url ? { uri: item.banner_url } : require('../../assets/images/placeholder.jpg')}
-                  style={{
-                    width: ITEM_WIDTH,
-                    height: 177,
-                    borderRadius: 10,
-                    overflow: 'hidden',
-                    marginHorizontal: 5,
-                  }}
-                  contentFit="stretch"
-                />
-              </TouchableOpacity>
-            </Animatable.View>
-          )}
-          onScroll={(e) => {
-            const index = Math.round(e.nativeEvent.contentOffset.x / ITEM_WIDTH);
-            setActiveAdverismentIndex(index); // use this for dot indicators
-          }}
-
-        />
-        {/* Dot Indicators */}
-        {showAdverismentSliderDots()}
-      </View>
-    )
   }
 
   const renderContent = () => {

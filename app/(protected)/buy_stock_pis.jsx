@@ -74,7 +74,7 @@ export default function BuyStock() {
                 type: "error",
                 title: `Something went wrong! 😥`,
                 message: `${error?.error ||error?.message || "Buy Stock Api Failed"}`,
-                redirectPath: "home",
+                // redirectPath: "home",
                 sessionExired: error?.error == "Another session is active." ? true : false,
                 logout: logout
             });

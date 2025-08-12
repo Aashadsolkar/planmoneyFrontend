@@ -15,6 +15,7 @@ import { COLORS } from '../constants';
 import { useAuth } from '@context/useAuth';
 import RenderHTML from 'react-native-render-html';
 import { router } from 'expo-router';
+import { formatDateToDDMMYYYY } from '../../utils/commonFunctions';
 
 
 const ServiceDetailScreen = () => {
@@ -152,7 +153,7 @@ const ServiceDetailScreen = () => {
         <View style={styles.serviceDetails}>
           <View style={styles.detailColumn}>
             <Text style={styles.detailLabel}>As on</Text>
-            <Text style={styles.detailValue}>{formatDate(newArrivalsDetails.created_at)}</Text>
+            <Text style={styles.detailValue}>{formatDateToDDMMYYYY(newArrivalsDetails.created_at)}</Text>
           </View>
           <View style={styles.detailColumn}>
             <Text style={styles.detailLabel}>Timeframe</Text>

@@ -25,6 +25,7 @@ import { router, useNavigation } from "expo-router";
 import Input from "@components/Input";
 import * as Linking from "expo-linking";
 import { showToast } from "@components/CustomToast/ToastService";
+import { formatDateToDDMMYYYY } from "../../utils/commonFunctions";
 
 export default function Checkout() {
   const [couponCode, setCouponCode] = useState("");
@@ -153,40 +154,57 @@ export default function Checkout() {
         return "Invalid plan type";
     }
 
-    // Format as "Expires on 02 Jul 2025"
-    const options = { day: "2-digit", month: "short", year: "numeric" };
-    const formattedDate = futureDate
-      .toLocaleDateString("en-GB", options)
-      .replace(/ /g, " ");
+    const formattedDate = formatDateToDDMMYYYY(futureDate);
 
     return `Expires on ${formattedDate}`;
   };
 
   const renderOfferPrice = (actual, offer) => {
+    const safeActual = actual ?? 0;
+    const safeOffer = offer ?? 0;
 
-    // If no offer price, show only actual price
-    if (!offer) {
-      // return <Text style={[styles.discounted, { paddingTop: 10 }]}>₹{actual}</Text>;
-      return <Text style={styles.subscriptionPrice}>₹{actual}</Text>
+    // If both are 0 or missing → show nothing
+    if (!safeActual && !safeOffer) return null;
+
+    // If actual is missing or 0 → show only offer
+    if (!safeActual) {
+      return safeOffer ? (
+        <Text style={styles.subscriptionPrice}>₹{safeOffer}</Text>
+      ) : null;
     }
 
-    // If both prices are same, show only one
-    if (actual === offer) {
-      return <Text style={styles.subscriptionPrice}>₹{offer}</Text>;
+    // If offer is missing or 0 → show only actual
+    if (!safeOffer) {
+      return safeActual ? (
+        <Text style={styles.subscriptionPrice}>₹{safeActual}</Text>
+      ) : null;
     }
 
-    // Show original (strikethrough) and discounted
+    // If both are same → show offer
+    if (safeActual === safeOffer) {
+      return <Text style={styles.subscriptionPrice}>₹{safeOffer}</Text>;
+    }
+
+    // Else → show actual (strikethrough) + offer
     return (
       <>
-        <Text style={[styles.subscriptionPrice, {
-          fontWeight: 400,
-          color: COLORS.lightGray,
-          textDecorationLine: "line-through",
-        },]}>₹{actual}</Text>
-        <Text style={styles.subscriptionPrice}>₹{offer}</Text>
+        <Text
+          style={[
+            styles.subscriptionPrice,
+            {
+              fontWeight: 400,
+              color: COLORS.lightGray,
+              textDecorationLine: "line-through",
+            },
+          ]}
+        >
+          ₹{safeActual}
+        </Text>
+        <Text style={styles.subscriptionPrice}>₹{safeOffer}</Text>
       </>
     );
   };
+
 
   return (
     <SafeAreaView style={styles.container}>

@@ -11,6 +11,7 @@ import SkeletonList from '@components/ListSkeleton';
 import * as Animatable from 'react-native-animatable';
 import Entypo from '@expo/vector-icons/Entypo';
 import { showToast } from "@components/CustomToast/ToastService";
+import { formatDateToDDMMYYYY } from '../../utils/commonFunctions';
 
 const HomeScreen = () => {
   const { token, setNewArrivalsDetails, setSelectedService, logout } = useAuth()
@@ -188,7 +189,7 @@ const HomeScreen = () => {
         <View style={styles.serviceDetails}>
           <View style={styles.detailColumn}>
             <Text style={styles.detailLabel}>As on</Text>
-            <Text style={styles.detailValue}>{formatDate(service.created_at)}</Text>
+            <Text style={styles.detailValue}>{formatDateToDDMMYYYY(service.created_at)}</Text>
           </View>
           <View style={styles.detailColumn}>
             <Text style={styles.detailLabel}>Timeframe</Text>

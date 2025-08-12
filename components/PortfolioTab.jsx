@@ -198,7 +198,7 @@ const PortfolioTab = ({ advisorName, stockAPi, isPurchesed, serviceID }) => {
             <View style={styles.mainCard}>
                 {/* Current Rate Section */}
                 <View style={styles.rateSection}>
-                    <Text style={styles.currentRateLabel}>Current Rate</Text>
+                    <Text style={styles.currentRateLabel}>Current Value</Text>
                     <Text style={styles.currentRateValue}>
                         {formatCurrency(portfolioSummary.currentRate)}
                     </Text>

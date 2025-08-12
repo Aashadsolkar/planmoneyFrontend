@@ -27,11 +27,11 @@ const Portfolio = () => {
   // Determine available tabs based on configuration
 
   // Define availableTabs based on subscription presence
-  const availableTabs = ["PMS", "PIS", "QuantumVolt"];
+  const availableTabs = ["PMS", "PIS", "Quantum Vault"];
   const availableTabsIcone = {
     "PIS": () => <PISIcon height={20} width={20} />,
     "PMS": () => <PMSIcon height={20} width={20}/>,
-    "QuantumVolt": () => <QuantomVoltIcon height={20} width={20}/>,
+    "Quantum Vault": () => <QuantomVoltIcon height={20} width={20}/>,
   };
 
   const hasPMS = portfolioServices.some(
@@ -42,7 +42,7 @@ const Portfolio = () => {
   const hasQuantumVoltz = portfolioServices.some(
     (sub) => sub.name === "QuantumVault (For Above ₹50 lakh Capital)" && sub.is_subscribed
   );
-  // if (hasQuantumVoltz) availableTabs.push("QuantumVolt");
+  // if (hasQuantumVoltz) availableTabs.push("Quantum Vault");
 
   const hasPIS = portfolioServices.some(
     (sub) => sub.name === "Personalised Investment Services" && sub.is_subscribed //need to change
@@ -53,7 +53,7 @@ const Portfolio = () => {
   const serviceIdToTab = {
     2: 'PIS',
     3: 'PMS',
-    4: 'QuantumVolt',
+    4: 'Quantum Vault',
   };
 
 
@@ -103,7 +103,7 @@ const Portfolio = () => {
     switch (activeTab) {
       case 'PMS':
         return <PortfolioTab serviceID={3} key="pms" stockAPi={pmsPortfolio} isPurchesed={hasPMS} />;
-      case 'QuantumVolt':
+      case 'Quantum Vault':
         return <PortfolioTab serviceID={4} key="quantum" stockAPi={quantomPortfolio} isPurchesed={hasQuantumVoltz}/>;
       case 'PIS':
         return <PortfolioTab serviceID={2} key="pis" stockAPi={pisPortfolio} isPurchesed={hasPIS}/>;
