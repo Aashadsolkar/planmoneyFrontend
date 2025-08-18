@@ -113,9 +113,9 @@ const PmsAndQuantom = () => {
 
     const getRiskLevelColor = (riskLevel) => {
         const colors = {
-            buy: COLORS.secondaryColor,
-            sell: COLORS.profitColor,
-            hold: COLORS.lossColor,
+            buy: COLORS.profitColor,
+            sell: COLORS.lossColor,
+            hold: COLORS.secondaryColor,
         };
         return colors[riskLevel?.toLowerCase()] || '#6c757d';
     };
@@ -124,7 +124,7 @@ const PmsAndQuantom = () => {
         const label = {
             buy: "BUY",
             hold: "HOLD",
-            sell: "SELL",
+            sell: "EXIT",
         };
         return label[riskLevel?.toLowerCase()] || "NA";
     };
@@ -177,7 +177,7 @@ const PmsAndQuantom = () => {
                     </View>
                     <View style={styles.cardSections}>
                         <View style={{ flex: 1 }}>
-                            <Text style={styles.lightText}>Buy Price</Text>
+                            <Text style={styles.lightText}>Entry Level</Text>
                             <Text style={styles.boldText}>₹{data?.buy_price || ""}</Text>
                         </View>
                         <View style={{ flex: 1 }}>
