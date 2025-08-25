@@ -3,8 +3,6 @@ import {
   StyleSheet,
   View,
   Text,
-  Image,
-  Dimensions,
   TouchableOpacity,
   KeyboardAvoidingView,
   Platform,
@@ -13,94 +11,85 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
 import { useAuth } from "@context/useAuth";
-import PassWordInput from "@components/Password";
 import Input from "@components/Input";
 import Button from "@components/Button";
-import { validateField, validateForm } from "@utils/validator";
-import { login, RegisterPushNotificationToken } from "@utils/apiCaller";
 import { COLORS } from "../constants";
 import LogoSVG from "@components/LogoSVG";
 import * as Animatable from "react-native-animatable";
-import { customerLogin } from "@utils/apis/customer-api-caller";
-import { getExpoPushToken } from "../../push-notification/notificationService";
-
-const { height, width } = Dimensions.get("window");
-
-// Regex helpers
-const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const mobileRegex = /^[6-9]\d{9}$/;
-
-const getUserType = (input) => {
-  if (emailRegex.test(input)) return "email";
-  if (mobileRegex.test(input)) return "mobile";
-  return "invalid";
-};
 
 const Login = () => {
-  const [formData, setFormData] = useState({
-    email_or_phone: "",
-    password: "",
-  });
-
+  const [phone, setPhone] = useState("");
+  const [otp, setOtp] = useState("");
   const [errors, setErrors] = useState({});
   const [loginApiError, setLoginApiError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [otpSent, setOtpSent] = useState(false);
+  const [timer, setTimer] = useState(0);
+  const [resendCount, setResendCount] = useState(0);
 
   const { storeUserData } = useAuth();
 
-  const handleChange = (value, name) => {
-    setLoginApiError("");
-    setFormData((prev) => ({ ...prev, [name]: value }));
-    const errorMsg = validateField(name, value);
-    setErrors((prev) => ({ ...prev, [name]: errorMsg }));
-  };
+  // 📌 Dummy Send OTP
+  const handleSendOtp = async () => {
+    if (!/^[6-9]\d{9}$/.test(phone)) {
+      setErrors({ phone: "Enter a valid 10-digit mobile number" });
+      return;
+    }
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+    if (resendCount >= 3) {
+      setLoginApiError("You have reached maximum OTP resend attempts.");
+      return;
+    }
+
     setIsLoading(true);
-    const newErrors = validateForm(formData);
-    setErrors(newErrors);
 
-    if (Object.keys(newErrors).length === 0) {
-      try {
-        const response = await customerLogin({
-          email_or_phone: formData.email_or_phone,
-          password: formData.password,
-        });
-        if (response?.data?.user && response?.data?.token) {
-          storeUserData(response.data.user, response.data.token);
-          const deviceToken = await getExpoPushToken();
-
-          // 📡 Send to backend
-          if (deviceToken) {
-            await RegisterPushNotificationToken(
-              deviceToken,
-              response.data.token
-            );
-            // console.log("Device token registered successfully");
-          } else {
-            console.warn("Device token is null, not sending to backend.");
-          }
-        } else {
-          setLoginApiError("Unexpected response from server.");
-        }
-      } catch (error) {
-        if (error.errors) {
-          const { email_or_phone, password } = error.errors;
-          setErrors((prev) => ({
-            ...prev,
-            ...(email_or_phone && { email_or_phone: email_or_phone[0] }),
-            ...(password && { password: password[0] }),
-          }));
-        } else {
-          setLoginApiError(error.message || "Login failed. Please try again.");
-        }
-      } finally {
+    try {
+      // 🔹 Dummy delay + success
+      setTimeout(() => {
+        setOtpSent(true);
+        setResendCount((prev) => prev + 1);
+        setTimer(30); // 30 sec cooldown
         setIsLoading(false);
-      }
-    } else {
+
+        const countdown = setInterval(() => {
+          setTimer((prev) => {
+            if (prev <= 1) {
+              clearInterval(countdown);
+              return 0;
+            }
+            return prev - 1;
+          });
+        }, 1000);
+      }, 1000);
+    } catch (err) {
+      setLoginApiError("Failed to send OTP (dummy error)");
       setIsLoading(false);
     }
+  };
+
+  // 📌 Dummy Verify OTP
+  const handleVerifyOtp = async () => {
+    if (otp.length !== 6) {
+      setErrors({ otp: "Enter a valid 6 digit OTP" });
+      return;
+    }
+    setIsLoading(true);
+
+    setTimeout(() => {
+      if (otp === "123456") {
+        // 🔹 Fake user + token
+        const dummyUser = { id: 1, name: "John Doe", phone };
+        const dummyToken = "dummy-jwt-token";
+
+        storeUserData(dummyUser, dummyToken);
+        setLoginApiError("");
+        alert("✅ OTP Verified! Logged in successfully.");
+        router.push("/");
+      } else {
+        setLoginApiError("❌ Invalid OTP. Try again.");
+      }
+      setIsLoading(false);
+    }, 1000);
   };
 
   return (
@@ -120,40 +109,66 @@ const Login = () => {
         </Animatable.View>
 
         <View style={styles.formContainer}>
-          <Text style={styles.subText}>
-            Please enter your details to sign in
-          </Text>
+          <Text style={styles.subText}>Login with your mobile number</Text>
 
+          {/* Phone Input */}
           <Animatable.View animation="fadeInUp" delay={100} duration={600}>
             <Input
               label="Mobile Number"
-              value={formData.email_or_phone}
-              onChangeText={(value) => handleChange(value, "email_or_phone")}
-              error={!!errors?.email_or_phone}
-              errorMessage={errors?.email_or_phone}
+              value={phone}
+              onChangeText={(value) => {
+                setPhone(value);
+                setErrors({});
+              }}
+              error={!!errors?.phone}
+              errorMessage={errors?.phone}
               isNumberOnly={true}
+              maxLength={10}
+              editable={!otpSent} // disable after OTP sent
             />
           </Animatable.View>
 
-          <Animatable.View animation="fadeInUp" delay={200} duration={600}>
-            <PassWordInput
-              label="Password"
-              value={formData.password}
-              onChangeText={(value) => handleChange(value, "password")}
-              error={!!errors.password}
-              errorMessage={errors.password}
-              isPassword={true}
-            />
-          </Animatable.View>
+          {/* OTP Section */}
+          {otpSent && (
+            <Animatable.View animation="fadeInUp" delay={200} duration={600}>
+              <Input
+                label="Enter OTP"
+                value={otp}
+                onChangeText={(value) => {
+                  setOtp(value);
+                  setErrors({});
+                }}
+                error={!!errors?.otp}
+                errorMessage={errors?.otp}
+                isNumberOnly={true}
+                maxLength={6}
+              />
 
-          <Animatable.View animation="fadeInUp" delay={300} duration={600}>
-            <View style={styles.forgotContainer}>
-              <TouchableOpacity onPress={() => router.push("forgotPasswrd")}>
-                <Text style={styles.forgotText}>Forgot Password?</Text>
-              </TouchableOpacity>
-            </View>
-          </Animatable.View>
+              {/* Resend OTP */}
+              <View style={styles.resendContainer}>
+                {resendCount < 3 ? (
+                  <TouchableOpacity
+                    disabled={timer > 0}
+                    onPress={handleSendOtp}
+                  >
+                    <Text
+                      style={[styles.resendText, timer > 0 && { opacity: 0.5 }]}
+                    >
+                      {timer > 0
+                        ? `Resend OTP in ${timer}s`
+                        : "Resend OTP"}
+                    </Text>
+                  </TouchableOpacity>
+                ) : (
+                  <Text style={styles.resendLimit}>
+                    ⚠️ Max resend attempts reached
+                  </Text>
+                )}
+              </View>
+            </Animatable.View>
+          )}
 
+          {/* Error Display */}
           {loginApiError ? (
             <Text style={styles.errorText}>{loginApiError}</Text>
           ) : null}
@@ -161,22 +176,27 @@ const Login = () => {
 
         <View style={styles.bottomContainer}>
           <View style={{ flexDirection: "row", justifyContent: "center" }}>
-            <Text style={styles.signupText}>
-              Don’t have an account?{" "}
-            </Text>
-            <TouchableOpacity onPress={() => router.push("/register")} >
-              <Text style={styles.signupLink}>
-                Sign up
-              </Text>
+            <Text style={styles.signupText}>Don’t have an account? </Text>
+            <TouchableOpacity onPress={() => router.push("/register")}>
+              <Text style={styles.signupLink}>Sign up</Text>
             </TouchableOpacity>
           </View>
-
-          <Button
-            onClick={handleSubmit}
-            isLoading={isLoading}
-            label="SIGN IN"
-            gradientColor={["#D36C32", "#F68F00"]}
-          />
+          {!otpSent ? (
+            <Button
+              onClick={handleSendOtp}
+              isLoading={isLoading}
+              label="Get OTP"
+              gradientColor={["#D36C32", "#F68F00"]}
+            />
+          ) : (
+            <Button
+              onClick={handleVerifyOtp}
+              isLoading={isLoading}
+              label="Login"
+              gradientColor={["#D36C32", "#F68F00"]}
+              disabled={otp.length !== 6} // Disable until OTP is valid
+            />
+          )}
         </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -184,56 +204,22 @@ const Login = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#012744",
-  },
-  logoContainer: {
-    alignItems: "center",
-    marginTop: height * 0.05,
-    paddingVertical: 30,
-  },
-  logo: {
-    height: 100,
-    width: 200,
-    marginBottom: height * 0.05,
-  },
-  formContainer: {
-    paddingHorizontal: 20,
-  },
-  subText: {
-    fontWeight: "500",
-    color: "#FFFFFF",
-    marginBottom: 10,
-  },
-  forgotContainer: {
-    alignItems: "flex-end",
-    marginVertical: 8,
-  },
-  forgotText: {
-    color: COLORS.secondaryColor,
-  },
-  errorText: {
-    color: "red",
-    marginTop: 4,
-    marginLeft: 4,
-    fontSize: 12,
-    textAlign: "right",
-  },
+  container: { flex: 1, backgroundColor: "#012744" },
+  logoContainer: { alignItems: "center", marginTop: 40, paddingVertical: 20 },
+  formContainer: { paddingHorizontal: 20, marginTop: 20 },
+  subText: { fontWeight: "500", color: "#FFFFFF", marginBottom: 10, fontSize: 16 },
+  resendContainer: { alignItems: "flex-end", marginTop: 8 },
+  resendText: { color: COLORS.secondaryColor, fontSize: 14, fontWeight: "500" },
+  resendLimit: { color: "orange", fontSize: 13, fontWeight: "600" },
+  errorText: { color: "red", marginTop: 8, fontSize: 13, textAlign: "center" },
   bottomContainer: {
     paddingHorizontal: 20,
     width: "100%",
     position: "absolute",
-    bottom: "5%",
+    bottom: "10%",
   },
-  signupText: {
-    color: "#fff",
-    textAlign: "center",
-    marginBottom: 10,
-  },
-  signupLink: {
-    color: "#D87129",
-  },
+  signupText: { color: "#fff", textAlign: "center", marginBottom: 20 },
+  signupLink: { color: "#D87129" },
 });
 
 export default Login;
