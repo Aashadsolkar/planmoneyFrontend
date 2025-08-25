@@ -31,6 +31,7 @@ const menuItems = [
   { icon: "home", label: "Home", route: "home" },
   { icon: "briefcase", label: "Portfolio", route: "portfolio" },
   { icon: "add-circle", label: "Buy New Service", route: "service" },
+  { icon: "time-outline", label: "History", route: "history" },
   { icon: "calculator", label: "SIP Calculator", route: "sip" },
   { icon: "person", label: "Account", route: "profile" },
   { icon: "help-circle", label: "Contact us", route: "support" },
@@ -72,6 +73,7 @@ const Header = ({ showBackButton = false, backButtonText = () => {} }) => {
   const [showNotifications, setShowNotifications] = useState(false);
   const [showProfileDrawer, setShowProfileDrawer] = useState(false);
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+  const [isInfomodalOpen, setIsInfomodalOpen] = useState(false);
   const drawerAnimation = useState(
     new Animated.Value(Dimensions.get("window").width)
   )[0];
@@ -142,6 +144,7 @@ const versionCode = Constants?.manifest2?.extra?.expoClient?.version ?? "unknown
               <View
                 style={{ flexDirection: "row", alignItems: "center", gap: 15 }}
               >
+                <TouchableOpacity onPress={() => setIsInfomodalOpen(true)}>
                 <View
                   style={{
                     backgroundColor: "#004B8869",
@@ -154,6 +157,7 @@ const versionCode = Constants?.manifest2?.extra?.expoClient?.version ?? "unknown
                 >
                   <IconSVG />
                 </View>
+                </TouchableOpacity>
                 <Text style={styles.title}>
                   {isProfileLoading ? (
                     <ShimmerSkeleton height={23} width={180} />
@@ -644,6 +648,120 @@ const versionCode = Constants?.manifest2?.extra?.expoClient?.version ?? "unknown
                 </TouchableOpacity>
               </View>
             </View>
+          </View>
+        </BlurView>
+      </Modal>
+
+      <Modal
+        visible={isInfomodalOpen}
+        transparent
+        animationType="fade"
+        statusBarTranslucent
+      >
+        <BlurView
+          intensity={20}
+          style={{
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: "rgba(0,0,0,0.5)",
+          }}
+        >
+          <View
+            style={{
+              width: "85%",
+              maxWidth: 320,
+              backgroundColor: "#0b2b43ff",
+              borderRadius: 20,
+              overflow: "hidden",
+              shadowColor: "#000",
+              shadowOffset: { width: 0, height: 10 },
+              shadowOpacity: 0.3,
+              shadowRadius: 20,
+              elevation: 20,
+            }}
+          >
+            {/* Modal Header */}
+            <LinearGradient
+              colors={["#093658", "#112637ff"]}
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+                paddingHorizontal: 20,
+                paddingVertical: 18,
+                borderBottomWidth: 1,
+                borderBottomColor: "rgba(255,255,255,0.1)",
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: 20,
+                  fontWeight: "600",
+                  color: "#ffffff",
+                }}
+              >
+                PlanMoney
+              </Text>
+              <TouchableOpacity
+                onPress={() => setIsInfomodalOpen(false)}
+                style={{
+                  width: 32,
+                  height: 32,
+                  borderRadius: 16,
+                  backgroundColor: "rgba(255,255,255,0.1)",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Ionicons name="close" size={18} color="#fff" />
+              </TouchableOpacity>
+            </LinearGradient>
+
+            {/* Modal Content */}
+            <View style={{ paddingHorizontal: 20, paddingVertical: 25 }}>
+              {[
+                { label: "Company Name", value: "Econexx wealth Pvt Ltd." },
+                { label: "BSE Membership No", value: "-" },
+                { label: "SEBI Reg No", value: "-" },
+                { label: "Principal Officer", value: "Ovesh Khatri" },
+                { label: "Email", value: "po-cio@planmoney.in / 8108181604" },
+                { label: "Compliance Officer", value: "Aishwarya Shinde" },
+                { label: "Email", value: "services@planmoney.in / 8108181602" },
+              ].map((item, index) => (
+                <View
+                  key={index}
+                  style={{
+                    flexDirection: "row",
+                    marginBottom: 8,
+                  }}
+                >
+                  {/* Label */}
+                  <Text
+                    style={{
+                      width: "50%",
+                      fontSize: 14,
+                      color: "#ccc",
+                    }}
+                  >
+                    {item.label}:
+                  </Text>
+
+                  {/* Value */}
+                  <Text
+                    style={{
+                      width: "50%",
+                      fontSize: 14,
+                      color: "#fff",
+                    }}
+                  >
+                    {item.value}
+                  </Text>
+                </View>
+              ))}
+            </View>
+
+
           </View>
         </BlurView>
       </Modal>

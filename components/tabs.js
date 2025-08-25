@@ -42,7 +42,7 @@ export default function ProtectedTabs() {
       <Tabs.Screen
         name="service"
         options={{
-          title: 'Service',
+          title: 'Services',
           tabBarIcon: ({ color }) => (
             <FontAwesome size={28} name="cog" color={color} />
           ),

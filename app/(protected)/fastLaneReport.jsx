@@ -21,7 +21,7 @@ const FastLane = () => {
             <View style={styles.card} key={data?.id}>
                 <View style={styles.cardSections}>
                     <View style={{flex:1}}>
-                        <Text style={styles.lightText}>Buy Price</Text>
+                        <Text style={styles.lightText}>Entry Level</Text>
                         <Text style={styles.boldText}>₹{data?.buy_price}</Text>
                     </View>
                     <View style={{flex:1}}>
