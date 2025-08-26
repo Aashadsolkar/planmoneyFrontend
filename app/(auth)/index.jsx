@@ -83,7 +83,7 @@ const RegisterScreen = () => {
 
   useEffect(() => {
     if (showRegisterForm) {
-      router.push("/register");
+      router.push("/login");
     }
   }, [showRegisterForm]);
 
