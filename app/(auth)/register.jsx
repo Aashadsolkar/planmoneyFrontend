@@ -3,7 +3,6 @@ import {
   StyleSheet,
   View,
   Text,
-  Image,
   Dimensions,
   ScrollView,
   KeyboardAvoidingView,
@@ -23,15 +22,15 @@ import { useAuth } from "@context/useAuth";
 import LogoSVG from "@components/LogoSVG";
 import * as Animatable from "react-native-animatable";
 import { getExpoPushToken } from "../../push-notification/notificationService";
+import BouncyCheckbox from "react-native-bouncy-checkbox";
 
-const { height, width } = Dimensions.get("window");
+const { height } = Dimensions.get("window");
 
 const Register = () => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     phone: "",
-    address: "",
     password: "",
     confirmPassword: "",
   });
@@ -39,6 +38,9 @@ const Register = () => {
   const [errors, setErrors] = useState({});
   const [apiError, setApiError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [panChecked, setPanChecked] = useState(false);
+  const [termsChecked, setTermsChecked] = useState(false);
+
   const { storeUserData } = useAuth();
 
   const handleChange = (value, name) => {
@@ -69,11 +71,19 @@ const Register = () => {
 
   const handleSubmit = async () => {
     const newErrors = validateForm(formData);
+
     if (
       formData.password !== formData.confirmPassword &&
       !newErrors.confirmPassword
     ) {
       newErrors.confirmPassword = "Passwords do not match";
+    }
+
+    if (!panChecked) {
+      newErrors.panCheck = "You must confirm PAN name is correct";
+    }
+    if (!termsChecked) {
+      newErrors.termsCheck = "You must accept Terms & Conditions";
     }
 
     setErrors(newErrors);
@@ -93,9 +103,6 @@ const Register = () => {
         const deviceToken = await getExpoPushToken();
         if (deviceToken) {
           await RegisterPushNotificationToken(deviceToken, response.data.token);
-          // console.log("Device token registered successfully");
-        } else {
-          console.warn("Device token is null, not sending to backend.");
         }
         setIsLoading(false);
       } catch (error) {
@@ -126,24 +133,25 @@ const Register = () => {
       <KeyboardAvoidingView
         style={styles.flexContainer}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
-        keyboardVerticalOffset={Platform.OS === "ios" ? 10 : 0}
       >
         <ScrollView
           contentContainerStyle={styles.scrollContent}
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
-          style={{ paddingTop: 40 }}
         >
+          {/* Logo */}
           <Animatable.View animation="fadeIn" delay={200} duration={600}>
             <View style={styles.logoContainer}>
               <LogoSVG />
             </View>
           </Animatable.View>
 
+          {/* Title */}
           <Text style={styles.titleText}>
-            Please enter your details to sign up
+            Create your account to manage your finances
           </Text>
 
+          {/* Form */}
           <Animatable.View animation="fadeInUp" duration={600} delay={100}>
             <Input
               label="Full Name"
@@ -174,7 +182,7 @@ const Register = () => {
             />
           </Animatable.View>
 
-          <Animatable.View animation="fadeInUp" duration={600} delay={400}>
+          {/* <Animatable.View animation="fadeInUp" duration={600} delay={400}>
             <PassWordInput
               label="Password"
               value={formData.password}
@@ -194,32 +202,71 @@ const Register = () => {
               error={!!errors?.confirmPassword}
               errorMessage={errors?.confirmPassword}
             />
-          </Animatable.View>
+          </Animatable.View> */}
+
+          {/* PAN checkbox */}
+          <View style={styles.checkboxRow}>
+            <BouncyCheckbox
+              size={20}
+              fillColor="#F68F00"
+              unfillColor="#fff"
+              isChecked={panChecked}
+              text="Enter your name as per PAN card"
+              textStyle={{
+                color: "#d4e7ff",
+                fontSize: 13,
+                textDecorationLine: "none",
+              }}
+              onPress={(checked) => setPanChecked(checked)}
+            />
+            {errors?.panCheck && (
+              <Text style={styles.errorText}>{errors.panCheck}</Text>
+            )}
+          </View>
+          {errors?.panCheck && (
+            <Text style={styles.errorText}>{errors.panCheck}</Text>
+          )}
+
+          {/* Terms & Conditions checkbox */}
+          <View style={styles.checkboxRow}>
+            <BouncyCheckbox
+              size={20}
+              fillColor="#F68F00"
+              unfillColor="#fff"
+              isChecked={termsChecked}
+              text="I accept the Terms & Conditions"
+              textStyle={{
+                color: "#d4e7ff",
+                fontSize: 13,
+                textDecorationLine: "none",
+              }}
+              iconStyle={{ borderColor: "#F68F00" }}
+              onPress={(checked) => setTermsChecked(checked)}
+            />
+          </View>
+          {errors?.termsCheck && (
+            <Text style={styles.errorText}>{errors.termsCheck}</Text>
+          )}
 
           {apiError ? (
             <Text style={styles.apiErrorText}>{apiError}</Text>
           ) : null}
         </ScrollView>
 
+        {/* Footer */}
         <View style={styles.footer}>
-          <View style={{ flexDirection: "row", justifyContent: "center" }}>
-            <Text style={styles.footerText}>
-              Already have an account?{' '}
-            </Text>
-            <TouchableOpacity onPress={() => router.push('/login')}>
-              <Text
-                style={styles.footerLink}
-              >
-                Sign in
-              </Text>
-            </TouchableOpacity>
-          </View>
           <Button
             onClick={handleSubmit}
             isLoading={isLoading}
             label="SIGN UP"
             gradientColor={["#D36C32", "#F68F00"]}
           />
+          <View style={{ flexDirection: "row", justifyContent: "center" ,marginTop:20 }}>
+            <Text style={styles.footerText}>Already have an account? </Text>
+            <TouchableOpacity onPress={() => router.push("/login")}>
+              <Text style={styles.footerLink}>Sign in</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -227,30 +274,33 @@ const Register = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#012744",
-  },
-  flexContainer: {
-    flex: 1,
-  },
-  scrollContent: {
-    paddingHorizontal: 20,
-    paddingBottom: 20,
-  },
-  logoContainer: {
-    alignItems: "center",
-    marginBottom: height * 0.05,
-  },
-  logo: {
-    height: 100,
-    width: 200,
-  },
+  container: { flex: 1, backgroundColor: "#012744" },
+  flexContainer: { flex: 1 },
+  scrollContent: { paddingHorizontal: 20, paddingBottom: 20 },
+  logoContainer: { alignItems: "center", marginBottom: height * 0.05,marginTop:20 },
   titleText: {
-    fontWeight: "500",
+    fontWeight: "600",
     color: "#FFFFFF",
     marginBottom: 20,
-    fontSize: 16,
+    fontSize: 17,
+    textAlign: "center",
+  },
+  checkboxRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginVertical: 10,
+  },
+  infoText: {
+    fontSize: 13,
+    color: "#d4e7ff",
+    marginLeft: 8,
+    flexShrink: 1,
+  },
+  errorText: {
+    color: "red",
+    fontSize: 12,
+    marginLeft: 30,
+    marginBottom: 4,
   },
   apiErrorText: {
     color: "red",
@@ -268,9 +318,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginBottom: 10,
   },
-  footerLink: {
-    color: "#D87129",
-  },
+  footerLink: { color: "#D87129", fontWeight: "600" },
 });
 
 export default Register;
