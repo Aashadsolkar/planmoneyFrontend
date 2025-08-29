@@ -27,16 +27,20 @@ const Portfolio = () => {
   // Determine available tabs based on configuration
 
   // Define availableTabs based on subscription presence
-  const availableTabs = ["PMS", "PIS", "Quantum Vault"];
+  const availableTabs = ["PIS", "PSS", "Quantum Vault"];
   const availableTabsIcone = {
     "PIS": () => <PISIcon height={20} width={20} />,
-    "PMS": () => <PMSIcon height={20} width={20}/>,
+    "PSS": () => <PMSIcon height={20} width={20}/>,
     "Quantum Vault": () => <QuantomVoltIcon height={20} width={20}/>,
   };
 
   const hasPMS = portfolioServices.some(
-    (sub) => sub.name === "Portfolio Management Subscription" && sub.is_subscribed
+    (sub) => sub.name === "Portfolio Subscriptions Service" && sub.is_subscribed
   );
+  console.log(hasPMS,"hasPMS");
+  console.log(portfolioServices,"portfolioServices");
+  
+  
   // if (hasPMS) availableTabs.push("PMS");
 
   const hasQuantumVoltz = portfolioServices.some(
@@ -52,7 +56,7 @@ const Portfolio = () => {
   // Map service IDs to tab names
   const serviceIdToTab = {
     2: 'PIS',
-    3: 'PMS',
+    3: 'PSS',
     4: 'Quantum Vault',
   };
 
@@ -65,8 +69,8 @@ const Portfolio = () => {
       const mappedTab = serviceIdToTab[id];
       if (availableTabs.includes(mappedTab)) {
         setActiveTab(mappedTab);
-      } else if (availableTabs.includes('PMS')) {
-        setActiveTab('PMS');
+      } else if (availableTabs.includes('PIS')) {
+        setActiveTab('PIS');
       } else {
         setActiveTab(availableTabs[0]);
       }
@@ -101,8 +105,8 @@ const Portfolio = () => {
 
   const renderContent = () => {
     switch (activeTab) {
-      case 'PMS':
-        return <PortfolioTab serviceID={3} key="pms" stockAPi={pmsPortfolio} isPurchesed={hasPMS} />;
+      case 'PSS':
+        return <PortfolioTab serviceID={3} key="PSS" stockAPi={pmsPortfolio} isPurchesed={hasPMS} />;
       case 'Quantum Vault':
         return <PortfolioTab serviceID={4} key="quantum" stockAPi={quantomPortfolio} isPurchesed={hasQuantumVoltz}/>;
       case 'PIS':

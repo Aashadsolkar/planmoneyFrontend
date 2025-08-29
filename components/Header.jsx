@@ -31,7 +31,7 @@ const menuItems = [
   { icon: "home", label: "Home", route: "home" },
   { icon: "briefcase", label: "Portfolio", route: "portfolio" },
   { icon: "add-circle", label: "Buy New Service", route: "service" },
-  { icon: "time-outline", label: "History", route: "history" },
+  // { icon: "time-outline", label: "History", route: "history" },
   { icon: "calculator", label: "SIP Calculator", route: "sip" },
   { icon: "person", label: "Account", route: "profile" },
   { icon: "help-circle", label: "Contact us", route: "support" },

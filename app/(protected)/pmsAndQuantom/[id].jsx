@@ -21,10 +21,6 @@ const PmsAndQuantom = () => {
     const { token, customerServiceData, setReportData, logout } = useAuth();
     const [isLoading, setIsLoading] = useState(true);
     const [fastlaneData, setFastlaneData] = useState([]);
-    const [historyData, setHistoryData] = useState([]);
-    const [activeTab, setActiveTab] = useState('recommendations');
-    const navigation = useNavigation();
-    const [isHistoryLoading, setIsHistoryLoading] = useState(true);
 
     useFocusEffect(
         useCallback(() => {
@@ -35,7 +31,6 @@ const PmsAndQuantom = () => {
                     const data = response?.data?.services || [];
                     const sortedData = data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
                     setFastlaneData(sortedData);
-                    setHistoryData(sortedData.slice(1, 3)); // Dummy history
                 } catch (error) {
                     showToast({
                         type: "error",
@@ -59,36 +54,6 @@ const PmsAndQuantom = () => {
         }, [id])
     );
 
-    useFocusEffect(
-        useCallback(() => {
-            const callFastlaneHistoryApi = async () => {
-                try {
-                    setIsHistoryLoading(true);
-                    const response = await getFastlaneHistoryData(token, id);
-                    const data = response?.data?.services || [];
-                    const sortedData = data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-
-                    setHistoryData(sortedData || []);
-                } catch (error) {
-                    showToast({
-                        type: "error",
-                        title: `Something went wrong! 😥`,
-                        message: `${error.error ||error?.message || "Failed to get service history data"}`,
-                        redirectPath: "home",
-                        sessionExired: error?.error == "Another session is active." ? true : false,
-                        logout: logout
-                    });
-                } finally {
-                    setIsHistoryLoading(false);
-                }
-            };
-            if (customerServiceData?.questionnaire_status == 1 &&
-                customerServiceData?.verification_status == 1 &&
-                is_advisor_assign == "true") {
-                callFastlaneHistoryApi();
-            }
-        }, [id])
-    );
 
     const handleBuyButtonClick = (data) => {
         let path = "";
@@ -229,7 +194,7 @@ const PmsAndQuantom = () => {
     const renderHeaderText = () => {
         switch (id) {
             case "3":
-                return "PMS";
+                return "PSS";
             case "4":
                 return "Quantum Volt"
             case "2":
@@ -311,7 +276,7 @@ const PmsAndQuantom = () => {
         )
     }
 
-    if (isLoading || isHistoryLoading) return <FullScreenLoader visible={isLoading} />;
+    if (isLoading) return <FullScreenLoader visible={isLoading} />;
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.cardColor }}>
@@ -344,27 +309,9 @@ const PmsAndQuantom = () => {
                         </View>
                     </LinearGradient>
                 </TouchableOpacity>
-                {/* Tabs */}
-                <View style={styles.tabContainer}>
-                    <TouchableOpacity
-                        style={[styles.tab, activeTab === 'recommendations' && styles.activeTab]}
-                        onPress={() => setActiveTab('recommendations')}
-                    >
-                        <Text style={[styles.tabText, activeTab === 'recommendations' && styles.activeTabText]}>Active</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        style={[styles.tab, activeTab === 'history' && styles.activeTab]}
-                        onPress={() => setActiveTab('history')}
-                    >
-                        <Text style={[styles.tabText, activeTab === 'history' && styles.activeTabText]}>History</Text>
-                    </TouchableOpacity>
-                </View>
-
-                {activeTab === 'recommendations' && fastlaneData.length > 0 && <Text style={styles.heading}>Stock Recommendations</Text>}
-                {activeTab === 'history' && historyData.length > 0 && <Text style={styles.heading}>Recommendation History</Text>}
-
+                <Text style={styles.heading}>Stock Recommendations</Text>
                 <View style={{ marginBottom: 50 }}>
-                    {activeTab === 'recommendations' ? renderCardList(fastlaneData, "active") : renderCardList(historyData, "inActive")}
+                    {renderCardList(fastlaneData, "active")}
                 </View>
             </ScrollView>
         </SafeAreaView>

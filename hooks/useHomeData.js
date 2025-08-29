@@ -82,7 +82,7 @@ export const useHomeData = () => {
             if (filteredData.length > 0) {
                 setPurchesService(filteredData);
                 const portfolio = filteredData.filter(service =>
-                    ["Portfolio Management Subscription", "QuantumVault (For Above ₹50 lakh Capital)", "Personalised Investment Services"]
+                    ["Portfolio Subscriptions Service", "QuantumVault (For Above ₹50 lakh Capital)", "Personalised Investment Services"]
                         .includes(service.name)
                 );
                 setPortfolioServices(portfolio);

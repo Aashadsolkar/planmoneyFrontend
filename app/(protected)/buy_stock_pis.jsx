@@ -65,10 +65,14 @@ export default function BuyStock() {
                 type,
                 stock_id: stockId
             };
+            console.log(payload, "payload");
+            
             const response = await BuyPISStock(token, payload);
             setIsLoading(false);
             setSuccessfullModal(true);
         } catch (error) {
+            console.log(error, "error");
+            
             setIsLoading(false);
             showToast({
                 type: "error",

@@ -427,8 +427,8 @@ export default function Home() {
             style={styles.linkItem}
           >
             <TouchableOpacity
-              style={styles.linkItem}
-              onPress={() => router.push("portfolio")}
+              onPress={() => router.push("history")}
+              style={{alignItems: "center"}}
             >
               <View style={styles.linkIconContainer}>
                 <FontAwesome6
@@ -437,7 +437,7 @@ export default function Home() {
                   color={COLORS.secondaryColor}
                 />
               </View>
-              <Text style={styles.linkText}>Portfolio</Text>
+              <Text style={styles.linkText}>Recommendation History</Text>
             </TouchableOpacity>
           </Animatable.View>
           <Animatable.View
@@ -448,7 +448,7 @@ export default function Home() {
           >
             <TouchableOpacity
               onPress={() => router.push("sip")}
-              style={styles.linkItem}
+              style={{alignItems: "center"}}
             >
               <View style={styles.linkIconContainer}>
                 <Ionicons name="calculator" size={40} color="#FFA500" />
@@ -464,8 +464,8 @@ export default function Home() {
             style={styles.linkItem}
           >
             <TouchableOpacity
-              style={styles.linkItem}
               onPress={() => router.push("newArrivals")}
+              style={{alignItems: "center"}}
             >
               <View style={styles.linkIconContainer}>
                 <Foundation
@@ -487,7 +487,7 @@ export default function Home() {
             style={styles.linkItem}
           >
             <TouchableOpacity
-              style={styles.linkItem}
+            style={{alignItems: "center"}}
               onPress={() => router.push("upcoming")}
             >
               <View style={styles.linkIconContainer}>
@@ -649,13 +649,14 @@ const styles = StyleSheet.create({
     flex:1,
     flexDirection: "row",
     justifyContent: "space-between",
-    marginHorizontal:20,
+    marginHorizontal: 10,
     // marginVertical:15,
     marginTop: 15,
     marginBottom: 10
   },
   linkItem: {
     alignItems: "center",
+    width: "25%"
   },
   linkIconContainer: {
     width: 70,
@@ -668,7 +669,8 @@ const styles = StyleSheet.create({
   },
   linkText: {
     color: "white",
-    fontSize: 12,
+    fontSize: 11,
+    textAlign: "center"
   },
   newsContainer: {
     paddingHorizontal: 20,

@@ -21,9 +21,9 @@ import HistoryCardList from "@components/HistoryCardList";
 const services = [
     { id: 1, title: "FastLane", serviceID: "1" },
     { id: 2, title: "PIS", serviceID: "2" },
-    { id: 3, title: "PMS", serviceID: "3" },
+    { id: 3, title: "PSS", serviceID: "3" },
     { id: 4, title: "QuantumVault", serviceID: "4" },
-    { id: 5, title: "Premium Research", serviceID: "6" },
+    // { id: 5, title: "Premium Research", serviceID: "6" },
 ];
 
 export default function App() {

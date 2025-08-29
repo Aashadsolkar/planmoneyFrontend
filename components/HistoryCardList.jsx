@@ -80,7 +80,7 @@ const HistoryCardList = ({ dataList = [], status = "active", setReportData, rout
                         {/* Prices section */}
                         <View style={styles.cardSections}>
                             <View style={{ flex: 1 }}>
-                                <Text style={styles.lightText}>Entry Level</Text>
+                                <Text style={styles.lightText}>Entry Price</Text>
                                 <Text style={styles.boldText}>₹{data?.buy_price || "NA"}</Text>
                             </View>
                             <View style={{ flex: 1 }}>
