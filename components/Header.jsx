@@ -720,46 +720,35 @@ const versionCode = Constants?.manifest2?.extra?.expoClient?.version ?? "unknown
 
             {/* Modal Content */}
             <View style={{ paddingHorizontal: 20, paddingVertical: 25 }}>
-              {[
-                { label: "Company Name", value: "Econexx wealth Pvt Ltd." },
-                { label: "BSE Membership No", value: "-" },
-                { label: "SEBI Reg No", value: "-" },
-                { label: "Principal Officer", value: "Ovesh Khatri" },
-                { label: "Email", value: "po-cio@planmoney.in / 8108181604" },
-                { label: "Compliance Officer", value: "Aishwarya Shinde" },
-                { label: "Email", value: "services@planmoney.in / 8108181602" },
-              ].map((item, index) => (
-                <View
-                  key={index}
-                  style={{
-                    flexDirection: "row",
-                    marginBottom: 8,
-                  }}
-                >
-                  {/* Label */}
-                  <Text
-                    style={{
-                      width: "50%",
-                      fontSize: 14,
-                      color: "#ccc",
-                    }}
-                  >
-                    {item.label}:
-                  </Text>
+  {[
+    { label: "Company Name", value: "Econexx wealth Pvt Ltd." },
+    { label: "BSE Membership No", value: "Under Process" },
+    { label: "SEBI Reg No", value: "Under Process" },
+    { label: "ARN Number", value: "337712" },
+    { label: "Principal Officer", value: "Ovesh Khatri" },
+    { label: "Email", value: "po-cio@planmoney.in / 8108181604" },
+    { label: "Compliance Officer", value: "Aishwarya Shinde" },
+    { label: "Email", value: "services@planmoney.in / 8108181602" },
+  ].map((item, index) => (
+    <View key={index} style={{ marginBottom: 12 }}>
+      {/* Label */}
+      <Text
+        style={{
+          fontSize: 14,
+          fontWeight: "500",
+          color: "#ccc",
+          marginBottom: 2,
+        }}
+      >
+        {item.label}:
+      </Text>
 
-                  {/* Value */}
-                  <Text
-                    style={{
-                      width: "50%",
-                      fontSize: 14,
-                      color: "#fff",
-                    }}
-                  >
-                    {item.value}
-                  </Text>
-                </View>
-              ))}
-            </View>
+      {/* Value */}
+      <Text style={{ fontSize: 14, color: "#fff" }}>{item.value}</Text>
+    </View>
+  ))}
+</View>
+
 
 
           </View>
