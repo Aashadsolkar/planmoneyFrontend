@@ -39,7 +39,7 @@ export default function App() {
             const response = await getFastlaneHistoryData(token, serviceID);
             const data = response?.data?.services || [];
             const sortedData = data.sort(
-                (a, b) => new Date(b.created_at) - new Date(a.created_at)
+                (a, b) => new Date(b.exit_date) - new Date(a.exit_date)
             );
             setHistoryData(sortedData || []);
         } catch (error) {

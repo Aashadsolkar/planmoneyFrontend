@@ -34,6 +34,7 @@ const AuthProvider = ({ children }) => {
     useState(false);
   const [digiLockerRequestId, setDigiLockerRequestId] = useState(false);
   const [advertisement, setAdvertisement] = useState([]);
+  const [isNewArrivalsNotOpen, setIsNewArrivalsNotOpen] = useState(true);
 
   useEffect(() => {
     const loadSession = async () => {
@@ -148,6 +149,8 @@ const AuthProvider = ({ children }) => {
         digiLockerRequestId,
         setAdvertisement,
         advertisement,
+        isNewArrivalsNotOpen,
+        setIsNewArrivalsNotOpen
       }}
     >
       {children}

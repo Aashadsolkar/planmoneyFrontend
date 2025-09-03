@@ -14,12 +14,13 @@ import { showToast } from "@components/CustomToast/ToastService";
 import { formatDateToDDMMYYYY } from '../../utils/commonFunctions';
 
 const HomeScreen = () => {
-  const { token, setNewArrivalsDetails, setSelectedService, logout } = useAuth()
+  const { token, setNewArrivalsDetails, setSelectedService, logout, setIsNewArrivalsNotOpen } = useAuth()
   const [newArrivalsData, setNewArrivalsData] = useState([]);
   const [noData, setNoData] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [newArrivalsPlan, setNewArrivalsPlan] = useState({});
   useEffect(() => {
+    setIsNewArrivalsNotOpen(false)
     getNewArrivalsData(token, 5)
   }, [token])
 

@@ -5,26 +5,10 @@ import * as Animatable from "react-native-animatable";
 import Entypo from "@expo/vector-icons/Entypo";
 import { MaterialIcons } from "@expo/vector-icons";
 import { COLORS } from "../app/constants";
+import { formatDateToDDMMYYYY } from '../utils/commonFunctions';
+import Foundation from "@expo/vector-icons/Foundation";
 
-const HistoryCardList = ({ dataList = [], status = "active", setReportData, router, serviceID }) => {
-    const getRiskLevelColor = (riskLevel) => {
-        const colors = {
-            buy: COLORS.secondaryColor,
-            sell: COLORS.profitColor,
-            hold: COLORS.lossColor,
-        };
-        return colors[riskLevel?.toLowerCase()] || '#6c757d';
-    };
-
-    const getRiskLevellabel = (riskLevel) => {
-        const label = {
-            buy: "BUY",
-            hold: "HOLD",
-            sell: "EXIT",
-        };
-        return label[riskLevel?.toLowerCase()] || "NA";
-    };
-
+const HistoryCardList = ({ dataList = [], status = "active", }) => {
     if (dataList.length === 0) {
         return (
             <View style={styles.content}>
@@ -44,26 +28,52 @@ const HistoryCardList = ({ dataList = [], status = "active", setReportData, rout
     }
 
     return (
-        <ScrollView contentContainerStyle={{ paddingBottom: 20 }}>
+        <ScrollView contentContainerStyle={{ paddingBottom: 20, paddingTop: 10 }}>
             {dataList.map((data) => {
-                const date = new Date(data?.created_at);
-                const formattedDate = date.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' });
+
+                const exitDate = data?.exit_date ? new Date(data.exit_date) : null;
+                const today = new Date();
+                let showNewIcon = false;
+
+                if (exitDate) {
+                    // Sirf date compare karne ke liye time reset
+                    const onlyExit = new Date(exitDate.setHours(0, 0, 0, 0));
+                    const onlyToday = new Date(today.setHours(0, 0, 0, 0));
+
+                    // Difference in days (today - exitDate)
+                    const diffInTime = onlyToday - onlyExit;
+                    const diffInDays = diffInTime / (1000 * 60 * 60 * 24);
+
+                    // Agar exit_date se leke agle 3 din ke andar hai
+                    if (diffInDays >= 0 && diffInDays <= 3) {
+                        showNewIcon = true;
+                    }
+                }
 
                 return (
                     <View style={styles.card} key={data?.id}>
+                       {showNewIcon && <View style={{position: "absolute", right: 10, top: -10, zIndex: 9999}}>
+                         <Foundation
+                            name="burst-new"
+                            size={30}
+                            style={{ transform: [{ rotate: "30deg" }] }}
+                            color="#FFA500"
+                        />
+                       </View>
+                        }
                         {/* Top section */}
                         <View style={styles.cardSections}>
                             <View style={{ flexDirection: "row", gap: 3 }}>
-                                <Image
+                                {/* <Image
                                     source={{ uri: data?.stock?.company_logo || "" }}
                                     style={{ width: 30, height: 30, borderRadius: 50, marginRight: 10 }}
-                                />
+                                /> */}
                                 <Text style={[styles.boldText, { fontSize: 18, width: "75%" }]}>
-                                    {data?.stock?.name || "NA"}
+                                    {data?.stock?.company_name || "NA"}
                                 </Text>
                             </View>
                             <View style={{ gap: 5 }}>
-                                <Text style={[styles.boldText, {
+                                {/* <Text style={[styles.boldText, {
                                     paddingHorizontal: 4,
                                     paddingVertical: 2,
                                     backgroundColor: getRiskLevelColor(data?.recommendation_type),
@@ -72,8 +82,11 @@ const HistoryCardList = ({ dataList = [], status = "active", setReportData, rout
                                     textAlign: "center"
                                 }]}>
                                     {getRiskLevellabel(data?.recommendation_type)}
+                                </Text> */}
+                                <Text style={[styles.lightText]}>
+                                    Published On
                                 </Text>
-                                <Text style={[styles.lightText, { fontSize: 12 }]}>{formattedDate}</Text>
+                                <Text style={[{ fontSize: 12, color: COLORS.fontWhite, fontWeight: "600" }]}>{formatDateToDDMMYYYY(data?.published_on) || "NA"}</Text>
                             </View>
                         </View>
 
@@ -84,30 +97,43 @@ const HistoryCardList = ({ dataList = [], status = "active", setReportData, rout
                                 <Text style={styles.boldText}>₹{data?.buy_price || "NA"}</Text>
                             </View>
                             <View style={{ flex: 1 }}>
-                                <Text style={styles.lightText}>Target</Text>
-                                <Text style={[styles.boldText, styles.greenText]}>₹{data?.target_price || ""}</Text>
+                                 <Text style={styles.lightText}>Stop Loss</Text>
+                                <Text style={[styles.boldText, styles.redText]}>₹{data?.stop_loss_price || "NA"}</Text>
                             </View>
                             <View style={{ flex: 1 }}>
-                                <Text style={styles.lightText}>Upside</Text>
-                                <Text style={[styles.boldText, styles.greenText]}>{data?.upside || ""}%</Text>
+                                <Text style={styles.lightText}>Exit price</Text>
+                                <Text style={[styles.boldText]}>{data?.exit_price || "NA"}</Text>
                             </View>
                         </View>
 
                         {/* Stop loss + duration */}
                         <View style={styles.cardSections}>
                             <View style={{ flex: 1 }}>
-                                <Text style={styles.lightText}>Stop Loss</Text>
-                                <Text style={[styles.boldText, styles.redText]}>₹{data?.stop_loss_price || "NA"}</Text>
+                                <Text style={styles.lightText}>Gains/loss</Text>
+                                <Text
+                                    style={[
+                                        styles.boldText,
+                                        Number.isFinite(Number(data?.gain_loss_price)) && Number(data?.gain_loss_price) >= 0
+                                            ? styles.greenText
+                                            : styles.redText,
+                                    ]}
+                                >
+                                    ₹{Number.isFinite(Number(data?.gain_loss_price)) ? Number(data?.gain_loss_price) : 0}
+                                </Text>
                             </View>
                             <View style={{ flex: 1 }}>
-                                <Text style={styles.lightText}>Duration</Text>
+                                <Text style={styles.lightText}>Entry Date</Text>
+                                <Text style={styles.boldText}>{formatDateToDDMMYYYY(data?.exit_date) || "NA"}</Text>
+                            </View>
+                            
+                            <View style={{ flex: 1 }}>
+                                <Text style={styles.lightText}>Holding Period</Text>
                                 <Text style={styles.boldText}>{data?.holding_period || "NA"} days</Text>
                             </View>
-                            <View style={{ flex: 1 }} />
                         </View>
 
                         {/* Report link */}
-                        <View style={[styles.cardSections, { borderBottomColor: COLORS.cardColor }]}>
+                        {/* <View style={[styles.cardSections, { borderBottomColor: COLORS.cardColor }]}>
                             <TouchableOpacity
                                 style={{ flexDirection: "row", alignItems: "center", gap: 2, alignSelf: "center" }}
                                 onPress={() => {
@@ -118,7 +144,7 @@ const HistoryCardList = ({ dataList = [], status = "active", setReportData, rout
                                 <Text style={[styles.lightText, { color: COLORS.secondaryColor }]}>REPORT ANALYSIS</Text>
                                 <MaterialIcons name="chevron-right" size={18} color={COLORS.secondaryColor} />
                             </TouchableOpacity>
-                        </View>
+                        </View> */}
                     </View>
                 );
             })}
@@ -135,6 +161,7 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         marginBottom: 10,
         elevation: 2,
+        position: "relative"
     },
     cardSections: {
         flexDirection: "row",
