@@ -11,6 +11,7 @@ import * as Animatable from "react-native-animatable"
 import { router } from "expo-router";
 import LogoSVG from '@components/LogoSVG';
 import { showToast } from "@components/CustomToast/ToastService";
+import { formatIndianNumber } from "../../utils/commonFunctions";
 
 const OrderConfirm = () => {
   const route = useRoute()
