@@ -11,6 +11,7 @@ import Button from '@components/Button';
 import { leads } from '@utils/apiCaller';
 import * as Animatable from "react-native-animatable"
 import { showToast } from "@components/CustomToast/ToastService";
+import { formatIndianNumber } from '../utils/commonFunctions';
 const { height } = Dimensions.get("window")
 
 const ServiceCard = ({
@@ -99,19 +100,19 @@ const ServiceCard = ({
 
     // If no offer price, show only actual price
     if (!offer) {
-      return <Text style={[styles.discounted, { paddingTop: 10 }]}>₹{actual}</Text>;
+      return <Text style={[styles.discounted, { paddingTop: 10 }]}>₹{formatIndianNumber(actual)}</Text>;
     }
 
     // If both prices are same, show only one
     if (actual === offer) {
-      return <Text style={[styles.discounted, { paddingTop: 10 }]}>₹{offer}</Text>;
+      return <Text style={[styles.discounted, { paddingTop: 10 }]}>₹{formatIndianNumber(offer)}</Text>;
     }
 
     // Show original (strikethrough) and discounted
     return (
       <>
-        <Text style={styles.original}>₹{actual}</Text>
-        <Text style={styles.discounted}>₹{offer}</Text>
+        <Text style={styles.original}>₹{formatIndianNumber(actual)}</Text>
+        <Text style={styles.discounted}>₹{formatIndianNumber(offer)}</Text>
       </>
     );
   };
@@ -162,7 +163,7 @@ const ServiceCard = ({
             {startsAt ? 'Starts at' : 'Based on'}
           </Text>
           <Text style={styles.price}>
-            {startsAt || basedOn}
+            {formatIndianNumber(startsAt) || formatIndianNumber(basedOn)}
           </Text>
         </View>
       )
@@ -413,7 +414,7 @@ const styles = StyleSheet.create({
   discounted: {
     color: '#FF9800',
     fontWeight: 'bold',
-    fontSize: 16,
+    fontSize: 14,
   },
   payNowBtn: {
     backgroundColor: '#FF9800',

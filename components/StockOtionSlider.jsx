@@ -1,6 +1,7 @@
 import React from 'react';
 import { FlatList, Text, View, StyleSheet, Dimensions } from 'react-native';
 import { COLORS } from '../app/constants';
+import { formatIndianNumber } from '../utils/commonFunctions';
 
 const { width } = Dimensions.get('window');
 const CARD_WIDTH = (width - 50) / 2; // 20 padding on both sides + 10 gap = 50
@@ -11,7 +12,7 @@ const StockOptionSlider = ({ marketData }) => {
             <Text style={styles.title}>{item?.option_stock_name || ""}</Text>
             <Text style={styles.label}>Opening Price</Text>
             <Text style={styles.price}>
-                {item?.start_price || ""} - {item?.end_price || ""}
+                {formatIndianNumber(item?.start_price) || ""} - {formatIndianNumber(item?.end_price) || ""}
             </Text>
         </View>
     );
