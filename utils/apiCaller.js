@@ -757,3 +757,60 @@ export const getAdvertisementData = async (token) => {
     throw error?.response?.data || { message: 'Something went wrong' };
   }
 };
+
+
+
+
+// 1. Send OTP via SMS
+export const sendSmsOtp = async (data = null) => {
+  try {
+    const response = await axios({
+      method: "POST",
+      url: `${API_URL}/api/sms/send-otp`,
+      data,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("API Error:", error?.response?.data || error.message);
+    throw error?.response?.data || { message: "Something went wrong" };
+  }
+};
+
+// 2. Send OTP via Email
+export const sendEmailOtp = async (data = null) => {
+  try {
+    const response = await axios({
+      method: "POST",
+      url: `${API_URL}/api/email/send-otp`,
+      data,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("API Error:", error?.response?.data || error.message);
+    throw error?.response?.data || { message: "Something went wrong" };
+  }
+};
+
+// 3. Verify OTP (Email or SMS)
+export const verifyRegisterOtp = async (data = null) => {
+  try {
+    const response = await axios({
+      method: "POST",
+      url: `${API_URL}/api/verify-otp`,
+      data,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("API Error:", error?.response?.data || error.message);
+    throw error?.response?.data || { message: "Something went wrong" };
+  }
+};

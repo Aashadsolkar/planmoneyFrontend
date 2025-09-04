@@ -338,7 +338,7 @@ const styles = StyleSheet.create({
     borderTopColor: "rgba(255,255,255,0.2)",
   },
   signupText: { color: "#FFF", fontSize: 14 },
-  signupLink: { color: "#FFD54F", fontWeight: "700", fontSize: 14 },
+  signupLink: { color: "#D87129", fontWeight: "700", fontSize: 14 },
   otpContainer: {
     flexDirection: "row",
     justifyContent: "space-evenly",
