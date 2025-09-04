@@ -65,7 +65,8 @@ export default function Home() {
     optionStockData,
     isQuestionerFillderByAdvisor,
     profileData,
-    advertisement
+    advertisement,
+    isNewArrivalsNotOpen
   } = useAuth();
   const navigation = useNavigation();
   const { isLoading, refreshing, onRefresh } = useHomeData();
@@ -463,6 +464,7 @@ export default function Home() {
             duration={200}
             style={styles.linkItem}
           >
+            {isNewArrivalsNotOpen ? <View style={{width:10, height:10, backgroundColor: "red", borderRadius: "50%", position: "absolute", top: 13, right: 28, zIndex: 9999 }}></View> : null }
             <TouchableOpacity
               onPress={() => router.push("newArrivals")}
               style={{alignItems: "center"}}
