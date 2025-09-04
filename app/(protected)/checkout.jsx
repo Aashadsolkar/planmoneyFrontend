@@ -25,7 +25,7 @@ import { router, useNavigation } from "expo-router";
 import Input from "@components/Input";
 import * as Linking from "expo-linking";
 import { showToast } from "@components/CustomToast/ToastService";
-import { formatDateToDDMMYYYY } from "../../utils/commonFunctions";
+import { formatDateToDDMMYYYY, formatIndianNumber } from "../../utils/commonFunctions";
 
 export default function Checkout() {
   const [couponCode, setCouponCode] = useState("");
@@ -41,6 +41,17 @@ export default function Checkout() {
   const userReturnURL = `planmoney://orderConfirm`;
   const [isLoading, setIsLoading] = useState(false);
 
+  const basePrice = selectedService.offer_price ?? selectedService.actual_price;
+  const totalPrice = basePrice - discount;
+
+  const baseAmount = (totalPrice).toFixed(2);
+  const CGST = (baseAmount * 0.09).toFixed(2);
+  const SGST = (baseAmount * 0.09).toFixed(2);
+  const finalTotal = (parseFloat(baseAmount) + parseFloat(CGST) + parseFloat(SGST)).toFixed(2);
+
+
+
+
   const generateOrderNumber = () => {
     const randomSixDigit = Math.floor(100000 + Math.random() * 900000); // Ensures 6 digits
     return `ORDER_${randomSixDigit}`;
@@ -51,7 +62,7 @@ export default function Checkout() {
       const orderID = generateOrderNumber();
       const payload = {
         order_id: orderID,
-        order_amount: parseFloat(totalPrice),
+        order_amount: parseFloat(finalTotal),
         customer_id: profileData?.customer_id,
         customer_email: profileData?.email,
         customer_phone: profileData?.phone?.replace(/\D/g, ""),
@@ -61,7 +72,7 @@ export default function Checkout() {
       setIsLoading(false);
       let prePaymentDetails = {
         order_id: orderID,
-        order_amount: parseFloat(totalPrice),
+        order_amount: parseFloat(finalTotal),
         customer_id: profileData?.customer_id,
         referral_code: referral,
       };
@@ -89,14 +100,11 @@ export default function Checkout() {
     }
   };
 
-  const basePrice = selectedService.offer_price ?? selectedService.actual_price;
-  const totalPrice = basePrice - discount;
-
   const applyCoupon = async () => {
     try {
       const payload = {
         coupon_code: couponCode,
-        amount: totalPrice,
+        amount: basePrice,
       };
       const couponResponse = await applyCouponApi(token, payload);
       setDiscount(couponResponse?.data?.discount);
@@ -169,20 +177,20 @@ export default function Checkout() {
     // If actual is missing or 0 → show only offer
     if (!safeActual) {
       return safeOffer ? (
-        <Text style={styles.subscriptionPrice}>₹{safeOffer}</Text>
+        <Text style={styles.subscriptionPrice}>₹{formatIndianNumber(safeOffer)}</Text>
       ) : null;
     }
 
     // If offer is missing or 0 → show only actual
     if (!safeOffer) {
       return safeActual ? (
-        <Text style={styles.subscriptionPrice}>₹{safeActual}</Text>
+        <Text style={styles.subscriptionPrice}>₹{formatIndianNumber(safeActual)}</Text>
       ) : null;
     }
 
     // If both are same → show offer
     if (safeActual === safeOffer) {
-      return <Text style={styles.subscriptionPrice}>₹{safeOffer}</Text>;
+      return <Text style={styles.subscriptionPrice}>₹{formatIndianNumber(safeOffer)}</Text>;
     }
 
     // Else → show actual (strikethrough) + offer
@@ -198,9 +206,9 @@ export default function Checkout() {
             },
           ]}
         >
-          ₹{safeActual}
+          ₹{formatIndianNumber(safeActual)}
         </Text>
-        <Text style={styles.subscriptionPrice}>₹{safeOffer}</Text>
+        <Text style={styles.subscriptionPrice}>₹{formatIndianNumber(safeOffer)}</Text>
       </>
     );
   };
@@ -334,6 +342,66 @@ export default function Checkout() {
             }}
           >
             <View style={[styles.subscriptionHeader]}>
+              <Text style={{ color: "#fff" }}>Base Amount</Text>
+              <Text
+                style={[
+                  styles.subscriptionPrice,
+                  {fontSize: 14, fontWeight: 400}
+                ]}
+              >
+                ₹{formatIndianNumber(baseAmount)}
+              </Text>
+            </View>
+          </View>
+          <View
+            style={{
+              borderTopWidth: 1,
+              borderBlockColor: COLORS.primaryColor,
+              paddingTop: 10,
+              marginTop: 10,
+            }}
+          >
+            <View style={[styles.subscriptionHeader]}>
+              <Text style={{ color: "#fff" }}>CGST 9%</Text>
+              <Text
+                style={[
+                  styles.subscriptionPrice,
+                  {fontSize: 14, fontWeight: 400}
+                ]}
+              >
+                ₹{formatIndianNumber(CGST)}
+              </Text>
+            </View>
+          </View>
+           <View
+            style={{
+              borderTopWidth: 1,
+              borderBlockColor: COLORS.primaryColor,
+              paddingTop: 10,
+              marginTop: 10,
+            }}
+          >
+            <View style={[styles.subscriptionHeader]}>
+              <Text style={{ color: "#fff" }}>SGST 9%</Text>
+              <Text
+                style={[
+                  styles.subscriptionPrice,
+                  {fontSize: 14, fontWeight: 400}
+                ]}
+              >
+                ₹{formatIndianNumber(SGST)}
+              </Text>
+            </View>
+          </View>
+          <View
+            style={{
+              borderTopWidth: 1,
+              borderBlockColor: COLORS.primaryColor,
+              paddingTop: 10,
+              marginTop: 10,
+            }}
+          >
+            <View style={[styles.subscriptionHeader]}>
               <Text style={{ color: "#fff" }}>Grand Total</Text>
               <Text
                 style={[
@@ -341,7 +409,7 @@ export default function Checkout() {
                   { color: COLORS.secondaryColor },
                 ]}
               >
-                ₹{totalPrice}
+                ₹{formatIndianNumber(finalTotal)}
               </Text>
             </View>
           </View>
@@ -416,7 +484,7 @@ export default function Checkout() {
         <Button
           isLoading={isLoading}
           onClick={() => handleSubmit()}
-          label={`PAY ₹${totalPrice}`}
+          label={`PAY ₹${formatIndianNumber(finalTotal)}`}
           gradientColor={["#D36C32", "#F68F00"]}
           buttonStye={{ marginHorizontal: 10, marginBottom: 10 }}
         />

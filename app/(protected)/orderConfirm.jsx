@@ -145,7 +145,7 @@ const OrderConfirm = () => {
 
           <View style={styles.detailRow}>
             <Text style={styles.detailLabel}>Amount:</Text>
-            <Text style={styles.detailValue}>₹{orderDetails?.[0]?.payment_amount}</Text>
+            <Text style={styles.detailValue}>₹{formatIndianNumber(orderDetails?.[0]?.payment_amount)}</Text>
           </View>
 
           <View style={styles.detailRow}>
@@ -196,7 +196,7 @@ const OrderConfirm = () => {
 
           <View style={styles.detailRow}>
             <Text style={styles.detailLabel}>Amount:</Text>
-            <Text style={styles.detailValue}>₹{orderDetails?.[0]?.payment_amount || 'N/A'}</Text>
+            <Text style={styles.detailValue}>₹{formatIndianNumber(orderDetails?.[0]?.payment_amount) || 'N/A'}</Text>
           </View>
 
           <View style={styles.detailRow}>
