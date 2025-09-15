@@ -14,8 +14,9 @@ import { showToast } from "@components/CustomToast/ToastService";
 
 const { height } = Dimensions.get("window")
 
-export default function BuyStock() {
-    const { stockId, serviceID, type, price, name, allowed_qty, recommendation_id } = useLocalSearchParams();
+export default function ExitStock() {
+    const { stockId, serviceID, type, price, name } = useLocalSearchParams();
+    
     const { token, logout } = useAuth();
     const [successfullModal, setSuccessfullModal] = useState(false);
     const [qty, setQty] = useState("");
@@ -63,10 +64,9 @@ export default function BuyStock() {
                 qty,
                 service_id: serviceID,
                 type,
-                stock_id: stockId,
-                allowed_qty: allowed_qty,
-                pis_service_id: recommendation_id
+                stock_id: stockId
             };
+            
             const response = await BuyStocks(token, payload);
             setIsLoading(false);
             setSuccessfullModal(true);
@@ -93,12 +93,12 @@ export default function BuyStock() {
                         <Text style={styles.stockTitle}>{name}</Text>
                     </View>
                     <View style={[styles.stockInfoRow, { paddingTop: 0, justifyContent: "flex-end" }]}>
-                        <Text style={styles.stockPrice}><Text style={styles.cmp}>Buy Price  </Text>₹{price}</Text>
+                        <Text style={styles.stockPrice}><Text style={styles.cmp}>Exit Price  </Text>₹{price}</Text>
                     </View>
                     <View style={styles.inputRow}>
                         <View style={{ width: "50%" }}>
                             <Input
-                                label={"Buy Price ₹"}
+                                label={"Exit Price ₹"}
                                 value={String(buyPirce)}
                                 onChangeText={(val) => {
                                     setBuyPrice(val)
@@ -128,7 +128,7 @@ export default function BuyStock() {
                 </View>
             </ScrollView>
             <View style={styles.totalValueRow}>
-                <Text style={styles.totalLabel}>Total Buy Value</Text>
+                <Text style={styles.totalLabel}>Total Exit Value</Text>
                 <Text style={styles.totalValue}>₹{totalBuyValue.toFixed(2)}</Text>
             </View>
             <View style={{ backgroundColor: COLORS.primaryColor, paddingBottom: 50 }}>
@@ -149,7 +149,7 @@ export default function BuyStock() {
                                 <View style={{ alignItems: "center", marginBottom: 10 }}>
                                     <CheckCircle color="#D87129" size={60} />
                                     <Text style={styles.successText}>Successfull</Text>
-                                    <Text style={styles.successMessage}>Stock added to your portfolio successfully.</Text>
+                                    <Text style={styles.successMessage}>Your stocks have been successfully sold.</Text>
                                 </View>
                                 <Button buttonStye={{ marginHorizontal: 20 }} onClick={() => {
                                     setSuccessfullModal(false)

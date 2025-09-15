@@ -814,3 +814,57 @@ export const verifyRegisterOtp = async (data = null) => {
     throw error?.response?.data || { message: "Something went wrong" };
   }
 };
+
+
+export const BuyStocks = async (token, data) => {
+  try {
+    const response = await axios({
+      method: "POST",
+      url: `${API_URL}/api/buy-stocks`,
+      data,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer${token}`
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('API Error:', error?.response?.data || error.message);
+    throw error?.response?.data || { message: 'Something went wrong' };
+  }
+};
+
+
+export const portfolio = async (token, serviceID) => {
+  try {
+    const response = await axios({
+      method: "GET",
+      url: `${API_URL}/api/portfolio/${serviceID}`,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer${token}`
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('API Error:', error?.response?.data || error.message);
+    throw error?.response?.data || { message: 'Something went wrong' };
+  }
+};
+
+export const exitCallList = async (token, serviceID) => {
+  try {
+    const response = await axios({
+      method: "GET",
+      url: `${API_URL}/api/exit-data/${serviceID}`,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer${token}`
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('API Error:', error?.response?.data || error.message);
+    throw error?.response?.data || { message: 'Something went wrong' };
+  }
+};

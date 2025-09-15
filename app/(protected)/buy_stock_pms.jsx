@@ -5,7 +5,7 @@ import Header from "@components/Header"
 import { COLORS } from "../constants"
 import Button from "@components/Button"
 import { useAuth } from '@context/useAuth';
-import { BuyPmsStock } from "@utils/apiCaller"
+import { BuyStocks } from "@utils/apiCaller"
 import { router, useLocalSearchParams } from "expo-router"
 import Input from '@components/Input';
 import * as Animatable from "react-native-animatable"
@@ -15,7 +15,7 @@ import { showToast } from "@components/CustomToast/ToastService";
 const { height } = Dimensions.get("window")
 
 export default function BuyStock() {
-    const { stockId, serviceID, type, price, name } = useLocalSearchParams();
+    const { stockId, serviceID, type, price, name, allowed_qty, recommendation_id } = useLocalSearchParams();
     const { token, logout } = useAuth();
     const [successfullModal, setSuccessfullModal] = useState(false);
     const [qty, setQty] = useState("");
@@ -61,9 +61,11 @@ export default function BuyStock() {
                 qty,
                 service_id: serviceID,
                 type,
-                stock_id: stockId
+                stock_id: stockId,
+                allowed_qty: allowed_qty,
+                pms_service_id: recommendation_id
             };
-            const response = await BuyPmsStock(token, payload);
+            const response = await BuyStocks(token, payload);
             setIsLoading(false);
             setSuccessfullModal(true);
         } catch (error) {

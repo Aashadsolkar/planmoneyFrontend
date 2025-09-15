@@ -62,7 +62,7 @@ export default function Checkout() {
       const orderID = generateOrderNumber();
       const payload = {
         order_id: orderID,
-        order_amount: parseFloat(finalTotal),
+        order_amount: parseFloat(baseAmount),
         customer_id: profileData?.customer_id,
         customer_email: profileData?.email,
         customer_phone: profileData?.phone?.replace(/\D/g, ""),

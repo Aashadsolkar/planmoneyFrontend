@@ -6,9 +6,10 @@ import { Ionicons } from '@expo/vector-icons';
 import { Alert } from 'react-native';
 import { useAuth } from '@context/useAuth';
 import { COLORS, serviceInfo } from '../app/constants';
-import { getCmpStock, pmsPortfolio } from '@utils/apiCaller';
+import { getCmpStock, portfolio, exitCallList } from '@utils/apiCaller';
 import { router } from 'expo-router';
 import { showToast } from "@components/CustomToast/ToastService";
+import ExistCallList from './ExistCallList';
 
 const PortfolioTab = ({ advisorName, stockAPi, isPurchesed, serviceID }) => {
 
@@ -16,10 +17,13 @@ const PortfolioTab = ({ advisorName, stockAPi, isPurchesed, serviceID }) => {
     const [sortOrder, setSortOrder] = useState('asc');
     const [investments, setInvestments] = useState([]);
     const [isLoading, setIsLoading] = useState(true)
+    const [isExitCallLoading, setIsExitCallLoading] = useState(true)
 
     const [sortDropdownVisible, setSortDropdownVisible] = useState(false);
     const [sortKey, setSortKey] = useState('returnPercentage'); // returnPercentage, investedAmount, name
     const [sortDirection, setSortDirection] = useState('asc');
+    const [activeTab, setActiveTab] = useState("holdings"); // default tab
+    const [exitData, setExitData] = useState([]); // default tab
     const sortedInvestments = useMemo(() => {
         return [...investments].sort((a, b) => {
             if (sortKey === 'profitLoss') {
@@ -66,45 +70,40 @@ const PortfolioTab = ({ advisorName, stockAPi, isPurchesed, serviceID }) => {
     }, [investments]);
 
     useEffect(() => {
-        const getPmsData = async () => {
+        const getPortfolioData = async () => {
             try {
-                const buyStockData = await stockAPi(token);
-                const cmpRes = await getCmpStock(token);
-
-                const cmpStocks = cmpRes.data.stocks;
-                const buyData = buyStockData.data;
-
-                console.log(cmpStocks, "cmpStocks");
-                console.log(buyData, "buyData");
-                
-
-                const merged = buyData.map(buy => {
-                    const stockDetails = cmpStocks.find(stock => stock.stock_id === buy.stock_id);
-                    if (!stockDetails) return null;
-
-                    const quantity = parseFloat(buy.total_quantity);
-                    const investedAmount = parseFloat(buy.total_invested);
-                    const currentPrice = parseFloat(stockDetails.nse_price || stockDetails.bse_price);
+                setIsLoading(true);
+                const res = await portfolio(token, serviceID); // 👈 ab sirf ek hi API call hogi
+                const apiData = res?.data || [];
+                const mapped = apiData.map(item => {
+                    const quantity = parseFloat(item.total_qty || 0);
+                    const investedAmount = parseFloat(item.invested_amnt || 0);
+                    const currentPrice = parseFloat(item.stocks?.cpm || 0);
                     const currentValue = quantity * currentPrice;
-                    const returnAmount = currentValue - investedAmount;
-                    const returnPercentage = (returnAmount / investedAmount) * 100;
+                    const returnAmount = currentValue - investedAmount; // 👈 yaha se calculate hoga
+                    const returnPercentage = investedAmount > 0
+                        ? (returnAmount / investedAmount) * 100
+                        : 0;
 
                     return {
-                        id: String(stockDetails.stock_id),
-                        name: stockDetails.symbol,
+                        id: String(item.id),
+                        name: item.stocks?.symbol || `Stock #${item.stocks?.name}`, // agar symbol aata hai toh use karlo
                         quantity,
                         investedAmount,
                         currentValue,
-                        buyPrice: investedAmount / quantity,
-                        date: 'N/A', // Replace with actual buy date if available
-                        returnPercentage,
+                        buyPrice: quantity !== 0 ? investedAmount / quantity : 0,
+                        date: item.created_at ? new Date(item.created_at).toLocaleDateString() : "N/A",
                         returnAmount,
+                        returnPercentage,
+                        serviceID: item?.service_id,
+                        cmp: item.stocks?.cpm,
+                        stockId: item?.stock_id
                     };
-                }).filter(Boolean);
-
-                setInvestments(merged);
-                setIsLoading(false)
+                });
+                setInvestments(mapped);
+                setIsLoading(false);
             } catch (error) {
+                setIsLoading(false);
                 showToast({
                     type: "error",
                     title: `Something went wrong! 😥`,
@@ -115,15 +114,41 @@ const PortfolioTab = ({ advisorName, stockAPi, isPurchesed, serviceID }) => {
                 });
             }
         };
+
         if (isPurchesed) {
-            getPmsData();
+            getPortfolioData();
         } else {
-            setIsLoading(false)
+            setIsLoading(false);
         }
     }, []);
 
+    useEffect(() => {
+        const callPortfolioListApi = async () => {
+            try {
+                const response = await exitCallList(token, serviceID);
+                const data = response?.data;
+                const sortedDesc = [...data].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+                setExitData(sortedDesc);
+                setIsExitCallLoading(false);
+            } catch (error) {
+                setIsExitCallLoading(false);
+                showToast({
+                    type: "error",
+                    title: `Something went wrong! 😥`,
+                    message: `${error?.error || error?.message || "exit call Api Failed"}`,
+                    redirectPath: "home",
+                    sessionExired: error?.error == "Another session is active." ? true : false,
+                    logout: logout
+                });
+            }
+        }
+        if (isPurchesed) {
+            callPortfolioListApi();
+        } else {
+            setIsExitCallLoading(false);
+        }
+    },[serviceID]);
 
-    // Format return percentage
     const formatReturnPercentage = useCallback((percentage) => {
         const sign = percentage >= 0 ? '+' : '';
         return `${sign}${percentage.toFixed(2)}%`;
@@ -155,7 +180,7 @@ const PortfolioTab = ({ advisorName, stockAPi, isPurchesed, serviceID }) => {
         );
     }, []);
 
-    if (isLoading) {
+    if (isLoading || isExitCallLoading) {
         return (
             <View style={styles.contentContainer}>
                 <ActivityIndicator color={"#fff"} size="small" />
@@ -172,6 +197,21 @@ const PortfolioTab = ({ advisorName, stockAPi, isPurchesed, serviceID }) => {
 
         return services[Number(id)] || "Service Name";
     };
+
+    const handleExitClick = (data) => {
+         router.push({
+            pathname: "/exitStock",
+            params: {
+                stockId: data?.stockId,
+                serviceID: data?.serviceID,
+                type: "sell",
+                price: data?.cmp,
+                name: data?.name,
+                // allowed_qty: data?.qty,
+                // recommendation_id: data?.id
+            },
+        });
+    }
 
     if (!isPurchesed) {
         return (
@@ -191,6 +231,216 @@ const PortfolioTab = ({ advisorName, stockAPi, isPurchesed, serviceID }) => {
             </View>
         )
     }
+
+    return (
+    <View style={{ flex: 1, backgroundColor: COLORS.primaryColor }}>
+      {/* --- Top Tabs --- */}
+      <View style={styles.tabContainer}>
+        <TouchableOpacity
+          style={[
+            styles.tab,
+            activeTab === "holdings" && styles.activeTab,
+          ]}
+          onPress={() => setActiveTab("holdings")}
+        >
+          <Text
+            style={[
+              styles.tabText,
+              activeTab === "holdings" && styles.activeTabText,
+            ]}
+          >
+            Holdings
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[
+            styles.tab,
+            activeTab === "history" && styles.activeTab,
+          ]}
+          onPress={() => setActiveTab("history")}
+        >
+          <Text
+            style={[
+              styles.tabText,
+              activeTab === "history" && styles.activeTabText,
+            ]}
+          >
+            Exit calls
+          </Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* --- Tab Content --- */}
+      {activeTab === "holdings" ? (
+         <ScrollView style={styles.contentContainer} showsVerticalScrollIndicator={false}>
+            {/* Main Investment Card */}
+            <View style={styles.mainCard}>
+                {/* Current Rate Section */}
+                <View style={styles.rateSection}>
+                    <Text style={styles.currentRateLabel}>Current Value</Text>
+                    <Text style={styles.currentRateValue}>
+                        {formatCurrency(portfolioSummary.currentRate)}
+                    </Text>
+                </View>
+
+                {/* Divider Line */}
+                <View style={styles.dividerLine} />
+
+                {/* Investment Summary */}
+                <View style={styles.summaryContainer}>
+                    <View style={styles.summaryItem}>
+                        <Text style={styles.summaryLabel}>Invested Amt</Text>
+                        <Text style={styles.summaryValue}>
+                            {formatCurrency(portfolioSummary.totalInvested)}
+                        </Text>
+                    </View>
+                    <View style={styles.dividerVertical} />
+                    <View style={styles.summaryItem}>
+                        <Text style={styles.summaryLabel}>Total Returns</Text>
+                        <Text style={[
+                            styles.returnsValue,
+                            { color: portfolioSummary.totalReturns >= 0 ? COLORS.profitColor : COLORS.lossColor }
+                        ]}>
+                            {formatCurrency(portfolioSummary.totalReturns)} ({formatReturnPercentage(portfolioSummary.returnPercentage)})
+                        </Text>
+                    </View>
+                </View>
+            </View>
+
+            {/* Investments Section */}
+            <View style={styles.investmentsHeader}>
+                <Text style={styles.investmentsTitle}>
+                    Investments ({sortedInvestments.length})
+                </Text>
+                <View style={styles.dropdownWrapper}>
+                    <TouchableOpacity
+                        style={styles.dropdownButton}
+                        onPress={() => setSortDropdownVisible(true)}
+                    >
+                        <Text style={styles.dropdownText}>
+                            Sort by: {
+                                sortKey === 'returnPercentage' ? 'Returns %' :
+                                    sortKey === 'investedAmount' ? 'Invested Amount' :
+                                        sortKey === 'name' ? 'Stock A-Z' :
+                                            sortKey === 'profitLoss' ? 'Share Up / Down' :
+                                                ''
+                            } ({sortDirection})
+                        </Text>
+                        {
+                            sortDirection == "desc" ? <Ionicons style={{ marginLeft: 5 }} name="chevron-up" size={16} color="#aaa" /> : <Ionicons style={{ marginLeft: 5 }} name="chevron-down" size={16} color="#aaa" />
+                        }
+                        {/* <Ionicons style={{marginLeft: 5}} name="chevron-down" size={16} color="#aaa" /> */}
+                    </TouchableOpacity>
+
+                    <Modal visible={sortDropdownVisible} transparent animationType="fade">
+                        <TouchableOpacity
+                            style={styles.modalOverlay}
+                            onPress={() => setSortDropdownVisible(false)}
+                        >
+                            <View style={styles.dropdownMenu}>
+                                {[
+                                    { key: 'returnPercentage', label: 'Returns %' },
+                                    { key: 'investedAmount', label: 'Invested Amount' },
+                                    { key: 'name', label: 'Stock A-Z' },
+                                    { key: 'profitLoss', label: 'Profit / Loss' }, // ➕ NEW
+                                ].map(item => (
+                                    <TouchableOpacity
+                                        key={item.key}
+                                        style={styles.dropdownItem}
+                                        onPress={() => {
+                                            if (sortKey === item.key) {
+                                                setSortDirection(prev => prev === 'asc' ? 'desc' : 'asc');
+                                            } else {
+                                                setSortKey(item.key);
+                                                setSortDirection('desc');
+                                            }
+                                            setSortDropdownVisible(false);
+                                        }}
+                                    >
+                                        <Text style={styles.dropdownItemText}>
+                                            {item.label} ({sortKey === item.key ? sortDirection : 'desc'})
+                                        </Text>
+                                    </TouchableOpacity>
+                                ))}
+                            </View>
+                        </TouchableOpacity>
+                    </Modal>
+                </View>
+            </View>
+
+            {/* Investment Items */}
+            {sortedInvestments.map((investment) => (
+                <TouchableOpacity
+                    key={investment.id}
+                    style={styles.investmentItem}
+                    onPress={() => handleInvestmentPress(investment)}
+                >
+                    <View style={styles.investmentCard}>
+                        <View style={styles.investmentHeader}>
+                            <View style={styles.investmentTitleContainer}>
+                                <Text style={styles.investmentName}>{investment.name}</Text>
+                                <Text style={styles.investmentQty}>{investment.quantity} Qty</Text>
+                            </View>
+                            <View style={styles.investmentValueContainer}>
+                                <Text style={[
+                                    styles.investmentCurrentValue,
+                                    { color: investment.returnPercentage >= 0 ? COLORS.profitColor : COLORS.lossColor }
+                                ]}>
+                                    {formatCurrency(investment.currentValue)}
+                                </Text>
+                            </View>
+                        </View>
+
+                        <View style={styles.investmentDivider} />
+
+                        <View style={styles.investmentFooter}>
+                            <View style={styles.investmentFooterItem}>
+                                <Text style={styles.investmentFooterLabel}>Invested</Text>
+                                <Text style={styles.investedAmount}>
+                                    {formatCurrency(investment.investedAmount)}
+                                </Text>
+                            </View>
+                            <View style={styles.investmentFooterItem}>
+                                <Text style={styles.investmentFooterLabel}>Avg cost</Text>
+                                <Text style={styles.buyAtValue}>
+                                    {formatCurrency(investment.buyPrice)}
+                                </Text>
+                            </View>
+                            <View style={styles.investmentFooterItem}>
+                                <Text style={styles.investmentFooterLabel}>Return</Text>
+                                <Text style={[
+                                    styles.returnPercentage,
+                                    { color: investment.returnPercentage >= 0 ? COLORS.profitColor : COLORS.lossColor }
+                                ]}>
+                                    {formatReturnPercentage(investment.returnPercentage)}
+                                </Text>
+                            </View>
+                        </View>
+                         <View style={styles.investmentFooter}>
+                            {/* <View style={styles.investmentFooterItem}> */}
+                            <TouchableOpacity onPress={() => handleExitClick(investment)} style={styles.exitButton}>
+                                <Text style={styles.exitButtonText}>Exit</Text>
+                            </TouchableOpacity>
+                            {/* </View> */}
+                        </View>
+                    </View>
+                </TouchableOpacity>
+            ))}
+
+            {/* Bottom Spacing */}
+            <View style={styles.bottomSpacing} />
+        </ScrollView>
+      ) : (
+         <ScrollView style={styles.contentContainer} showsVerticalScrollIndicator={false}>
+            <ExistCallList dataList={exitData} />
+            <View style={styles.bottomSpacing} />
+        </ScrollView>
+      )}
+    </View>
+  );
+
+
 
     return (
         <ScrollView style={styles.contentContainer} showsVerticalScrollIndicator={false}>
@@ -289,10 +539,6 @@ const PortfolioTab = ({ advisorName, stockAPi, isPurchesed, serviceID }) => {
                 </View>
             </View>
 
-
-
-
-
             {/* Investment Items */}
             {sortedInvestments.map((investment) => (
                 <TouchableOpacity
@@ -340,6 +586,13 @@ const PortfolioTab = ({ advisorName, stockAPi, isPurchesed, serviceID }) => {
                                     {formatReturnPercentage(investment.returnPercentage)}
                                 </Text>
                             </View>
+                        </View>
+                         <View style={styles.investmentFooter}>
+                            {/* <View style={styles.investmentFooterItem}> */}
+                            <TouchableOpacity style={styles.exitButton}>
+                                <Text style={styles.exitButtonText}>Exit</Text>
+                            </TouchableOpacity>
+                            {/* </View> */}
                         </View>
                     </View>
                 </TouchableOpacity>
@@ -597,8 +850,43 @@ const styles = StyleSheet.create({
         fontSize: 14,
         color: '#fff',
     },
-
-
+    exitButton: {
+        backgroundColor: COLORS.profitColor,
+        paddingVertical: 8,
+        paddingHorizontal: 12,
+        borderRadius: 10,
+        flex: "auto",
+        marginTop: 10,
+        marginLeft: "auto", // row layout me right side
+    },
+    exitButtonText: {
+        fontWeight: "600",
+        color: COLORS.fontWhite
+    },
+    tabContainer: {
+    flexDirection: "row",
+    backgroundColor: COLORS.cardColor,
+    borderRadius: 10,
+    margin: 16,
+    overflow: "hidden",
+  },
+  tab: {
+    flex: 1,
+    paddingVertical: 12,
+    alignItems: "center",
+    backgroundColor: "transparent",
+  },
+  activeTab: {
+    backgroundColor: COLORS.secondaryColor,
+  },
+  tabText: {
+    color: "#aaa",
+    fontSize: 15,
+    fontWeight: "600",
+  },
+  activeTabText: {
+    color: "#fff",
+  },
 })
 
 export default PortfolioTab

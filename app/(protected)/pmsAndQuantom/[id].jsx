@@ -69,9 +69,11 @@ const PmsAndQuantom = () => {
             params: {
                 stockId: data?.stock_id,
                 serviceID: id,
-                type: "BUY",
+                type: "buy",
                 price: data?.buy_price,
-                name: data?.stock?.name
+                name: data?.stock?.name,
+                allowed_qty: data?.qty,
+                recommendation_id: data?.id
             },
         });
     };
