@@ -23,8 +23,8 @@ import LogoSVG from "@components/LogoSVG";
 import * as Animatable from "react-native-animatable";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 
-// ✅ import API calls
-import { sendEmailOtp, sendSmsOtp, verifyRegisterOtp, register } from "@utils/apiCaller";
+import { sendEmailOtp, sendSmsOtp, verifyRegisterOtp } from "@utils/apiCaller";
+import { registor } from "../../utils/apiCaller";
 
 const { width } = Dimensions.get("window");
 
@@ -50,11 +50,6 @@ const Register = () => {
 
   const { storeUserData } = useAuth();
 
-  const goToStep = (nextStep) => {
-    setStep(nextStep);
-    scrollRef.current?.scrollTo({ x: nextStep * width, animated: true });
-  };
-
   const handleChange = (value, name) => {
     setApiError("");
     const updatedForm = { ...formData, [name]: value };
@@ -64,7 +59,51 @@ const Register = () => {
     setErrors((prev) => ({ ...prev, [name]: fieldError }));
   };
 
-  // ✅ Send Email OTP
+  // Step navigation with validation
+  const goToStep = (nextStep) => {
+    let stepValid = true;
+    let newErrors = { ...errors };
+
+    switch (step) {
+      case 0:
+        if (!formData.name) {
+          newErrors.name = "Name is required";
+          stepValid = false;
+        } else delete newErrors.name;
+
+        if (!panChecked) {
+          newErrors.panCheck = "You must confirm PAN name is correct";
+          stepValid = false;
+        } else delete newErrors.panCheck;
+        break;
+
+      case 1:
+        if (!emailOtpVerified) {
+          stepValid = false;
+          newErrors.emailOtp = "Please verify email OTP first";
+        } else delete newErrors.emailOtp;
+        break;
+
+      case 2:
+        if (!phoneOtpVerified) {
+          stepValid = false;
+          newErrors.phoneOtp = "Please verify phone OTP first";
+        } else delete newErrors.phoneOtp;
+        break;
+
+      default:
+        break;
+    }
+
+    setErrors(newErrors);
+
+    if (stepValid) {
+      setStep(nextStep);
+      scrollRef.current?.scrollTo({ x: nextStep * width, animated: true });
+    }
+  };
+
+  // Send Email OTP
   const handleSendEmailOtp = async () => {
     if (!formData.email || errors.email) {
       setErrors((prev) => ({ ...prev, email: "Enter a valid email first" }));
@@ -82,7 +121,7 @@ const Register = () => {
     }
   };
 
-  // ✅ Verify Email OTP
+  // Verify Email OTP
   const handleVerifyEmailOtp = async () => {
     try {
       setIsLoading(true);
@@ -96,7 +135,7 @@ const Register = () => {
     }
   };
 
-  // ✅ Send Phone OTP
+  // Send Phone OTP
   const handleSendPhoneOtp = async () => {
     if (!formData.phone || errors.phone) {
       setErrors((prev) => ({ ...prev, phone: "Enter a valid phone number" }));
@@ -114,7 +153,7 @@ const Register = () => {
     }
   };
 
-  // ✅ Verify Phone OTP
+  // Verify Phone OTP
   const handleVerifyPhoneOtp = async () => {
     try {
       setIsLoading(true);
@@ -128,7 +167,7 @@ const Register = () => {
     }
   };
 
-  // ✅ Final Submit
+  // Final Submit
   const handleSubmit = async () => {
     const newErrors = validateForm(formData);
 
@@ -142,16 +181,14 @@ const Register = () => {
     if (Object.keys(newErrors).length === 0) {
       setIsLoading(true);
       try {
-        const res = await register({
-          name: formData.name,
+        const res = await registor({
+          fullname: formData.name,
           email: formData.email,
           phone: formData.phone,
         });
 
         alert("Registered successfully!");
         setIsLoading(false);
-
-        // ✅ Save user in context
         storeUserData(
           { name: res?.user?.name, email: res?.user?.email, phone: res?.user?.phone },
           res?.token
@@ -172,14 +209,12 @@ const Register = () => {
         style={styles.flexContainer}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
-        {/* Logo */}
         <Animatable.View animation="fadeIn" delay={200} duration={600}>
           <View style={styles.logoContainer}>
             <LogoSVG />
           </View>
         </Animatable.View>
 
-        {/* Progress */}
         <View style={styles.progressContainer}>
           {[0, 1, 2, 3].map((i) => (
             <View
@@ -190,214 +225,237 @@ const Register = () => {
         </View>
         <Text style={styles.stepText}>Step {step + 1} of 4</Text>
 
-        {/* Steps */}
-      <ScrollView
-  ref={scrollRef}
-  horizontal
-  pagingEnabled
-  showsHorizontalScrollIndicator={false}
-  scrollEnabled={false}
-  keyboardShouldPersistTaps="handled"
->
-  {/* Step 1 - Name */}
-  <View style={styles.stepBox}>
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={{ flex: 1 }}
-    >
-      <ScrollView
-        contentContainerStyle={{ flexGrow: 1, justifyContent: "flex-start" }}
-        keyboardShouldPersistTaps="handled"
-      >
-        <Input
-          label="Full Name"
-          autoFocus
-          value={formData.name}
-          onChangeText={(val) => handleChange(val, "name")}
-          error={!!errors?.name}
-          errorMessage={errors?.name || ""}
-        />
-        <BouncyCheckbox
-          size={20}
-          fillColor="#F68F00"
-          unfillColor="#fff"
-          isChecked={panChecked}
-          text="Enter your name as per PAN card"
-          textStyle={styles.checkboxText}
-          onPress={(checked) => setPanChecked(checked)}
-        />
-        {errors?.panCheck && <Text style={styles.errorText}>{errors.panCheck}</Text>}
-      </ScrollView>
-    </KeyboardAvoidingView>
-  </View>
-
-  {/* Step 2 - Email */}
-  <View style={styles.stepBox}>
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={{ flex: 1 }}
-    >
-      <ScrollView
-        contentContainerStyle={{ flexGrow: 1, justifyContent: "flex-start" }}
-        keyboardShouldPersistTaps="handled"
-      >
-        <Input
-          label="Email Address"
-          value={formData.email}
-          autoFocus
-          onChangeText={(val) => !emailOtpVerified && handleChange(val, "email")}
-          editable={!emailOtpVerified}
-          rightIcon={
-            emailOtpVerified ? <Icon name="lock" size={18} color="#ccc" /> : null
-          }
-          error={!!errors?.email}
-          errorMessage={errors?.email || ""}
-        />
-        {!emailOtpVerified && !emailOtpSent && (
-          <Button onClick={handleSendEmailOtp} label="Send OTP" small buttonStye={{ marginTop: 10 }} />
-        )}
-        {emailOtpSent && !emailOtpVerified && (
-          <Animatable.View animation="fadeInUp" duration={400} style={styles.otpBox}>
-            <Input
-              label="Enter Email OTP"
-              value={emailOtp}
-              onChangeText={setEmailOtp}
-              keyboardType="numeric"
-              maxLength={6}
-              autoFocus
-              error={!!errors?.emailOtp}
-              errorMessage={errors?.emailOtp || ""}
-            />
-            <Button onClick={handleVerifyEmailOtp} label="Verify OTP" small buttonStye={{ marginTop: 10 }} />
-          </Animatable.View>
-        )}
-        {emailOtpVerified && <Text style={styles.successText}>Email verified ✅</Text>}
-      </ScrollView>
-    </KeyboardAvoidingView>
-  </View>
-
-  {/* Step 3 - Phone */}
-  <View style={styles.stepBox}>
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={{ flex: 1 }}
-    >
-      <ScrollView
-        contentContainerStyle={{ flexGrow: 1, justifyContent: "flex-start" }}
-        keyboardShouldPersistTaps="handled"
-      >
-        <Input
-          label="Mobile Number"
-          value={formData.phone}
-          autoFocus
-          onChangeText={(val) => !phoneOtpVerified && handleChange(val, "phone")}
-          editable={!phoneOtpVerified}
-          rightIcon={
-            phoneOtpVerified ? <Icon name="lock" size={18} color="#ccc" /> : null
-          }
-          error={!!errors?.phone}
-          errorMessage={errors?.phone || ""}
-        />
-        {!phoneOtpVerified && !phoneOtpSent && (
-          <Button onClick={handleSendPhoneOtp} label="Send OTP" small buttonStye={{ marginTop: 10 }} />
-        )}
-        {phoneOtpSent && !phoneOtpVerified && (
-          <Animatable.View animation="fadeInUp" duration={400} style={styles.otpBox}>
-            <Input
-              label="Enter Phone OTP"
-              value={phoneOtp}
-              onChangeText={setPhoneOtp}
-              keyboardType="numeric"
-              maxLength={6}
-              autoFocus
-              error={!!errors?.phoneOtp}
-              errorMessage={errors?.phoneOtp || ""}
-            />
-            <Button onClick={handleVerifyPhoneOtp} label="Verify OTP" small buttonStye={{ marginTop: 10 }} />
-          </Animatable.View>
-        )}
-        {phoneOtpVerified && <Text style={styles.successText}>Phone verified ✅</Text>}
-      </ScrollView>
-    </KeyboardAvoidingView>
-  </View>
-
-  {/* Step 4 - Review & Final */}
-  <View style={styles.stepBox}>
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={{ flex: 1 }}
-    >
-      <ScrollView
-        contentContainerStyle={{ flexGrow: 1, justifyContent: "flex-start" }}
-        keyboardShouldPersistTaps="handled"
-      >
-        <View style={styles.reviewCard}>
-          <View style={styles.reviewItem}>
-            <Text style={styles.reviewLabel}>Full Name</Text>
-            <Text style={styles.reviewValueBig}>{formData.name || "--"}</Text>
+        <ScrollView
+          ref={scrollRef}
+          horizontal
+          pagingEnabled
+          showsHorizontalScrollIndicator={false}
+          scrollEnabled={false}
+          keyboardShouldPersistTaps="handled"
+        >
+          {/* Step 1 - Name */}
+          <View style={styles.stepBox}>
+            <KeyboardAvoidingView
+              behavior={Platform.OS === "ios" ? "padding" : "height"}
+              style={{ flex: 1 }}
+            >
+              <ScrollView
+                contentContainerStyle={{ flexGrow: 1, justifyContent: "flex-start", paddingBottom: 40 }}
+                keyboardShouldPersistTaps="handled"
+              >
+                <Input
+                  label="Full Name"
+                  autoFocus
+                  value={formData.name}
+                  onChangeText={(val) => handleChange(val, "name")}
+                  error={!!errors?.name}
+                  errorMessage={errors?.name || ""}
+                />
+                <BouncyCheckbox
+                  size={20}
+                  fillColor="#F68F00"
+                  unfillColor="#fff"
+                  isChecked={panChecked}
+                  text="Enter your name as per PAN card"
+                  textStyle={styles.checkboxText}
+                  onPress={(checked) => setPanChecked(checked)}
+                />
+                {errors?.panCheck && <Text style={styles.errorText}>{errors.panCheck}</Text>}
+              </ScrollView>
+            </KeyboardAvoidingView>
           </View>
-          <View style={styles.reviewItem}>
-            <Text style={styles.reviewLabel}>Email</Text>
-            <View style={styles.reviewRow}>
-              <Text style={styles.reviewValueBig}>{formData.email || "--"}</Text>
-              {emailOtpVerified && (
-                <Icon name="check-circle" size={20} color="lightgreen" style={{ marginLeft: 8 }} />
-              )}
-            </View>
+
+          {/* Step 2 - Email */}
+          <View style={styles.stepBox}>
+            <KeyboardAvoidingView
+              behavior={Platform.OS === "ios" ? "padding" : "height"}
+              style={{ flex: 1 }}
+            >
+              <ScrollView
+                contentContainerStyle={{ flexGrow: 1, justifyContent: "flex-start", paddingBottom: 40 }}
+                keyboardShouldPersistTaps="handled"
+              >
+                <Input
+                  label="Email Address"
+                  value={formData.email}
+                  autoFocus
+                  onChangeText={(val) => !emailOtpVerified && handleChange(val, "email")}
+                  editable={!emailOtpVerified}
+                  rightIcon={emailOtpVerified ? <Icon name="lock" size={18} color="#ccc" /> : null}
+                  error={!!errors?.email}
+                  errorMessage={errors?.email || ""}
+                />
+                {!emailOtpVerified && !emailOtpSent && (
+                  <Button
+                    onClick={handleSendEmailOtp}
+                    label="Send OTP"
+                    small={false}
+                    gradientColor={["#F68F00", "#D36C32"]}
+                    buttonStye={{ marginTop: 15, borderRadius: 10 }}
+                  />
+                )}
+                {emailOtpSent && !emailOtpVerified && (
+                  <Animatable.View animation="fadeInUp" duration={400} style={styles.otpBox}>
+                    <Input
+                      label="Enter Email OTP"
+                      value={emailOtp}
+                      onChangeText={setEmailOtp}
+                      keyboardType="numeric"
+                      maxLength={6}
+                      autoFocus
+                      error={!!errors?.emailOtp}
+                      errorMessage={errors?.emailOtp || ""}
+                    />
+                    <Button
+                      onClick={handleVerifyEmailOtp}
+                      label="Verify OTP"
+                      small={false}
+                      gradientColor={["#F68F00", "#D36C32"]}
+                      buttonStye={{ marginTop: 12, borderRadius: 10 }}
+                    />
+                  </Animatable.View>
+                )}
+                {emailOtpVerified && <Text style={styles.successText}>Email verified ✅</Text>}
+              </ScrollView>
+            </KeyboardAvoidingView>
           </View>
-          <View style={styles.reviewItem}>
-            <Text style={styles.reviewLabel}>Phone</Text>
-            <View style={styles.reviewRow}>
-              <Text style={styles.reviewValueBig}>{formData.phone || "--"}</Text>
-              {phoneOtpVerified && (
-                <Icon name="check-circle" size={20} color="lightgreen" style={{ marginLeft: 8 }} />
-              )}
-            </View>
+
+          {/* Step 3 - Phone */}
+          <View style={styles.stepBox}>
+            <KeyboardAvoidingView
+              behavior={Platform.OS === "ios" ? "padding" : "height"}
+              style={{ flex: 1 }}
+            >
+              <ScrollView
+                contentContainerStyle={{ flexGrow: 1, justifyContent: "flex-start", paddingBottom: 40 }}
+                keyboardShouldPersistTaps="handled"
+              >
+                <Input
+                  label="Mobile Number"
+                  value={formData.phone}
+                  autoFocus
+                  onChangeText={(val) => !phoneOtpVerified && handleChange(val, "phone")}
+                  editable={!phoneOtpVerified}
+                  rightIcon={phoneOtpVerified ? <Icon name="lock" size={18} color="#ccc" /> : null}
+                  error={!!errors?.phone}
+                  errorMessage={errors?.phone || ""}
+                />
+                {!phoneOtpVerified && !phoneOtpSent && (
+                  <Button
+                    onClick={handleSendPhoneOtp}
+                    label="Send OTP"
+                    small={false}
+                    gradientColor={["#F68F00", "#D36C32"]}
+                    buttonStye={{ marginTop: 15, borderRadius: 10 }}
+                  />
+                )}
+                {phoneOtpSent && !phoneOtpVerified && (
+                  <Animatable.View animation="fadeInUp" duration={400} style={styles.otpBox}>
+                    <Input
+                      label="Enter Phone OTP"
+                      value={phoneOtp}
+                      onChangeText={setPhoneOtp}
+                      keyboardType="numeric"
+                      maxLength={6}
+                      autoFocus
+                      error={!!errors?.phoneOtp}
+                      errorMessage={errors?.phoneOtp || ""}
+                    />
+                    <Button
+                      onClick={handleVerifyPhoneOtp}
+                      label="Verify OTP"
+                      small={false}
+                      gradientColor={["#F68F00", "#D36C32"]}
+                      buttonStye={{ marginTop: 12, borderRadius: 10 }}
+                    />
+                  </Animatable.View>
+                )}
+                {phoneOtpVerified && <Text style={styles.successText}>Phone verified ✅</Text>}
+              </ScrollView>
+            </KeyboardAvoidingView>
           </View>
-        </View>
-        <BouncyCheckbox
-          size={20}
-          fillColor="#F68F00"
-          unfillColor="#fff"
-          isChecked={termsChecked}
-          text="I accept the Terms & Conditions"
-          textStyle={styles.checkboxText}
-          iconStyle={{ borderColor: "#F68F00" }}
-          onPress={(checked) => setTermsChecked(checked)}
-        />
-        {errors?.termsCheck && <Text style={styles.errorText}>{errors.termsCheck}</Text>}
-        <Button
-          onClick={handleSubmit}
-          isLoading={isLoading}
-          label="SIGN UP"
-          gradientColor={["#D36C32", "#F68F00"]}
-          buttonStye={{ marginTop: 25 }}
-        />
-      </ScrollView>
-    </KeyboardAvoidingView>
-  </View>
-</ScrollView>
+
+          {/* Step 4 - Review & Final */}
+          <View style={styles.stepBox}>
+            <KeyboardAvoidingView
+              behavior={Platform.OS === "ios" ? "padding" : "height"}
+              style={{ flex: 1 }}
+            >
+              <ScrollView
+                contentContainerStyle={{ flexGrow: 1, justifyContent: "flex-start", paddingBottom: 40 }}
+                keyboardShouldPersistTaps="handled"
+              >
+                <View style={styles.reviewCard}>
+                  <View style={styles.reviewItem}>
+                    <Text style={styles.reviewLabel}>Full Name</Text>
+                    <Text style={styles.reviewValueBig}>{formData.name || "--"}</Text>
+                  </View>
+                  <View style={styles.reviewItem}>
+                    <Text style={styles.reviewLabel}>Email</Text>
+                    <View style={styles.reviewRow}>
+                      <Text style={styles.reviewValueBig}>{formData.email || "--"}</Text>
+                      {emailOtpVerified && <Icon name="check-circle" size={20} color="lightgreen" style={{ marginLeft: 8 }} />}
+                    </View>
+                  </View>
+                  <View style={styles.reviewItem}>
+                    <Text style={styles.reviewLabel}>Phone</Text>
+                    <View style={styles.reviewRow}>
+                      <Text style={styles.reviewValueBig}>{formData.phone || "--"}</Text>
+                      {phoneOtpVerified && <Icon name="check-circle" size={20} color="lightgreen" style={{ marginLeft: 8 }} />}
+                    </View>
+                  </View>
+                </View>
+                <BouncyCheckbox
+                  size={20}
+                  fillColor="#F68F00"
+                  unfillColor="#fff"
+                  isChecked={termsChecked}
+                  text="I accept the Terms & Conditions"
+                  textStyle={styles.checkboxText}
+                  iconStyle={{ borderColor: "#F68F00" }}
+                  onPress={(checked) => setTermsChecked(checked)}
+                />
+                {errors?.termsCheck && <Text style={styles.errorText}>{errors.termsCheck}</Text>}
+                <Button
+                  onClick={handleSubmit}
+                  isLoading={isLoading}
+                  label="SIGN UP"
+                  gradientColor={["#D36C32", "#F68F00"]}
+                  buttonStye={{ marginTop: 25, borderRadius: 10 }}
+                />
+              </ScrollView>
+            </KeyboardAvoidingView>
+          </View>
+        </ScrollView>
 
         {apiError ? <Text style={styles.apiErrorText}>{apiError}</Text> : null}
 
         {/* Floating navigation buttons */}
-        <View style={styles.navButtons}>
-          {step > 0 && (
-            <TouchableOpacity
-              style={[styles.navBtn, { backgroundColor: "#444" }]}
-              onPress={() => goToStep(step - 1)}
-            >
-              <Icon name="arrow-back" size={22} color="#fff" />
-            </TouchableOpacity>
-          )}
-          {step < 3 && (
-            <TouchableOpacity style={styles.navBtn} onPress={() => goToStep(step + 1)}>
-              <Icon name="arrow-forward" size={22} color="#fff" />
-            </TouchableOpacity>
-          )}
-        </View>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          keyboardVerticalOffset={Platform.OS === "ios" ? 120 : 100}
+          style={{ position: "absolute", bottom: 80, right: 20 }}
+        >
+          <View style={styles.navButtons}>
+            {/* {step > 0 && (
+              <TouchableOpacity
+                style={[styles.navBtn, { backgroundColor: "#444" }]}
+                onPress={() => goToStep(step - 1)}
+              >
+                <Icon name="arrow-back" size={22} color="#fff" />
+              </TouchableOpacity>
+            )} */}
+            {step < 3 && (
+              <TouchableOpacity
+                style={[styles.navBtn, { backgroundColor: "#F68F00" }]}
+                onPress={() => goToStep(step + 1)}
+              >
+                <Icon name="arrow-forward" size={22} color="#fff" />
+              </TouchableOpacity>
+            )}
+          </View>
+        </KeyboardAvoidingView>
 
-        {/* Footer */}
         <View style={styles.footer}>
           <Text style={styles.footerText}>
             Already have an account?{" "}
@@ -415,31 +473,22 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#012744" },
   flexContainer: { flex: 1 },
   logoContainer: { alignItems: "center", marginBottom: 10, marginTop: 30 },
-  progressContainer: {
-    flexDirection: "row",
-    justifyContent: "center",
-    marginVertical: 8,
-    gap: 6,
-  },
-  progressDot: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-    backgroundColor: "#555",
-  },
-  progressDotActive: {
-    backgroundColor: "#F68F00",
-    width: 20,
-  },
-
+  progressContainer: { flexDirection: "row", justifyContent: "center", marginVertical: 8, gap: 6 },
+  progressDot: { width: 10, height: 10, borderRadius: 5, backgroundColor: "#555" },
+  progressDotActive: { backgroundColor: "#F68F00", width: 20 },
   stepText: { color: "#fff", textAlign: "center", marginBottom: 10, fontSize: 14, opacity: 0.7 },
-  stepBox: {
-    width,
-    paddingHorizontal: 20,
-    paddingTop: 20,
-    justifyContent: "flex-start",
+  stepBox: { width, paddingHorizontal: 20, paddingTop: 30, justifyContent: "flex-start", flex: 1 },
+  otpBox: {
+    marginTop: 15,
+    padding: 15,
+    backgroundColor: "#083b5c",
+    borderRadius: 12,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 5,
   },
-  otpBox: { marginTop: 15, padding: 12, backgroundColor: "#083b5c", borderRadius: 10 },
   errorText: { color: "red", fontSize: 12, marginTop: 4 },
   successText: { color: "lightgreen", fontSize: 13, marginTop: 12, textAlign: "center" },
   checkboxText: { color: "#d4e7ff", fontSize: 13, textDecorationLine: "none" },
@@ -447,51 +496,13 @@ const styles = StyleSheet.create({
   footer: { padding: 15, backgroundColor: COLORS.primaryColor },
   footerText: { color: COLORS.fontWhite, textAlign: "center" },
   footerLink: { color: "#D87129", fontWeight: "600" },
-
-  navButtons: {
-    position: "absolute",
-    bottom: 100,
-    right: 20,
-    flexDirection: "row",
-    gap: 12,
-  },
-  navBtn: {
-    backgroundColor: "#F68F00",
-    borderRadius: 40,
-    width: 50,
-    height: 50,
-    justifyContent: "center",
-    alignItems: "center",
-    elevation: 5,
-  },
-
-  // Review Card
-  reviewCard: {
-    backgroundColor: "#083b5c",
-    borderRadius: 12,
-    padding: 20,
-    marginBottom: 20,
-  },
-  reviewItem: {
-    marginBottom: 18,
-    borderBottomWidth: 0.5,
-    borderBottomColor: "rgba(49, 193, 255, 0.38)",
-    paddingBottom: 10,
-  },
-  reviewLabel: {
-    color: "#aaa",
-    fontSize: 12,
-    marginBottom: 4,
-  },
-  reviewValueBig: {
-    color: "#fff",
-    fontSize: 18,
-    fontWeight: "600",
-  },
-  reviewRow: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
+  navButtons: { flexDirection: "row", gap: 12, alignItems: "center" },
+  navBtn: { width: 50, height: 50, borderRadius: 25, justifyContent: "center", alignItems: "center", elevation: 6 },
+  reviewCard: { backgroundColor: "#083b5c", borderRadius: 12, padding: 20, marginBottom: 20 },
+  reviewItem: { marginBottom: 18 },
+  reviewLabel: { color: "#fff", fontSize: 13, opacity: 0.7 },
+  reviewValueBig: { color: "#fff", fontSize: 16, fontWeight: "600" },
+  reviewRow: { flexDirection: "row", alignItems: "center" },
 });
 
 export default Register;
