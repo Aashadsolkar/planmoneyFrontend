@@ -21,6 +21,7 @@ const KycVerifyPage = () => {
   const [loading, setLoading] = useState(false);
   const [sdkUrl, setSdkUrl] = useState(null);
   const [error, setError] = useState(null);
+    const [currentUrl, setCurrentUrl] = useState("http://myapp");
   const { token, setDigiLockerRequestId, logout } = useAuth();
   const navigation = useNavigation();
 
@@ -112,7 +113,7 @@ const KycVerifyPage = () => {
   if (sdkUrl) {
     return (
       <>
-        <Header />
+        <Header disableSidebar webUrl={currentUrl} />
         <View style={{ marginHorizontal: 20, marginVertical: 20 }}>
           <Text style={{ fontSize: 18, fontWeight: "600" }}>
             Please complete your KYC

@@ -13,6 +13,7 @@ import {
   Modal,
   StatusBar,
   ScrollView,
+  Alert,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { COLORS } from "../app/constants";
@@ -25,7 +26,8 @@ import ShimmerSkeleton from "./ListSkeleton";
 import { LinearGradient } from "expo-linear-gradient";
 import { BlurView } from "expo-blur";
 const { height } = Dimensions.get("window");
-import Constants from 'expo-constants';
+import Constants from "expo-constants";
+import { showToast } from "./CustomToast/ToastService";
 
 const menuItems = [
   { icon: "home", label: "Home", route: "home" },
@@ -68,7 +70,12 @@ const NotificationItem = ({ item }) => (
   </View>
 );
 
-const Header = ({ showBackButton = false, backButtonText = () => {} }) => {
+const Header = ({
+  showBackButton = false,
+  backButtonText = () => {},
+  webUrl = null, // optional: current webview url
+  disableSidebar = false,
+}) => {
   const insets = useSafeAreaInsets();
   const [showNotifications, setShowNotifications] = useState(false);
   const [showProfileDrawer, setShowProfileDrawer] = useState(false);
@@ -79,6 +86,7 @@ const Header = ({ showBackButton = false, backButtonText = () => {} }) => {
   )[0];
   const navigation = useNavigation();
   const { logout, profileData, isProfileLoading } = useAuth();
+  const appDomain = "http://myapp";
   // Sample notifications data
   const notifications = [
     { id: "1", title: "Your order has been shipped", time: "5 min ago" },
@@ -94,6 +102,20 @@ const Header = ({ showBackButton = false, backButtonText = () => {} }) => {
   };
 
   const toggleProfileDrawer = () => {
+    if (
+      disableSidebar ||
+      (webUrl &&
+        !webUrl.startsWith(appDomain) &&
+        !webUrl.startsWith(`${appDomain}/`))
+    ) {
+      showToast({
+        type: "info",
+        title: `Sidebar disabled ✋`,
+        message: `${"The sidebar is disabled on this screen."}`,
+      });
+
+      return;
+    }
     if (showProfileDrawer) {
       closeProfileDrawer();
     } else {
@@ -121,7 +143,8 @@ const Header = ({ showBackButton = false, backButtonText = () => {} }) => {
       setShowProfileDrawer(false);
     });
   };
-const versionCode = Constants?.manifest2?.extra?.expoClient?.version ?? "unknown";
+  const versionCode =
+    Constants?.manifest2?.extra?.expoClient?.version ?? "unknown";
   return (
     <>
       <SafeAreaView style={[styles.safeArea, { paddingTop: insets.top }]}>
@@ -145,18 +168,18 @@ const versionCode = Constants?.manifest2?.extra?.expoClient?.version ?? "unknown
                 style={{ flexDirection: "row", alignItems: "center", gap: 15 }}
               >
                 <TouchableOpacity onPress={() => setIsInfomodalOpen(true)}>
-                <View
-                  style={{
-                    backgroundColor: "#004B8869",
-                    borderRadius: "50%",
-                    height: 45,
-                    width: 45,
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <IconSVG />
-                </View>
+                  <View
+                    style={{
+                      backgroundColor: "#004B8869",
+                      borderRadius: "50%",
+                      height: 45,
+                      width: 45,
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <IconSVG />
+                  </View>
                 </TouchableOpacity>
                 <Text style={styles.title}>
                   {isProfileLoading ? (
@@ -164,11 +187,11 @@ const versionCode = Constants?.manifest2?.extra?.expoClient?.version ?? "unknown
                   ) : (
                     <>
                       Hi{" "}
-                          <Text style={styles.highlightedName}>
-                            {profileData?.name?.length > 18
-                              ? `${profileData.name.slice(0, 18)}...`
-                              : profileData?.name}
-                          </Text>
+                      <Text style={styles.highlightedName}>
+                        {profileData?.name?.length > 18
+                          ? `${profileData.name.slice(0, 18)}...`
+                          : profileData?.name}
+                      </Text>
                     </>
                   )}
                 </Text>
@@ -214,7 +237,7 @@ const versionCode = Constants?.manifest2?.extra?.expoClient?.version ?? "unknown
           top: 0,
           right: 0,
           height: "100%",
-          width:"70%",
+          width: "70%",
           backgroundColor: "#093557ff",
           transform: [{ translateX: drawerAnimation }],
           shadowColor: "#000",
@@ -417,7 +440,7 @@ const versionCode = Constants?.manifest2?.extra?.expoClient?.version ?? "unknown
                 marginHorizontal: 25,
                 marginVertical: 5,
                 borderRadius: 20,
-                width:"160",
+                width: "160",
                 backgroundColor: "#F68F00",
               }}
               onPress={() => setIsLogoutModalOpen(true)}
@@ -720,37 +743,36 @@ const versionCode = Constants?.manifest2?.extra?.expoClient?.version ?? "unknown
 
             {/* Modal Content */}
             <View style={{ paddingHorizontal: 20, paddingVertical: 25 }}>
-  {[
-    { label: "Company Name", value: "Econexx wealth Pvt Ltd." },
-    { label: "BSE Membership No", value: "Under Process" },
-    { label: "SEBI Reg No", value: "Under Process" },
-    { label: "ARN Number", value: "337712" },
-    { label: "Principal Officer", value: "Ovesh Khatri" },
-    { label: "Email", value: "po-cio@planmoney.in / 8108181604" },
-    { label: "Compliance Officer", value: "Aishwarya Shinde" },
-    { label: "Email", value: "services@planmoney.in / 8108181602" },
-  ].map((item, index) => (
-    <View key={index} style={{ marginBottom: 12 }}>
-      {/* Label */}
-      <Text
-        style={{
-          fontSize: 14,
-          fontWeight: "500",
-          color: "#ccc",
-          marginBottom: 2,
-        }}
-      >
-        {item.label}:
-      </Text>
+              {[
+                { label: "Company Name", value: "Econexx wealth Pvt Ltd." },
+                { label: "BSE Membership No", value: "Under Process" },
+                { label: "SEBI Reg No", value: "Under Process" },
+                { label: "ARN Number", value: "337712" },
+                { label: "Principal Officer", value: "Ovesh Khatri" },
+                { label: "Email", value: "po-cio@planmoney.in / 8108181604" },
+                { label: "Compliance Officer", value: "Aishwarya Shinde" },
+                { label: "Email", value: "services@planmoney.in / 8108181602" },
+              ].map((item, index) => (
+                <View key={index} style={{ marginBottom: 12 }}>
+                  {/* Label */}
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      fontWeight: "500",
+                      color: "#ccc",
+                      marginBottom: 2,
+                    }}
+                  >
+                    {item.label}:
+                  </Text>
 
-      {/* Value */}
-      <Text style={{ fontSize: 14, color: "#fff" }}>{item.value}</Text>
-    </View>
-  ))}
-</View>
-
-
-
+                  {/* Value */}
+                  <Text style={{ fontSize: 14, color: "#fff" }}>
+                    {item.value}
+                  </Text>
+                </View>
+              ))}
+            </View>
           </View>
         </BlurView>
       </Modal>
@@ -790,7 +812,7 @@ const styles = StyleSheet.create({
     color: "#FFA500",
     fontWeight: "600",
     textTransform: "capitalize",
-    width: 201
+    width: 201,
   },
   iconButton: {
     marginRight: 16,
