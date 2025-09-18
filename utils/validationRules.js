@@ -95,4 +95,14 @@ export const validationRules = {
             message: 'Password must include at least one special character',
         },
     ],
+    otp: [
+        {
+            rule: (val) => val.trim() !== '',
+            message: 'OTP is required',
+        },
+        {
+            rule: (val) => /^[0-9]{6}$/.test(val),
+            message: 'OTP must be exactly 6 digits (numbers only)',
+        },
+    ],
 };
