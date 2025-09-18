@@ -21,7 +21,7 @@ export const login = async (data = null) => {
   }
 };
 
-export const registor = async (data = null) => {
+export const register = async (data = null) => {
   try {
     const response = await axios({
       method: "POST",

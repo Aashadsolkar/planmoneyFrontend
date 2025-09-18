@@ -147,7 +147,15 @@ const Login = () => {
         setLoginApiError(res?.message || "Invalid OTP. Try again.");
       }
     } catch (err) {
-      setLoginApiError("Network error. Please try again.");
+        console.log("Full API Error:", err);
+    // Check if it's an Axios-style error with response data
+    const apiMessage =
+      err?.response?.data?.message || // server message
+      err?.response?.data?.errors?.[0]?.message || // first error in array
+      err?.message || // fallback JS error
+      "Network error. Please try again.";
+
+    setLoginApiError(apiMessage);
     } finally {
       setIsLoading(false);
     }
@@ -321,7 +329,11 @@ const styles = StyleSheet.create({
     color: "#ffffffff",
   },
   formSubtitle: { fontSize: 16, color: "#bebebeff", marginBottom: 16 },
-  resendContainer: { alignItems: "flex-end", marginBottom: 10, marginRight: 20 },
+  resendContainer: {
+    alignItems: "flex-end",
+    marginBottom: 10,
+    marginRight: 20,
+  },
   resendText: { color: COLORS.secondaryColor, fontSize: 14, fontWeight: "500" },
   resendLimit: { color: "#FFB300", fontSize: 13, fontWeight: "600" },
   errorText: {

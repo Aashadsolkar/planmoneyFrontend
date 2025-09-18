@@ -359,7 +359,7 @@ export default function Home() {
                       overflow: 'hidden',
                       marginHorizontal: 5,
                     }}
-                    contentFit="stretch"
+                    contentFit="fill"
                   />
                 </TouchableOpacity>
               </Animatable.View>
