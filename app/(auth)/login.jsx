@@ -118,7 +118,14 @@ const Login = () => {
         setLoginApiError(res?.message || "Failed to send OTP");
       }
     } catch (err) {
-      setLoginApiError("Network error. Please try again.");
+      const apiMessage =
+        err?.response?.data?.message || // server message
+        err?.response?.data?.errors?.[0]?.message || // first error in array
+        err?.message || // fallback JS error
+        "Network error. Please try again.";
+
+      setLoginApiError(apiMessage);
+      // setLoginApiError("Network error. Please try again.");
     } finally {
       setIsLoading(false);
     }
