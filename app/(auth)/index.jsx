@@ -9,15 +9,15 @@ import {
   StyleSheet,
   StatusBar,
 } from "react-native";
-
-const { width } = Dimensions.get("window");
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 
 const RegisterScreen = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [showRegisterForm, setShowRegisterForm] = useState(false);
+  const [screenWidth, setScreenWidth] = useState(Dimensions.get("window").width);
   const scrollViewRef = useRef(null);
+  const insets = useSafeAreaInsets();
 
-  // Banner data
   const banners = [
     {
       id: 1,
@@ -56,14 +56,13 @@ const RegisterScreen = () => {
   const handleScroll = (event) => {
     const slideSize = event.nativeEvent.layoutMeasurement.width;
     const index = event.nativeEvent.contentOffset.x / slideSize;
-    const roundIndex = Math.round(index);
-    setCurrentSlide(roundIndex);
+    setCurrentSlide(Math.round(index));
   };
 
   const goToSlide = (slideIndex) => {
     if (scrollViewRef.current) {
       scrollViewRef.current.scrollTo({
-        x: slideIndex * width,
+        x: slideIndex * screenWidth,
         animated: true,
       });
     }
@@ -88,123 +87,106 @@ const RegisterScreen = () => {
   }, [showRegisterForm]);
 
   return (
-    <View style={styles.container}>
-      <StatusBar
-        barStyle="light-content"
-        backgroundColor={banners[currentSlide].backgroundColor}
-      />
+    <SafeAreaView style={styles.safeArea} edges={["top", "left", "right"]}>
+      <StatusBar barStyle="light-content" backgroundColor={banners[currentSlide].backgroundColor} />
 
-      {/* Skip Button */}
-      <TouchableOpacity style={styles.skipButton} onPress={handleSkip}>
-        <Text style={styles.skipText}>Skip</Text>
-      </TouchableOpacity>
-
-      {/* Banner Slider */}
-      <ScrollView
-        ref={scrollViewRef}
-        horizontal
-        pagingEnabled
-        showsHorizontalScrollIndicator={false}
-        onScroll={handleScroll}
-        scrollEventThrottle={16}
-        style={styles.bannerContainer}
-      >
-        {banners.map((banner, index) => (
-          <View
-            key={banner.id}
-            style={[
-              styles.bannerSlide,
-              { backgroundColor: banner.backgroundColor },
-            ]}
-          >
-            <View style={styles.bannerContent}>
-              <View style={styles.bannerImagePlaceholder}>
-                <Text style={styles.bannerImageText}>📱</Text>
-              </View>
-
-              <Text style={styles.bannerTitle}>{banner.title}</Text>
-              <Text style={styles.bannerSubtitle}>{banner.subtitle}</Text>
-              <Text style={styles.bannerDescription}>{banner.description}</Text>
-            </View>
-          </View>
-        ))}
-      </ScrollView>
-
-      {/* Pagination Dots */}
-      <View style={styles.paginationContainer}>
-        {banners.map((_, index) => (
-          <TouchableOpacity
-            key={index}
-            style={[
-              styles.paginationDot,
-              currentSlide === index && styles.paginationDotActive,
-            ]}
-            onPress={() => goToSlide(index)}
-          />
-        ))}
-      </View>
-
-      {/* Bottom Navigation */}
-      <View style={styles.bottomNavigation}>
-        <TouchableOpacity style={styles.nextButton} onPress={handleNext}>
-          <Text style={styles.nextButtonText}>
-            {currentSlide === banners.length - 1 ? "Get Started" : "Next"}
-          </Text>
+      <View style={[styles.container, { backgroundColor: banners[currentSlide].backgroundColor }]}>
+        {/* Skip Button */}
+        <TouchableOpacity
+          style={[styles.skipButton, { top: insets.top + 10 }]}
+          onPress={handleSkip}
+          hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+        >
+          <Text style={styles.skipText}>Skip</Text>
         </TouchableOpacity>
+
+        {/* Banner Slider */}
+        <ScrollView
+          ref={scrollViewRef}
+          horizontal
+          pagingEnabled
+          showsHorizontalScrollIndicator={false}
+          onScroll={handleScroll}
+          scrollEventThrottle={16}
+          onLayout={(e) => setScreenWidth(e.nativeEvent.layout.width)}
+          contentContainerStyle={{ flexGrow: 1 }}
+        >
+          {banners.map((banner) => (
+            <View
+              key={banner.id}
+              style={[styles.bannerSlide, { width: screenWidth }]}
+            >
+              <View style={styles.bannerContent}>
+                <View style={styles.bannerImagePlaceholder}>
+                  <Text style={styles.bannerImageText}>📱</Text>
+                </View>
+                <Text style={styles.bannerTitle}>{banner.title}</Text>
+                <Text style={styles.bannerSubtitle}>{banner.subtitle}</Text>
+                <Text style={styles.bannerDescription}>{banner.description}</Text>
+              </View>
+            </View>
+          ))}
+        </ScrollView>
+
+        {/* Pagination + Button */}
+        <View style={[styles.bottomContainer, { paddingBottom: Math.max(insets.bottom, 20) }]}>
+          <View style={styles.paginationContainer}>
+            {banners.map((_, index) => (
+              <TouchableOpacity
+                key={index}
+                style={[
+                  styles.paginationDot,
+                  currentSlide === index && styles.paginationDotActive,
+                ]}
+                onPress={() => goToSlide(index)}
+                hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+              />
+            ))}
+          </View>
+
+          <TouchableOpacity style={styles.nextButton} onPress={handleNext}>
+            <Text style={styles.nextButtonText}>
+              {currentSlide === banners.length - 1 ? "Get Started" : "Next"}
+            </Text>
+          </TouchableOpacity>
+        </View>
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-  },
+  safeArea: { flex: 1, backgroundColor: "#012744" },
+  container: { flex: 1 },
   skipButton: {
     position: "absolute",
-    top: 50,
     right: 20,
-    zIndex: 1,
+    zIndex: 2,
     paddingHorizontal: 15,
     paddingVertical: 8,
     backgroundColor: "rgba(255, 255, 255, 0.2)",
     borderRadius: 20,
   },
-  skipText: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "600",
-  },
-  bannerContainer: {
-    flex: 1,
-  },
+  skipText: { color: "#fff", fontSize: 16, fontWeight: "600" },
   bannerSlide: {
-    width: width,
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 30,
   },
-  bannerContent: {
-    alignItems: "center",
-    justifyContent: "center",
-    flex: 1,
-  },
+  bannerContent: { alignItems: "center", justifyContent: "center", flex: 1 },
   bannerImagePlaceholder: {
     width: 120,
     height: 120,
     borderRadius: 60,
-    backgroundColor: "rgba(255, 255, 255, 0.2)",
+    backgroundColor: "rgba(255,255,255,0.2)",
     justifyContent: "center",
     alignItems: "center",
     marginBottom: 40,
   },
-  bannerImageText: {
-    fontSize: 50,
-  },
+  bannerImageText: { fontSize: 50 },
   bannerTitle: {
-    fontSize: 28,
+    fontSize: 26,
     fontWeight: "bold",
     color: "#fff",
     textAlign: "center",
@@ -214,145 +196,40 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: "#fff",
     textAlign: "center",
-    marginBottom: 20,
+    marginBottom: 15,
     opacity: 0.9,
   },
   bannerDescription: {
-    fontSize: 16,
+    fontSize: 15,
     color: "#fff",
     textAlign: "center",
-    lineHeight: 24,
+    lineHeight: 22,
     opacity: 0.8,
+    paddingHorizontal: 20,
+  },
+  bottomContainer: {
     paddingHorizontal: 20,
   },
   paginationContainer: {
     flexDirection: "row",
     justifyContent: "center",
-    alignItems: "center",
-    paddingVertical: 20,
-    position: "absolute",
-    bottom: 100,
-    left: 0,
-    right: 0,
+    marginBottom: 20,
   },
   paginationDot: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-    backgroundColor: "rgba(255, 255, 255, 0.4)",
-    marginHorizontal: 5,
-  },
-  paginationDotActive: {
-    backgroundColor: "#fff",
     width: 12,
     height: 12,
     borderRadius: 6,
+    backgroundColor: "rgba(255,255,255,0.4)",
+    marginHorizontal: 6,
   },
-  bottomNavigation: {
-    position: "absolute",
-    bottom: 30,
-    left: 30,
-    right: 30,
-  },
+  paginationDotActive: { backgroundColor: "#fda500ff", width: 14, height: 14 },
   nextButton: {
     backgroundColor: "#fff",
-    paddingVertical: 15,
-    borderRadius: 25,
+    paddingVertical: 16,
+    borderRadius: 28,
     alignItems: "center",
   },
-  nextButtonText: {
-    fontSize: 18,
-    fontWeight: "600",
-    color: "#333",
-  },
-  // Register Form Styles
-  registerHeader: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingHorizontal: 20,
-    paddingTop: 50,
-    paddingBottom: 20,
-    backgroundColor: "#fff",
-  },
-  backButton: {
-    padding: 10,
-    marginRight: 10,
-  },
-  backButtonText: {
-    fontSize: 24,
-    color: "#333",
-  },
-  registerTitle: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: "#333",
-  },
-  registerForm: {
-    flex: 1,
-    backgroundColor: "#fff",
-  },
-  formContainer: {
-    paddingHorizontal: 30,
-    paddingTop: 20,
-  },
-  welcomeText: {
-    fontSize: 32,
-    fontWeight: "bold",
-    color: "#333",
-    marginBottom: 10,
-  },
-  subtitleText: {
-    fontSize: 16,
-    color: "#666",
-    marginBottom: 40,
-    lineHeight: 22,
-  },
-  inputContainer: {
-    marginBottom: 20,
-  },
-  inputLabel: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#333",
-    marginBottom: 8,
-  },
-  textInput: {
-    borderWidth: 1,
-    borderColor: "#ddd",
-    borderRadius: 12,
-    paddingHorizontal: 15,
-    paddingVertical: 15,
-    fontSize: 16,
-    backgroundColor: "#f9f9f9",
-  },
-  registerButton: {
-    backgroundColor: "#4A90E2",
-    paddingVertical: 15,
-    borderRadius: 12,
-    alignItems: "center",
-    marginTop: 20,
-    marginBottom: 30,
-  },
-  registerButtonText: {
-    color: "#fff",
-    fontSize: 18,
-    fontWeight: "600",
-  },
-  loginContainer: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    marginBottom: 30,
-  },
-  loginText: {
-    fontSize: 16,
-    color: "#666",
-  },
-  loginLink: {
-    fontSize: 16,
-    color: "#4A90E2",
-    fontWeight: "600",
-  },
+  nextButtonText: { fontSize: 18, fontWeight: "600", color: "#333" },
 });
 
 export default RegisterScreen;
