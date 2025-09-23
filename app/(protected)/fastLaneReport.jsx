@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Image, SafeAreaView, ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
+import { Image, ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
+import { SafeAreaView } from "react-native-safe-area-context";
 import { COLORS } from '../constants';
 import { getFastlaneData } from '@utils/apiCaller';
 import { useAuth } from '@context/useAuth';

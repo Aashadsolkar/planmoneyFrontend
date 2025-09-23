@@ -9,10 +9,10 @@ import {
     ScrollView,
     Platform,
     Dimensions,
-    SafeAreaView,
     KeyboardAvoidingView,
     StatusBar,
-} from "react-native"
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router"
 import { COLORS } from '../../constants'
 import Button from "@components/Button"

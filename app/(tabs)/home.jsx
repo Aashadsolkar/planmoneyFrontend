@@ -6,11 +6,11 @@ import {
   ScrollView,
   TouchableOpacity,
   FlatList,
-  SafeAreaView,
   StatusBar,
   Dimensions,
   RefreshControl,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons, AntDesign, FontAwesome6 } from "@expo/vector-icons";
 import Header from "@components/Header";
 import { LinearGradient } from "expo-linear-gradient";
@@ -28,6 +28,7 @@ import StockOptionSlider from "@components/StockOtionSlider";
 import QuestionerModal from "@components/QuestionerModal";
 import { Image } from "expo-image";
 import { formatDateToDDMMYYYY } from "../../utils/commonFunctions";
+import { PSIcon } from "../../assets/images/SVG";
 
 const { height, width } = Dimensions.get("window");
 
@@ -81,6 +82,7 @@ export default function Home() {
   const { width } = Dimensions.get("window");
   const ITEM_WIDTH = width * 0.93; // 90% of screen width
   const SPACING = (width - ITEM_WIDTH) / 3;
+  const removeIds = [5, 6];
 
   useEffect(() => {
     if (isQuestionerFillderByAdvisor) {
@@ -232,7 +234,7 @@ export default function Home() {
   const renderServices = () => {
     const renderData = purchesService.length > 0 ? purchesService : allServices;
     // removing new arrivals
-    const filteredData = renderData.filter((item) => item.id !== 5);
+    const filteredData = renderData.filter(item => !removeIds.includes(item.id));
     const handleServiceScroll = (event) => {
       const scrollX = event.nativeEvent.contentOffset.x;
       const index = Math.round(scrollX / SERVICE_CARD_WIDTH); // adjust 180 based on your service card width
@@ -490,16 +492,12 @@ export default function Home() {
           >
             <TouchableOpacity
             style={{alignItems: "center"}}
-              onPress={() => router.push("upcoming")}
+              onPress={() => router.push("premiumResearch")}
             >
               <View style={styles.linkIconContainer}>
-                <MaterialIcons
-                  name="savings"
-                  size={38}
-                  color={COLORS.secondaryColor}
-                />
+                <PSIcon height={40} width={40} />
               </View>
-              <Text style={styles.linkText}>Mutual Fund</Text>
+              <Text style={styles.linkText}>Premium Research</Text>
             </TouchableOpacity>
           </Animatable.View>
         </View>

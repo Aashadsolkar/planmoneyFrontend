@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, SafeAreaView, ScrollView, StatusBar, Dimensions, Modal, FlatList } from "react-native"
+import { StyleSheet, Text, View, TouchableOpacity, StatusBar, FlatList } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons"
 import Header from "@components/Header"
 import { COLORS } from "../constants"

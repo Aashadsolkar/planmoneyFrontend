@@ -1,4 +1,5 @@
-import { View, Text, useWindowDimensions, SafeAreaView, ScrollView } from 'react-native'
+import { View, Text, useWindowDimensions, ScrollView } from 'react-native'
+import { SafeAreaView } from "react-native-safe-area-context";
 import React from 'react'
 import RenderHTML from 'react-native-render-html';
 import { COLORS } from '../constants';

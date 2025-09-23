@@ -6,13 +6,13 @@ import {
   TextInput,
   StyleSheet,
   ScrollView,
-  SafeAreaView,
   StatusBar,
   Dimensions,
   Platform,
   PanResponder,
   Animated,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import Slider from '@react-native-community/slider';
 import { LinearGradient } from "expo-linear-gradient"
 import { Ionicons } from "@expo/vector-icons"

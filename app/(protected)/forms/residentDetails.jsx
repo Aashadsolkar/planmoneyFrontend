@@ -1,4 +1,5 @@
-import { View, Text, SafeAreaView, TouchableOpacity, StyleSheet, Dimensions, FlatList, Modal, StatusBar } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Dimensions, FlatList, Modal, StatusBar } from 'react-native';
+import { SafeAreaView } from "react-native-safe-area-context";
 import React, { useEffect, useState } from 'react';
 import { COLORS } from "../../constants";
 import Button from '@components/Button';

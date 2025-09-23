@@ -1,5 +1,6 @@
  
-import { View, Text, Image, SafeAreaView, ActivityIndicator, StyleSheet, ScrollView, TouchableOpacity } from "react-native"
+import { View, Text, Image, ActivityIndicator, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { useEffect, useState } from "react"
 import Button from "@components/Button"
 import { COLORS } from "../constants"

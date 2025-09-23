@@ -6,9 +6,9 @@ import {
     ScrollView,
     ActivityIndicator,
     StyleSheet,
-    SafeAreaView,
     StatusBar,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { getFastlaneHistoryData } from "@utils/apiCaller";
 import { useAuth } from "@context/useAuth";
 import { showToast } from "@components/CustomToast/ToastService";
