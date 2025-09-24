@@ -48,7 +48,7 @@ export default function Checkout() {
   const CGST = (baseAmount * 0.09).toFixed(2);
   const SGST = (baseAmount * 0.09).toFixed(2);
   const finalTotal = (parseFloat(baseAmount) + parseFloat(CGST) + parseFloat(SGST)).toFixed(2);
-  const isSpecialService = [5, 6].includes(selectedService?.serviceId);
+  const isSpecialService = [5, 6].includes(Number(selectedService?.serviceId));
 
 
 

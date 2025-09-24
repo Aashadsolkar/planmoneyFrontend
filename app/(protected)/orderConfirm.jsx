@@ -95,8 +95,6 @@ const OrderConfirm = () => {
         }
       } catch (error) {
         setError("Failed to verify your payment. Please contact support.")
-      } finally {
-        setLoading(false)
       }
     }
 
