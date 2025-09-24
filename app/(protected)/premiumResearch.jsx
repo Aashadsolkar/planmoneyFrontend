@@ -314,7 +314,7 @@ const PremiumResearch = () => {
 
     if (isLoading) {
         return (
-            <SafeAreaView style={styles.container}>
+            <SafeAreaView edges={[]} style={styles.container}>
                 <StatusBar barStyle="light-content" backgroundColor="#003366" />
                 <Header showBackButton={true} />
                 {[1, 2, 3, 4, 5].map((v) => <SkeletonList key={v} />)}
@@ -329,7 +329,7 @@ const PremiumResearch = () => {
         }
 
     return (
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView edges={[]} style={styles.container}>
             <StatusBar barStyle="light-content" backgroundColor="#003366" />
             <Header showBackButton={true} backButtonText={backButtonText} />
             <View style={styles.tabContainer}>

@@ -81,7 +81,7 @@ const Portfolio = () => {
   // Don't render if no tabs are available
   if (availableTabs.length === 0) {
     return (
-      <SafeAreaView style={styles.container}>
+      <SafeAreaView edges={[]} style={styles.container}>
         <Header showBackButton={true} />
         <StatusBar barStyle="light-content" />
         <LinearGradient colors={[COLORS.primaryColor, COLORS.primaryColor]} style={styles.gradient}>
@@ -115,7 +115,7 @@ const Portfolio = () => {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView edges={[]} style={styles.container}>
       <StatusBar barStyle="light-content" />
       <Header showBackButton={true} backButtonText={headerText} />
       {/* Header Tabs - Only show if more than one tab available */}

@@ -13,7 +13,7 @@ export default function PdfViewer() {
   const { url } = useLocalSearchParams();
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaView edges={[]} style={styles.safeArea}>
       {/* Header with Back Button */}
       <Header showBackButton={true} />
 

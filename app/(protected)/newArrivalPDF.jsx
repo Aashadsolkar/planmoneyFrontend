@@ -16,7 +16,7 @@ const NewArrivalPDF = () => {
         }
         
     return (
-        <SafeAreaView style={{flex: 1, backgroundColor: COLORS.primaryColor}}>
+        <SafeAreaView edges={[]} style={{flex: 1, backgroundColor: COLORS.primaryColor}}>
             <Header showBackButton={true} backButtonText={backButtonText}/>
             <ScrollView style={{padding: 20}}>
                 <RenderHTML

@@ -201,7 +201,7 @@ const FastLane = () => {
     }
 
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.cardColor }}>
+        <SafeAreaView edges={[]} style={{ flex: 1, backgroundColor: COLORS.cardColor }}>
             <StatusBar barStyle="light-content" backgroundColor={COLORS.cardColor} />
             <Header
                 title="Hi Vignesh"

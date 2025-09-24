@@ -60,7 +60,7 @@ export default function App() {
         callFastlaneHistoryApi(activeTab.serviceID);
     }, [activeTab]);
     return (
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView edges={[]} style={styles.container}>
             <StatusBar
                 barStyle="light-content"
                 backgroundColor={COLORS.cardColor}

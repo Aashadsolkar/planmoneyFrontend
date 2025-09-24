@@ -55,7 +55,7 @@ export default function Support() {
     };
 
     return (
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView edges={[]} style={styles.container}>
             <StatusBar barStyle="light-content" backgroundColor={COLORS.cardColor} />
             <Header showBackButton={true} />
 

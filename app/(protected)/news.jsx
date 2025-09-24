@@ -70,7 +70,7 @@ export default function News() {
 
 
     return (
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView edges={[]} style={styles.container}>
             <StatusBar barStyle="light-content" backgroundColor={COLORS.cardColor} />
             <Header showBackButton={true} />
             <View style={{ flex: 1, backgroundColor: COLORS.primaryColor, paddingHorizontal: 20 }}>

@@ -42,7 +42,7 @@ const RiskCalculate1 = () => {
 
     }
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.primaryColor, paddingBottom: 20}}>
+        <SafeAreaView edges={[]} style={{ flex: 1, backgroundColor: COLORS.primaryColor, paddingBottom: 20}}>
             <StatusBar barStyle="light-content" backgroundColor={COLORS.primaryColor} />
             <KeyboardAvoidingView
                 style={{ flex: 1 }}

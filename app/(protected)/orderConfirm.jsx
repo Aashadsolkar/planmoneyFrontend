@@ -233,7 +233,7 @@ const OrderConfirm = () => {
 
   if (!orderId) {
     return (
-      <SafeAreaView style={styles.centerContent}>
+      <SafeAreaView edges={[]} style={styles.centerContent}>
         <Text style={styles.errorTitle}>Missing Order ID</Text>
         <Text style={styles.errorText}>We couldn't find your order. Please try again.</Text>
       </SafeAreaView>
@@ -241,7 +241,7 @@ const OrderConfirm = () => {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView edges={[]} style={styles.container}>
       <View style={styles.logoContainer}>
        <LogoSVG  />
       </View>

@@ -227,7 +227,7 @@ const PmsAndQuantom = () => {
 
     if (customerServiceData?.questionnaire_status == 0) {
         return (
-            <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.primaryColor }}>
+            <SafeAreaView edges={[]} style={{ flex: 1, backgroundColor: COLORS.primaryColor }}>
                 <StatusBar barStyle="light-content" backgroundColor={COLORS.cardColor} />
                 <Header
                     title="Hi Vignesh"

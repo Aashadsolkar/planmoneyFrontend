@@ -85,7 +85,7 @@ export default function BuyStock() {
     }
 
     return (
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView edges={[]} style={styles.container}>
             <StatusBar barStyle="light-content" backgroundColor={COLORS.cardColor} />
             <Header title="Hi Vignesh" showBackButton={true} />
             <ScrollView style={{ backgroundColor: COLORS.primaryColor }}>

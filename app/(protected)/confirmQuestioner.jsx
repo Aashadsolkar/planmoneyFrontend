@@ -38,6 +38,7 @@ export default function App() {
 
   return (
     <SafeAreaView
+      edges={[]}
       style={{ flex: 1, backgroundColor: COLORS.primaryColor, padding: 20 }}
     >
       <ScrollView

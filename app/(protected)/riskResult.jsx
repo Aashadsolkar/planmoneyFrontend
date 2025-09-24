@@ -59,7 +59,7 @@ export default function App() {
   return (
 
 
-    <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.primaryColor, padding: 20 }}>
+    <SafeAreaView edges={[]} style={{ flex: 1, backgroundColor: COLORS.primaryColor, padding: 20 }}>
       <ScrollView
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}

@@ -221,7 +221,7 @@ const HomeScreen = () => {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView edges={[]} style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#003366" />
       <Header showBackButton={true} />
 

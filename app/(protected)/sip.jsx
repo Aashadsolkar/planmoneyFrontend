@@ -161,7 +161,7 @@ export default function SIPCalculator() {
   const returnsPercentage = maturityAmount ? (totalReturns / maturityAmount) * 100 : 0
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView edges={[]} style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor={COLORS.cardColor} />
       <Header showBackButton />
 

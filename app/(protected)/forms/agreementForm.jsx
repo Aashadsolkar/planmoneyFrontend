@@ -83,7 +83,7 @@ const AgreementForm = () => {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.primaryColor, paddingBottom: 20, paddingTop: 20 }}>
+    <SafeAreaView edges={[]} style={{ flex: 1, backgroundColor: COLORS.primaryColor, paddingBottom: 20, paddingTop: 20 }}>
       <StatusBar barStyle="light-content" backgroundColor={COLORS.primaryColor} />
       <ScrollView
         keyboardShouldPersistTaps="handled"

@@ -7,7 +7,7 @@ import * as Animatable from 'react-native-animatable';
 
 export default function Upcomping() {
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView edges={[]} style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor={COLORS.cardColor} />
       <Header showBackButton={true} />
       <View style={styles.content}>
