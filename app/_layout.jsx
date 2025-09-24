@@ -17,10 +17,8 @@ import {
 } from "../push-notification/notificationService";
 import { toastConfig } from "@components/CustomToast/ToastConfig";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {
-  isUserLoggedIn,
-  isBiometricEnabled,
-} from "../utils/auth"; 
+import { isUserLoggedIn, isBiometricEnabled } from "../utils/auth";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -131,14 +129,16 @@ const RootLayout = () => {
   }
 
   return (
-    <AuthProvider>
-      <PaperProvider>
-        <View style={{ flex: 1 }}>
-          <Slot />
-        </View>
-        <Toast config={toastConfig} />
-      </PaperProvider>
-    </AuthProvider>
+    <SafeAreaProvider>
+      <AuthProvider>
+        <PaperProvider>
+          <View style={{ flex: 1 }}>
+            <Slot />
+          </View>
+          <Toast config={toastConfig} />
+        </PaperProvider>
+      </AuthProvider>
+    </SafeAreaProvider>
   );
 };
 
