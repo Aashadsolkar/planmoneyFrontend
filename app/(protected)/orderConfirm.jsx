@@ -28,6 +28,7 @@ const OrderConfirm = () => {
 
   const { id, billing_cycle, serviceId, new_arrival_id } = selectedService || {}
 
+  const isSpecialService = [5, 6].includes(serviceId);
 
 
   useEffect(() => {
@@ -206,10 +207,11 @@ const OrderConfirm = () => {
             <Text style={styles.detailValue}>{orderDetails?.[0]?.payment_group || 'N/A'}</Text>
           </View>
 
-          <View style={styles.detailRow}>
-            <Text style={styles.detailLabel}>Billing Cycle:</Text>
-            <Text style={styles.detailValue}>{billing_cycle || 'N/A'}</Text>
-          </View>
+          {!isSpecialService && (
+            <View style={styles.detailRow}>
+              <Text style={styles.detailLabel}>Billing Cycle:</Text>
+              <Text style={styles.detailValue}>{billing_cycle || 'N/A'}</Text>
+            </View>)}
         </View>
       </ScrollView>
     </Animatable.View>
@@ -253,6 +255,7 @@ const OrderConfirm = () => {
           gradientColor={["#D36C32", "#F68F00"]}
           // onPress={() => navigation.navigate("/screens/home")}
           onClick={() => router.push("home")}
+          isLoading={loading}
         />
       </View>
     </SafeAreaView>

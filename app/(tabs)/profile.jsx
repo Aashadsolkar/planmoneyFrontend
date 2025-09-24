@@ -36,20 +36,7 @@ import { showToast } from "@components/CustomToast/ToastService";
 const { width, height } = Dimensions.get("window");
 
 export default function App() {
-  const { profileData, token, setGetCustomerDataAgain, logout } = useAuth();
-  const [mobileVerified, setMobileVerified] = useState(() =>
-    profileData?.phone_verified_at == null ? false : true
-  );
-  const [emailVerified, setEmailVerified] = useState(() =>
-    profileData?.email_verified_at == null ? false : true
-  );
-  const [showOTPModal, setShowOTPModal] = useState(false);
-  const [verificationType, setVerificationType] = useState("");
-  const [otp, setOtp] = useState(["", "", "", "", "", ""]);
-  const otpInputs = useRef([]);
-  const [isSMSApiLoading, setIsSMSApiLoading] = useState(false);
-  const [isEMailApiLoading, setIsEMailApiLoading] = useState(false);
-  const [isOtpLoading, setOtpLoading] = useState(false);
+  const { profileData, token, logout } = useAuth();
   const [errors, setErrors] = useState({});
   const [isCapitalFormUpdate, setIsCapitalFormUpdate] = useState(false);
   const [isUpdateCapitalLoading, setIsUpdateCapitalLoading] = useState(false);
@@ -101,125 +88,6 @@ export default function App() {
     }
   };
 
-  const handleVerifyPress = async (type) => {
-    try {
-      if (type === "email") {
-        setIsEMailApiLoading(true);
-        setOtpLoading(true);
-        const payload = {
-          email: profileData?.email,
-        };
-        const response = await generateVerifyEmailOpt(token, payload);
-
-        setVerificationType(type);
-        setShowOTPModal(true);
-        setOtp(["", "", "", "", "", ""]);
-        setTimeout(() => otpInputs.current[0]?.focus(), 100);
-        setIsEMailApiLoading(false);
-        setGetCustomerDataAgain(true);
-      } else if (type === "mobile") {
-        setIsSMSApiLoading(true);
-        const response = await createMobileOTP(token);
-        setVerificationType(type);
-        setShowOTPModal(true);
-        setOtp(["", "", "", "", "", ""]);
-        setTimeout(() => otpInputs.current[0]?.focus(), 100);
-        setIsSMSApiLoading(false);
-        setGetCustomerDataAgain(true);
-      }
-    } catch (error) {
-      setIsMobileOtpLoading(false);
-      showToast({
-        type: "error",
-        title: `Something went wrong! 😥`,
-        message: `${error?.error || error?.message || "Failed to generate OTP"}`,
-        redirectPath: "home",
-        sessionExired: error?.error == "Another session is active." ? true : false,
-        logout: logout
-      });
-    }
-  };
-
-  const handleOTPChange = (value, index) => {
-    const cleanedValue = value.replace(/[^0-9]/g, "");
-    const newOtp = [...otp];
-    newOtp[index] = cleanedValue;
-    setOtp(newOtp);
-
-    if (cleanedValue && index < 5) {
-      otpInputs.current[index + 1]?.focus();
-    }
-  };
-
-  const verifyEmailOtp = async () => {
-    try {
-      const payload = {
-        otp: otp.join(""),
-      };
-      const response = await verifyEmailOpt(token, payload);
-      setEmailVerified(true);
-      setShowOTPModal(false);
-      setOtp(["", "", "", "", "", ""]);
-      showToast({
-        message: `${
-          verificationType === "mobile" ? "Mobile number" : "Email address"
-        } verified successfully!`,
-      });
-    } catch (error) {
-      showToast({
-        type: "error",
-        title: `Something went wrong! 😥`,
-        message: `${error?.error || error?.message || "Failed to verify otp"}`,
-        redirectPath: "home",
-        sessionExired: error?.error == "Another session is active." ? true : false,
-        logout: logout
-      });
-    }
-  };
-
-  const verifyMobileOtp = async () => {
-    try {
-      const payload = {
-        otp: otp.join(""),
-      };
-      const response = await verifyMobileOTP(token, payload);
-
-      setMobileVerified(true);
-      setShowOTPModal(false);
-      setOtp(["", "", "", "", "", ""]);
-      showToast({
-        message: "Mobile number verified successfully!",
-      });
-    } catch (error) {
-      showToast({
-        type: "error",
-        title: `Something went wrong! 😥`,
-        message: `${error?.error || error?.message || "Failed to verify OTP"}`,
-        redirectPath: "home",
-        sessionExired: error?.error == "Another session is active." ? true : false,
-        logout: logout
-      });
-    }
-  };
-
-  const handleVerifyOTP = () => {
-    const otpString = otp.join("");
-    if (otpString.length === 6) {
-      if (verificationType === "mobile") {
-        verifyMobileOtp();
-      } else if (verificationType === "email") {
-        verifyEmailOtp();
-      }
-    } else {
-      showToast({
-        type: "Error",
-        title: "OTP error",
-        message: "Please enter complete OTP!",
-      });
-      // Alert.alert("Error", "Please enter complete OTP");
-    }
-  };
-
   // Format currency
   const formatCurrency = useCallback((amount) => {
     return `₹ ${Math.abs(amount).toLocaleString("en-IN", {
@@ -240,7 +108,6 @@ export default function App() {
       <>
         <TouchableOpacity
           onPress={() => setIsCapitalFormUpdate(true)}
-          style={{ marginTop: 20 }}
         >
           <View style={[styles.verificationCard, { marginBottom: 0 }]}>
             <View style={[styles.cardHeader, { marginBottom: 0 }]}>
@@ -346,7 +213,7 @@ export default function App() {
         >
           <View style={styles.content}>
             <Text style={styles.title}>
-              Verify your Mobile No & Email Address
+              Your Mobile Number & Email Address
             </Text>
 
             {/* Mobile Section */}
@@ -356,7 +223,6 @@ export default function App() {
               </View>
               <Text style={styles.contactInfo}>{mobileNumber}</Text>
               <View style={styles.statusRow}>
-                {mobileVerified ? (
                   <View style={styles.verifiedStatus}>
                     <Ionicons
                       name="checkmark-circle"
@@ -365,18 +231,6 @@ export default function App() {
                     />
                     <Text style={styles.verifiedText}>Verified</Text>
                   </View>
-                ) : (
-                  <TouchableOpacity
-                    style={styles.verifyButton}
-                    onPress={() => handleVerifyPress("mobile")}
-                  >
-                    {isSMSApiLoading ? (
-                      <ActivityIndicator color={"#fff"} size="small" />
-                    ) : (
-                      <Text style={styles.verifyButtonText}>Verify Now</Text>
-                    )}
-                  </TouchableOpacity>
-                )}
               </View>
             </View>
 
@@ -389,7 +243,6 @@ export default function App() {
                 {emailAddress?.toLowerCase()}
               </Text>
               <View style={styles.statusRow}>
-                {emailVerified ? (
                   <View style={styles.verifiedStatus}>
                     <Ionicons
                       name="checkmark-circle"
@@ -398,29 +251,8 @@ export default function App() {
                     />
                     <Text style={styles.verifiedText}>Verified</Text>
                   </View>
-                ) : (
-                  <TouchableOpacity
-                    style={styles.verifyButton}
-                    onPress={() => handleVerifyPress("email")}
-                  >
-                    {isEMailApiLoading ? (
-                      <ActivityIndicator color={"#fff"} size="small" />
-                    ) : (
-                      <Text style={styles.verifyButtonText}>Verify Now</Text>
-                    )}
-                  </TouchableOpacity>
-                )}
               </View>
             </View>
-
-            <TouchableOpacity onPress={() => router.push("changePassword")}>
-              <View style={[styles.verificationCard, { marginBottom: 0 }]}>
-                <View style={[styles.cardHeader, { marginBottom: 0 }]}>
-                  <Text style={styles.cardLabel}>Change Password</Text>
-                  <Ionicons name="chevron-forward" size={25} color="#fff" />
-                </View>
-              </View>
-            </TouchableOpacity>
             {renderCapitalSection()}
 
             {/* ************Local auth setup ********************* */}
@@ -437,81 +269,6 @@ export default function App() {
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
-      {/* OTP Modal */}
-      <Modal
-        visible={showOTPModal}
-        transparent
-        animationType="slide"
-        onRequestClose={() => setShowOTPModal(false)}
-      >
-        <KeyboardAvoidingView
-          behavior={Platform.OS === "ios" ? "padding" : "height"}
-          style={styles.modalOverlay}
-        >
-          <View style={styles.modalContent}>
-            <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>
-                Verify your{" "}
-                {verificationType === "mobile"
-                  ? "Mobile Number"
-                  : "Email Address"}
-              </Text>
-              <TouchableOpacity
-                style={styles.closeButton}
-                onPress={() => setShowOTPModal(false)}
-              >
-                <Ionicons name="close" size={24} color="#fff" />
-              </TouchableOpacity>
-            </View>
-
-            <Text style={styles.modalSubtitle}>
-              We have sent a 6 Digit OTP to your{" "}
-              {verificationType === "mobile"
-                ? "Mobile Number"
-                : "Email Address"}
-            </Text>
-
-            <View style={styles.otpContainer}>
-              {otp.map((digit, index) => (
-                <TextInput
-                  key={index}
-                  ref={(ref) => (otpInputs.current[index] = ref)}
-                  style={styles.otpInput}
-                  value={digit}
-                  onChangeText={(value) => handleOTPChange(value, index)}
-                  keyboardType="numeric"
-                  maxLength={1}
-                  textAlign="center"
-                  onKeyPress={({ nativeEvent }) => {
-                    if (
-                      nativeEvent.key === "Backspace" &&
-                      !otp[index] &&
-                      index > 0
-                    ) {
-                      otpInputs.current[index - 1]?.focus();
-                    }
-                  }}
-                />
-              ))}
-            </View>
-
-            {/* <TouchableOpacity style={styles.resendButton} onPress={handleResendOTP}>
-              <Text style={styles.resendText}>Resend OTP</Text>
-            </TouchableOpacity> */}
-
-            <TouchableOpacity
-              style={[
-                styles.verifyOTPButton,
-                { opacity: otp.join("").length === 6 ? 1 : 0.5 },
-              ]}
-              onPress={handleVerifyOTP}
-              disabled={otp.join("").length < 6}
-            >
-              <Text style={styles.verifyOTPButtonText}>VERIFY NOW</Text>
-            </TouchableOpacity>
-          </View>
-        </KeyboardAvoidingView>
-      </Modal>
     </View>
   );
 }

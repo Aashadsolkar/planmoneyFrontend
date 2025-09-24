@@ -133,7 +133,7 @@ export default function ExitStock() {
                 <Text style={styles.totalValue}>₹{totalBuyValue.toFixed(2)}</Text>
             </View>
             <View style={{ backgroundColor: COLORS.primaryColor, paddingBottom: 50 }}>
-                <Button isLoading={isLoading} onClick={buyPISTock} label={`Buy Now`} gradientColor={['#119320', '#04B719']} buttonStye={{ marginHorizontal: 20 }} />
+                <Button isLoading={isLoading} onClick={buyPISTock} label={`Exit Now`} gradientColor={['#119320', '#04B719']} buttonStye={{ marginHorizontal: 20 }} />
             </View>
 
             {/* Success Modal */}

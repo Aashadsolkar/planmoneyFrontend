@@ -48,6 +48,8 @@ export default function Checkout() {
   const CGST = (baseAmount * 0.09).toFixed(2);
   const SGST = (baseAmount * 0.09).toFixed(2);
   const finalTotal = (parseFloat(baseAmount) + parseFloat(CGST) + parseFloat(SGST)).toFixed(2);
+  const isSpecialService = [5, 6].includes(selectedService?.serviceId);
+
 
 
 
@@ -284,23 +286,29 @@ export default function Checkout() {
                 <Text style={[styles.subscriptionTitle]}>
                   {selectedService?.name}
                 </Text>
-                <Text style={styles.expiryText}>
-                  {getPlanExpiryDate(selectedService?.billing_cycle)}
-                </Text>
+                {!isSpecialService && (
+                  <Text style={styles.expiryText}>
+                    {getPlanExpiryDate(selectedService?.billing_cycle)}
+                  </Text>
+                )}
               </View>
               <View style={{}}>
                 {renderOfferPrice(selectedService?.actual_price, selectedService?.offer_price)}
-                <Text style={[styles.subscriptionDuration]}>
-                  {selectedService?.billing_cycle || ""}
-                </Text>
+                {!isSpecialService && (
+                  <Text style={[styles.subscriptionDuration]}>
+                    {selectedService?.billing_cycle || ""}
+                  </Text>
+                )}
               </View>
             </View>
           </View>
-
-          <Text style={[styles.expiryText, { marginBottom: 10 }]}>
-            If you Pay ₹{selectedService?.offer_price}/- now. The plan is valid
-            till {getPlanExpiryDate(selectedService?.billing_cycle)}{" "}
-          </Text>
+          
+          {!isSpecialService && (
+            <Text style={[styles.expiryText, { marginBottom: 10 }]}>
+              If you Pay ₹{selectedService?.offer_price}/- now. The plan is valid
+              till {getPlanExpiryDate(selectedService?.billing_cycle)}{" "}
+            </Text>
+          )}
           <Text
             style={[
               styles.expiryText,

@@ -86,7 +86,8 @@ export default function Support() {
                 {/* Company Info Section */}
                 <View style={[styles.card, { flexDirection: "column", alignItems: "flex-start" }]}>
                     <Text style={styles.label}>Company Information</Text>
-                    {companyInfo.map((item, index) => (
+                   <View style={{paddingTop: 10}}>
+                     {companyInfo.map((item, index) => (
                         <View key={index} style={{ flexDirection: "row", marginBottom: 12, flexWrap: "wrap" }}>
                             {/* Label */}
                             <Text style={styles.infoLabel}>{item.label}: </Text>
@@ -97,6 +98,7 @@ export default function Support() {
                             </View>
                         </View>
                     ))}
+                   </View>
 
                 </View>
             </ScrollView>
