@@ -2,11 +2,11 @@ import {
   View,
   Text,
   StyleSheet,
-  SafeAreaView,
   ScrollView,
   TouchableOpacity,
   BackHandler,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { COLORS } from "../constants";
 import Button from "@components/Button";
 import { router, useNavigation } from "expo-router";
@@ -38,6 +38,7 @@ export default function App() {
 
   return (
     <SafeAreaView
+      edges={[]}
       style={{ flex: 1, backgroundColor: COLORS.primaryColor, padding: 20 }}
     >
       <ScrollView

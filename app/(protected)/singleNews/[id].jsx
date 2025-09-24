@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
-import { StyleSheet, Text, View, SafeAreaView, ScrollView, StatusBar } from "react-native"
+import { StyleSheet, Text, View, ScrollView, StatusBar } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import Header from "@components/Header"
 import { COLORS } from "../../constants"
 import { singleNews } from "@utils/apiCaller"
@@ -52,7 +53,7 @@ export default function SingleNew() {
     }
 
     return (
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView edges={[]} style={styles.container}>
             <StatusBar barStyle="light-content" backgroundColor={COLORS.cardColor} />
             <Header showBackButton={true} />
             <ScrollView>

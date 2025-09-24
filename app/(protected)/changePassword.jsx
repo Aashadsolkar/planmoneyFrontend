@@ -12,9 +12,9 @@ import {
     TouchableWithoutFeedback,
     Keyboard,
     ActivityIndicator,
-    SafeAreaView,
     StatusBar
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { Image } from "react-native";
@@ -194,7 +194,7 @@ const ChangePassword = () => {
 
 
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.cardColor }}>
+        <SafeAreaView edges={[]} style={{ flex: 1, backgroundColor: COLORS.cardColor }}>
             <StatusBar barStyle="light-content" backgroundColor={COLORS.cardColor} />
             <Header showBackButton={true} />
             <KeyboardAvoidingView

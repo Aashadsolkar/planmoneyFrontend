@@ -4,7 +4,6 @@ import {
   Text,
   TouchableOpacity,
   StyleSheet,
-  SafeAreaView,
   Platform,
   FlatList,
   Animated,
@@ -28,6 +27,7 @@ import { BlurView } from "expo-blur";
 const { height } = Dimensions.get("window");
 import Constants from "expo-constants";
 import { showToast } from "./CustomToast/ToastService";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const menuItems = [
   { icon: "home", label: "Home", route: "home" },
@@ -147,7 +147,7 @@ const Header = ({
     Constants?.manifest2?.extra?.expoClient?.version ?? "unknown";
   return (
     <>
-      <SafeAreaView style={[styles.safeArea, { paddingTop: insets.top }]}>
+      <SafeAreaView edges={[]} style={[styles.safeArea, { paddingTop: insets.top }]}>
         <View style={styles.header}>
           <View style={styles.leftSection}>
             {showBackButton ? (

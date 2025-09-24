@@ -1,4 +1,5 @@
-import { StyleSheet, Text, View, SafeAreaView, StatusBar } from "react-native";
+import { StyleSheet, Text, View, StatusBar } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import Header from "@components/Header";
 import { COLORS } from "../constants";
 import Entypo from '@expo/vector-icons/Entypo';
@@ -6,7 +7,7 @@ import * as Animatable from 'react-native-animatable';
 
 export default function Upcomping() {
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView edges={[]} style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor={COLORS.cardColor} />
       <Header showBackButton={true} />
       <View style={styles.content}>

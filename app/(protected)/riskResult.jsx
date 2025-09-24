@@ -1,6 +1,7 @@
 
 import { useState, useEffect } from "react"
-import { View, Text, StyleSheet, SafeAreaView, ScrollView, TouchableOpacity, BackHandler } from "react-native"
+import { View, Text, StyleSheet, ScrollView, BackHandler } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { useAuth } from '@context/useAuth';
 import { COLORS } from "../constants";
 import Header from "@components/Header";
@@ -58,7 +59,7 @@ export default function App() {
   return (
 
 
-    <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.primaryColor, padding: 20 }}>
+    <SafeAreaView edges={[]} style={{ flex: 1, backgroundColor: COLORS.primaryColor, padding: 20 }}>
       <ScrollView
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}

@@ -2,7 +2,6 @@ import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
-  SafeAreaView,
   ScrollView,
   StatusBar,
   StyleSheet,
@@ -10,6 +9,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { SafeAreaView } from "react-native-safe-area-context";
 import Header from '@components/Header';
 import PortfolioTab from '@components/PortfolioTab';
 import { COLORS } from '../constants';
@@ -37,8 +37,6 @@ const Portfolio = () => {
   const hasPMS = portfolioServices.some(
     (sub) => sub.name === "Portfolio Subscriptions Service" && sub.is_subscribed
   );
-  console.log(hasPMS,"hasPMS");
-  console.log(portfolioServices,"portfolioServices");
   
   
   // if (hasPMS) availableTabs.push("PMS");
@@ -83,7 +81,7 @@ const Portfolio = () => {
   // Don't render if no tabs are available
   if (availableTabs.length === 0) {
     return (
-      <SafeAreaView style={styles.container}>
+      <SafeAreaView edges={[]} style={styles.container}>
         <Header showBackButton={true} />
         <StatusBar barStyle="light-content" />
         <LinearGradient colors={[COLORS.primaryColor, COLORS.primaryColor]} style={styles.gradient}>
@@ -117,7 +115,7 @@ const Portfolio = () => {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView edges={[]} style={styles.container}>
       <StatusBar barStyle="light-content" />
       <Header showBackButton={true} backButtonText={headerText} />
       {/* Header Tabs - Only show if more than one tab available */}

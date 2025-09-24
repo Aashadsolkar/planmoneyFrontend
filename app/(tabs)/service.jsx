@@ -1,5 +1,6 @@
 import React, { use, useCallback, useEffect, useState } from 'react';
-import { SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { SafeAreaView } from "react-native-safe-area-context";
 import ServiceCard from '@components/ServiceCard';
 import { useAuth } from '@context/useAuth';
 import Header from '@components/Header';
@@ -33,6 +34,7 @@ const Service = () => {
     const navigation = useNavigation();
     const [expandedService, setExpandedService] = useState();
     const [isLoading, setIsloading] = useState(true);
+    const removeIds = [5, 6];
 
 
     useFocusEffect(
@@ -61,10 +63,10 @@ const Service = () => {
                                 is_advisor_assign: isPurchased ? subscription?.is_advisor_assign ?? false : false
                             };
                         });
-                        const filteredData = filteredArray.filter(item => item.id !== 5);
+                        const filteredData = filteredArray.filter(item => !removeIds.includes(item.id));
                         setAllServices(filteredData);
                     } else {
-                        const filteredData = services.filter(item => item.id !== 5);
+                        const filteredData = services.filter(item => !removeIds.includes(item.id));
                         setAllServices(filteredData);
                     }
                 } catch (error) {
@@ -95,10 +97,8 @@ const Service = () => {
         setExpandedService(prev => (prev === name ? null : name));
     };
 
-
     const getLowestActualPricePlan = (plans) => {
         if (!Array.isArray(plans) || plans.length === 0) return null;
-
         return plans.reduce((minPlan, currentPlan) => {
             return parseFloat(currentPlan.actual_price) < parseFloat(minPlan.actual_price)
                 ? currentPlan
@@ -158,7 +158,7 @@ const Service = () => {
     }
 
     return (
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView edges={[]} style={styles.container}>
             <StatusBar barStyle="light-content" backgroundColor={COLORS.cardColor} />
             <Header showBackButton={true} backButtonText={headerText} />
             {renderServiceList()}

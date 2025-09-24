@@ -6,13 +6,13 @@ import {
   TextInput,
   StyleSheet,
   ScrollView,
-  SafeAreaView,
   StatusBar,
   Dimensions,
   Platform,
   PanResponder,
   Animated,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import Slider from '@react-native-community/slider';
 import { LinearGradient } from "expo-linear-gradient"
 import { Ionicons } from "@expo/vector-icons"
@@ -161,7 +161,7 @@ export default function SIPCalculator() {
   const returnsPercentage = maturityAmount ? (totalReturns / maturityAmount) * 100 : 0
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView edges={[]} style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor={COLORS.cardColor} />
       <Header showBackButton />
 

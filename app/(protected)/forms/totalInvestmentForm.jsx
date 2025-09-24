@@ -9,10 +9,10 @@ import {
     ScrollView,
     Platform,
     Dimensions,
-    SafeAreaView,
     KeyboardAvoidingView,
     StatusBar,
-} from "react-native"
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router"
 import { COLORS } from '../../constants'
 import Button from "@components/Button"
@@ -50,7 +50,7 @@ export default function PersonalDetailsForm() {
 
 
     return (
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView edges={[]} style={styles.container}>
             <StatusBar barStyle="light-content" backgroundColor={COLORS.primaryColor} />
             <KeyboardAvoidingView
                 behavior={Platform.OS === "ios" ? "padding" : "height"}

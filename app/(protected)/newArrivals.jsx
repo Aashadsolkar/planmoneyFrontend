@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, SafeAreaView, StatusBar } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, StatusBar } from 'react-native';
+import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { COLORS } from '../constants';
 import Header from '@components/Header';
@@ -27,6 +28,7 @@ const HomeScreen = () => {
   const getNewArrivalsData = async (token, id) => {
     try {
       const response = await getFastLaneServiceData(token, id);
+      
       const newArrivalsUser = await newArrivals(token);
       // getting new arrivals plan details
       const servicesResponse = await service();
@@ -35,9 +37,7 @@ const HomeScreen = () => {
       setNewArrivalsPlan(plan);
       const availableService = response?.data?.services || []
       const availableUserService = newArrivalsUser?.data?.new_arrival_data || [];
-
       const mergedServices = [];
-
       availableService.forEach(service => {
         // Check if this service is purchased
         const purchased = availableUserService.find(p => p.id === service.id);
@@ -221,7 +221,7 @@ const HomeScreen = () => {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView edges={[]} style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#003366" />
       <Header showBackButton={true} />
 

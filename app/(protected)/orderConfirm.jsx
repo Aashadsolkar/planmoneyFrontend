@@ -1,5 +1,6 @@
  
-import { View, Text, Image, SafeAreaView, ActivityIndicator, StyleSheet, ScrollView, TouchableOpacity } from "react-native"
+import { View, Text, Image, ActivityIndicator, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { useEffect, useState } from "react"
 import Button from "@components/Button"
 import { COLORS } from "../constants"
@@ -232,7 +233,7 @@ const OrderConfirm = () => {
 
   if (!orderId) {
     return (
-      <SafeAreaView style={styles.centerContent}>
+      <SafeAreaView edges={[]} style={styles.centerContent}>
         <Text style={styles.errorTitle}>Missing Order ID</Text>
         <Text style={styles.errorText}>We couldn't find your order. Please try again.</Text>
       </SafeAreaView>
@@ -240,7 +241,7 @@ const OrderConfirm = () => {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView edges={[]} style={styles.container}>
       <View style={styles.logoContainer}>
        <LogoSVG  />
       </View>

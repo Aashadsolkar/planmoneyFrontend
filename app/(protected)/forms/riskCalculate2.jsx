@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { KeyboardAvoidingView, Platform, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { KeyboardAvoidingView, Platform, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { SafeAreaView } from "react-native-safe-area-context";
 import Button from '@components/Button';
 import { router, useNavigation } from 'expo-router';
 import SelectBox from '@components/Select';
@@ -45,7 +46,7 @@ const riskCalculate2 = () => {
 
     }
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.primaryColor, paddingBottom: 20 }}>
+        <SafeAreaView edges={[]} style={{ flex: 1, backgroundColor: COLORS.primaryColor, paddingBottom: 20 }}>
             <StatusBar barStyle="light-content" backgroundColor={COLORS.primaryColor} />
             <KeyboardAvoidingView
                 style={{ flex: 1 }}

@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { SafeAreaView } from "react-native-safe-area-context";
 import { COLORS } from '../../constants';
 import { getFastlaneData, getFastlaneHistoryData } from '@utils/apiCaller';
 import { useAuth } from '@context/useAuth';
@@ -226,7 +227,7 @@ const PmsAndQuantom = () => {
 
     if (customerServiceData?.questionnaire_status == 0) {
         return (
-            <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.primaryColor }}>
+            <SafeAreaView edges={[]} style={{ flex: 1, backgroundColor: COLORS.primaryColor }}>
                 <StatusBar barStyle="light-content" backgroundColor={COLORS.cardColor} />
                 <Header
                     title="Hi Vignesh"
