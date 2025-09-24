@@ -1,4 +1,4 @@
-import  { createContext, useEffect, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -37,23 +37,52 @@ const AuthProvider = ({ children }) => {
   const [isNewArrivalsNotOpen, setIsNewArrivalsNotOpen] = useState(true);
 
   useEffect(() => {
+    let isMounted = true;
+    // const loadSession = async () => {
+    //   try {
+    //     const storedToken = await AsyncStorage.getItem("token");
+    //     const storedUser = await AsyncStorage.getItem("user");
+
+    //     if (storedToken && storedUser) {
+    //       setToken(storedToken);
+    //       setUser(JSON.parse(storedUser));
+    //     }
+    //   } catch (e) {
+    //     console.error("Failed to load auth session", e);
+    //   } finally {
+    //     setLoading(false);
+    //   }
+    // };
+
     const loadSession = async () => {
       try {
-        const storedToken = await AsyncStorage.getItem("token");
-        const storedUser = await AsyncStorage.getItem("user");
+        // ✅ IMPROVED: Load both values in parallel
+        const [storedToken, storedUser] = await Promise.all([
+          AsyncStorage.getItem("token"),
+          AsyncStorage.getItem("user"),
+        ]);
 
-        if (storedToken && storedUser) {
-          setToken(storedToken);
-          setUser(JSON.parse(storedUser));
+        // ✅ NEW: Only update state if component is still mounted
+        if (isMounted) {
+          if (storedToken && storedUser) {
+            setToken(storedToken);
+            setUser(JSON.parse(storedUser));
+          }
+          setLoading(false);
         }
       } catch (e) {
         console.error("Failed to load auth session", e);
-      } finally {
-        setLoading(false);
+        // ✅ NEW: Safe state update
+        if (isMounted) {
+          setLoading(false);
+        }
       }
     };
 
     loadSession();
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const storeUserData = async (user, token) => {
@@ -92,8 +121,14 @@ const AuthProvider = ({ children }) => {
     setSelectedService([]);
     setAllServices([]);
     setGetCustomerDataAgain(true);
-    router.push("login");
-    await AsyncStorage.clear();
+    try {
+      await AsyncStorage.clear();
+      router.push("/login");
+    } catch (error) {
+      console.error("Logout error:", error);
+      // ✅ NEW: Force navigation even if storage clear fails
+      router.push("/login");
+    }
   };
 
   return (
@@ -150,7 +185,7 @@ const AuthProvider = ({ children }) => {
         setAdvertisement,
         advertisement,
         isNewArrivalsNotOpen,
-        setIsNewArrivalsNotOpen
+        setIsNewArrivalsNotOpen,
       }}
     >
       {children}
