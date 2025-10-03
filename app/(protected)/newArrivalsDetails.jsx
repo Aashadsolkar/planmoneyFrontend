@@ -127,7 +127,7 @@ const ServiceDetailScreen = () => {
           />
         </TouchableOpacity>
 
-        {expandedCompany === company.id && (
+        {expandedCompany === company.id && company.report && (
           <View style={styles.companyDetails}>
             <RenderHTML
               contentWidth={width}

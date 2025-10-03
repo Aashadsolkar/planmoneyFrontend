@@ -46,7 +46,7 @@ const riskCalculate2 = () => {
 
     }
     return (
-        <SafeAreaView edges={[]} style={{ flex: 1, backgroundColor: COLORS.primaryColor, paddingBottom: 20 }}>
+        <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.primaryColor, paddingBottom: 20 }}>
             <StatusBar barStyle="light-content" backgroundColor={COLORS.primaryColor} />
             <KeyboardAvoidingView
                 style={{ flex: 1 }}
@@ -57,6 +57,7 @@ const riskCalculate2 = () => {
                     keyboardShouldPersistTaps="handled"
                     showsVerticalScrollIndicator={false}
                     style={{ padding: 20 }}
+                    contentContainerStyle={{ paddingBottom: 100 }} // <-- ye add karo
                 >
                     <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
                         <Ionicons name="arrow-back" size={24} color="#ffffff" />

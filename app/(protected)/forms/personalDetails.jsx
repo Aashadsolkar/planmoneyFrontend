@@ -287,7 +287,7 @@ export default function PersonalDetailsForm() {
 
 
     return (
-        <SafeAreaView edges={[]} style={styles.container}>
+        <SafeAreaView  style={styles.container}>
             <StatusBar barStyle="light-content" backgroundColor={COLORS.primaryColor} />
             <KeyboardAvoidingView
                 behavior={Platform.OS === "ios" ? "padding" : "height"}

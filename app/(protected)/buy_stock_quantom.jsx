@@ -64,7 +64,7 @@ export default function BuyStock() {
                 type,
                 stock_id: stockId,
                 allowed_qty: allowed_qty,
-                pis_service_id: recommendation_id
+                quantum_service_id: recommendation_id
             };
             const response = await BuyStocks(token, payload);
             setSuccessfullModal(true);

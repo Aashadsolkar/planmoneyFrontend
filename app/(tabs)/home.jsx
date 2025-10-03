@@ -133,7 +133,7 @@ export default function Home() {
     });
 
     setOfferData(sortedData);
-  }, [portfolioServices]);
+  }, [portfolioServices, advertisement]);
 
   const handleClick = (item) => {
     if ([1, 6].includes(item?.id)) {

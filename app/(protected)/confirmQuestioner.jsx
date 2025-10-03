@@ -38,7 +38,6 @@ export default function App() {
 
   return (
     <SafeAreaView
-      edges={[]}
       style={{ flex: 1, backgroundColor: COLORS.primaryColor, padding: 20 }}
     >
       <ScrollView
@@ -48,12 +47,9 @@ export default function App() {
       >
         <View style={{ alignItems: "center", width: "100%", marginTop: 150 }}>
           <Image
-            source={require("../../assets/images/rightCircle.png")}
-            style={styles.logo}
-            contentFit="cover"
-            transition={500}
-            cachePolicy="memory-disk"
-            priority="high"
+            source={require('../../assets/images/questionCirlce.png')}
+            style={{ height: 100, width: 100 }}
+            contentFit="contain"
           />
           <Text
             style={{

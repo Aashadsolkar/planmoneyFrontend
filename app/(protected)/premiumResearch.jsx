@@ -21,7 +21,7 @@ const PremiumResearch = () => {
     const [newArrivalsPlan, setNewArrivalsPlan] = useState({});
     const [boughtServices, setBoughtServices] = useState([]);
     const [unboughtServices, setUnboughtServices] = useState([]);
-    const [activeTab, setActiveTab] = useState("boughtServices");
+    const [activeTab, setActiveTab] = useState("unboughtServices");
     useEffect(() => {
         getNewArrivalsData(token, 6)
     }, [token])
@@ -333,6 +333,22 @@ const PremiumResearch = () => {
             <StatusBar barStyle="light-content" backgroundColor="#003366" />
             <Header showBackButton={true} backButtonText={backButtonText} />
             <View style={styles.tabContainer}>
+                 <TouchableOpacity
+                    style={[
+                        styles.tab,
+                        activeTab === "unboughtServices" && styles.activeTab,
+                    ]}
+                    onPress={() => setActiveTab("unboughtServices")}
+                >
+                    <Text
+                        style={[
+                            styles.tabText,
+                            activeTab === "unboughtServices" && styles.activeTabText,
+                        ]}
+                    >
+                        Not Purchased
+                    </Text>
+                </TouchableOpacity>
                 <TouchableOpacity
                     style={[
                         styles.tab,
@@ -347,23 +363,6 @@ const PremiumResearch = () => {
                         ]}
                     >
                         Purchased
-                    </Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                    style={[
-                        styles.tab,
-                        activeTab === "unboughtServices" && styles.activeTab,
-                    ]}
-                    onPress={() => setActiveTab("unboughtServices")}
-                >
-                    <Text
-                        style={[
-                            styles.tabText,
-                            activeTab === "unboughtServices" && styles.activeTabText,
-                        ]}
-                    >
-                        Not Purchased
                     </Text>
                 </TouchableOpacity>
             </View>

@@ -355,4 +355,17 @@
       });
     </script>
   </body>
+  <script>
+  function onSplashAnimationEnd() {
+    if (window.ReactNativeWebView && window.ReactNativeWebView.postMessage) {
+      window.ReactNativeWebView.postMessage("animationDone");
+    }
+  }
+
+  // Call onSplashAnimationEnd() when your SVG animation finishes
+  // For example, if you use SVG SMIL or JS animations, call here after animation ends:
+  setTimeout(onSplashAnimationEnd, 3000); // If your animation is 3s long
+
+  // Or bind to your SVG animation end event instead of timeout
+</script>
 </html>

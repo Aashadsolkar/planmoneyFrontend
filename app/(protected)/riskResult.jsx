@@ -59,14 +59,14 @@ export default function App() {
   return (
 
 
-    <SafeAreaView edges={[]} style={{ flex: 1, backgroundColor: COLORS.primaryColor, padding: 20 }}>
+    <SafeAreaView  style={{ flex: 1, backgroundColor: COLORS.primaryColor, padding: 20 }}>
       <ScrollView
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
         style={{ paddingHorizontal: 20, marginTop: 10 }}
       >
         <View style={{ alignItems: 'center', width: "100%", marginTop: 100 }}>
-          <Text style={styles.headerText}>Your got</Text>
+          <Text style={styles.headerText}>You got</Text>
 
           <View style={styles.circleContainer}>
             <View style={[styles.outerCircle, { borderColor: riskColor }]}>

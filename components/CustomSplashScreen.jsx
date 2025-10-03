@@ -1,33 +1,27 @@
-import { View, ActivityIndicator } from "react-native";
+// components/HtmlViewer.tsx
+import { View, ActivityIndicator, TextInput, Text } from "react-native";
 import { useEffect, useState } from "react";
 import { WebView } from "react-native-webview";
-import * as FileSystem from "expo-file-system/legacy"; // Use legacy API
+import * as FileSystem from "expo-file-system/legacy";
 import * as Asset from "expo-asset";
 
-export default function HtmlViewer() {
+export default function HtmlViewer({ onAnimationFinish }) {
   const [htmlContent, setHtmlContent] = useState(null);
 
   useEffect(() => {
     const loadHtml = async () => {
       try {
-        // Load asset
         const asset = Asset.Asset.fromModule(
           require("../assets/custom-screen.html")
         );
         await asset.downloadAsync();
-
-        // Use localUri if available
         const fileUri = asset.localUri ?? asset.uri;
-
-        // Read HTML content (legacy API)
         const content = await FileSystem.readAsStringAsync(fileUri);
-
         setHtmlContent(content);
       } catch (err) {
         console.error("Failed to load HTML:", err);
       }
     };
-
     loadHtml();
   }, []);
 
@@ -39,5 +33,17 @@ export default function HtmlViewer() {
     );
   }
 
-  return <WebView originWhitelist={["*"]} source={{ html: htmlContent }} />;
+  return (
+    <WebView
+      originWhitelist={["*"]}
+      source={{ html: htmlContent }}
+      onMessage={(event) => {
+        if (event.nativeEvent.data === "animationDone" && onAnimationFinish) {
+          onAnimationFinish();
+        }
+      }}
+      scrollEnabled={false}
+      style={{ backgroundColor: "#012744" }}
+    />
+  );
 }

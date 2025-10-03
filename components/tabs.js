@@ -46,7 +46,7 @@ export default function ProtectedTabs() {
         options={{
           title: "Services",
           tabBarIcon: ({ color }) => (
-            <FontAwesome size={28} name="cog" color={color} />
+            <FontAwesome size={28} name="book" color={color} />
           ),
         }}
       />

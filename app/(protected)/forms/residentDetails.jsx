@@ -162,7 +162,7 @@ const ResidentDetails = () => {
     }
 
     return (
-        <SafeAreaView edges={[]} style={{ flex: 1, backgroundColor: COLORS.primaryColor, paddingBottom: 20 }}>
+        <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.primaryColor, paddingBottom: 20 }}>
             <StatusBar barStyle="light-content" backgroundColor={COLORS.primaryColor} />
             <View style={{ padding: 20, marginTop: 20 }}>
 

@@ -36,7 +36,7 @@ import { showToast } from "@components/CustomToast/ToastService";
 const { width, height } = Dimensions.get("window");
 
 export default function App() {
-  const { profileData, token, logout } = useAuth();
+  const { profileData, token, logout, portfolioServices } = useAuth();
   const [errors, setErrors] = useState({});
   const [isCapitalFormUpdate, setIsCapitalFormUpdate] = useState(false);
   const [isUpdateCapitalLoading, setIsUpdateCapitalLoading] = useState(false);
@@ -45,6 +45,12 @@ export default function App() {
       profileData?.customerfinanceinfo?.capital_amount ?? ""
     ),
   });
+
+  useEffect(() => {
+    setFormData({
+      captal_amount: profileData?.customerfinanceinfo?.capital_amount
+    })
+  },[profileData])  
 
   const [updatedCapitalAmount, setUpdatedCapitalAmount] = useState(null);
   const [enabled, setEnabled] = useState(false);
@@ -103,25 +109,36 @@ export default function App() {
     setEnabled(value);
     await setBiometricEnabled(value);
   };
+
+  const renderCapitalAmountSection = () => {
+    if (portfolioServices.length > 0) {
+      return (
+        <View style={[styles.verificationCard, { marginBottom: 0 }]}>
+          <View style={[styles.cardHeader, { marginBottom: 0 }]}>
+            <View style={{ flexDirection: "row", justifyContent: "center" }}>
+              <Text style={styles.cardLabel}>Capital Amount: </Text>
+              <Text style={{ color: COLORS.fontWhite, paddingRight: 10 }}>
+                {formatCurrency(
+                  updatedCapitalAmount || formData.captal_amount
+                )}
+              </Text>
+            </View>
+            <AntDesign name="edit" size={20} color="#fff" />
+          </View>
+        </View>
+      )
+    } else {
+      return null
+    }
+  }
+
   const renderCapitalSection = () => {
     return (
       <>
         <TouchableOpacity
           onPress={() => setIsCapitalFormUpdate(true)}
         >
-          <View style={[styles.verificationCard, { marginBottom: 0 }]}>
-            <View style={[styles.cardHeader, { marginBottom: 0 }]}>
-              <View style={{ flexDirection: "row", justifyContent: "center" }}>
-                <Text style={styles.cardLabel}>Capital Amount: </Text>
-                <Text style={{ color: COLORS.fontWhite, paddingRight: 10 }}>
-                  {formatCurrency(
-                    updatedCapitalAmount || formData.captal_amount
-                  )}
-                </Text>
-              </View>
-              <AntDesign name="edit" size={20} color="#fff" />
-            </View>
-          </View>
+          {renderCapitalAmountSection()}
         </TouchableOpacity>
         <Modal visible={isCapitalFormUpdate} transparent animationType="slide">
           <View style={styles.modalOverlay_capital_modal}>
