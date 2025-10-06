@@ -42,9 +42,9 @@ export default function News() {
                     {title}
                 </Text>
 
-                <Link href={link || ""} style={{ marginTop: 10,color: "#1e90ff" }}>
+                {link && <Link href={link || ""} style={{ marginTop: 10,color: "#1e90ff" }}>
                     {link}
-                </Link>
+                </Link>}
 
                 <Text style={styles.summary} numberOfLines={2}>
                     {summary}

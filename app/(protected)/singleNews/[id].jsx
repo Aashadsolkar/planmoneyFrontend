@@ -46,9 +46,9 @@ export default function SingleNew() {
                     {newsData?.title}
                 </Text>
 
-                <Link href={newsData?.link || ""} style={{ marginTop: 10, color: "#1e90ff" }}>
+                {newsData?.link && <Link href={newsData?.link || ""} style={{ marginTop: 10, color: "#1e90ff" }}>
                     {newsData?.link}
-                </Link>
+                </Link>}
                 <Text style={{ fontSize: 15, fontWeight: 400, marginTop: 20, color: COLORS.fontWhite }}>
                     {newsData?.description}
                 </Text>
