@@ -16,7 +16,7 @@ import Header from "@components/Header";
 import { LinearGradient } from "expo-linear-gradient";
 import { COLORS } from "../constants";
 import { useAuth } from "@context/useAuth";
-import { router, useNavigation } from "expo-router";
+import { Link, router, useNavigation } from "expo-router";
 import Button from "@components/Button";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import Foundation from "@expo/vector-icons/Foundation";
@@ -32,7 +32,7 @@ import { PSIcon } from "../../assets/images/SVG";
 
 const { height, width } = Dimensions.get("window");
 
-const NewsCard = ({ title = "", summary = "", id }) => (
+const NewsCard = ({ title = "", summary = "", id, link }) => (
   <TouchableOpacity
     style={styles.card}
     onPress={() => router.push(`singleNews/${id}`)}
@@ -41,6 +41,9 @@ const NewsCard = ({ title = "", summary = "", id }) => (
       <Text style={styles.title} numberOfLines={1}>
         {title}
       </Text>
+      {link && <Link href={link || ""} style={{ marginTop: 10, color: "#1e90ff" }}>
+        {link}
+      </Link>}
       <Text style={styles.summary} numberOfLines={2}>
         {summary}
       </Text>
@@ -293,6 +296,7 @@ export default function Home() {
           title={item?.title}
           summary={item?.summary}
           id={item?.id}
+          link={item?.link}
           key={`news/${item?.id}`}
         />
       );

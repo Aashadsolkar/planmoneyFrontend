@@ -5,7 +5,7 @@ import Header from "@components/Header"
 import { COLORS } from "../../constants"
 import { singleNews } from "@utils/apiCaller"
 import { useAuth } from "@context/useAuth"
-import { useLocalSearchParams } from "expo-router"
+import { Link, useLocalSearchParams } from "expo-router"
 import SkeletonList from '@components/ListSkeleton';
 import { showToast } from "@components/CustomToast/ToastService";
 
@@ -45,6 +45,10 @@ export default function SingleNew() {
                 <Text style={{ fontSize: 18, fontWeight: 600, color: COLORS.fontWhite }}>
                     {newsData?.title}
                 </Text>
+
+                <Link href={newsData?.link || ""} style={{ marginTop: 10, color: "#1e90ff" }}>
+                    {newsData?.link}
+                </Link>
                 <Text style={{ fontSize: 15, fontWeight: 400, marginTop: 20, color: COLORS.fontWhite }}>
                     {newsData?.description}
                 </Text>

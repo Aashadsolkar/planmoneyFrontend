@@ -7,7 +7,7 @@ import { COLORS } from "../constants"
 import { news } from "@utils/apiCaller"
 import { useAuth } from "@context/useAuth"
 import SkeletonList from '@components/ListSkeleton';
-import { router } from "expo-router"
+import { Link, router } from "expo-router"
 import { showToast } from "@components/CustomToast/ToastService";
 
 export default function News() {
@@ -35,12 +35,17 @@ export default function News() {
         getNew()
     }, [])
 
-    const NewsCard = ({ title = "", summary = "", id }) => (
+    const NewsCard = ({ title = "", summary = "", id, link = "" }) => (
         <TouchableOpacity style={styles.card} onPress={() => router.push(`singleNews/${id}`)}>
             <View style={{ width: "90%" }}>
                 <Text style={styles.title} numberOfLines={1}>
                     {title}
                 </Text>
+
+                <Link href={link || ""} style={{ marginTop: 10,color: "#1e90ff" }}>
+                    {link}
+                </Link>
+
                 <Text style={styles.summary} numberOfLines={2}>
                     {summary}
                 </Text>
@@ -62,7 +67,7 @@ export default function News() {
             <FlatList
                 data={newsData}
                 keyExtractor={(item) => item.id}
-                renderItem={({ item }) => <NewsCard title={item?.title} summary={item?.summary} id={item?.id} />}
+                renderItem={({ item }) => <NewsCard title={item?.title} summary={item?.summary} id={item?.id} link={item?.link} />}
                 contentContainerStyle={{ paddingVertical: 20 }}
             />
         )
