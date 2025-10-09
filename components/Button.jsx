@@ -33,6 +33,7 @@ const Button = ({
           <ActivityIndicator color={"#fff"} size="small" />
         ) : (
           <Text
+          allowFontScaling={false}
             style={{
               textAlign: "center",
               fontWeight: "500", // ✅ string instead of number to avoid warning

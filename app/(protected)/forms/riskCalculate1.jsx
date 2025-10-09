@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { KeyboardAvoidingView, Platform, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import Button from '@components/Button';
 import { router, useNavigation } from 'expo-router';
 import SelectBox from '@components/Select';
@@ -12,7 +12,7 @@ const RiskCalculate1 = () => {
     const navigation = useNavigation();
     const { questionFormData, setQuestionFormData } = useAuth();
     const [errors, setErrors] = useState({});
-
+ const insets = useSafeAreaInsets();
     const handleSelect = (key, value) => {
         setQuestionFormData((preValue) => {
             return {
@@ -42,7 +42,7 @@ const RiskCalculate1 = () => {
 
     }
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.primaryColor, paddingBottom: 20}}>
+        <SafeAreaView edges={['right','left','bottom']} style={{ flex: 1, backgroundColor: COLORS.primaryColor}}>
             <StatusBar barStyle="light-content" backgroundColor={COLORS.primaryColor} />
             <KeyboardAvoidingView
                 style={{ flex: 1 }}
@@ -76,10 +76,13 @@ const RiskCalculate1 = () => {
                     />
                 </ScrollView>
             </KeyboardAvoidingView>
+            <View style={{ paddingBottom: Math.max(insets.bottom + 10, 25) }}>
+
             <TouchableOpacity onPress={() => router.push("home")} style={styles.skipButton}>
                 <Text style={styles.skipText}>Skip for now</Text>
             </TouchableOpacity>
             <Button onClick={handleSubmit} label={"Next"} gradientColor={['#D36C32', '#F68F00']} buttonStye={{marginHorizontal: 20}} />
+            </View>
         </SafeAreaView>
     );
 }

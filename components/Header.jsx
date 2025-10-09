@@ -28,6 +28,7 @@ const { height } = Dimensions.get("window");
 import Constants from "expo-constants";
 import { showToast } from "./CustomToast/ToastService";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useFocusEffect } from "@react-navigation/native";
 
 const menuItems = [
   { icon: "home", label: "Home", route: "home" },
@@ -143,8 +144,15 @@ const Header = ({
       setShowProfileDrawer(false);
     });
   };
-  const versionCode =
-    Constants?.manifest2?.extra?.expoClient?.version ?? "unknown";
+  const versionCode = "2.0.0";
+
+//drawer band karne ke liye
+  useFocusEffect(
+    React.useCallback(() => {
+      // Jab screen focus me aaye to drawer band karo
+    closeProfileDrawer()
+    }, [])
+  );
   return (
     <>
       <SafeAreaView edges={[]} style={[styles.safeArea, { paddingTop: insets.top }]}>
@@ -400,7 +408,7 @@ const Header = ({
                   borderRadius: 12,
                   backgroundColor: "transparent",
                 }}
-                onPress={() => router.push(item.route)}
+                onPress={() => {router.push(item.route);  closeProfileDrawer()} }
                 activeOpacity={0.7}
               >
                 <View

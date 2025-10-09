@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from "react"
 import { View, Text, StyleSheet, ScrollView, BackHandler } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { useAuth } from '@context/useAuth';
 import { COLORS } from "../constants";
 import Header from "@components/Header";
@@ -12,7 +12,7 @@ import { router, useNavigation } from "expo-router";
 export default function App() {
   const navigation = useNavigation();
 
-
+ const insets = useSafeAreaInsets();
   // 🚫 Prevent back button and swipe gestures
   useEffect(() => {
     const unsubscribe = navigation.addListener('beforeRemove', (e) => {
@@ -81,7 +81,10 @@ export default function App() {
           <Text style={[styles.riskLevel, { color: riskColor }]}>{riskLevelText}</Text>
         </View>
       </ScrollView>
+       <View style={{ paddingBottom: Math.max(insets.bottom + 10, 20) }}>
+
       <Button onClick={() => router.push("confirmQuestioner")} label={"Next"} gradientColor={['#D36C32', '#F68F00']} buttonStye={{ marginHorizontal: 20 }} />
+       </View>
     </SafeAreaView>
   )
 }

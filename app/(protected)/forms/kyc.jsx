@@ -16,15 +16,16 @@ import { COLORS } from "../../constants";
 import { useNavigation } from "expo-router";
 import * as Linking from "expo-linking";
 import { showToast } from "@components/CustomToast/ToastService";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const KycVerifyPage = () => {
   const [loading, setLoading] = useState(false);
   const [sdkUrl, setSdkUrl] = useState(null);
   const [error, setError] = useState(null);
-    const [currentUrl, setCurrentUrl] = useState("http://myapp");
+  const [currentUrl, setCurrentUrl] = useState("http://myapp");
   const { token, setDigiLockerRequestId, logout } = useAuth();
   const navigation = useNavigation();
-
+  const insets = useSafeAreaInsets();
   // 🚫 Disable back button and navigation gestures
   useEffect(() => {
     const unsubscribe = navigation.addListener("beforeRemove", (e) => {
@@ -58,10 +59,13 @@ const KycVerifyPage = () => {
         showToast({
           type: "error",
           title: `Something went wrong! 😥`,
-          message: `${error?.error || error?.message || "Failed to chanage password!"}`,
+          message: `${
+            error?.error || error?.message || "Failed to chanage password!"
+          }`,
           // redirectPath: "home",
-          sessionExired: error?.error == "Another session is active." ? true : false,
-          logout: logout
+          sessionExired:
+            error?.error == "Another session is active." ? true : false,
+          logout: logout,
         });
       } else {
         setError(
@@ -113,30 +117,40 @@ const KycVerifyPage = () => {
   if (sdkUrl) {
     return (
       <>
+      <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
         <Header disableSidebar webUrl={currentUrl} />
         <View style={{ marginHorizontal: 20, marginVertical: 20 }}>
           <Text style={{ fontSize: 18, fontWeight: "600" }}>
             Please complete your KYC
           </Text>
         </View>
-        <WebView
-          source={{
-            uri: sdkUrl,
-            headers: {
-              Accept: "application/json",
-              "Content-Type": "application/x-www-form-urlencoded",
-            },
+        <View
+          style={{
+            flex: 1,
+            paddingBottom: insets.bottom,
+            backgroundColor: "#fff",
           }}
-          onShouldStartLoadWithRequest={handleRedirect}
-          onError={({ nativeEvent }) => {
-            Alert.alert("WebView Error", nativeEvent.description);
-            console.error("❌ WebView Error:", nativeEvent);
-          }}
-          startInLoadingState={true}
-          javaScriptEnabled={true}
-          domStorageEnabled={true}
-          style={{ flex: 1 }} 
-        />
+        >
+          <WebView
+            source={{
+              uri: sdkUrl,
+              headers: {
+                Accept: "application/json",
+                "Content-Type": "application/x-www-form-urlencoded",
+              },
+            }}
+            onShouldStartLoadWithRequest={handleRedirect}
+            onError={({ nativeEvent }) => {
+              Alert.alert("WebView Error", nativeEvent.description);
+              console.error("❌ WebView Error:", nativeEvent);
+            }}
+            startInLoadingState={true}
+            javaScriptEnabled={true}
+            domStorageEnabled={true}
+            style={{ flex: 1 }}
+          />
+        </View>
+      </SafeAreaView>
       </>
     );
   }

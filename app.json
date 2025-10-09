@@ -2,7 +2,7 @@
   "expo": {
     "name": "PlanMoney",
     "slug": "PlanMoney",
-    "version": "1.0.0",
+    "version": "2.0.0",
     "orientation": "portrait",
     "scheme": "planmoney",
     "userInterfaceStyle": "automatic",
@@ -48,7 +48,8 @@
           "image": "./assets/images/splash-icon-dark.png",
           "imageResizeMode": "contain",
           "backgroundColor": "#012744",
-          "imageWidth": 200
+          "imageWidth": 200,
+           "preventAutoHide": true
         }
       ],
       [

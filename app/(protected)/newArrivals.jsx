@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, StatusBar } from 'react-native';
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView,useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { COLORS } from '../constants';
 import Header from '@components/Header';
@@ -20,6 +20,8 @@ const HomeScreen = () => {
   const [noData, setNoData] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [newArrivalsPlan, setNewArrivalsPlan] = useState({});
+  const insets = useSafeAreaInsets();
+
   useEffect(() => {
     setIsNewArrivalsNotOpen(false)
     getNewArrivalsData(token, 5)
@@ -221,11 +223,11 @@ const HomeScreen = () => {
   }
 
   return (
-    <SafeAreaView edges={[]} style={styles.container}>
+    <SafeAreaView edges={['left', 'right','bottom']} style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#003366" />
       <Header showBackButton={true} />
 
-      <ScrollView style={styles.scrollView}>
+      <ScrollView   style={styles.scrollView}>
         {renderStockList()}
       </ScrollView>
     </SafeAreaView>

@@ -1,11 +1,11 @@
-import { FontAwesome, FontAwesome6 } from "@expo/vector-icons";
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import { FontAwesome, FontAwesome6, MaterialIcons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
 import { COLORS } from "../app/constants";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function ProtectedTabs() {
   const insets = useSafeAreaInsets();
+
   return (
     <Tabs
       screenOptions={{
@@ -14,8 +14,8 @@ export default function ProtectedTabs() {
         tabBarStyle: {
           backgroundColor: COLORS.primaryColor,
           paddingTop: 10,
-          paddingBottom: insets.bottom > 0 ? insets.bottom + 5 : 15, // Extra 5px buffer when system nav present
-          height: insets.bottom > 0 ? 90 + insets.bottom : 80,
+          paddingBottom: insets.bottom > 0 ? insets.bottom : 15,
+          height: insets.bottom > 0 ? 70 + insets.bottom : 65,
           borderTopWidth: 1,
           elevation: 0,
           shadowOpacity: 0,
@@ -32,6 +32,7 @@ export default function ProtectedTabs() {
           ),
         }}
       />
+
       <Tabs.Screen
         name="portfolio"
         options={{
@@ -41,6 +42,7 @@ export default function ProtectedTabs() {
           ),
         }}
       />
+
       <Tabs.Screen
         name="service"
         options={{
@@ -50,10 +52,11 @@ export default function ProtectedTabs() {
           ),
         }}
       />
+
       <Tabs.Screen
         name="mutualFund"
         options={{
-          title: "Mututal Fund",
+          title: "Mutual Fund",
           tabBarIcon: ({ color }) => (
             <MaterialIcons name="savings" size={28} color={color} />
           ),

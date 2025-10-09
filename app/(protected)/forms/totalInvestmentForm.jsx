@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react"
 import {
     View,
@@ -12,7 +11,7 @@ import {
     KeyboardAvoidingView,
     StatusBar,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { router } from "expo-router"
 import { COLORS } from '../../constants'
 import Button from "@components/Button"
@@ -21,6 +20,7 @@ import { useAuth } from "@context/useAuth"
 const { width, height } = Dimensions.get("window")
 
 export default function PersonalDetailsForm() {
+    const insets = useSafeAreaInsets(); // Added insets hook
     const [formData, setFormData] = useState({
         capital_amount: "",
     })
@@ -48,14 +48,13 @@ export default function PersonalDetailsForm() {
         }
     };
 
-
     return (
-        <SafeAreaView  style={styles.container}>
+        <SafeAreaView edges={['top', 'left', 'right']} style={styles.container}>
             <StatusBar barStyle="light-content" backgroundColor={COLORS.primaryColor} />
             <KeyboardAvoidingView
                 behavior={Platform.OS === "ios" ? "padding" : "height"}
                 style={{ flex: 1 }}
-                keyboardVerticalOffset={Platform.OS === "ios" ? 20 : 10} // adjust as needed
+                keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 0}
             >
                 <ScrollView
                     style={styles.scrollView}
@@ -70,7 +69,7 @@ export default function PersonalDetailsForm() {
                     </View>
 
                     <View style={styles.form}>
-                        {/* Total investment qestion */}
+                        {/* Total investment question */}
                         <View style={styles.inputContainer}>
                             <TextInput
                                 style={styles.textInput}
@@ -93,11 +92,19 @@ export default function PersonalDetailsForm() {
                     </View>
                 </ScrollView>
             </KeyboardAvoidingView>
-            <TouchableOpacity onPress={() => router.push("home")} style={styles.skipButton}>
-                <Text style={styles.skipText}>Skip for now</Text>
-            </TouchableOpacity>
-            <Button onClick={() => handleNext()} label={"Next"} gradientColor={['#D36C32', '#F68F00']} buttonStye={{ marginHorizontal: 20 }} />
-
+            
+            {/* Fixed bottom buttons with proper spacing */}
+            <View style={{ paddingBottom: Math.max(insets.bottom + 10, 25) }}>
+                <TouchableOpacity onPress={() => router.push("home")} style={styles.skipButton}>
+                    <Text style={styles.skipText}>Skip for now</Text>
+                </TouchableOpacity>
+                <Button 
+                    onClick={() => handleNext()} 
+                    label={"Next"} 
+                    gradientColor={['#D36C32', '#F68F00']} 
+                    buttonStye={{ marginHorizontal: 20 }} 
+                />
+            </View>
         </SafeAreaView>
     )
 }
@@ -106,7 +113,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: COLORS.primaryColor,
-        paddingBottom: 20
+        // Removed fixed paddingBottom: 20
     },
     gradient: {
         flex: 1,
@@ -124,7 +131,7 @@ const styles = StyleSheet.create({
         marginBottom: 20,
     },
     title: {
-        fontSize: 18,
+        fontSize: 22,
         color: COLORS.fontWhite
     },
     subtitle: {
@@ -132,11 +139,6 @@ const styles = StyleSheet.create({
         fontSize: 14,
         marginBottom: 8,
         lineHeight: 20,
-    },
-    title: {
-        color: "#FFFFFF",
-        fontSize: 24,
-        fontWeight: "bold",
     },
     form: {
         flex: 1,
@@ -195,5 +197,4 @@ const styles = StyleSheet.create({
         marginBottom: 10,
         textAlign: "right"
     },
-
 })

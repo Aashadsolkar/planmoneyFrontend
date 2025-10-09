@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   BackHandler,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { COLORS } from "../constants";
 import Button from "@components/Button";
 import { router, useNavigation } from "expo-router";
@@ -17,7 +17,7 @@ import { Image } from "expo-image";
 export default function App() {
   const navigation = useNavigation();
   const { setGetCustomerDataAgain } = useAuth();
-
+ const insets = useSafeAreaInsets();
   // 🚫 Prevent back button and swipe gestures
   useEffect(() => {
     setGetCustomerDataAgain(true);
@@ -77,12 +77,15 @@ export default function App() {
           </Text>
         </View>
       </ScrollView>
+       <View style={{ paddingBottom: Math.max(insets.bottom + 10, 20), }}>
+
       <Button
         onClick={() => router.push("home")}
         label={"Done"}
         gradientColor={["#D36C32", "#F68F00"]}
         buttonStye={{ marginHorizontal: 20 }}
       />
+       </View>
     </SafeAreaView>
   );
 }

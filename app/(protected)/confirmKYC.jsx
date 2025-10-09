@@ -7,7 +7,9 @@ import {
   StyleSheet,
   Text,
   View,
+  Platform,
 } from "react-native";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { useAuth } from "@context/useAuth";
 import { verifyKYCApi } from "@utils/apiCaller";
 import { COLORS } from "../constants";
@@ -24,6 +26,7 @@ export default function VerifySuccess() {
   const [error, setError] = useState(null);
   const { token, digiLockerRequestId, logout } = useAuth();
   const navigation = useNavigation();
+  const insets = useSafeAreaInsets();
 
   useEffect(() => {
     const unsubscribe = navigation.addListener("beforeRemove", (e) => {
@@ -123,57 +126,87 @@ export default function VerifySuccess() {
     );
   };
 
-  return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Header />
-      {loading && (
-        <ActivityIndicator
-          style={{ marginTop: 80, marginBottom: 20 }}
-          size="large"
-          color="#007bff"
-        />
-      )}
+  // Calculate proper bottom spacing
+  const getBottomSpacing = () => {
+    if (Platform.OS === 'ios') {
+      return Math.max(insets.bottom, 15);
+    }
+    // Android: Handle both gesture and button navigation
+    return insets.bottom > 0 ? insets.bottom + 15 : 25;
+  };
 
-      {error && (
-        <>
-          <View style={styles.card}>
-            <Text style={styles.errorText}>Error: {error}</Text>
+  return (
+    <SafeAreaView style={styles.safeArea}>
+      <View style={styles.container}>
+        <ScrollView 
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+        >
+          <Header />
+          
+          {loading && (
+            <ActivityIndicator
+              style={{ marginTop: 80, marginBottom: 20 }}
+              size="large"
+              color="#007bff"
+            />
+          )}
+
+          {error && (
+            <View style={styles.card}>
+              <Text style={styles.errorText}>Error: {error}</Text>
+            </View>
+          )}
+
+          {result && (
+            <View style={styles.card}>
+              {renderIcon()}
+              <Text style={styles.successText}>{result.message}</Text>
+              <Text style={[styles.label]}>
+                Transaction Status:{" "}
+                <Text
+                  style={{ color: getStatusColor(result.data?.transaction_status) }}
+                >
+                  {result.data?.transaction_status}
+                </Text>
+              </Text>
+              <Text style={styles.label}>Purpose: {result.data?.purpose}</Text>
+              <Text style={styles.label}>Id: {result.data?.id}</Text>
+            </View>
+          )}
+        </ScrollView>
+
+        {/* Fixed Bottom Button Container */}
+        {!loading && (
+          <View style={[
+            styles.buttonContainer,
+            { paddingBottom: getBottomSpacing() }
+          ]}>
+            {renderButton()}
           </View>
-          <Button
-            buttonStye={{ marginHorizontal: 20 }}
-            onClick={() => {
-              router.push("forms/kyc");
-            }}
-            label={"Try Again"}
-            gradientColor={["#D36C32", "#F68F00"]}
-          />
-        </>
-      )}
-      {result && (
-        <View style={styles.card}>
-          {renderIcon()}
-          <Text style={styles.successText}>{result.message}</Text>
-          <Text style={[styles.label]}>
-            Transaction Status:{" "}
-            <Text
-              style={{ color: getStatusColor(result.data?.transaction_status) }}
-            >
-              {result.data?.transaction_status}
-            </Text>
-          </Text>
-          <Text style={styles.label}>Purpose: {result.data?.purpose}</Text>
-          <Text style={styles.label}>Id: {result.data?.id}</Text>
-        </View>
-      )}
-      {!loading && renderButton()}
-    </ScrollView>
+        )}
+      </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  safeArea: {
+    flex: 1,
     backgroundColor: COLORS.primaryColor,
+  },
+  container: {
+    flex: 1,
+    backgroundColor: COLORS.primaryColor,
+  },
+  scrollContent: {
     flexGrow: 1,
+    paddingBottom: 20,
+  },
+  buttonContainer: {
+    backgroundColor: COLORS.primaryColor,
+    paddingTop: 15,
+    paddingHorizontal: 0,
   },
   heading: {
     fontSize: 24,

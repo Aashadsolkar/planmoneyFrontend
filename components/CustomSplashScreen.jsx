@@ -1,49 +1,79 @@
-// components/HtmlViewer.tsx
-import { View, ActivityIndicator, TextInput, Text } from "react-native";
+import { View, ActivityIndicator, StyleSheet } from "react-native";
 import { useEffect, useState } from "react";
 import { WebView } from "react-native-webview";
-import * as FileSystem from "expo-file-system/legacy";
-import * as Asset from "expo-asset";
 
-export default function HtmlViewer({ onAnimationFinish }) {
-  const [htmlContent, setHtmlContent] = useState(null);
 
-  useEffect(() => {
-    const loadHtml = async () => {
-      try {
-        const asset = Asset.Asset.fromModule(
-          require("../assets/custom-screen.html")
-        );
-        await asset.downloadAsync();
-        const fileUri = asset.localUri ?? asset.uri;
-        const content = await FileSystem.readAsStringAsync(fileUri);
-        setHtmlContent(content);
-      } catch (err) {
-        console.error("Failed to load HTML:", err);
-      }
-    };
-    loadHtml();
-  }, []);
+export default function CustomSplash({ htmlContent }) {
+  const [isWebViewReady, setIsWebViewReady] = useState(false);
 
+  // ✅ FIX 9: Handle WebView loading states
+  const handleWebViewLoad = () => {
+    setIsWebViewReady(true);
+  };
+
+  const handleWebViewError = () => {
+    console.warn("WebView failed to load splash content");
+    setIsWebViewReady(true); // Still proceed to avoid infinite loading
+  };
+
+  // ✅ FIX 10: Show loading indicator while WebView loads
   if (!htmlContent) {
     return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <View style={styles.container}>
         <ActivityIndicator size="large" color="#F68F00" />
       </View>
     );
   }
 
   return (
-    <WebView
-      originWhitelist={["*"]}
-      source={{ html: htmlContent }}
-      onMessage={(event) => {
-        if (event.nativeEvent.data === "animationDone" && onAnimationFinish) {
-          onAnimationFinish();
-        }
-      }}
-      scrollEnabled={false}
-      style={{ backgroundColor: "#012744" }}
-    />
+    <View style={styles.container}>
+      {/* ✅ FIX 11: Background view to prevent white flash */}
+      <View style={styles.backgroundContainer}>
+        <WebView
+          originWhitelist={["*"]}
+          source={{ html: htmlContent }}
+          style={styles.webView}
+          onLoad={handleWebViewLoad}
+          onError={handleWebViewError}
+          startInLoadingState={true}
+          renderLoading={() => (
+            <View style={styles.loadingContainer}>
+              <ActivityIndicator size="large" color="#F68F00" />
+            </View>
+          )}
+          // ✅ FIX 12: Additional WebView props to prevent flashing
+          androidLayerType="hardware"
+          mixedContentMode="compatibility"
+          javaScriptEnabled={true}
+          domStorageEnabled={true}
+        />
+      </View>
+    </View>
   );
 }
+
+// ✅ FIX 13: Consistent styling to prevent white flashes
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#012744', // Match your splash screen background color
+  },
+  backgroundContainer: {
+    flex: 1,
+    backgroundColor: '#012744', // Ensure no white background shows
+  },
+  webView: {
+    flex: 1,
+    backgroundColor: '#012744', // WebView background
+  },
+  loadingContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: '#012744',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+});
