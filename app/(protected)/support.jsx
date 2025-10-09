@@ -67,8 +67,8 @@ export default function Support() {
                     <Ionicons name="call" size={24} color={COLORS.secondaryColor} />
                     <View style={styles.info}>
                         <Text style={styles.label}>Call us</Text>
-                        <TouchableOpacity onPress={() => handleCall("9876543210")}>
-                            <Text style={styles.link}>+91 98765 43210</Text>
+                        <TouchableOpacity onPress={() => handleCall("8108181602")}>
+                            <Text style={styles.link}>+91 8108181602</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -77,8 +77,8 @@ export default function Support() {
                     <Ionicons name="mail" size={24} color={COLORS.secondaryColor} />
                     <View style={styles.info}>
                         <Text style={styles.label}>Email us</Text>
-                        <TouchableOpacity onPress={() => handleEmail("support@planmoney.in")}>
-                            <Text style={styles.link}>support@planmoney.in</Text>
+                        <TouchableOpacity onPress={() => handleEmail("services@planmoney.in")}>
+                            <Text style={styles.link}>services@planmoney.in</Text>
                         </TouchableOpacity>
                     </View>
                 </View>

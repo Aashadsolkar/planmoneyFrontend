@@ -63,15 +63,14 @@ const HistoryCardList = ({ dataList = [], status = "active", }) => {
                         }
                         {/* Top section */}
                         <View style={styles.cardSections}>
-                            <View style={{ flexDirection: "row", gap: 3 }}>
+                            <View style={{ flexDirection: "row", gap: 3, alignItems: "start", flex: 1 ,justifyContent: "space-between"}}>
                                 {/* <Image
                                     source={{ uri: data?.stock?.company_logo || "" }}
                                     style={{ width: 30, height: 30, borderRadius: 50, marginRight: 10 }}
                                 /> */}
-                                <Text style={[styles.boldText, { fontSize: 18, width: "75%" }]}>
+                                <Text style={[styles.boldText, { fontSize: 18}]}>
                                     {data?.stock?.company_name || "NA"}
                                 </Text>
-                            </View>
                             <View style={{ gap: 5 }}>
                                 {/* <Text style={[styles.boldText, {
                                     paddingHorizontal: 4,
@@ -87,6 +86,7 @@ const HistoryCardList = ({ dataList = [], status = "active", }) => {
                                     Published On
                                 </Text>
                                 <Text style={[{ fontSize: 12, color: COLORS.fontWhite, fontWeight: "600" }]}>{formatDateToDDMMYYYY(data?.published_on) || "NA"}</Text>
+                            </View>
                             </View>
                         </View>
 

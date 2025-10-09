@@ -10,9 +10,9 @@ const NoInternetScreen = () => {
         loop
         style={styles.animation}
       />
-      <Text style={styles.title}>Whoops!</Text>
-      <Text style={styles.message}>Slow or no internet connection.</Text>
-      <Text style={styles.message}>
+      <Text allowFontScaling={false} style={styles.title}>Whoops!</Text>
+      <Text allowFontScaling={false} style={styles.message}>Slow or no internet connection.</Text>
+      <Text allowFontScaling={false} style={styles.message}>
         Please check your connection and try again.
       </Text>
     </View>

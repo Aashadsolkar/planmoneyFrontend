@@ -1,5 +1,5 @@
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView, BackHandler, StatusBar } from 'react-native';
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import React, { useEffect, useState } from 'react';
 import { COLORS } from '../../constants';
 import Button from '@components/Button';
@@ -15,7 +15,7 @@ const AgreementForm = () => {
   const navigation = useNavigation();
   const { token, setRiskData, questionFormData, logout } = useAuth();
   const [fatcaError, setFatcaError] = useState("");
-
+ const insets = useSafeAreaInsets();
   const handleSubmit = async () => {
     const DOB = questionFormData?.dob;
     const formattedDate = new Date(DOB).toISOString().split("T")[0];
@@ -83,7 +83,7 @@ const AgreementForm = () => {
   };
 
   return (
-    <SafeAreaView  style={{ flex: 1, backgroundColor: COLORS.primaryColor, paddingBottom: 20, paddingTop: 20 }}>
+    <SafeAreaView  edges={['left','right','bottom']} style={{ flex: 1, backgroundColor: COLORS.primaryColor, paddingBottom: 20, paddingTop: 20 }}>
       <StatusBar barStyle="light-content" backgroundColor={COLORS.primaryColor} />
       <ScrollView
         keyboardShouldPersistTaps="handled"
@@ -121,6 +121,7 @@ const AgreementForm = () => {
           If yes, provide FATCA Declaration and Compliance Documents (as applicable).
         </Text>
       </View>
+ <View style={{ paddingBottom: Math.max(insets.bottom + 10, 20), marginHorizontal: 20 }}>
 
       <TouchableOpacity onPress={() => router.push("home")} style={styles.skipButton}>
         <Text style={styles.skipText}>Skip for now</Text>
@@ -134,6 +135,7 @@ const AgreementForm = () => {
         gradientColor={['#D36C32', '#F68F00']}
         buttonStye={{ marginHorizontal: 20 }}
       />
+ </View>
     </SafeAreaView>
   );
 };

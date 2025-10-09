@@ -14,7 +14,7 @@ import {
     KeyboardAvoidingView,
     StatusBar,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import DateTimePicker from "@react-native-community/datetimepicker"
 import { Ionicons } from "@expo/vector-icons"
 import { LinearGradient } from "expo-linear-gradient"
@@ -109,7 +109,7 @@ export default function PersonalDetailsForm() {
     const [cityData, setCityData] = useState([])
     const [errors, setErrors] = useState({});
 
-
+const insets = useSafeAreaInsets();
     useEffect(() => {
         setSkipQuestioniar(true);
         const getState = async () => {
@@ -287,7 +287,7 @@ export default function PersonalDetailsForm() {
 
 
     return (
-        <SafeAreaView  style={styles.container}>
+        <SafeAreaView  edges={['right','left']} style={styles.container}>
             <StatusBar barStyle="light-content" backgroundColor={COLORS.primaryColor} />
             <KeyboardAvoidingView
                 behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -420,10 +420,13 @@ export default function PersonalDetailsForm() {
 
                 </ScrollView>
             </KeyboardAvoidingView>
+                     <View style={{ paddingBottom: Math.max(insets.bottom + 10, 25) }}>
+
             <TouchableOpacity onPress={() => router.push("home")} style={styles.skipButton}>
                 <Text style={styles.skipText}>Skip for now</Text>
             </TouchableOpacity>
             <Button onClick={() => handleNext()} label={"Next"} gradientColor={['#D36C32', '#F68F00']} buttonStye={{ marginHorizontal: 20 }} />
+            </View>
 
         </SafeAreaView>
     )

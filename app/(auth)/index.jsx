@@ -8,47 +8,46 @@ import {
   TouchableOpacity,
   StyleSheet,
   StatusBar,
+  Image,
+  Platform,
 } from "react-native";
-import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
+import {
+  SafeAreaView,
+  useSafeAreaInsets,
+} from "react-native-safe-area-context";
+import banner3 from "../../assets/images/intro1.png";
+import banner2 from "../../assets/images/intro2.png";
+import banner4 from "../../assets/images/intro3.jpeg";
+import banner1 from "../../assets/images/intro4.jpeg";
 
 const RegisterScreen = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [showRegisterForm, setShowRegisterForm] = useState(false);
-  const [screenWidth, setScreenWidth] = useState(Dimensions.get("window").width);
+  const [screenWidth, setScreenWidth] = useState(
+    Dimensions.get("window").width
+  );
   const scrollViewRef = useRef(null);
   const insets = useSafeAreaInsets();
 
   const banners = [
     {
       id: 1,
-      title: "Welcome to Our App",
-      subtitle: "Discover amazing features",
-      description:
-        "Join thousands of users who are already enjoying our premium services and exclusive content.",
+      image: banner1,
       backgroundColor: "#012744",
     },
     {
       id: 2,
-      title: "Stay Connected",
-      subtitle: "Never miss an update",
-      description:
-        "Get real-time notifications and stay connected with your friends and family anywhere, anytime.",
+      image: banner2,
       backgroundColor: "#012744",
     },
     {
       id: 3,
-      title: "Secure & Private",
-      subtitle: "Your data is safe",
-      description:
-        "We use advanced encryption to protect your personal information and ensure complete privacy.",
+      image: banner3,
       backgroundColor: "#012744",
     },
     {
       id: 4,
-      title: "Get Started Today",
-      subtitle: "Join our community",
-      description:
-        "Create your account now and unlock all the amazing features waiting for you.",
+      image: banner4,
       backgroundColor: "#012744",
     },
   ];
@@ -88,16 +87,23 @@ const RegisterScreen = () => {
 
   return (
     <SafeAreaView style={styles.safeArea} edges={["top", "left", "right"]}>
-      <StatusBar barStyle="light-content" backgroundColor={banners[currentSlide].backgroundColor} />
-
-      <View style={[styles.container, { backgroundColor: banners[currentSlide].backgroundColor }]}>
+      <StatusBar
+        barStyle="light-content"
+        backgroundColor={banners[currentSlide].backgroundColor}
+      />
+      <View
+        style={[
+          styles.container,
+          { backgroundColor: banners[currentSlide].backgroundColor },
+        ]}
+      >
         {/* Skip Button */}
         <TouchableOpacity
-          style={[styles.skipButton, { top: insets.top + 10 }]}
+          style={[styles.skipButton, { top: insets.top + 16 }]}
           onPress={handleSkip}
           hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
         >
-          <Text style={styles.skipText}>Skip</Text>
+          <Text allowFontScaling={false} style={styles.skipText}>Skip</Text>
         </TouchableOpacity>
 
         {/* Banner Slider */}
@@ -110,26 +116,41 @@ const RegisterScreen = () => {
           scrollEventThrottle={16}
           onLayout={(e) => setScreenWidth(e.nativeEvent.layout.width)}
           contentContainerStyle={{ flexGrow: 1 }}
+          style={styles.scrollView}
         >
-          {banners.map((banner) => (
+          {banners.map((banner, index) => (
             <View
               key={banner.id}
-              style={[styles.bannerSlide, { width: screenWidth }]}
+              style={[
+                styles.bannerSlide,
+                {
+                  width: screenWidth,
+                  backgroundColor: banner.backgroundColor,
+                },
+              ]}
             >
-              <View style={styles.bannerContent}>
-                <View style={styles.bannerImagePlaceholder}>
-                  <Text style={styles.bannerImageText}>📱</Text>
+              {/* Shadow Container for Image */}
+              <View style={styles.imageShadowContainer}>
+                <View style={styles.imageContainer}>
+                  <Image
+                    source={banner.image}
+                    style={styles.bannerImage}
+                    resizeMode="contain"
+                  />
                 </View>
-                <Text style={styles.bannerTitle}>{banner.title}</Text>
-                <Text style={styles.bannerSubtitle}>{banner.subtitle}</Text>
-                <Text style={styles.bannerDescription}>{banner.description}</Text>
               </View>
             </View>
           ))}
         </ScrollView>
 
-        {/* Pagination + Button */}
-        <View style={[styles.bottomContainer, { paddingBottom: Math.max(insets.bottom, 20) }]}>
+        {/* Bottom Controls */}
+        <View
+          style={[
+            styles.bottomContainer,
+            { paddingBottom: Math.max(insets.bottom, 24) },
+          ]}
+        >
+          {/* Pagination Dots */}
           <View style={styles.paginationContainer}>
             {banners.map((_, index) => (
               <TouchableOpacity
@@ -139,13 +160,14 @@ const RegisterScreen = () => {
                   currentSlide === index && styles.paginationDotActive,
                 ]}
                 onPress={() => goToSlide(index)}
-                hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+                hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
               />
             ))}
           </View>
 
+          {/* Next/Get Started Button */}
           <TouchableOpacity style={styles.nextButton} onPress={handleNext}>
-            <Text style={styles.nextButtonText}>
+            <Text allowFontScaling={false} style={styles.nextButtonText}>
               {currentSlide === banners.length - 1 ? "Get Started" : "Next"}
             </Text>
           </TouchableOpacity>
@@ -156,80 +178,112 @@ const RegisterScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  safeArea: { flex: 1, backgroundColor: "#012744" },
-  container: { flex: 1 },
+  safeArea: {
+    flex: 1,
+    backgroundColor: "#012744",
+  },
+  container: {
+    flex: 1,
+  },
   skipButton: {
     position: "absolute",
-    right: 20,
-    zIndex: 2,
-    paddingHorizontal: 15,
-    paddingVertical: 8,
-    backgroundColor: "rgba(255, 255, 255, 0.2)",
-    borderRadius: 20,
+    right: 24,
+    zIndex: 10,
+    paddingHorizontal: 16,
+    paddingVertical: 6,
+    backgroundColor: "rgba(255, 255, 255, 0.15)",
+    borderRadius: 24,
   },
-  skipText: { color: "#fff", fontSize: 16, fontWeight: "600" },
+  skipText: {
+    color: "#fff",
+    fontSize: 15,
+    fontWeight: "600",
+    letterSpacing: 0.5,
+  },
+
+  scrollView: {
+    flex: 1,
+  },
   bannerSlide: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    paddingHorizontal: 30,
+    paddingTop: 100, // Space for skip button
+    paddingBottom: 140, // Space for pagination and button
+    paddingHorizontal: 24,
   },
-  bannerContent: { alignItems: "center", justifyContent: "center", flex: 1 },
-  bannerImagePlaceholder: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-    backgroundColor: "rgba(255,255,255,0.2)",
-    justifyContent: "center",
-    alignItems: "center",
-    marginBottom: 40,
+
+  imageShadowContainer: {
+    flex: 1,
+    width: "100%",
   },
-  bannerImageText: { fontSize: 50 },
-  bannerTitle: {
-    fontSize: 26,
-    fontWeight: "bold",
-    color: "#fff",
-    textAlign: "center",
-    marginBottom: 10,
+
+  imageContainer: {
+    flex: 1,
+    width: "100%",
+    borderRadius: 20,
   },
-  bannerSubtitle: {
-    fontSize: 18,
-    color: "#fff",
-    textAlign: "center",
-    marginBottom: 15,
-    opacity: 0.9,
+
+  bannerImage: {
+    width: "100%",
+    height: "100%",
+    borderRadius: 20,
   },
-  bannerDescription: {
-    fontSize: 15,
-    color: "#fff",
-    textAlign: "center",
-    lineHeight: 22,
-    opacity: 0.8,
-    paddingHorizontal: 20,
-  },
+
   bottomContainer: {
-    paddingHorizontal: 20,
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    paddingHorizontal: 24,
+    paddingTop: 24,
+    zIndex: 5,
   },
+
   paginationContainer: {
     flexDirection: "row",
     justifyContent: "center",
-    marginBottom: 20,
+    alignItems: "center",
+    marginBottom: 32,
   },
+
   paginationDot: {
-    width: 12,
-    height: 12,
-    borderRadius: 6,
-    backgroundColor: "rgba(255,255,255,0.4)",
-    marginHorizontal: 6,
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: "rgba(255, 255, 255, 0.4)",
+    marginHorizontal: 4,
   },
-  paginationDotActive: { backgroundColor: "#fda500ff", width: 14, height: 14 },
+
+  paginationDotActive: {
+    backgroundColor: "#fff",
+    width: 24,
+    height: 8,
+    borderRadius: 4,
+  },
+
   nextButton: {
     backgroundColor: "#fff",
-    paddingVertical: 16,
-    borderRadius: 28,
+    paddingVertical: 18,
+    paddingHorizontal: 32,
+    borderRadius: 30,
     alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.15,
+    shadowRadius: 12,
+    elevation: 8,
   },
-  nextButtonText: { fontSize: 18, fontWeight: "600", color: "#333" },
+
+  nextButtonText: {
+    fontSize: 17,
+    fontWeight: "700",
+    color: "#1a1a1a",
+    letterSpacing: 0.5,
+  },
 });
 
 export default RegisterScreen;

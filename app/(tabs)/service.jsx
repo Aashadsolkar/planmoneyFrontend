@@ -140,17 +140,17 @@ const Service = () => {
     }
 
     const headerText = () => {
-        return <Text style={{ color: COLORS.fontWhite, fontWeight: 600, fontSize: 18 }}>Services</Text>
+        return <Text allowFontScaling={false}style={{ color: COLORS.fontWhite, fontWeight: 600, fontSize: 18 }}>Services</Text>
     }
 
     const renderServiceList = () => {
         return (
             <ScrollView style={{ flex: 1 }} contentContainerStyle={styles.scrollContent}>
-                <Text style={styles.sectionTitle}>Select the Services</Text>
+                <Text allowFontScaling={false}style={styles.sectionTitle}>Select the Services</Text>
                 {renderService()}
                 {
                     !isLoading && <TouchableOpacity onPress={() => router.push("home")}>
-                        <Text style={{ textAlign: "center", color: COLORS.fontWhite, fontWeight: 500 }} >Skip for now</Text>
+                        <Text allowFontScaling={false}style={{ textAlign: "center", color: COLORS.fontWhite, fontWeight: 500 }} >Skip for now</Text>
                     </TouchableOpacity>
                 }
             </ScrollView>

@@ -8,7 +8,10 @@ import {
   ScrollView,
   StatusBar,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import {
+  SafeAreaView,
+  useSafeAreaInsets,
+} from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import Header from "@components/Header";
 import { COLORS } from "../constants";
@@ -25,7 +28,10 @@ import { router, useNavigation } from "expo-router";
 import Input from "@components/Input";
 import * as Linking from "expo-linking";
 import { showToast } from "@components/CustomToast/ToastService";
-import { formatDateToDDMMYYYY, formatIndianNumber } from "../../utils/commonFunctions";
+import {
+  formatDateToDDMMYYYY,
+  formatIndianNumber,
+} from "../../utils/commonFunctions";
 
 export default function Checkout() {
   const [couponCode, setCouponCode] = useState("");
@@ -44,15 +50,17 @@ export default function Checkout() {
   const basePrice = selectedService.offer_price ?? selectedService.actual_price;
   const totalPrice = basePrice - discount;
 
-  const baseAmount = (totalPrice).toFixed(2);
+  const baseAmount = totalPrice.toFixed(2);
   const CGST = (baseAmount * 0.09).toFixed(2);
   const SGST = (baseAmount * 0.09).toFixed(2);
-  const finalTotal = (parseFloat(baseAmount) + parseFloat(CGST) + parseFloat(SGST)).toFixed(2);
+  const finalTotal = (
+    parseFloat(baseAmount) +
+    parseFloat(CGST) +
+    parseFloat(SGST)
+  ).toFixed(2);
   const isSpecialService = [5, 6].includes(Number(selectedService?.serviceId));
 
-
-
-
+  const insets = useSafeAreaInsets();
 
   const generateOrderNumber = () => {
     const randomSixDigit = Math.floor(100000 + Math.random() * 900000); // Ensures 6 digits
@@ -94,10 +102,13 @@ export default function Checkout() {
       showToast({
         type: "error",
         title: `Order Failed! 😥`,
-        message: `${error?.error || error?.message || "Failed to generate payment" }`,
+        message: `${
+          error?.error || error?.message || "Failed to generate payment"
+        }`,
         redirectPath: "home",
-        sessionExired: error?.error == "Another session is active." ? true : false,
-        logout: logout
+        sessionExired:
+          error?.error == "Another session is active." ? true : false,
+        logout: logout,
       });
     }
   };
@@ -179,20 +190,28 @@ export default function Checkout() {
     // If actual is missing or 0 → show only offer
     if (!safeActual) {
       return safeOffer ? (
-        <Text style={styles.subscriptionPrice}>₹{formatIndianNumber(safeOffer)}</Text>
+        <Text style={styles.subscriptionPrice}>
+          ₹{formatIndianNumber(safeOffer)}
+        </Text>
       ) : null;
     }
 
     // If offer is missing or 0 → show only actual
     if (!safeOffer) {
       return safeActual ? (
-        <Text style={styles.subscriptionPrice}>₹{formatIndianNumber(safeActual)}</Text>
+        <Text style={styles.subscriptionPrice}>
+          ₹{formatIndianNumber(safeActual)}
+        </Text>
       ) : null;
     }
 
     // If both are same → show offer
     if (safeActual === safeOffer) {
-      return <Text style={styles.subscriptionPrice}>₹{formatIndianNumber(safeOffer)}</Text>;
+      return (
+        <Text style={styles.subscriptionPrice}>
+          ₹{formatIndianNumber(safeOffer)}
+        </Text>
+      );
     }
 
     // Else → show actual (strikethrough) + offer
@@ -210,14 +229,15 @@ export default function Checkout() {
         >
           ₹{formatIndianNumber(safeActual)}
         </Text>
-        <Text style={styles.subscriptionPrice}>₹{formatIndianNumber(safeOffer)}</Text>
+        <Text style={styles.subscriptionPrice}>
+          ₹{formatIndianNumber(safeOffer)}
+        </Text>
       </>
     );
   };
 
-
   return (
-    <SafeAreaView edges={[]} style={styles.container}>
+    <SafeAreaView edges={["left", "right"]} style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor={COLORS.cardColor} />
       <Header showBackButton={true} />
       <ScrollView style={{ backgroundColor: COLORS.primaryColor }}>
@@ -281,7 +301,9 @@ export default function Checkout() {
               marginBottom: 10,
             }}
           >
-            <View style={[styles.subscriptionHeader, { alignItems: "flex-start" }]}>
+            <View
+              style={[styles.subscriptionHeader, { alignItems: "flex-start" }]}
+            >
               <View style={{ flex: 1 }}>
                 <Text style={[styles.subscriptionTitle]}>
                   {selectedService?.name}
@@ -293,7 +315,10 @@ export default function Checkout() {
                 )}
               </View>
               <View style={{}}>
-                {renderOfferPrice(selectedService?.actual_price, selectedService?.offer_price)}
+                {renderOfferPrice(
+                  selectedService?.actual_price,
+                  selectedService?.offer_price
+                )}
                 {!isSpecialService && (
                   <Text style={[styles.subscriptionDuration]}>
                     {selectedService?.billing_cycle || ""}
@@ -302,11 +327,11 @@ export default function Checkout() {
               </View>
             </View>
           </View>
-          
+
           {!isSpecialService && (
             <Text style={[styles.expiryText, { marginBottom: 10 }]}>
-              If you Pay ₹{selectedService?.offer_price}/- now. The plan is valid
-              till {getPlanExpiryDate(selectedService?.billing_cycle)}{" "}
+              If you Pay ₹{selectedService?.offer_price}/- now. The plan is
+              valid till {getPlanExpiryDate(selectedService?.billing_cycle)}{" "}
             </Text>
           )}
           <Text
@@ -354,7 +379,7 @@ export default function Checkout() {
               <Text
                 style={[
                   styles.subscriptionPrice,
-                  {fontSize: 14, fontWeight: 400}
+                  { fontSize: 14, fontWeight: 400 },
                 ]}
               >
                 ₹{formatIndianNumber(baseAmount)}
@@ -374,14 +399,14 @@ export default function Checkout() {
               <Text
                 style={[
                   styles.subscriptionPrice,
-                  {fontSize: 14, fontWeight: 400}
+                  { fontSize: 14, fontWeight: 400 },
                 ]}
               >
                 ₹{formatIndianNumber(CGST)}
               </Text>
             </View>
           </View>
-           <View
+          <View
             style={{
               borderTopWidth: 1,
               borderBlockColor: COLORS.primaryColor,
@@ -394,7 +419,7 @@ export default function Checkout() {
               <Text
                 style={[
                   styles.subscriptionPrice,
-                  {fontSize: 14, fontWeight: 400}
+                  { fontSize: 14, fontWeight: 400 },
                 ]}
               >
                 ₹{formatIndianNumber(SGST)}
@@ -488,7 +513,12 @@ export default function Checkout() {
           </View>
         </View>
       </ScrollView>
-      <View style={{ backgroundColor: COLORS.primaryColor }}>
+      <View
+        style={[
+          { backgroundColor: COLORS.primaryColor },
+          { paddingBottom: Math.max(insets.bottom, 10) },
+        ]}
+      >
         <Button
           isLoading={isLoading}
           onClick={() => handleSubmit()}
@@ -600,7 +630,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     textTransform: "capitalize",
     fontWeight: "bold",
-    textAlign: "right"
+    textAlign: "right",
   },
   subscriptionPrice: {
     color: "white",

@@ -9,7 +9,7 @@ const CustomTextInput = ({ label, value, onChangeText, error, errorMessage, isNu
     <View style={styles.container}>
       <TextInput
         mode="outlined"
-        label={<Text style={{ fontSize: 14,color: error ? "red" :isFocused ? 'orange' : '#ccc' }}>{label}</Text>}
+        label={<Text allowFontScaling={false} style={{ fontSize: 14,color: error ? "red" :isFocused ? 'orange' : '#ccc' }}>{label}</Text>}
         value={value}
         onChangeText={onChangeText}
         onFocus={() => setIsFocused(true)}
@@ -26,7 +26,7 @@ const CustomTextInput = ({ label, value, onChangeText, error, errorMessage, isNu
         keyboardType={isNumberOnly ? "number-pad":"default"}
       />
       {error && errorMessage ? (
-        <Text style={styles.errorText}>{errorMessage}</Text>
+        <Text allowFontScaling={false} style={styles.errorText}>{errorMessage}</Text>
       ) : null}
     </View>
   );

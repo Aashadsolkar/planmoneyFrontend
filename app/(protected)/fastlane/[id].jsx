@@ -7,7 +7,7 @@ import {
     TouchableOpacity,
     View,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView,useSafeAreaInsets } from "react-native-safe-area-context";
 import { COLORS } from "../../constants";
 import { getFastlaneData, getFastlaneHistoryData } from "@utils/apiCaller";
 import { useAuth } from "@context/useAuth";
@@ -27,6 +27,7 @@ const FastLane = () => {
     const { token, customerServiceData, setReportData, logout } = useAuth();
     const [isLoading, setIsLoading] = useState(true);
     const [fastlaneData, setFastlaneData] = useState([]);
+const insets = useSafeAreaInsets();
 
     const { id } = useLocalSearchParams();
 
@@ -201,7 +202,7 @@ const FastLane = () => {
     }
 
     return (
-        <SafeAreaView edges={[]} style={{ flex: 1, backgroundColor: COLORS.cardColor }}>
+        <SafeAreaView edges={['right','bottom','left']} style={{ flex: 1, backgroundColor: COLORS.cardColor }}>
             <StatusBar barStyle="light-content" backgroundColor={COLORS.cardColor} />
             <Header
                 title="Hi Vignesh"
