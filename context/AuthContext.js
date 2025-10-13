@@ -1,7 +1,6 @@
 import { createContext, useEffect, useState } from "react";
-
-import AsyncStorage from "@react-native-async-storage/async-storage";
-
+// ✅ REPLACED: AsyncStorage with SecureStore
+import * as SecureStore from 'expo-secure-store';
 import { router } from "expo-router";
 
 export const AuthContext = createContext();
@@ -15,8 +14,7 @@ const AuthProvider = ({ children }) => {
   const [allServices, setAllServices] = useState([]);
   const [skipServices, setSkipServices] = useState(false);
   const [skipQuestioniar, setSkipQuestioniar] = useState(false);
-  const [serviceSelectedOnHomePage, setServiceSelectedOnHomePage] =
-    useState(null);
+  const [serviceSelectedOnHomePage, setServiceSelectedOnHomePage] = useState(null);
   const [profileData, setProfileData] = useState({});
   const [orderConfirmDetails, setOrderCinfirmDetails] = useState({});
   const [questionFormData, setQuestionFormData] = useState(null);
@@ -30,39 +28,24 @@ const AuthProvider = ({ children }) => {
   const [isProfileLoading, setIsProfileLoading] = useState(false);
   const [newArrivalsDetails, setNewArrivalsDetails] = useState([]);
   const [optionStockData, setOptionStockData] = useState([]);
-  const [isQuestionerFillderByAdvisor, setIsQuestionerFillderByAdvisor] =
-    useState(false);
+  const [isQuestionerFillderByAdvisor, setIsQuestionerFillderByAdvisor] = useState(false);
   const [digiLockerRequestId, setDigiLockerRequestId] = useState(false);
   const [advertisement, setAdvertisement] = useState([]);
   const [isNewArrivalsNotOpen, setIsNewArrivalsNotOpen] = useState(true);
 
   useEffect(() => {
     let isMounted = true;
-    // const loadSession = async () => {
-    //   try {
-    //     const storedToken = await AsyncStorage.getItem("token");
-    //     const storedUser = await AsyncStorage.getItem("user");
 
-    //     if (storedToken && storedUser) {
-    //       setToken(storedToken);
-    //       setUser(JSON.parse(storedUser));
-    //     }
-    //   } catch (e) {
-    //     console.error("Failed to load auth session", e);
-    //   } finally {
-    //     setLoading(false);
-    //   }
-    // };
-
+    // ✅ UPDATED: SecureStore version with same logic
     const loadSession = async () => {
       try {
-        // ✅ IMPROVED: Load both values in parallel
+        // ✅ SECURE: Load both values in parallel using SecureStore
         const [storedToken, storedUser] = await Promise.all([
-          AsyncStorage.getItem("token"),
-          AsyncStorage.getItem("user"),
+          SecureStore.getItemAsync("token"),
+          SecureStore.getItemAsync("user"),
         ]);
 
-        // ✅ NEW: Only update state if component is still mounted
+        // ✅ SAME: Only update state if component is still mounted
         if (isMounted) {
           if (storedToken && storedUser) {
             setToken(storedToken);
@@ -72,7 +55,7 @@ const AuthProvider = ({ children }) => {
         }
       } catch (e) {
         console.error("Failed to load auth session", e);
-        // ✅ NEW: Safe state update
+        // ✅ SAME: Safe state update
         if (isMounted) {
           setLoading(false);
         }
@@ -85,25 +68,48 @@ const AuthProvider = ({ children }) => {
     };
   }, []);
 
+  // ✅ UPDATED: SecureStore version
   const storeUserData = async (user, token) => {
-    setToken(token);
-    setUser(user);
-    await AsyncStorage.setItem("token", token);
-    await AsyncStorage.setItem("user", JSON.stringify(user));
+    try {
+      setToken(token);
+      setUser(user);
+      
+      // ✅ SECURE: Store in parallel using SecureStore
+      await Promise.all([
+        SecureStore.setItemAsync("token", token),
+        SecureStore.setItemAsync("user", JSON.stringify(user))
+      ]);
+    } catch (error) {
+      console.error("Failed to store user data:", error);
+      throw error;
+    }
   };
 
+  // ✅ UPDATED: SecureStore version  
   const verifyOtp = async (phone, otp) => {
     const { token, user } = {
       token: "1231231312asda",
       user: { name: "Aashad" },
     };
-    setToken(token);
-    setUser(user);
-    await AsyncStorage.setItem("token", token);
-    await AsyncStorage.setItem("user", JSON.stringify(user));
+    
+    try {
+      setToken(token);
+      setUser(user);
+      
+      // ✅ SECURE: Store in parallel using SecureStore
+      await Promise.all([
+        SecureStore.setItemAsync("token", token),
+        SecureStore.setItemAsync("user", JSON.stringify(user))
+      ]);
+    } catch (error) {
+      console.error("Failed to store verification data:", error);
+      throw error;
+    }
   };
 
+  // ✅ UPDATED: SecureStore version with individual key deletion
   const logout = async () => {
+    // ✅ SAME: Reset all state variables
     setToken(null);
     setUser(null);
     setSkipServices(false);
@@ -121,12 +127,33 @@ const AuthProvider = ({ children }) => {
     setSelectedService([]);
     setAllServices([]);
     setGetCustomerDataAgain(true);
+    
     try {
-      await AsyncStorage.clear();
+      // ✅ SECURE: Clear SecureStore data (no clear() method, so delete individually)
+      const keysToDelete = [
+        "token",
+        "user",
+        "hasLaunched",
+        "biometric_enabled",
+        "refresh_token",
+        // Add any other keys your app uses
+      ];
+
+      await Promise.all(
+        keysToDelete.map(async (key) => {
+          try {
+            await SecureStore.deleteItemAsync(key);
+          } catch (e) {
+            // Key might not exist, that's OK
+            console.warn(`Failed to delete key ${key}:`, e);
+          }
+        })
+      );
+      
       router.push("/login");
     } catch (error) {
       console.error("Logout error:", error);
-      // ✅ NEW: Force navigation even if storage clear fails
+      // ✅ SAME: Force navigation even if storage clear fails
       router.push("/login");
     }
   };
