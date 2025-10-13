@@ -16,7 +16,7 @@ import { COLORS } from "../../constants";
 import { useNavigation } from "expo-router";
 import * as Linking from "expo-linking";
 import { showToast } from "@components/CustomToast/ToastService";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 
 const KycVerifyPage = () => {
   const [loading, setLoading] = useState(false);
