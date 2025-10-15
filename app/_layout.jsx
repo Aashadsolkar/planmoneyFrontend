@@ -15,7 +15,8 @@ import {
   configureNotificationChannel,
 } from "../push-notification/notificationService";
 import { toastConfig } from "@components/CustomToast/ToastConfig";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+// ✅ REPLACED: AsyncStorage with SecureStore
+import * as SecureStore from "expo-secure-store";
 import { isUserLoggedIn, isBiometricEnabled } from "../utils/auth";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import * as Asset from "expo-asset";
@@ -24,30 +25,51 @@ import * as FileSystem from "expo-file-system/legacy";
 // ✅ FIX 1: Prevent auto hide immediately
 SplashScreen.preventAutoHideAsync();
 
+// ✅ UPDATED: SecureStore version of clearOnFirstInstall
 const clearOnFirstInstall = async () => {
   try {
-    const hasLaunched = await AsyncStorage.getItem("hasLaunched");
+    const hasLaunched = await SecureStore.getItemAsync("hasLaunched");
     if (!hasLaunched) {
-      await AsyncStorage.clear();
-      await AsyncStorage.setItem("hasLaunched", "true");
-      console.log("First launch — cleared AsyncStorage");
+      // ⚠️ NOTE: SecureStore doesn't have clear() method, so we clear specific items
+      const keysToRemove = [
+        "token",
+        "user",
+        "hasLaunched",
+        "biometric_enabled",
+        "refresh_token",
+        // Add other keys you want to clear on first install
+      ];
+
+      // Clear specific keys instead of everything
+      await Promise.all(
+        keysToRemove.map(async (key) => {
+          try {
+            await SecureStore.deleteItemAsync(key);
+          } catch (e) {
+            // Key might not exist, that's OK
+          }
+        })
+      );
+
+      await SecureStore.setItemAsync("hasLaunched", "true");
+      console.log("First launch — cleared SecureStore data");
     }
   } catch (e) {
-    console.warn("Error clearing AsyncStorage:", e);
+    console.warn("Error clearing SecureStore:", e);
   }
 };
 
-// ✅ FIX 2: Preload HTML content function
+// ✅ FIX 2: Preload HTML content function (unchanged)
 const preloadSplashAssets = async () => {
   try {
     const asset = Asset.Asset.fromModule(
       require("../assets/custom-screen.html")
     );
     await asset.downloadAsync();
-    
+
     const fileUri = asset.localUri ?? asset.uri;
     const content = await FileSystem.readAsStringAsync(fileUri);
-    
+
     return content;
   } catch (error) {
     console.warn("Error preloading splash assets:", error);
@@ -56,7 +78,7 @@ const preloadSplashAssets = async () => {
 };
 
 const RootLayout = () => {
-  // ✅ FIX 3: Better state management
+  // ✅ FIX 3: Better state management (unchanged)
   const [showCustomSplash, setShowCustomSplash] = useState(true);
   const [isConnected, setIsConnected] = useState(true);
   const [isAppReady, setIsAppReady] = useState(false);
@@ -71,7 +93,7 @@ const RootLayout = () => {
     clearOnFirstInstall();
   }, []);
 
-  // Handle deep linking
+  // Handle deep linking (unchanged)
   useEffect(() => {
     const subscription = Linking.addEventListener("url", ({ url }) => {
       const { path } = Linking.parse(url);
@@ -83,20 +105,20 @@ const RootLayout = () => {
     return () => subscription.remove();
   }, []);
 
-  // ✅ FIX 4: Coordinated splash screen initialization
+  // ✅ FIX 4: Coordinated splash screen initialization (unchanged)
   useEffect(() => {
     const initializeSplash = async () => {
       try {
         // 1. Preload HTML content
         const htmlContent = await preloadSplashAssets();
         setPreloadedHtml(htmlContent);
-        
+
         // 2. Wait minimum time for smooth transition
-        await new Promise(resolve => setTimeout(resolve, 300));
-        
+        await new Promise((resolve) => setTimeout(resolve, 300));
+
         // 3. Mark splash assets as ready
         setSplashAssetsReady(true);
-        
+
         // 4. Hide native splash after everything is ready
         setTimeout(async () => {
           try {
@@ -105,7 +127,6 @@ const RootLayout = () => {
             console.warn("Error hiding splash screen:", error);
           }
         }, 100);
-        
       } catch (error) {
         console.warn("Splash initialization error:", error);
         setSplashAssetsReady(true);
@@ -123,18 +144,17 @@ const RootLayout = () => {
     initializeSplash();
   }, []);
 
- 
   useEffect(() => {
     if (splashAssetsReady && isAppReady && authPassed) {
       const timer = setTimeout(() => {
         setShowCustomSplash(false);
-      }, 3500); 
+      }, 3500);
 
       return () => clearTimeout(timer);
     }
   }, [splashAssetsReady, isAppReady, authPassed]);
 
-  // Internet connection check
+  // Internet connection check (unchanged)
   useEffect(() => {
     const unsubscribe = NetInfo.addEventListener((state) => {
       setIsConnected(state.isConnected);
@@ -143,7 +163,7 @@ const RootLayout = () => {
     return () => unsubscribe();
   }, []);
 
-  // Push notification setup
+  // Push notification setup (unchanged)
   useEffect(() => {
     (async () => {
       await configureNotificationChannel();
@@ -154,7 +174,7 @@ const RootLayout = () => {
     })();
   }, []);
 
-  // ✅ FIX 6: Improved auth check
+  // ✅ FIX 6: Improved auth check (unchanged - but your auth utils need updating)
   useEffect(() => {
     const checkAuth = async () => {
       try {
@@ -178,11 +198,11 @@ const RootLayout = () => {
     checkAuth();
   }, []);
 
-  // ✅ FIX 7: Show custom splash until everything is ready
+  // ✅ FIX 7: Show custom splash until everything is ready (unchanged)
   if (showCustomSplash || !splashAssetsReady) {
     return <CustomSplash htmlContent={preloadedHtml} />;
   }
-  
+
   if (!isConnected) return <NoInternetScreen />;
 
   // 🔐 If biometric needed but not passed, show BiometricAuth
