@@ -111,7 +111,7 @@ export default function App() {
   };
 
   const renderCapitalAmountSection = () => {
-    if (portfolioServices.length > 0) {
+    if (portfolioServices.length > 0 && profileData?.customerfinanceinfo) {
       return (
         <View style={[styles.verificationCard, { marginBottom: 0 }]}>
           <View style={[styles.cardHeader, { marginBottom: 0 }]}>
