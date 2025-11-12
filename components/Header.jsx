@@ -144,7 +144,7 @@ const Header = ({
       setShowProfileDrawer(false);
     });
   };
-  const versionCode = "2.0.0";
+  const versionCode = "2.2.1";
 
 //drawer band karne ke liye
   useFocusEffect(

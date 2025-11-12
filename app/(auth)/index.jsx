@@ -9,12 +9,10 @@ import {
   StyleSheet,
   StatusBar,
   Image,
-  Platform,
 } from "react-native";
-import {
-  SafeAreaView,
-  useSafeAreaInsets,
-} from "react-native-safe-area-context";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
+
+// Import your intro images
 import banner3 from "../../assets/images/intro1.png";
 import banner2 from "../../assets/images/intro2.png";
 import banner4 from "../../assets/images/intro3.jpeg";
@@ -22,34 +20,15 @@ import banner1 from "../../assets/images/intro4.jpeg";
 
 const RegisterScreen = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [showRegisterForm, setShowRegisterForm] = useState(false);
-  const [screenWidth, setScreenWidth] = useState(
-    Dimensions.get("window").width
-  );
+  const [screenWidth, setScreenWidth] = useState(Dimensions.get("window").width);
   const scrollViewRef = useRef(null);
   const insets = useSafeAreaInsets();
 
   const banners = [
-    {
-      id: 1,
-      image: banner1,
-      backgroundColor: "#012744",
-    },
-    {
-      id: 2,
-      image: banner2,
-      backgroundColor: "#012744",
-    },
-    {
-      id: 3,
-      image: banner3,
-      backgroundColor: "#012744",
-    },
-    {
-      id: 4,
-      image: banner4,
-      backgroundColor: "#012744",
-    },
+    { id: 1, image: banner1, backgroundColor: "#012744" },
+    { id: 2, image: banner2, backgroundColor: "#012744" },
+    { id: 3, image: banner3, backgroundColor: "#012744" },
+    { id: 4, image: banner4, backgroundColor: "#012744" },
   ];
 
   const handleScroll = (event) => {
@@ -67,23 +46,16 @@ const RegisterScreen = () => {
     }
   };
 
-  const handleSkip = () => {
-    setShowRegisterForm(true);
-  };
+  // ✅ Fixed: Direct navigation instead of using showRegisterForm state
+  const handleSkip = () => router.push("/login");
 
   const handleNext = () => {
     if (currentSlide < banners.length - 1) {
       goToSlide(currentSlide + 1);
     } else {
-      setShowRegisterForm(true);
-    }
-  };
-
-  useEffect(() => {
-    if (showRegisterForm) {
       router.push("/login");
     }
-  }, [showRegisterForm]);
+  };
 
   return (
     <SafeAreaView style={styles.safeArea} edges={["top", "left", "right"]}>
@@ -103,7 +75,9 @@ const RegisterScreen = () => {
           onPress={handleSkip}
           hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
         >
-          <Text allowFontScaling={false} style={styles.skipText}>Skip</Text>
+          <Text allowFontScaling={false} style={styles.skipText}>
+            Skip
+          </Text>
         </TouchableOpacity>
 
         {/* Banner Slider */}
@@ -118,18 +92,14 @@ const RegisterScreen = () => {
           contentContainerStyle={{ flexGrow: 1 }}
           style={styles.scrollView}
         >
-          {banners.map((banner, index) => (
+          {banners.map((banner) => (
             <View
               key={banner.id}
               style={[
                 styles.bannerSlide,
-                {
-                  width: screenWidth,
-                  backgroundColor: banner.backgroundColor,
-                },
+                { width: screenWidth, backgroundColor: banner.backgroundColor },
               ]}
             >
-              {/* Shadow Container for Image */}
               <View style={styles.imageShadowContainer}>
                 <View style={styles.imageContainer}>
                   <Image
@@ -200,7 +170,6 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     letterSpacing: 0.5,
   },
-
   scrollView: {
     flex: 1,
   },
@@ -208,28 +177,24 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    paddingTop: 100, // Space for skip button
-    paddingBottom: 140, // Space for pagination and button
+    paddingTop: 100,
+    paddingBottom: 140,
     paddingHorizontal: 24,
   },
-
   imageShadowContainer: {
     flex: 1,
     width: "100%",
   },
-
   imageContainer: {
     flex: 1,
     width: "100%",
     borderRadius: 20,
   },
-
   bannerImage: {
     width: "100%",
     height: "100%",
     borderRadius: 20,
   },
-
   bottomContainer: {
     position: "absolute",
     bottom: 0,
@@ -239,14 +204,12 @@ const styles = StyleSheet.create({
     paddingTop: 24,
     zIndex: 5,
   },
-
   paginationContainer: {
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
     marginBottom: 32,
   },
-
   paginationDot: {
     width: 8,
     height: 8,
@@ -254,14 +217,12 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255, 255, 255, 0.4)",
     marginHorizontal: 4,
   },
-
   paginationDotActive: {
     backgroundColor: "#fff",
     width: 24,
     height: 8,
     borderRadius: 4,
   },
-
   nextButton: {
     backgroundColor: "#fff",
     paddingVertical: 18,
@@ -269,15 +230,11 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     alignItems: "center",
     shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
+    shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.15,
     shadowRadius: 12,
     elevation: 8,
   },
-
   nextButtonText: {
     fontSize: 17,
     fontWeight: "700",

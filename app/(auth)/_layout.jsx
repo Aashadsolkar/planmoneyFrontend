@@ -6,16 +6,11 @@ import CustomAppLoader from "@components/CustomLoader/Index";
 export default function AuthLayout() {
   const { user, token, loading } = useAuth();
 
-  // useEffect(() => {
-  //   if (!loading && user && token) {
-  //     router.replace("/home");
-  //   }
-  // }, [loading, user, token]);
+ 
 
   useEffect(() => {
   if (!loading) {
     if (user && token) {
-      // ✅ NEW: Add small delay to prevent navigation timing issues
       setTimeout(() => {
         router.replace("/home");
       }, 100);
