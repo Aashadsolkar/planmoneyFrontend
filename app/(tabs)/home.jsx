@@ -138,24 +138,26 @@ export default function Home() {
     setOfferData(sortedData);
   }, [portfolioServices, advertisement]);
 
-  const handleClick = (item) => {
-    if ([1, 6].includes(item?.id)) {
-      router.push({
-        pathname: `/fastlane/${item?.id}`,
-        params: {
-          is_advisor_assign: item?.subscription?.is_advisor_assign,
-        },
-      });
-    } else {
-      // router.push(`pmsAndQuantom/${id}`)
-      router.push({
-        pathname: `/pmsAndQuantom/${item?.id}`,
-        params: {
-          is_advisor_assign: item?.subscription?.is_advisor_assign,
-          advisor_name: item?.subscription?.advisor?.name ?? "NA",
-          advisor_nummber: item?.subscription?.advisor?.phone ?? "NA",
-        },
-      });
+  const handleClick = (item, is__not_subscribed) => {
+    if(!is__not_subscribed){
+      if ([1, 6].includes(item?.id)) {
+        router.push({
+          pathname: `/fastlane/${item?.id}`,
+          params: {
+            is_advisor_assign: item?.subscription?.is_advisor_assign,
+          },
+        });
+      } else {
+        // router.push(`pmsAndQuantom/${id}`)
+        router.push({
+          pathname: `/pmsAndQuantom/${item?.id}`,
+          params: {
+            is_advisor_assign: item?.subscription?.is_advisor_assign,
+            advisor_name: item?.subscription?.advisor?.name ?? "NA",
+            advisor_nummber: item?.subscription?.advisor?.phone ?? "NA",
+          },
+        });
+      }
     }
   };
 
@@ -175,7 +177,7 @@ export default function Home() {
         delay={item.id * 100}
         duration={300}
       >
-        <TouchableOpacity onPress={() => handleClick(item)}>
+        <TouchableOpacity onPress={() => handleClick(item, is__not_subscribed)}>
           <LinearGradient
             start={{ x: 1, y: 0 }}
             end={{ x: 0, y: 0 }}
