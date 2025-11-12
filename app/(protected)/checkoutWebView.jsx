@@ -10,7 +10,7 @@ import { COLORS } from "../constants";
 
 export default function CheckoutWebView(props) {
   const { sessionId, orderId } = useLocalSearchParams();
-  const hostedUrl = `https://hunger.webiknows.in/payment.html?session_id=${sessionId}`;
+  const hostedUrl = `https://planmoney.in/payment.html?session_id=${sessionId}`;
   const navigation = useNavigation();
   const insets = useSafeAreaInsets();
 

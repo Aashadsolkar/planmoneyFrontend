@@ -76,7 +76,7 @@ export default function Checkout() {
         customer_id: profileData?.customer_id,
         customer_email: profileData?.email,
         customer_phone: profileData?.phone?.replace(/\D/g, ""),
-        app_return_url: `https://hunger.webiknows.in/payment.html?order_id={order_id}&return_url=${userReturnURL}`,
+        app_return_url: `https://planmoney.in/payment.html?order_id={order_id}&return_url=${userReturnURL}`,
       };
       const response = await pgCreateOrder(token, payload);
       setIsLoading(false);
