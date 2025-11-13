@@ -418,7 +418,7 @@ const styles = StyleSheet.create({
   },
   payNowBtn: {
     backgroundColor: '#FF9800',
-    borderRadius: 24,
+    borderRadius: 50,
     paddingVertical: 16,
     alignItems: 'center',
   },
