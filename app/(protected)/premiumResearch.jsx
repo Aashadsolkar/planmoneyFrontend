@@ -12,7 +12,7 @@ import SkeletonList from '@components/ListSkeleton';
 import * as Animatable from 'react-native-animatable';
 import Entypo from '@expo/vector-icons/Entypo';
 import { showToast } from "@components/CustomToast/ToastService";
-import { formatDateToDDMMYYYY } from '../../utils/commonFunctions';
+import { formatDateToDDMMYYYY, formatIndianNumber } from '../../utils/commonFunctions';
 import { Image } from 'expo-image';
 
 const PremiumResearch = () => {
@@ -92,10 +92,10 @@ const PremiumResearch = () => {
                 <View style={styles.card} key={data?.id}>
                     <View style={styles.cardSections}>
                         <View style={{ flexDirection: "row", gap: 3 }}>
-                            <Image
+                            {/* <Image
                                 source={{ uri: data?.stock?.company_logo || "" }}
                                 style={{ width: 30, height: 30, borderRadius: 50, marginRight: 10 }}
-                            />
+                            /> */}
                             <Text style={[styles.boldText, { fontSize: 18, width: "75%" }]}>
                                 {data?.title || "NA"}
                             </Text>
@@ -281,10 +281,10 @@ const PremiumResearch = () => {
         return unboughtServices.map((service) => (
             <View key={service.id} style={styles.serviceCard}>
                 <View style={{ flexDirection: "row", gap: 3, marginBottom: 20 }}>
-                    <Image
+                    {/* <Image
                         source={{ uri: service?.stock?.company_logo || "" }}
                         style={{ width: 30, height: 30, borderRadius: 50, marginRight: 10 }}
-                    />
+                    /> */}
                     <Text style={[styles.boldText, { fontSize: 18, width: "75%" }]}>
                         {service?.title || "NA"}
                     </Text>
@@ -296,7 +296,7 @@ const PremiumResearch = () => {
                     </View>
                     <View style={styles.detailColumn}>
                         <Text style={styles.detailLabel}>Price</Text>
-                        <Text style={styles.detailValue}>{service?.amount}</Text>
+                        <Text style={styles.detailValue}>{formatIndianNumber(service?.amount)}</Text>
                     </View>
                     <TouchableOpacity
                         style={styles.buyButton}

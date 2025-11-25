@@ -182,7 +182,7 @@ const ServiceCard = ({
       return (
         <View style={styles.priceContainer}>
           <Text style={styles.priceLabel}>
-            {startsAt ? 'Offer Price' : 'Based on'}
+            {startsAt ? 'Starts from' : 'Based on'}
           </Text>
           <Text style={styles.price}>
             {renderOfferPrice1(sortedPlans[0]?.actual_price, sortedPlans[0]?.offer_price)}

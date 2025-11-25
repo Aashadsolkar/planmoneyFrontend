@@ -21,7 +21,7 @@ export function formatDateToDDMMYYYY(dateString) {
 export function formatIndianNumber(amount) {
   if (amount == null) return "0.00";
   return new Intl.NumberFormat("en-IN", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0
   }).format(amount);
 }
