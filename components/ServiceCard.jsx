@@ -12,6 +12,7 @@ import { leads } from '@utils/apiCaller';
 import * as Animatable from "react-native-animatable"
 import { showToast } from "@components/CustomToast/ToastService";
 import { formatIndianNumber } from '../utils/commonFunctions';
+import * as Linking from "expo-linking";
 const { height } = Dimensions.get("window")
 
 const ServiceCard = ({
@@ -117,6 +118,27 @@ const ServiceCard = ({
     );
   };
 
+  const renderOfferPrice1 = (actual, offer) => {
+
+    // If no offer price, show only actual price
+    if (!offer) {
+      return <Text style={[styles.discounted, { paddingTop: 10 }]}>₹{formatIndianNumber(actual)}</Text>;
+    }
+
+    // If both prices are same, show only one
+    if (actual === offer) {
+      return <Text style={[styles.discounted, { paddingTop: 10 }]}>₹{formatIndianNumber(offer)}</Text>;
+    }
+
+    // Show original (strikethrough) and discounted
+    return (
+      <>
+        <Text style={styles.discounted}>₹{formatIndianNumber(offer)}</Text>
+      </>
+    );
+  };
+
+
   const renderPurchesOrNot = () => {
     if (!isPurchesed) {
       return (
@@ -160,10 +182,10 @@ const ServiceCard = ({
       return (
         <View style={styles.priceContainer}>
           <Text style={styles.priceLabel}>
-            {startsAt ? 'Starts at' : 'Based on'}
+            {startsAt ? 'Offer Price' : 'Based on'}
           </Text>
           <Text style={styles.price}>
-            {formatIndianNumber(startsAt) || formatIndianNumber(basedOn)}
+            {renderOfferPrice1(sortedPlans[0]?.actual_price, sortedPlans[0]?.offer_price)}
           </Text>
         </View>
       )
@@ -195,7 +217,6 @@ const ServiceCard = ({
 
         {isExpanded && showSubscriptions && (
           <View style={styles.expanded}>
-            <Text style={styles.expandedTitle}>Stock Advise</Text>
             <View style={styles.subscriptions}>
               {sortedPlans.map((plan) => {
                 const isBest = plan?.is_bestseller == 0 ? false : true;
@@ -267,6 +288,18 @@ const ServiceCard = ({
                           <Text style={{ color: COLORS.fontWhite, fontSize: 14, marginTop: 5 }}> for your Interest</Text>
                           <Text style={{ color: COLORS.secondaryColor, fontSize: 14, marginTop: 5 }}>Our Agent will contact you soon</Text>
                         </View>
+                        <View style={{ flexDirection: "row", alignItems: "center", marginTop: 12 }}>
+                          <Text style={{ color: COLORS.fontWhite, fontSize: 14 }}>
+                            For urgent support,
+                          </Text>
+
+                          <TouchableOpacity onPress={() => Linking.openURL("tel:8108181602")}>
+                            <Text style={{ color: COLORS.secondaryColor, fontSize: 14, textDecorationLine: "underline", marginLeft: 4 }}>
+                              call here
+                            </Text>
+                          </TouchableOpacity>
+                        </View>
+
                       </Animatable.View>
                     </View>
                     <Button isLoading={isLeadApiLoading} buttonStye={{ marginHorizontal: 20, marginTop: 10 }} onClick={() => {
@@ -372,14 +405,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-evenly',
     marginBottom: 24,
+     flexWrap: "wrap",
   },
   subscription: {
+     width: "45%",    
     backgroundColor: 'rgba(255, 255, 255, 0.05)',
     borderRadius: 8,
     paddingVertical: 12,
     paddingHorizontal: 8,
     alignItems: 'center',
     position: 'relative',
+    marginBottom: 12,
   },
   bestValueCard: {
     borderColor: '#FF9800',

@@ -97,7 +97,7 @@ const PremiumResearch = () => {
                                 style={{ width: 30, height: 30, borderRadius: 50, marginRight: 10 }}
                             />
                             <Text style={[styles.boldText, { fontSize: 18, width: "75%" }]}>
-                                {data?.stock?.name || "NA"}
+                                {data?.title || "NA"}
                             </Text>
                         </View>
                         <View style={{ gap: 5 }}>
@@ -286,7 +286,7 @@ const PremiumResearch = () => {
                         style={{ width: 30, height: 30, borderRadius: 50, marginRight: 10 }}
                     />
                     <Text style={[styles.boldText, { fontSize: 18, width: "75%" }]}>
-                        {service?.stock?.name || "NA"}
+                        {service?.title || "NA"}
                     </Text>
                 </View>
                 <View style={styles.serviceDetails}>
