@@ -50,8 +50,8 @@ export default function Checkout() {
   const basePrice = selectedService.offer_price ?? selectedService.actual_price;
   const totalPrice = basePrice - discount;
 
-  // const baseAmount = totalPrice.toFixed(2); old value 
-  const baseAmount = Math.round(totalPrice); // new value 
+  // const baseAmount = totalPrice.toFixed(2); old value
+  const baseAmount = Math.round(totalPrice); // new value
 
   //remove All Tex for now in ui 25-11-25
   // const CGST = (baseAmount * 0.09).toFixed(2);
@@ -86,7 +86,7 @@ export default function Checkout() {
       let prePaymentDetails = {
         order_id: orderID,
         // order_amount: parseFloat(finalTotal),
-         order_amount: parseFloat(baseAmount),// new value
+        order_amount: parseFloat(baseAmount), // new value
         customer_id: profileData?.customer_id,
         referral_code: referral,
       };
@@ -441,18 +441,15 @@ export default function Checkout() {
             <View style={[styles.subscriptionHeader]}>
               <Text style={{ color: "#fff" }}>Grand Total</Text>
               <View>
-
-              <Text
-                style={[
-                  styles.subscriptionPrice,
-                  { color: COLORS.secondaryColor },
-                ]}
-              >
-                ₹{formatIndianNumber(baseAmount)}
-              </Text>
-              <Text style={styles.noteText}>
-                (Inclusive of all taxes*)
-              </Text>
+                <Text
+                  style={[
+                    styles.subscriptionPrice,
+                    { color: COLORS.secondaryColor },
+                  ]}
+                >
+                  ₹{formatIndianNumber(baseAmount)}
+                </Text>
+                <Text style={styles.noteText}>(Inclusive of all taxes*)</Text>
               </View>
             </View>
           </View>
@@ -472,6 +469,36 @@ export default function Checkout() {
           />
         </View>
 
+        <View
+          style={{
+            flexDirection: "row",
+            width: "100%",
+            justifyContent: "flex-end",
+            alignItems: "center",
+            paddingHorizontal: 20,
+            gap: 6,
+          }}
+        >
+          <Text style={{ color: COLORS.fontWhite, fontSize: 16, }}>
+            Got any questions
+          </Text>
+          <TouchableOpacity  onPress={() => Linking.openURL("tel:8108181602")}>
+            <Text
+              style={{
+                color: COLORS.fontWhite,
+                fontSize: 10,
+                fontWeight: "bold",
+                marginLeft: 4,
+                backgroundColor: COLORS.secondaryColor,
+                padding:8,
+                marginTop:5,
+                borderRadius:8,
+              }}
+            >
+              Speak to our Experts
+            </Text>
+          </TouchableOpacity>
+        </View>
         {/* Please Note Section */}
         <View style={styles.notesSection}>
           <Text style={styles.notesTitle}>Please Note</Text>

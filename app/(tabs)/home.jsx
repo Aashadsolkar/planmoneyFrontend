@@ -213,7 +213,8 @@ export default function Home() {
                           Starts From
                         </Text>
                         <Text style={{ fontSize: 12, color: COLORS.fontWhite }}>
-                          ₹{item.plans[0].offer_price}
+                          ₹{formatIndianNumber(sortPlansByActualPrice(item.plans)[0].offer_price)}
+                          
                         </Text>
                       </View>
                     ) : (

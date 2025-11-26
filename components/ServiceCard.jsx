@@ -290,12 +290,12 @@ const ServiceCard = ({
                         </View>
                         <View style={{ flexDirection: "row", alignItems: "center", marginTop: 12 }}>
                           <Text style={{ color: COLORS.fontWhite, fontSize: 14 }}>
-                            For urgent support,
+                            For Urgent Support,
                           </Text>
 
                           <TouchableOpacity onPress={() => Linking.openURL("tel:8108181602")}>
                             <Text style={{ color: COLORS.secondaryColor, fontSize: 14, textDecorationLine: "underline", marginLeft: 4 }}>
-                              call here
+                              Call Here
                             </Text>
                           </TouchableOpacity>
                         </View>
@@ -404,6 +404,7 @@ const styles = StyleSheet.create({
   subscriptions: {
     flexDirection: 'row',
     justifyContent: 'space-evenly',
+    gap: 8,
     marginBottom: 24,
      flexWrap: "wrap",
   },
@@ -425,8 +426,8 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: -10,
     backgroundColor: '#FF9800',
-    paddingHorizontal: 2,
-    paddingVertical: 2,
+    paddingHorizontal: 4,
+    paddingVertical: 4,
     borderRadius: 12,
   },
   bestValueText: {
