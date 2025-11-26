@@ -117,25 +117,27 @@ const Service = () => {
             </>
         }
         return allServices.map((service) => {
-            return (
-                <ServiceCard
-                    name={service.name}
-                    iconType="fa"
-                    startsAt={getLowestActualPricePlan(service?.plans)?.actual_price}
-                    isExpanded={expandedService === service.id}
-                    onToggle={() => toggleExpand(service.id)}
-                    plans={service?.plans}
-                    showDetails
-                    showSubscriptions
-                    key={service?.id}
-                    serviceId={service?.id}
-                    icon={icon[service?.id]}
-                    isPurchesed={service?.purchesed ?? false}
-                    is_advisor_assign={service?.is_advisor_assign ?? false}
-                    advisor_number={service?.advisor_number ?? ""}
-                    advisor_name={service?.advisor_name ?? ""}
-                />
-            )
+            if(service?.plans.length > 0) {
+                return (
+                    <ServiceCard
+                        name={service.name}
+                        iconType="fa"
+                        startsAt={getLowestActualPricePlan(service?.plans)?.actual_price}
+                        isExpanded={expandedService === service.id}
+                        onToggle={() => toggleExpand(service.id)}
+                        plans={service?.plans}
+                        showDetails
+                        showSubscriptions
+                        key={service?.id}
+                        serviceId={service?.id}
+                        icon={icon[service?.id]}
+                        isPurchesed={service?.purchesed ?? false}
+                        is_advisor_assign={service?.is_advisor_assign ?? false}
+                        advisor_number={service?.advisor_number ?? ""}
+                        advisor_name={service?.advisor_name ?? ""}
+                    />
+                )
+            }
         })
     }
 

@@ -109,7 +109,7 @@ const HistoryCardList = ({ dataList = [], status = "active", }) => {
                         {/* Stop loss + duration */}
                         <View style={styles.cardSections}>
                             <View style={{ flex: 1 }}>
-                                <Text style={styles.lightText}>Gains/loss</Text>
+                                <Text style={styles.lightText}>Gains/Loss</Text>
                                 <Text
                                     style={[
                                         styles.boldText,
@@ -118,7 +118,7 @@ const HistoryCardList = ({ dataList = [], status = "active", }) => {
                                             : styles.redText,
                                     ]}
                                 >
-                                    ₹{Number.isFinite(Number(data?.gain_loss_price)) ? Number(data?.gain_loss_price) : 0}
+                                    {Number.isFinite(Number(data?.gain_loss_price)) ? Number(data?.gain_loss_price) : 0}%
                                 </Text>
                             </View>
                             <View style={{ flex: 1 }}>

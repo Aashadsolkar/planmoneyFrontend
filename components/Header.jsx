@@ -799,9 +799,8 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     paddingHorizontal: 16,
-    paddingVertical: 20,
+    paddingVertical: 8,
     backgroundColor: COLORS.cardColor,
-
     elevation: 5,
   },
   leftSection: {

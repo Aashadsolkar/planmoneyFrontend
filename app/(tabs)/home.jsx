@@ -27,7 +27,7 @@ import { useHomeData } from "@hooks/useHomeData";
 import StockOptionSlider from "@components/StockOtionSlider";
 import QuestionerModal from "@components/QuestionerModal";
 import { Image } from "expo-image";
-import { formatDateToDDMMYYYY } from "../../utils/commonFunctions";
+import { formatDateToDDMMYYYY, formatIndianNumber } from "../../utils/commonFunctions";
 import { PSIcon } from "../../assets/images/SVG";
 
 const { height, width } = Dimensions.get("window");
@@ -168,6 +168,11 @@ export default function Home() {
     navigation.navigate("service");
   };
 
+  const sortPlansByActualPrice = (plans) => {
+    if (!Array.isArray(plans)) return [];
+    return plans.sort((a, b) => parseFloat(a.actual_price) - parseFloat(b.actual_price));
+  };
+
   // Render services carousel item
   const renderServiceItem = ({ item }) => {
     const is__not_subscribed = !item.is_subscribed;
@@ -190,7 +195,7 @@ export default function Home() {
             }
             style={[styles.serviceCard]}
           >
-            <Text style={styles.serviceTitle}>{item?.name}</Text>
+            <Text allowFontScaling={false} style={styles.serviceTitle}>{item?.name}</Text>
             <View style={styles.serviceInfoRow}></View>
             <View style={styles.serviceFooter}>
               {is__not_subscribed ? (
@@ -205,7 +210,7 @@ export default function Home() {
                     {item.plans?.length > 0 && item.plans?.[0]?.offer_price ? (
                       <View style={{ justifyContent: "center", marginRight: 18 }}>
                         <Text style={{ fontSize: 10, color: COLORS.fontWhite }}>
-                          Start from
+                          Starts From
                         </Text>
                         <Text style={{ fontSize: 12, color: COLORS.fontWhite }}>
                           ₹{item.plans[0].offer_price}
@@ -257,8 +262,8 @@ export default function Home() {
               ) : (
                 <>
                   <View>
-                    <Text style={styles.updateText}>Expire On</Text>
-                    <Text style={styles.dateText}>
+                    <Text allowFontScaling={false} style={styles.updateText}>Expire On</Text>
+                    <Text allowFontScaling={false} style={styles.dateText}>
                       {formatDateToDDMMYYYY(item?.subscription?.end_at)}
                     </Text>
                   </View>
@@ -470,7 +475,7 @@ export default function Home() {
         {/* Services Section */}
         <View style={styles.sectionContainer}>
           <Text style={styles.sectionTitle}>
-            {purchesService.length > 0 ? "Your Services" : "Buy Service"}
+            {purchesService.length > 0 ? "Your Services" : "Explore"}
           </Text>
           {renderServices()}
         </View>
@@ -494,7 +499,7 @@ export default function Home() {
                   color={COLORS.secondaryColor}
                 />
               </View>
-              <Text style={styles.linkText}>Recommendation History</Text>
+              <Text allowFontScaling={false} style={styles.linkText}>Recommendation History</Text>
             </TouchableOpacity>
           </Animatable.View>
           <Animatable.View
