@@ -41,9 +41,11 @@ const NewsCard = ({ title = "", summary = "", id, link }) => (
       <Text style={styles.title} numberOfLines={1}>
         {title}
       </Text>
-      {link && <Link href={link || ""} style={{ marginTop: 10, color: "#1e90ff" }}>
-        {link}
-      </Link>}
+      {link && (
+        <Link href={link || ""} style={{ marginTop: 10, color: "#1e90ff" }}>
+          {link}
+        </Link>
+      )}
       <Text style={styles.summary} numberOfLines={2}>
         {summary}
       </Text>
@@ -70,7 +72,7 @@ export default function Home() {
     isQuestionerFillderByAdvisor,
     profileData,
     advertisement,
-    isNewArrivalsNotOpen
+    isNewArrivalsNotOpen,
   } = useAuth();
   const navigation = useNavigation();
   const { isLoading, refreshing, onRefresh } = useHomeData();
@@ -139,7 +141,7 @@ export default function Home() {
   }, [portfolioServices, advertisement]);
 
   const handleClick = (item, is__not_subscribed) => {
-    if(!is__not_subscribed){
+    if (!is__not_subscribed) {
       if ([1, 6].includes(item?.id)) {
         router.push({
           pathname: `/fastlane/${item?.id}`,
@@ -200,20 +202,54 @@ export default function Home() {
                       width: "100%",
                     }}
                   >
-                    <View style={{ justifyContent: "center", paddingEnd: 20 }}>
-                      <Text style={{ fontSize: 10, color: COLORS.fontWhite }}>
-                        Start from
-                      </Text>
-                      <Text style={{ fontSize: 12, color: COLORS.fontWhite }}>
-                        ₹{item.plans?.[0]?.offer_price}
-                      </Text>
-                    </View>
+                    {item.plans?.length > 0 && item.plans?.[0]?.offer_price ? (
+                      <View style={{ justifyContent: "center", marginRight: 18 }}>
+                        <Text style={{ fontSize: 10, color: COLORS.fontWhite }}>
+                          Start from
+                        </Text>
+                        <Text style={{ fontSize: 12, color: COLORS.fontWhite }}>
+                          ₹{item.plans[0].offer_price}
+                        </Text>
+                      </View>
+                    ) : (
+                      <View style={{ justifyContent: "center" }}>
+                      </View>
+                    )}
+
                     <View style={{ flex: 1 }}>
                       <Button
-                        onClick={() => handleServiceClick(item)}
-                        label={"subscribe now"}
-                        gradientColor={["#D36C32", "#F68F00"]}
-                        buttonStye={{ padding: 10 }}
+                        onClick={() => {
+                          if (
+                            item.plans?.length > 0 &&
+                            item.plans?.[0]?.offer_price
+                          ) {
+                            handleServiceClick(item);
+                          }
+                        }}
+                        label={
+                          item.plans?.length > 0 && item.plans?.[0]?.offer_price
+                            ? "Subscribe now"
+                            : "Coming soon"
+                        }
+                        gradientColor={
+                          item.plans?.length > 0 && item.plans?.[0]?.offer_price
+                            ? ["#D36C32", "#F68F00"]
+                            : ["#6a6a6aff", "#dededeff"] // gray-out button when disabled
+                        }
+                        buttonStye={{
+                          padding: 10,
+                          opacity:
+                            item.plans?.length > 0 &&
+                            item.plans?.[0]?.offer_price
+                              ? 1
+                              : 0.6,
+                        }}
+                        disabled={
+                          !(
+                            item.plans?.length > 0 &&
+                            item.plans?.[0]?.offer_price
+                          )
+                        }
                       />
                     </View>
                   </View>
@@ -239,7 +275,9 @@ export default function Home() {
   const renderServices = () => {
     const renderData = purchesService.length > 0 ? purchesService : allServices;
     // removing new arrivals
-    const filteredData = renderData.filter(item => !removeIds.includes(item.id));
+    const filteredData = renderData.filter(
+      (item) => !removeIds.includes(item.id)
+    );
     const handleServiceScroll = (event) => {
       const scrollX = event.nativeEvent.contentOffset.x;
       const index = Math.round(scrollX / SERVICE_CARD_WIDTH); // adjust 180 based on your service card width
@@ -251,7 +289,9 @@ export default function Home() {
         <FlatList
           data={filteredData}
           renderItem={renderServiceItem}
-          keyExtractor={(item, index) => item?.id?.toString() ?? index.toString()}
+          keyExtractor={(item, index) =>
+            item?.id?.toString() ?? index.toString()
+          }
           horizontal
           onScroll={handleServiceScroll}
           scrollEventThrottle={16}
@@ -334,13 +374,15 @@ export default function Home() {
         <View style={styles.carouselContainer}>
           <FlatList
             data={offerData}
-            keyExtractor={(item, index) => item?.id?.toString() ?? index.toString()}
+            keyExtractor={(item, index) =>
+              item?.id?.toString() ?? index.toString()
+            }
             horizontal
             showsHorizontalScrollIndicator={false}
             snapToInterval={ITEM_WIDTH}
             decelerationRate="fast"
             contentContainerStyle={{
-              paddingHorizontal: SPACING
+              paddingHorizontal: SPACING,
             }}
             renderItem={({ item, index }) => (
               <Animatable.View
@@ -348,23 +390,27 @@ export default function Home() {
                 delay={index * 100}
                 duration={300}
               >
-                <TouchableOpacity 
+                <TouchableOpacity
                   onPress={
                     item?.service_id
                       ? () => {
-                        setServiceSelectedOnHomePage(item?.service_id);
-                        router.push("service");
-                      }
-                      : () => { }
+                          setServiceSelectedOnHomePage(item?.service_id);
+                          router.push("service");
+                        }
+                      : () => {}
                   }
                 >
                   <Image
-                    source={typeof item.banner_url === 'string' ? { uri: item.banner_url } : item.banner_url}
+                    source={
+                      typeof item.banner_url === "string"
+                        ? { uri: item.banner_url }
+                        : item.banner_url
+                    }
                     style={{
                       width: ITEM_WIDTH,
                       height: 177,
                       borderRadius: 10,
-                      overflow: 'hidden',
+                      overflow: "hidden",
                       marginHorizontal: 5,
                     }}
                     contentFit="fill"
@@ -375,17 +421,19 @@ export default function Home() {
             onScroll={(e) => {
               // const index = Math.round(e.nativeEvent.contentOffset.x / ITEM_WIDTH);
               const maxIndex = Math.max(0, offerData.length - 1);
-              const index = Math.min(maxIndex, Math.round(e.nativeEvent.contentOffset.x / ITEM_WIDTH));
+              const index = Math.min(
+                maxIndex,
+                Math.round(e.nativeEvent.contentOffset.x / ITEM_WIDTH)
+              );
               setActiveIndex(index); // use this for dot indicators
             }}
-
           />
           {/* Dot Indicators */}
           {showOffterSliderDots()}
         </View>
-      )
+      );
     }
-  }
+  };
 
   const renderContent = () => {
     if (isLoading) {
@@ -437,7 +485,7 @@ export default function Home() {
           >
             <TouchableOpacity
               onPress={() => router.push("history")}
-              style={{alignItems: "center"}}
+              style={{ alignItems: "center" }}
             >
               <View style={styles.linkIconContainer}>
                 <FontAwesome6
@@ -457,7 +505,7 @@ export default function Home() {
           >
             <TouchableOpacity
               onPress={() => router.push("sip")}
-              style={{alignItems: "center"}}
+              style={{ alignItems: "center" }}
             >
               <View style={styles.linkIconContainer}>
                 <Ionicons name="calculator" size={40} color="#FFA500" />
@@ -472,10 +520,23 @@ export default function Home() {
             duration={200}
             style={styles.linkItem}
           >
-            {isNewArrivalsNotOpen ? <View style={{width:10, height:10, backgroundColor: "red", borderRadius: "50%", position: "absolute", top: 13, right: 28, zIndex: 9999 }}></View> : null }
+            {isNewArrivalsNotOpen ? (
+              <View
+                style={{
+                  width: 10,
+                  height: 10,
+                  backgroundColor: "red",
+                  borderRadius: "50%",
+                  position: "absolute",
+                  top: 13,
+                  right: 28,
+                  zIndex: 9999,
+                }}
+              ></View>
+            ) : null}
             <TouchableOpacity
               onPress={() => router.push("newArrivals")}
-              style={{alignItems: "center"}}
+              style={{ alignItems: "center" }}
             >
               <View style={styles.linkIconContainer}>
                 <Foundation
@@ -497,7 +558,7 @@ export default function Home() {
             style={styles.linkItem}
           >
             <TouchableOpacity
-            style={{alignItems: "center"}}
+              style={{ alignItems: "center" }}
               onPress={() => router.push("premiumResearch")}
             >
               <View style={styles.linkIconContainer}>
@@ -652,17 +713,17 @@ const styles = StyleSheet.create({
     marginTop: "auto",
   },
   linksContainer: {
-    flex:1,
+    flex: 1,
     flexDirection: "row",
     justifyContent: "space-between",
     marginHorizontal: 10,
     // marginVertical:15,
     marginTop: 15,
-    marginBottom: 10
+    marginBottom: 10,
   },
   linkItem: {
     alignItems: "center",
-    width: "25%"
+    width: "25%",
   },
   linkIconContainer: {
     width: 70,
@@ -676,7 +737,7 @@ const styles = StyleSheet.create({
   linkText: {
     color: "white",
     fontSize: 11,
-    textAlign: "center"
+    textAlign: "center",
   },
   newsContainer: {
     paddingHorizontal: 20,

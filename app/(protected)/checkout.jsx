@@ -50,14 +50,17 @@ export default function Checkout() {
   const basePrice = selectedService.offer_price ?? selectedService.actual_price;
   const totalPrice = basePrice - discount;
 
-  const baseAmount = totalPrice.toFixed(2);
-  const CGST = (baseAmount * 0.09).toFixed(2);
-  const SGST = (baseAmount * 0.09).toFixed(2);
-  const finalTotal = (
-    parseFloat(baseAmount) +
-    parseFloat(CGST) +
-    parseFloat(SGST)
-  ).toFixed(2);
+  // const baseAmount = totalPrice.toFixed(2); old value 
+  const baseAmount = Math.round(totalPrice); // new value 
+
+  //remove All Tex for now in ui 25-11-25
+  // const CGST = (baseAmount * 0.09).toFixed(2);
+  // const SGST = (baseAmount * 0.09).toFixed(2);
+  // const finalTotal = (
+  //   parseFloat(baseAmount) +
+  //   parseFloat(CGST) +
+  //   parseFloat(SGST)
+  // ).toFixed(2);
   const isSpecialService = [5, 6].includes(Number(selectedService?.serviceId));
 
   const insets = useSafeAreaInsets();
@@ -72,7 +75,7 @@ export default function Checkout() {
       const orderID = generateOrderNumber();
       const payload = {
         order_id: orderID,
-        order_amount: parseFloat(baseAmount),
+        order_amount: baseAmount,
         customer_id: profileData?.customer_id,
         customer_email: profileData?.email,
         customer_phone: profileData?.phone?.replace(/\D/g, ""),
@@ -82,7 +85,8 @@ export default function Checkout() {
       setIsLoading(false);
       let prePaymentDetails = {
         order_id: orderID,
-        order_amount: parseFloat(finalTotal),
+        // order_amount: parseFloat(finalTotal),
+         order_amount: parseFloat(baseAmount),// new value
         customer_id: profileData?.customer_id,
         referral_code: referral,
       };
@@ -366,7 +370,7 @@ export default function Checkout() {
             </View>
           )}
 
-          <View
+          {/* <View
             style={{
               borderTopWidth: 1,
               borderBlockColor: COLORS.primaryColor,
@@ -385,8 +389,8 @@ export default function Checkout() {
                 ₹{formatIndianNumber(baseAmount)}
               </Text>
             </View>
-          </View>
-          <View
+          </View> */}
+          {/* <View
             style={{
               borderTopWidth: 1,
               borderBlockColor: COLORS.primaryColor,
@@ -425,7 +429,7 @@ export default function Checkout() {
                 ₹{formatIndianNumber(SGST)}
               </Text>
             </View>
-          </View>
+          </View> */}
           <View
             style={{
               borderTopWidth: 1,
@@ -436,14 +440,20 @@ export default function Checkout() {
           >
             <View style={[styles.subscriptionHeader]}>
               <Text style={{ color: "#fff" }}>Grand Total</Text>
+              <View>
+
               <Text
                 style={[
                   styles.subscriptionPrice,
                   { color: COLORS.secondaryColor },
                 ]}
               >
-                ₹{formatIndianNumber(finalTotal)}
+                ₹{formatIndianNumber(baseAmount)}
               </Text>
+              <Text style={styles.noteText}>
+                (Inclusive of all taxes*)
+              </Text>
+              </View>
             </View>
           </View>
         </View>
@@ -522,7 +532,7 @@ export default function Checkout() {
         <Button
           isLoading={isLoading}
           onClick={() => handleSubmit()}
-          label={`PAY ₹${formatIndianNumber(finalTotal)}`}
+          label={`PAY ₹${formatIndianNumber(baseAmount)}`}
           gradientColor={["#D36C32", "#F68F00"]}
           buttonStye={{ marginHorizontal: 10, marginBottom: 10 }}
         />

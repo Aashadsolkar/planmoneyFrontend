@@ -1,8 +1,8 @@
 import { createContext, useEffect, useState } from "react";
 // ✅ REPLACED: AsyncStorage with SecureStore
-import * as SecureStore from 'expo-secure-store';
+import * as SecureStore from "expo-secure-store";
 import { router } from "expo-router";
-
+import jwtDecode from "jwt-decode";
 export const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
@@ -28,15 +28,16 @@ const AuthProvider = ({ children }) => {
   const [isProfileLoading, setIsProfileLoading] = useState(false);
   const [newArrivalsDetails, setNewArrivalsDetails] = useState([]);
   const [optionStockData, setOptionStockData] = useState([]);
-  const [isQuestionerFillderByAdvisor, setIsQuestionerFillderByAdvisor] = useState(false);
+  const [isQuestionerFillderByAdvisor, setIsQuestionerFillderByAdvisor] =
+    useState(false);
   const [digiLockerRequestId, setDigiLockerRequestId] = useState(false);
   const [advertisement, setAdvertisement] = useState([]);
   const [isNewArrivalsNotOpen, setIsNewArrivalsNotOpen] = useState(true);
 
+  let logoutTimer = null;
   useEffect(() => {
     let isMounted = true;
 
-    // ✅ UPDATED: SecureStore version with same logic
     const loadSession = async () => {
       try {
         // ✅ SECURE: Load both values in parallel using SecureStore
@@ -45,67 +46,106 @@ const AuthProvider = ({ children }) => {
           SecureStore.getItemAsync("user"),
         ]);
 
-        // ✅ SAME: Only update state if component is still mounted
         if (isMounted) {
           if (storedToken && storedUser) {
-            setToken(storedToken);
-            setUser(JSON.parse(storedUser));
+            const isExpired = checkTokenExpiry(storedToken);
+            if (isExpired) {
+              console.log("🔴 Token expired on startup — logging out");
+              await logout();
+            } else {
+              setToken(storedToken);
+              setUser(JSON.parse(storedUser));
+              scheduleAutoLogout(storedToken);
+            }
           }
           setLoading(false);
         }
       } catch (e) {
         console.error("Failed to load auth session", e);
-        // ✅ SAME: Safe state update
-        if (isMounted) {
-          setLoading(false);
-        }
+        if (isMounted) setLoading(false);
       }
     };
 
     loadSession();
     return () => {
       isMounted = false;
+      if (logoutTimer) clearTimeout(logoutTimer);
     };
   }, []);
+
+  const checkTokenExpiry = (jwt) => {
+    try {
+      const decoded = jwtDecode(jwt);
+      const currentTime = Date.now() / 1000;
+      if (decoded.exp && decoded.exp < currentTime) return true;
+      return false;
+    } catch (err) {
+      console.log("Token decode error:", err);
+      return true;
+    }
+  };
+
+  // ✅ Helper: Schedule auto logout
+  const scheduleAutoLogout = (jwt) => {
+    if (logoutTimer) clearTimeout(logoutTimer);
+
+    try {
+      const decoded = jwtDecode(jwt);
+      if (!decoded.exp) return;
+
+      const currentTime = Date.now() / 1000;
+      const expiresIn = decoded.exp - currentTime;
+      if (expiresIn > 0) {
+        console.log(`🕒 Auto logout scheduled in ${Math.floor(expiresIn)}s`);
+        logoutTimer = setTimeout(() => {
+          console.log("⏰ Token expired — auto logging out");
+          logout();
+        }, expiresIn * 1000);
+      }
+    } catch (err) {
+      console.log("Failed to schedule logout:", err);
+    }
+  };
 
   // ✅ UPDATED: SecureStore version
   const storeUserData = async (user, token) => {
     try {
       setToken(token);
       setUser(user);
-      
+
       // ✅ SECURE: Store in parallel using SecureStore
       await Promise.all([
         SecureStore.setItemAsync("token", token),
-        SecureStore.setItemAsync("user", JSON.stringify(user))
+        SecureStore.setItemAsync("user", JSON.stringify(user)),
       ]);
+      scheduleAutoLogout(token);
     } catch (error) {
       console.error("Failed to store user data:", error);
       throw error;
     }
   };
 
-  // ✅ UPDATED: SecureStore version  
-  const verifyOtp = async (phone, otp) => {
-    const { token, user } = {
-      token: "1231231312asda",
-      user: { name: "Aashad" },
-    };
-    
-    try {
-      setToken(token);
-      setUser(user);
-      
-      // ✅ SECURE: Store in parallel using SecureStore
-      await Promise.all([
-        SecureStore.setItemAsync("token", token),
-        SecureStore.setItemAsync("user", JSON.stringify(user))
-      ]);
-    } catch (error) {
-      console.error("Failed to store verification data:", error);
-      throw error;
-    }
-  };
+  // ✅ UPDATED: SecureStore version
+  // const verifyOtp = async (phone, otp) => {
+  //   const { token, user } = {
+  //     token: "1231231312asda",
+  //     user: { name: "Aashad" },
+  //   };
+
+  //   try {
+  //     setToken(token);
+  //     setUser(user);
+
+  //     // ✅ SECURE: Store in parallel using SecureStore
+  //     await Promise.all([
+  //       SecureStore.setItemAsync("token", token),
+  //       SecureStore.setItemAsync("user", JSON.stringify(user)),
+  //     ]);
+  //   } catch (error) {
+  //     console.error("Failed to store verification data:", error);
+  //     throw error;
+  //   }
+  // };
 
   // ✅ UPDATED: SecureStore version with individual key deletion
   const logout = async () => {
@@ -127,7 +167,7 @@ const AuthProvider = ({ children }) => {
     setSelectedService([]);
     setAllServices([]);
     setGetCustomerDataAgain(true);
-    
+
     try {
       // ✅ SECURE: Clear SecureStore data (no clear() method, so delete individually)
       const keysToDelete = [
@@ -149,7 +189,7 @@ const AuthProvider = ({ children }) => {
           }
         })
       );
-      
+
       router.push("/login");
     } catch (error) {
       console.error("Logout error:", error);
@@ -164,7 +204,7 @@ const AuthProvider = ({ children }) => {
         user,
         token,
         storeUserData,
-        verifyOtp,
+        // verifyOtp,
         logout,
         loading,
         setSelectedService,

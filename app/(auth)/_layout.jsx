@@ -6,8 +6,6 @@ import CustomAppLoader from "@components/CustomLoader/Index";
 export default function AuthLayout() {
   const { user, token, loading } = useAuth();
 
- 
-
   useEffect(() => {
   if (!loading) {
     if (user && token) {
