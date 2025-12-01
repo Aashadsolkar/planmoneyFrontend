@@ -168,9 +168,10 @@ const ServiceDetailScreen = () => {
         </View>
 
         <TouchableOpacity style={styles.pdfButton} onPress={() => router.push({
-          pathname: "/newArrivalPDF",
+          pathname: "/openPdf",
           params: {
-            report: newArrivalsDetails?.report
+            // doc_file: newArrivalsDetails?.doc_file
+            url: newArrivalsDetails?.doc_file
           }
         })}>
           <Text style={styles.pdfButtonText}>View PDF</Text>

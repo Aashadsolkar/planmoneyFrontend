@@ -10,10 +10,12 @@ import Header from '@components/Header';
 import Button from '@components/Button';
 import RenderHTML from 'react-native-render-html';
 import { StatusBar } from 'expo-status-bar';
+import { WebView } from 'react-native-webview';
 
 const FastLane = () => {
     const { reportData } = useAuth();
     const { serviceData, serviceID } = reportData;
+    const [webViewHeight, setWebViewHeight] = useState(500);
 
 
     const { width } = useWindowDimensions();
@@ -21,29 +23,29 @@ const FastLane = () => {
         return (
             <View style={styles.card} key={data?.id}>
                 <View style={styles.cardSections}>
-                    <View style={{flex:1}}>
+                    <View style={{ flex: 1 }}>
                         <Text style={styles.lightText}>Entry Level</Text>
                         <Text style={styles.boldText}>₹{data?.buy_price}</Text>
                     </View>
-                    <View style={{flex:1}}>
+                    <View style={{ flex: 1 }}>
                         <Text style={styles.lightText}>Duration</Text>
                         <Text style={styles.boldText}>{data?.holding_period} days</Text>
                     </View>
-                    <View style={{flex:1}}>
+                    <View style={{ flex: 1 }}>
                         <Text style={styles.lightText}>Upside</Text>
                         <Text style={[styles.boldText, styles.greenText]}>{data?.upside}%</Text>
                     </View>
                 </View>
                 <View style={[styles.cardSections, { borderBottomColor: COLORS.cardColor }]}>
-                    <View style={{flex:1}}>
+                    <View style={{ flex: 1 }}>
                         <Text style={styles.lightText}>Stop Loss</Text>
                         <Text style={[styles.boldText, styles.redText, styles.font12]}>₹{data?.stop_loss_price}</Text>
                     </View>
-                    <View style={{flex:1}}>
+                    <View style={{ flex: 1 }}>
                         <Text style={styles.lightText}>Target</Text>
                         <Text style={[styles.boldText, styles.greenText, styles.font12]}>₹{data?.target_price}</Text>
                     </View>
-                    <View style={{flex:1}}>
+                    <View style={{ flex: 1 }}>
                         {/* <Text style={styles.lightText}>Target 2</Text>
                         <Text style={[styles.boldText, styles.greenText, styles.font12]}>₹{data?.target_2}</Text> */}
                     </View>
@@ -101,11 +103,69 @@ const FastLane = () => {
             >
                 {renderCardList(serviceData)}
 
-                <RenderHTML
-                    contentWidth={width}
-                    source={{ html: serviceData.report }}
-                    baseStyle={{ color: COLORS.fontWhite, fontSize: 14 }}
+
+
+                <WebView
+                    originWhitelist={['*']}
+                    source={{
+                        html: `
+      <html>
+        <head>
+          <meta name="viewport" content="width=device-width, initial-scale=1">
+           <style>
+            body { margin: 0; padding: 10px; color: ${COLORS.fontWhite}; font-size: 14px; }
+
+            /* 🔥 Responsive image fix */
+            img {
+              max-width: 100%;
+              width: 100%;
+              height: auto;
+              object-fit: contain;
+            }
+            
+            p{
+              line-height: 20px
+            }
+
+            table {
+              width: 100% !important;
+            }
+
+            * {
+              box-sizing: border-box;
+            }
+          </style>
+          <script>
+            function sendHeight() {
+              const height = Math.max(
+                document.body.scrollHeight,
+                document.documentElement.scrollHeight
+              );
+              window.ReactNativeWebView.postMessage(height);
+            }
+            
+            window.addEventListener('load', sendHeight);
+            window.addEventListener('resize', sendHeight);
+
+            // Recalculate every 300ms for async content
+            setInterval(sendHeight, 300);
+          </script>
+        </head>
+        <body>
+          ${serviceData.report}
+        </body>
+      </html>
+    `
+                    }}
+                    javaScriptEnabled={true}
+                    onMessage={(e) => {
+                        const height = Number(e.nativeEvent.data);
+                        if (height > 0) setWebViewHeight(height + 20);
+                    }}
+                    style={{ height: webViewHeight, backgroundColor: COLORS.primaryColor }}
                 />
+
+
             </ScrollView>
         </SafeAreaView>
     );
