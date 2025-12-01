@@ -1,60 +1,62 @@
-import React from "react";
-import {
-  StyleSheet,
-  Dimensions,
-} from "react-native";
-import { WebView } from "react-native-webview";
+import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { StyleSheet, View, ActivityIndicator, Dimensions } from "react-native";
+import PDF from "react-native-pdf";
 import Header from "@components/Header";
 import { COLORS } from "../constants";
-import { useLocalSearchParams } from "expo-router"
+import { useLocalSearchParams } from "expo-router";
 
 export default function PdfViewer() {
   const { url } = useLocalSearchParams();
+  const [loading, setLoading] = useState(true);
+
+  const source = {
+    uri: `https://admin.planmoney.in/${url}`,
+    cache: true,
+  };
 
   return (
-    <SafeAreaView edges={[]} style={styles.safeArea}>
-      {/* Header with Back Button */}
+    <SafeAreaView edges={["bottom"]} style={styles.safeArea}>
       <Header showBackButton={true} />
-
-      {/* PDF Viewer */}
-      <WebView
-        source={{
-          uri: `https://docs.google.com/gview?embedded=true&url=https://admin.planmoney.in/${url}`
-        }}
-        style={styles.webview}
-      />
+      <View style={styles.container}>
+        <PDF
+          source={source}
+          style={styles.pdf}
+          onLoadStart={() => setLoading(true)}
+          onLoadComplete={() => setLoading(false)}
+          trustAllCerts={false}
+        />
+        {loading && (
+          <View style={styles.loadingOverlay}>
+            <ActivityIndicator size="large" color={COLORS.secondaryColor} />
+          </View>
+        )}
+      </View>
     </SafeAreaView>
   );
 }
 
+const { width, height } = Dimensions.get("window");
+
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: COLORS.cardColor,
+    backgroundColor: COLORS.primaryColor,
   },
-  header: {
-    height: 50,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: 15,
-    backgroundColor: "#f2f2f2",
-    borderBottomWidth: 1,
-    borderBottomColor: "#ddd",
-  },
-  backText: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#007AFF",
-  },
-  title: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: "#333",
-  },
-  webview: {
+  container: {
     flex: 1,
-    width: Dimensions.get("window").width,
+    width: width,
+    height: height - 50, // Adjust for header height if needed
+  },
+  pdf: {
+    flex: 1,
+    width: "100%",
+    height: "100%",
+  },
+  loadingOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: COLORS.primaryColor,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });

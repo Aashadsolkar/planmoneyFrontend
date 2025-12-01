@@ -2,7 +2,7 @@
   "expo": {
     "name": "PlanMoney",
     "slug": "PlanMoney",
-    "version": "2.2.1",
+    "version": "2.2.2",
     "orientation": "portrait",
     "scheme": "planmoney",
     "userInterfaceStyle": "automatic",
