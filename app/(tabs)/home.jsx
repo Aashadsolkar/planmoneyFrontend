@@ -234,7 +234,7 @@ export default function Home() {
                         }}
                         label={
                           item.plans?.length > 0 && item.plans?.[0]?.offer_price
-                            ? "Subscribe now"
+                            ? "Subscribe"
                             : "Coming soon"
                         }
                         gradientColor={
@@ -500,7 +500,7 @@ export default function Home() {
                   color={COLORS.secondaryColor}
                 />
               </View>
-              <Text allowFontScaling={false} style={styles.linkText}>Recommendation History</Text>
+              <Text allowFontScaling={false} style={styles.linkText}>History</Text>
             </TouchableOpacity>
           </Animatable.View>
           <Animatable.View

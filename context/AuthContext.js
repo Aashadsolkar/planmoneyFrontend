@@ -1,8 +1,9 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useEffect, useRef, useState } from "react";
 // ✅ REPLACED: AsyncStorage with SecureStore
 import * as SecureStore from "expo-secure-store";
 import { router } from "expo-router";
-import jwtDecode from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
+
 export const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
@@ -14,7 +15,8 @@ const AuthProvider = ({ children }) => {
   const [allServices, setAllServices] = useState([]);
   const [skipServices, setSkipServices] = useState(false);
   const [skipQuestioniar, setSkipQuestioniar] = useState(false);
-  const [serviceSelectedOnHomePage, setServiceSelectedOnHomePage] = useState(null);
+  const [serviceSelectedOnHomePage, setServiceSelectedOnHomePage] =
+    useState(null);
   const [profileData, setProfileData] = useState({});
   const [orderConfirmDetails, setOrderCinfirmDetails] = useState({});
   const [questionFormData, setQuestionFormData] = useState(null);
@@ -34,10 +36,8 @@ const AuthProvider = ({ children }) => {
   const [advertisement, setAdvertisement] = useState([]);
   const [isNewArrivalsNotOpen, setIsNewArrivalsNotOpen] = useState(true);
 
-  let logoutTimer = null;
+  const logoutTimer = useRef(null);
   useEffect(() => {
-    let isMounted = true;
-
     const loadSession = async () => {
       try {
         // ✅ SECURE: Load both values in parallel using SecureStore
@@ -45,40 +45,46 @@ const AuthProvider = ({ children }) => {
           SecureStore.getItemAsync("token"),
           SecureStore.getItemAsync("user"),
         ]);
-
-        if (isMounted) {
-          if (storedToken && storedUser) {
-            const isExpired = checkTokenExpiry(storedToken);
-            if (isExpired) {
-              console.log("🔴 Token expired on startup — logging out");
-              await logout();
-            } else {
-              setToken(storedToken);
-              setUser(JSON.parse(storedUser));
-              scheduleAutoLogout(storedToken);
+     
+        if (storedToken) {
+          const isExpired = checkTokenExpiry(storedToken);
+          if (isExpired) {
+            console.log("🔴 Token expired on startup — logging out");
+            // await logout();
+            await clearSecureData();
+          } else {
+            let parsedUser = null;
+            try {
+              parsedUser = storedUser ? JSON.parse(storedUser) : null;
+            } catch (err) {
+              console.log("Error parsing stored user:", err);
             }
+            setToken(storedToken);
+            setUser(parsedUser);
+            scheduleAutoLogout(storedToken);
           }
-          setLoading(false);
         }
-      } catch (e) {
-        console.error("Failed to load auth session", e);
-        if (isMounted) setLoading(false);
+        setLoading(false);
+      } catch (error) {
+        console.error("Failed to load session:", error);
+        setLoading(false);
       }
     };
-
     loadSession();
     return () => {
-      isMounted = false;
-      if (logoutTimer) clearTimeout(logoutTimer);
+      if (logoutTimer.current) clearTimeout(logoutTimer.current);
     };
   }, []);
 
   const checkTokenExpiry = (jwt) => {
     try {
       const decoded = jwtDecode(jwt);
+      let exp = decoded.exp;
+
+      if (exp > 10000000000) exp = Math.floor(exp / 1000);
+
       const currentTime = Date.now() / 1000;
-      if (decoded.exp && decoded.exp < currentTime) return true;
-      return false;
+      return exp < currentTime;
     } catch (err) {
       console.log("Token decode error:", err);
       return true;
@@ -86,25 +92,24 @@ const AuthProvider = ({ children }) => {
   };
 
   // ✅ Helper: Schedule auto logout
-  const scheduleAutoLogout = (jwt) => {
-    if (logoutTimer) clearTimeout(logoutTimer);
+   const scheduleAutoLogout = (jwt) => {
+    if (logoutTimer.current) clearTimeout(logoutTimer.current);
 
     try {
       const decoded = jwtDecode(jwt);
-      if (!decoded.exp) return;
+      let exp = decoded.exp;
+
+      if (exp > 10000000000) exp = Math.floor(exp / 1000);
 
       const currentTime = Date.now() / 1000;
-      const expiresIn = decoded.exp - currentTime;
+      const expiresIn = exp - currentTime;
+
       if (expiresIn > 0) {
-        console.log(`🕒 Auto logout scheduled in ${Math.floor(expiresIn)}s`);
-        logoutTimer = setTimeout(() => {
-          console.log("⏰ Token expired — auto logging out");
+        logoutTimer.current = setTimeout(() => {
           logout();
         }, expiresIn * 1000);
       }
-    } catch (err) {
-      console.log("Failed to schedule logout:", err);
-    }
+    } catch {}
   };
 
   // ✅ UPDATED: SecureStore version
@@ -125,27 +130,14 @@ const AuthProvider = ({ children }) => {
     }
   };
 
-  // ✅ UPDATED: SecureStore version
-  // const verifyOtp = async (phone, otp) => {
-  //   const { token, user } = {
-  //     token: "1231231312asda",
-  //     user: { name: "Aashad" },
-  //   };
-
-  //   try {
-  //     setToken(token);
-  //     setUser(user);
-
-  //     // ✅ SECURE: Store in parallel using SecureStore
-  //     await Promise.all([
-  //       SecureStore.setItemAsync("token", token),
-  //       SecureStore.setItemAsync("user", JSON.stringify(user)),
-  //     ]);
-  //   } catch (error) {
-  //     console.error("Failed to store verification data:", error);
-  //     throw error;
-  //   }
-  // };
+  const clearSecureData = async () => {
+    const keys = ["token", "user", "hasLaunched", "biometric_enabled", "refresh_token"];
+    try {
+      await Promise.all(keys.map((k) => SecureStore.deleteItemAsync(k)));
+    } catch (err) {
+      console.log("Error clearing storage:", err);
+    }
+  };
 
   // ✅ UPDATED: SecureStore version with individual key deletion
   const logout = async () => {

@@ -122,6 +122,7 @@ export default function Checkout() {
       const payload = {
         coupon_code: couponCode,
         amount: basePrice,
+        service_id: selectedService?.serviceId,
       };
       const couponResponse = await applyCouponApi(token, payload);
       setDiscount(couponResponse?.data?.discount);
