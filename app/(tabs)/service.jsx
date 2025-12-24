@@ -11,13 +11,36 @@ import { useFocusEffect } from '@react-navigation/native';
 import SkeletonList from '@components/ListSkeleton';
 import { QuantomVoltIcon, FastlaneIcon, PMSIcon, PSIcon, PISIcon } from '../../assets/images/SVG';
 import { showToast } from "@components/CustomToast/ToastService";
+import Foundation from "@expo/vector-icons/Foundation";
+
+const STATIC_SERVICES = [
+    {
+        id: 101,
+        name: "Unlisted Shares",
+        isStatic: true,
+    },
+    {
+        id: 102,
+        name: "Bonds",
+        isStatic: true,
+    },
+];
+
 
 const icon = {
     1: () => <FastlaneIcon height={33} width={33} />,
     2: () => <PISIcon height={33} width={33} />,
     3: () => <PMSIcon height={33} width={33} />,
     4: () => <QuantomVoltIcon height={33} width={33} />,
-    6: () => <PSIcon height={33} width={33} />
+    5: () => <Foundation
+        name="burst-new"
+        size={50}
+        style={{ transform: [{ rotate: "30deg" }] }}
+        color="#FFA500"
+    />,
+    6: () => <PSIcon height={40} width={40} />,
+    101: () => <Foundation name="graph-trend" size={32} color="#FFA500" />,
+    102: () => <Foundation name="shield" size={32} color="#FFA500" />
 }
 
 const Service = () => {
@@ -34,7 +57,7 @@ const Service = () => {
     const navigation = useNavigation();
     const [expandedService, setExpandedService] = useState();
     const [isLoading, setIsloading] = useState(true);
-    const removeIds = [5, 6];
+    const removeIds = [];
 
 
     useFocusEffect(
@@ -109,50 +132,71 @@ const Service = () => {
 
     const renderService = () => {
         if (isLoading) {
-            return <>
-                <SkeletonList />
-                <SkeletonList />
-                <SkeletonList />
-                <SkeletonList />
-            </>
+            return (
+                <>
+                    <SkeletonList />
+                    <SkeletonList />
+                    <SkeletonList />
+                    <SkeletonList />
+                </>
+            );
         }
-        return allServices.map((service) => {
-            if(service?.plans.length > 0) {
-                return (
+
+        return (
+            <>
+                {/* 🔹 API SERVICES */}
+                {allServices.map((service) => {
+                    if (service?.plans?.length > 0) {
+                        return (
+                            <ServiceCard
+                                key={service.id}
+                                name={service.name}
+                                isExpanded={expandedService === service.id}
+                                onToggle={() => toggleExpand(service.id)}
+                                plans={service.plans}
+                                showDetails={![5, 6].includes(service.id)}   // ✅ yahi logic
+                                showSubscriptions
+                                serviceId={service.id}
+                                icon={icon[service.id]}
+                                isPurchesed={service?.purchesed ?? false}
+                                is_advisor_assign={service?.is_advisor_assign ?? false}
+                                advisor_number={service?.advisor_number ?? ""}
+                                advisor_name={service?.advisor_name ?? ""}
+                            />
+                        );
+                    }
+                    return null;
+                })}
+
+                {/* 🔥 STATIC SERVICES (NO PLANS) */}
+                {STATIC_SERVICES.map((service) => (
                     <ServiceCard
+                        key={service.id}
                         name={service.name}
-                        iconType="fa"
-                        startsAt={getLowestActualPricePlan(service?.plans)?.actual_price}
-                        isExpanded={expandedService === service.id}
-                        onToggle={() => toggleExpand(service.id)}
-                        plans={service?.plans}
-                        showDetails
-                        showSubscriptions
-                        key={service?.id}
-                        serviceId={service?.id}
-                        icon={icon[service?.id]}
-                        isPurchesed={service?.purchesed ?? false}
-                        is_advisor_assign={service?.is_advisor_assign ?? false}
-                        advisor_number={service?.advisor_number ?? ""}
-                        advisor_name={service?.advisor_name ?? ""}
+                        serviceId={service.id}
+                        icon={icon[service.id]}
+                        showDetails={false}
+                        showSubscriptions={false}
+                        plans={[]} // ⬅️ IMPORTANT
+                        isPurchesed={true} // ⬅️ taaki "Open" button aaye
                     />
-                )
-            }
-        })
-    }
+                ))}
+            </>
+        );
+    };
 
     const headerText = () => {
-        return <Text allowFontScaling={false}style={{ color: COLORS.fontWhite, fontWeight: 600, fontSize: 18 }}>Services</Text>
+        return <Text allowFontScaling={false} style={{ color: COLORS.fontWhite, fontWeight: 600, fontSize: 18 }}>Services</Text>
     }
 
     const renderServiceList = () => {
         return (
             <ScrollView style={{ flex: 1 }} contentContainerStyle={styles.scrollContent}>
-                <Text allowFontScaling={false}style={styles.sectionTitle}>Select the Services</Text>
+                <Text allowFontScaling={false} style={styles.sectionTitle}>Select the Services</Text>
                 {renderService()}
                 {
                     !isLoading && <TouchableOpacity onPress={() => router.push("home")}>
-                        <Text allowFontScaling={false}style={{ textAlign: "center", color: COLORS.fontWhite, fontWeight: 500 }} >Skip for now</Text>
+                        <Text allowFontScaling={false} style={{ textAlign: "center", color: COLORS.fontWhite, fontWeight: 500 }} >Skip for now</Text>
                     </TouchableOpacity>
                 }
             </ScrollView>

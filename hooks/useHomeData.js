@@ -98,13 +98,14 @@ export const useHomeData = () => {
                     router.push("forms/totalInvestmentForm");
                     return;
                 }
-            } else if (filteredData.length === 0 && !skipServices) {
-                if (profileResponse?.data?.data?.customerfinanceinfo?.verified == 2) {
-                    setIsQuestionerFillderByAdvisor(true);
-                    return;
-                }
-                router.push("service");
-            }
+            } 
+            // else if (filteredData.length === 0 && !skipServices) {
+            //     if (profileResponse?.data?.data?.customerfinanceinfo?.verified == 2) {
+            //         setIsQuestionerFillderByAdvisor(true);
+            //         return;
+            //     }
+            //     router.push("service");
+            // }
 
 
         } catch (error) {

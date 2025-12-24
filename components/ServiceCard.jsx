@@ -164,7 +164,20 @@ const ServiceCard = ({
       router.push({
         pathname: `/fastlane/${serviceId}`
       });
-    } else {
+    }
+    else if (serviceId == 5) {
+      router.push("newArrivals")
+    }
+    else if (serviceId == 6) {
+      router.push("premiumResearch")
+    }
+    else if (serviceId == 101) {
+      router.push("unlistedShares")
+    }
+    else if (serviceId == 102) {
+      router.push("upcoming")
+    }
+    else {
       // router.push(`pmsAndQuantom/${id}`)
       router.push({
         pathname: `/pmsAndQuantom/${serviceId}`,
@@ -178,7 +191,7 @@ const ServiceCard = ({
   }
 
   const renderPriceContainer = () => {
-    if (!isPurchesed) {
+    if (!isPurchesed && serviceId !== 5 && serviceId !== 6) {
       return (
         <View style={styles.priceContainer}>
           <Text style={styles.priceLabel}>
@@ -406,10 +419,10 @@ const styles = StyleSheet.create({
     justifyContent: 'space-evenly',
     gap: 8,
     marginBottom: 24,
-     flexWrap: "wrap",
+    flexWrap: "wrap",
   },
   subscription: {
-     width: "45%",    
+    width: "45%",
     backgroundColor: 'rgba(255, 255, 255, 0.05)',
     borderRadius: 8,
     paddingVertical: 12,

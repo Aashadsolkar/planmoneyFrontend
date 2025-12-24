@@ -42,9 +42,17 @@ export default function News() {
                     {title}
                 </Text>
 
-                {link && <Link href={link || ""} style={{ marginTop: 10,color: "#1e90ff" }}>
-                    {link}
-                </Link>}
+                {link && (
+                    <Link href={link || ""} asChild>
+                        <Text
+                            numberOfLines={1}
+                            ellipsizeMode="tail"
+                            style={{ marginTop: 10, color: "#1e90ff" }}
+                        >
+                            {link}
+                        </Text>
+                    </Link>
+                )}
 
                 <Text style={styles.summary} numberOfLines={2}>
                     {summary}

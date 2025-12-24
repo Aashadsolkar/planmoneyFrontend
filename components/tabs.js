@@ -1,4 +1,4 @@
-import { FontAwesome, FontAwesome6, MaterialIcons } from "@expo/vector-icons";
+import { FontAwesome, FontAwesome6, Foundation, MaterialIcons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
 import { COLORS } from "../app/constants";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -34,11 +34,11 @@ export default function ProtectedTabs() {
       />
 
       <Tabs.Screen
-        name="portfolio"
+        name="unlistedShares"
         options={{
-          title: "Portfolio",
+          title: "Unlisted Shares",
           tabBarIcon: ({ color }) => (
-            <FontAwesome6 size={25} name="chart-pie" color={color} />
+            <Foundation name="graph-trend" size={28} color={color} />
           ),
         }}
       />

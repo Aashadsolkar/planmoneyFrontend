@@ -868,3 +868,20 @@ export const exitCallList = async (token, serviceID) => {
     throw error?.response?.data || { message: 'Something went wrong' };
   }
 };
+
+export const getUnlistedShares = async (token) => {
+  try {
+    const response = await axios({
+      method: "GET",
+      url: `https://planmoney.in/unlistedSharesApi.php`,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer${token}`
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('API Error:', error?.response?.data || error.message);
+    throw error?.response?.data || { message: 'Something went wrong' };
+  }
+};

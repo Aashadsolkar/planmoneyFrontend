@@ -28,7 +28,7 @@ import StockOptionSlider from "@components/StockOtionSlider";
 import QuestionerModal from "@components/QuestionerModal";
 import { Image } from "expo-image";
 import { formatDateToDDMMYYYY, formatIndianNumber } from "../../utils/commonFunctions";
-import { PSIcon } from "../../assets/images/SVG";
+import { FastlaneIcon, PSIcon } from "../../assets/images/SVG";
 
 const { height, width } = Dimensions.get("window");
 
@@ -42,8 +42,14 @@ const NewsCard = ({ title = "", summary = "", id, link }) => (
         {title}
       </Text>
       {link && (
-        <Link href={link || ""} style={{ marginTop: 10, color: "#1e90ff" }}>
-          {link}
+        <Link href={link || ""} asChild>
+          <Text
+            numberOfLines={1}
+            ellipsizeMode="tail"
+            style={{ marginTop: 10, color: "#1e90ff" }}
+          >
+            {link}
+          </Text>
         </Link>
       )}
       <Text style={styles.summary} numberOfLines={2}>
@@ -73,6 +79,7 @@ export default function Home() {
     profileData,
     advertisement,
     isNewArrivalsNotOpen,
+    customerServiceData
   } = useAuth();
   const navigation = useNavigation();
   const { isLoading, refreshing, onRefresh } = useHomeData();
@@ -88,6 +95,14 @@ export default function Home() {
   const ITEM_WIDTH = width * 0.93; // 90% of screen width
   const SPACING = (width - ITEM_WIDTH) / 3;
   const removeIds = [5, 6];
+
+  const isFastLaneSubscribed = customerServiceData?.services?.some(
+    (service) =>
+      service.id == 1 &&
+      service.is_subscribed
+  );
+  console.log(isFastLaneSubscribed, "-----------------------------");
+
 
   useEffect(() => {
     if (isQuestionerFillderByAdvisor) {
@@ -214,7 +229,7 @@ export default function Home() {
                         </Text>
                         <Text style={{ fontSize: 12, color: COLORS.fontWhite }}>
                           ₹{formatIndianNumber(sortPlansByActualPrice(item.plans)[0].offer_price)}
-                          
+
                         </Text>
                       </View>
                     ) : (
@@ -246,7 +261,7 @@ export default function Home() {
                           padding: 10,
                           opacity:
                             item.plans?.length > 0 &&
-                            item.plans?.[0]?.offer_price
+                              item.plans?.[0]?.offer_price
                               ? 1
                               : 0.6,
                         }}
@@ -400,10 +415,10 @@ export default function Home() {
                   onPress={
                     item?.service_id
                       ? () => {
-                          setServiceSelectedOnHomePage(item?.service_id);
-                          router.push("service");
-                        }
-                      : () => {}
+                        setServiceSelectedOnHomePage(item?.service_id);
+                        router.push("service");
+                      }
+                      : () => { }
                   }
                 >
                   <Image
@@ -474,35 +489,15 @@ export default function Home() {
         </View>
 
         {/* Services Section */}
-        <View style={styles.sectionContainer}>
+        {/* <View style={styles.sectionContainer}>
           <Text style={styles.sectionTitle}>
             {purchesService.length > 0 ? "Your Services" : "Explore"}
           </Text>
           {renderServices()}
-        </View>
+        </View> */}
 
         {/* Quick Links Section */}
         <View style={styles.linksContainer}>
-          <Animatable.View
-            animation="zoomIn"
-            delay={100}
-            duration={100}
-            style={styles.linkItem}
-          >
-            <TouchableOpacity
-              onPress={() => router.push("history")}
-              style={{ alignItems: "center" }}
-            >
-              <View style={styles.linkIconContainer}>
-                <FontAwesome6
-                  size={35}
-                  name="chart-pie"
-                  color={COLORS.secondaryColor}
-                />
-              </View>
-              <Text allowFontScaling={false} style={styles.linkText}>History</Text>
-            </TouchableOpacity>
-          </Animatable.View>
           <Animatable.View
             animation="zoomIn"
             delay={200}
@@ -510,15 +505,27 @@ export default function Home() {
             style={styles.linkItem}
           >
             <TouchableOpacity
-              onPress={() => router.push("sip")}
+              onPress={() => {
+                if (isFastLaneSubscribed) {
+                  router.push({
+                    pathname: `/fastlane/1`
+                  });
+                } else {
+                  setServiceSelectedOnHomePage(1);
+                  router.push("service");
+                }
+              }}
               style={{ alignItems: "center" }}
             >
               <View style={styles.linkIconContainer}>
-                <Ionicons name="calculator" size={40} color="#FFA500" />
+                <FastlaneIcon height={50} width={50} />
+                {/* <Ionicons name="calculator" size={40} color="#FFA500" /> */}
               </View>
-              <Text style={styles.linkText}>SIP Calculator</Text>
+              <Text style={styles.linkText}>FastLane</Text>
             </TouchableOpacity>
           </Animatable.View>
+
+
 
           <Animatable.View
             animation="zoomIn"
@@ -571,6 +578,27 @@ export default function Home() {
                 <PSIcon height={40} width={40} />
               </View>
               <Text style={styles.linkText}>Premium Research</Text>
+            </TouchableOpacity>
+          </Animatable.View>
+
+          <Animatable.View
+            animation="zoomIn"
+            delay={100}
+            duration={100}
+            style={styles.linkItem}
+          >
+            <TouchableOpacity
+              onPress={() => router.push("history")}
+              style={{ alignItems: "center" }}
+            >
+              <View style={styles.linkIconContainer}>
+                <FontAwesome6
+                  size={35}
+                  name="chart-pie"
+                  color={COLORS.secondaryColor}
+                />
+              </View>
+              <Text allowFontScaling={false} style={styles.linkText}>History</Text>
             </TouchableOpacity>
           </Animatable.View>
         </View>
