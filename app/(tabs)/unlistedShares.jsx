@@ -184,7 +184,7 @@ const UnlistedShares = () => {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ padding: 20, paddingBottom: 40 }}
       >
-        <Text style={styles.heading}>Available Unlisted Shares</Text>
+        {/* <Text style={styles.heading}>Available Unlisted Shares</Text> */}
         {renderCards()}
       </ScrollView>
     </SafeAreaView>
