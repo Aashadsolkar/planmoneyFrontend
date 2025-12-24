@@ -101,7 +101,6 @@ export default function Home() {
       service.id == 1 &&
       service.is_subscribed
   );
-  console.log(isFastLaneSubscribed, "-----------------------------");
 
 
   useEffect(() => {
