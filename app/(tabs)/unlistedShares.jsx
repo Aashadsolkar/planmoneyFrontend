@@ -1,12 +1,12 @@
 import React, { useCallback, useState } from "react";
 import {
-  ScrollView,
   StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
   Linking,
+  FlatList,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useAuth } from "@context/useAuth";
@@ -43,6 +43,8 @@ const UnlistedShares = () => {
 
   useFocusEffect(
     useCallback(() => {
+      let isActive = true;
+
       const fetchData = async () => {
         try {
           setIsLoading(true);
@@ -52,22 +54,27 @@ const UnlistedShares = () => {
             (a, b) => new Date(b.added) - new Date(a.added)
           );
 
-          setList(sortedData);
+          if (isActive) setList(sortedData);
         } catch (error) {
           showToast({
             type: "error",
-            title: `Something went wrong! 😥`,
-            message: `${error?.error || error?.message || "Failed to get unlisted share data"}`,
+            title: "Something went wrong! 😥",
+            message:
+              error?.error ||
+              error?.message ||
+              "Failed to get unlisted share data",
             redirectPath: "home",
-            sessionExired: error?.error == "Another session is active." ? true : false,
-            logout: logout
+            sessionExired:
+              error?.error === "Another session is active." ? true : false,
+            logout,
           });
         } finally {
-          setIsLoading(false);
+          if (isActive) setIsLoading(false);
         }
       };
 
       fetchData();
+      return () => (isActive = false);
     }, [])
   );
 
@@ -88,82 +95,97 @@ const UnlistedShares = () => {
     </View>
   );
 
-  /* ================= CARDS ================= */
+  /* ================= CARD ================= */
 
-  const renderCards = () => {
-    if (!list.length) return renderEmpty();
+  const renderItem = ({ item, index }) => (
+    <Animatable.View
+      animation="fadeInUp"
+      delay={index * 80}
+      style={styles.card}
+    >
+      {/* ===== HEADER ===== */}
+      <View style={styles.headerRow}>
+        <View style={styles.companyRow}>
+          <View style={styles.logoWrapper}>
+            <Image
+              source={
+                item.company_logo
+                  ? { uri: IMAGE_BASE_URL + item.company_logo }
+                  : require("../../assets/images/placeholder.jpg")
+              }
+              style={styles.logo}
+              contentFit="contain"
+            />
+          </View>
 
-    return list.map((item, index) => (
-      <Animatable.View
-        key={item.id}
-        animation="fadeInUp"
-        delay={index * 80}
-        style={styles.card}
+          <View style={{ flex: 1 }}>
+            <Text
+              allowFontScaling={false}
+              style={styles.companyName}
+              numberOfLines={1}
+            >
+              {item.company_name}
+            </Text>
+            <Text allowFontScaling={false} style={styles.subText}>
+              Unlisted Equity
+            </Text>
+          </View>
+        </View>
+
+        <View style={styles.priceBadge}>
+          <Text
+            allowFontScaling={false}
+            style={styles.price}
+            numberOfLines={1}
+          >
+            ₹ {item.current_price}
+          </Text>
+        </View>
+      </View>
+
+      {/* ===== STATS ===== */}
+      <View style={styles.statsRow}>
+        <View style={styles.statBox}>
+          <Text allowFontScaling={false} style={styles.lightText}>
+            Market Cap (in cr)
+          </Text>
+          <Text allowFontScaling={false} style={styles.boldText}>
+            {item.market_cap || "-"}
+          </Text>
+        </View>
+
+        <View style={styles.statBox}>
+          <Text allowFontScaling={false} style={styles.lightText}>
+            PE Ratio
+          </Text>
+          <Text allowFontScaling={false} style={styles.boldText}>
+            {item.stock_pe_ratio || "-"}
+          </Text>
+        </View>
+
+        <View style={styles.statBox}>
+          <Text allowFontScaling={false} style={styles.lightText}>
+            Rating
+          </Text>
+          <Text allowFontScaling={false} style={styles.boldText}>
+            {item.rating || "-"} ⭐
+          </Text>
+        </View>
+      </View>
+
+      {/* ===== CTA ===== */}
+      <TouchableOpacity
+        style={styles.callButton}
+        onPress={handleCall}
+        activeOpacity={0.85}
       >
-        {/* ===== HEADER ===== */}
-        <View style={styles.headerRow}>
-          <View style={styles.companyRow}>
-            <View style={styles.logoWrapper}>
-              <Image
-                source={{ uri: IMAGE_BASE_URL + item.company_logo }}
-                style={styles.logo}
-                contentFit="contain"
-              />
-            </View>
-
-            <View style={{ flex: 1 }}>
-              <Text style={styles.companyName} numberOfLines={1}>
-                {item.company_name}
-              </Text>
-              <Text style={styles.subText}>Unlisted Equity</Text>
-            </View>
-          </View>
-
-          <View style={styles.priceBadge}>
-            <Text style={styles.price}>₹ {item.current_price}</Text>
-          </View>
-        </View>
-
-        {/* ===== STATS ===== */}
-        <View style={styles.statsRow}>
-          <View style={styles.statBox}>
-            <Text style={styles.lightText}>Market Cap (in cr)</Text>
-            <Text style={styles.boldText}>{item.market_cap || "-"}</Text>
-          </View>
-
-          <View style={styles.statBox}>
-            <Text style={styles.lightText}>PE Ratio</Text>
-            <Text style={styles.boldText}>
-              {item.stock_pe_ratio || "-"}
-            </Text>
-          </View>
-
-          <View style={styles.statBox}>
-            <Text style={styles.lightText}>Rating</Text>
-            <Text style={styles.boldText}>
-              {item.rating || "-"} ⭐
-            </Text>
-          </View>
-        </View>
-
-        {/* ===== CTA ===== */}
-        <TouchableOpacity
-          style={styles.callButton}
-          onPress={handleCall}
-          activeOpacity={0.85}
-        >
-          <Ionicons name="call" size={18} color={COLORS.fontWhite} />
-          <Text style={styles.callText}>Call Sales Expert</Text>
-        </TouchableOpacity>
-      </Animatable.View>
-    ));
-  };
-
-  const backButtonText = () => {
-    return (
-      <Text style={{ color: COLORS.fontWhite, fontSize: 18, fontWeight: 600 }}>Unlisted Shares</Text>
-    )
-  }
+        <Ionicons name="call" size={18} color={COLORS.fontWhite} />
+        <Text allowFontScaling={false} style={styles.callText}>
+          Buy
+        </Text>
+      </TouchableOpacity>
+    </Animatable.View>
+  );
 
   /* ================= LOADER ================= */
 
@@ -176,17 +198,21 @@ const UnlistedShares = () => {
       edges={[]}
       style={{ flex: 1, backgroundColor: COLORS.primaryColor }}
     >
-      <StatusBar barStyle="light-content" backgroundColor={COLORS.cardColor} />
+      <StatusBar
+        barStyle="light-content"
+        backgroundColor={COLORS.cardColor}
+      />
 
-      <Header title="Unlisted Shares" showBackButton backButtonText={backButtonText} />
+      <Header title="Unlisted Shares" showBackButton />
 
-      <ScrollView
+      <FlatList
+        data={list}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={renderItem}
+        ListEmptyComponent={renderEmpty}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ padding: 20, paddingBottom: 40 }}
-      >
-        {/* <Text style={styles.heading}>Available Unlisted Shares</Text> */}
-        {renderCards()}
-      </ScrollView>
+      />
     </SafeAreaView>
   );
 };
@@ -194,15 +220,6 @@ const UnlistedShares = () => {
 /* ================= STYLES ================= */
 
 const styles = StyleSheet.create({
-  heading: {
-    fontSize: 18,
-    color: COLORS.fontWhite,
-    fontWeight: "800",
-    marginBottom: 16,
-  },
-
-  /* ===== CARD ===== */
-
   card: {
     backgroundColor: COLORS.cardColor,
     borderRadius: 16,
@@ -217,7 +234,6 @@ const styles = StyleSheet.create({
 
   headerRow: {
     flexDirection: "row",
-    justifyContent: "space-between",
     alignItems: "center",
     marginBottom: 14,
   },
@@ -248,6 +264,7 @@ const styles = StyleSheet.create({
     color: COLORS.fontWhite,
     fontWeight: "700",
     fontSize: 15,
+    flexShrink: 1,
   },
 
   subText: {
@@ -261,6 +278,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 5,
     borderRadius: 20,
+    maxWidth: 120,
   },
 
   price: {
@@ -269,11 +287,9 @@ const styles = StyleSheet.create({
     fontSize: 15,
   },
 
-  /* ===== STATS ===== */
-
   statsRow: {
     flexDirection: "row",
-    justifyContent: "space-between",
+    gap: 8,
     marginBottom: 14,
   },
 
@@ -281,9 +297,11 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: COLORS.primaryColor,
     paddingVertical: 10,
-    marginHorizontal: 4,
+    paddingHorizontal: 6,
     borderRadius: 12,
     alignItems: "center",
+    justifyContent: "center",
+    minHeight: 70,
   },
 
   lightText: {
@@ -298,8 +316,6 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
 
-  /* ===== CTA ===== */
-
   callButton: {
     flexDirection: "row",
     justifyContent: "center",
@@ -307,7 +323,9 @@ const styles = StyleSheet.create({
     gap: 8,
     backgroundColor: COLORS.secondaryColor,
     paddingVertical: 12,
+    paddingHorizontal: 20,
     borderRadius: 30,
+    minHeight: 48,
   },
 
   callText: {
@@ -315,8 +333,6 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     fontSize: 14,
   },
-
-  /* ===== EMPTY ===== */
 
   emptyContainer: {
     marginTop: 120,
