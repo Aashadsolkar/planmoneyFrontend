@@ -7,19 +7,21 @@ import {
   View,
   Linking,
   FlatList,
+  ActivityIndicator,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useAuth } from "@context/useAuth";
 import { useFocusEffect } from "@react-navigation/native";
-import Header from "@components/Header";
-import FullScreenLoader from "@components/FullScreenLoader";
 import { Image } from "expo-image";
 import * as Animatable from "react-native-animatable";
 import Entypo from "@expo/vector-icons/Entypo";
 import Ionicons from "@expo/vector-icons/Ionicons";
+
+import Header from "@components/Header";
 import { showToast } from "@components/CustomToast/ToastService";
+import { useAuth } from "@context/useAuth";
 import { COLORS } from "../constants";
 import { getUnlistedShares } from "../../utils/apiCaller";
+import useOffsetPagination from "../../hooks/useOffsetPagination";
 
 /* ================= CONFIG ================= */
 
@@ -30,7 +32,6 @@ const SALES_NUMBER = "+91 8108181602";
 
 const UnlistedShares = () => {
   const { logout } = useAuth();
-  const [isLoading, setIsLoading] = useState(true);
   const [list, setList] = useState([]);
 
   /* ================= CALL ================= */
@@ -39,42 +40,47 @@ const UnlistedShares = () => {
     Linking.openURL(`tel:${SALES_NUMBER}`);
   };
 
-  /* ================= FETCH ================= */
+  /* ================= PAGINATION ================= */
+
+  const {
+    loading,
+    refreshing,
+    onRefresh,
+    onEndReached,
+  } = useOffsetPagination({
+    limit: 10,
+    onFetch: async ({ offset, limit, isRefresh }) => {
+      try {
+        const res = await getUnlistedShares(offset, limit);
+
+        setList(prev =>
+          isRefresh ? res : [...prev, ...res]
+        );
+
+        return { count: res.length };
+      } catch (error) {
+        showToast({
+          type: "error",
+          title: "Something went wrong! 😥",
+          message:
+            error?.error ||
+            error?.message ||
+            "Failed to get unlisted share data",
+          sessionExired:
+            error?.error === "Another session is active.",
+          logout,
+        });
+
+        return { count: 0 };
+      }
+    },
+  });
+
+  /* ================= INITIAL LOAD ================= */
 
   useFocusEffect(
     useCallback(() => {
-      let isActive = true;
-
-      const fetchData = async () => {
-        try {
-          setIsLoading(true);
-          const response = await getUnlistedShares();
-
-          const sortedData = (response || []).sort(
-            (a, b) => new Date(b.added) - new Date(a.added)
-          );
-
-          if (isActive) setList(sortedData);
-        } catch (error) {
-          showToast({
-            type: "error",
-            title: "Something went wrong! 😥",
-            message:
-              error?.error ||
-              error?.message ||
-              "Failed to get unlisted share data",
-            redirectPath: "home",
-            sessionExired:
-              error?.error === "Another session is active." ? true : false,
-            logout,
-          });
-        } finally {
-          if (isActive) setIsLoading(false);
-        }
-      };
-
-      fetchData();
-      return () => (isActive = false);
+      onRefresh();
     }, [])
   );
 
@@ -95,15 +101,30 @@ const UnlistedShares = () => {
     </View>
   );
 
+  /* ================= FOOTER LOADER ================= */
+
+  const renderFooter = () => {
+    if (!loading || refreshing) return null;
+
+    return (
+      <View style={styles.footerLoader}>
+        <ActivityIndicator
+          size="small"
+          color={COLORS.secondaryColor}
+        />
+        <Text style={styles.loadingText}>Loading more...</Text>
+      </View>
+    );
+  };
+
   /* ================= CARD ================= */
 
   const renderItem = ({ item, index }) => (
     <Animatable.View
       animation="fadeInUp"
-      delay={index * 80}
+      // delay={index * 60}
       style={styles.card}
     >
-      {/* ===== HEADER ===== */}
       <View style={styles.headerRow}>
         <View style={styles.companyRow}>
           <View style={styles.logoWrapper}>
@@ -119,89 +140,57 @@ const UnlistedShares = () => {
           </View>
 
           <View style={{ flex: 1 }}>
-            <Text
-              allowFontScaling={false}
-              style={styles.companyName}
-              numberOfLines={1}
-            >
+            <Text style={styles.companyName} numberOfLines={1}>
               {item.company_name}
             </Text>
-            <Text allowFontScaling={false} style={styles.subText}>
-              Unlisted Equity
-            </Text>
+            <Text style={styles.subText}>Unlisted Equity</Text>
           </View>
         </View>
 
         <View style={styles.priceBadge}>
-          <Text
-            allowFontScaling={false}
-            style={styles.price}
-            numberOfLines={1}
-          >
-            ₹ {item.current_price}
-          </Text>
+          <Text style={styles.price}>₹ {item.current_price}</Text>
         </View>
       </View>
 
-      {/* ===== STATS ===== */}
       <View style={styles.statsRow}>
         <View style={styles.statBox}>
-          <Text allowFontScaling={false} style={styles.lightText}>
-            Market Cap (in cr)
-          </Text>
-          <Text allowFontScaling={false} style={styles.boldText}>
+          <Text style={styles.lightText}>Market Cap (in cr)</Text>
+          <Text style={styles.boldText}>
             {item.market_cap || "-"}
           </Text>
         </View>
 
         <View style={styles.statBox}>
-          <Text allowFontScaling={false} style={styles.lightText}>
-            PE Ratio
-          </Text>
-          <Text allowFontScaling={false} style={styles.boldText}>
+          <Text style={styles.lightText}>PE Ratio</Text>
+          <Text style={styles.boldText}>
             {item.stock_pe_ratio || "-"}
           </Text>
         </View>
 
         <View style={styles.statBox}>
-          <Text allowFontScaling={false} style={styles.lightText}>
-            Rating
-          </Text>
-          <Text allowFontScaling={false} style={styles.boldText}>
+          <Text style={styles.lightText}>Rating</Text>
+          <Text style={styles.boldText}>
             {item.rating || "-"} ⭐
           </Text>
         </View>
       </View>
 
-      {/* ===== CTA ===== */}
       <TouchableOpacity
         style={styles.callButton}
         onPress={handleCall}
         activeOpacity={0.85}
       >
         <Ionicons name="call" size={18} color={COLORS.fontWhite} />
-        <Text allowFontScaling={false} style={styles.callText}>
-          Buy
-        </Text>
+        <Text style={styles.callText}>Buy</Text>
       </TouchableOpacity>
     </Animatable.View>
   );
 
-  /* ================= LOADER ================= */
-
-  if (isLoading) return <FullScreenLoader visible />;
-
   /* ================= UI ================= */
 
   return (
-    <SafeAreaView
-      edges={[]}
-      style={{ flex: 1, backgroundColor: COLORS.primaryColor }}
-    >
-      <StatusBar
-        barStyle="light-content"
-        backgroundColor={COLORS.cardColor}
-      />
+    <SafeAreaView edges={[]} style={{ flex: 1, backgroundColor: COLORS.primaryColor }}>
+      <StatusBar barStyle="light-content" />
 
       <Header title="Unlisted Shares" showBackButton />
 
@@ -209,9 +198,17 @@ const UnlistedShares = () => {
         data={list}
         keyExtractor={(item) => item.id.toString()}
         renderItem={renderItem}
-        ListEmptyComponent={renderEmpty}
+        ListEmptyComponent={!loading && renderEmpty}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ padding: 20, paddingBottom: 40 }}
+
+        onEndReached={onEndReached}
+        onEndReachedThreshold={0.4}
+
+        refreshing={refreshing}
+        onRefresh={onRefresh}
+
+        ListFooterComponent={renderFooter}
       />
     </SafeAreaView>
   );
@@ -226,25 +223,17 @@ const styles = StyleSheet.create({
     padding: 14,
     marginBottom: 20,
     elevation: 6,
-    shadowColor: "#000",
-    shadowOpacity: 0.25,
-    shadowRadius: 6,
-    shadowOffset: { width: 0, height: 4 },
   },
-
   headerRow: {
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 14,
   },
-
   companyRow: {
     flexDirection: "row",
     alignItems: "center",
     flex: 1,
-    marginRight: 10,
   },
-
   logoWrapper: {
     width: 44,
     height: 44,
@@ -254,68 +243,52 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginRight: 10,
   },
-
   logo: {
     width: 28,
     height: 28,
   },
-
   companyName: {
     color: COLORS.fontWhite,
     fontWeight: "700",
     fontSize: 15,
-    flexShrink: 1,
   },
-
   subText: {
     color: COLORS.lightGray,
     fontSize: 12,
-    marginTop: 2,
   },
-
   priceBadge: {
     backgroundColor: "rgba(0,200,83,0.15)",
     paddingHorizontal: 12,
     paddingVertical: 5,
     borderRadius: 20,
-    maxWidth: 120,
   },
-
   price: {
     color: COLORS.profitColor,
     fontWeight: "800",
     fontSize: 15,
   },
-
   statsRow: {
     flexDirection: "row",
     gap: 8,
     marginBottom: 14,
   },
-
   statBox: {
     flex: 1,
     backgroundColor: COLORS.primaryColor,
     paddingVertical: 10,
-    paddingHorizontal: 6,
     borderRadius: 12,
     alignItems: "center",
-    justifyContent: "center",
-    minHeight: 70,
   },
-
   lightText: {
     color: COLORS.lightGray,
     fontSize: 10,
   },
-
   boldText: {
     color: COLORS.fontWhite,
     fontWeight: "700",
     fontSize: 14,
     marginTop: 4,
   },
-
   callButton: {
     flexDirection: "row",
     justifyContent: "center",
@@ -323,27 +296,31 @@ const styles = StyleSheet.create({
     gap: 8,
     backgroundColor: COLORS.secondaryColor,
     paddingVertical: 12,
-    paddingHorizontal: 20,
     borderRadius: 30,
-    minHeight: 48,
   },
-
   callText: {
     color: COLORS.fontWhite,
     fontWeight: "700",
-    fontSize: 14,
   },
-
   emptyContainer: {
     marginTop: 120,
     alignItems: "center",
   },
-
   emptyText: {
     marginTop: 15,
     color: COLORS.fontWhite,
     fontSize: 18,
     fontWeight: "600",
+  },
+  footerLoader: {
+    paddingVertical: 20,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  loadingText: {
+    marginTop: 6,
+    color: COLORS.lightGray,
+    fontSize: 12,
   },
 });
 
