@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useState, useRef } from "react";
 import {
   StatusBar,
   StyleSheet,
@@ -8,6 +8,8 @@ import {
   Linking,
   FlatList,
   ActivityIndicator,
+  TextInput,
+  Keyboard
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useFocusEffect } from "@react-navigation/native";
@@ -22,6 +24,7 @@ import { useAuth } from "@context/useAuth";
 import { COLORS } from "../constants";
 import { getUnlistedShares } from "../../utils/apiCaller";
 import useOffsetPagination from "../../hooks/useOffsetPagination";
+import UnlistedShareCard from "../../components/UnlistedShareCard";
 
 /* ================= CONFIG ================= */
 
@@ -32,12 +35,33 @@ const SALES_NUMBER = "+91 8108181602";
 
 const UnlistedShares = () => {
   const { logout } = useAuth();
+
   const [list, setList] = useState([]);
+  const [search, setSearch] = useState("");
+
+  const searchRef = useRef("");
+  const throttleRef = useRef(null);
+  const inputRef = useRef(null);
 
   /* ================= CALL ================= */
 
   const handleCall = () => {
     Linking.openURL(`tel:${SALES_NUMBER}`);
+  };
+
+  /* ================= SEARCH (THROTTLED, NO LIMIT) ================= */
+
+  const handleSearch = (text) => {
+    setSearch(text);
+    searchRef.current = text; // 🔥 always latest value
+
+    if (throttleRef.current) {
+      clearTimeout(throttleRef.current);
+    }
+
+    throttleRef.current = setTimeout(() => {
+      onRefresh();
+    }, 500);
   };
 
   /* ================= PAGINATION ================= */
@@ -51,9 +75,13 @@ const UnlistedShares = () => {
     limit: 10,
     onFetch: async ({ offset, limit, isRefresh }) => {
       try {
-        const res = await getUnlistedShares(offset, limit);
+        const res = await getUnlistedShares(
+          offset,
+          limit,
+          searchRef.current.trim() || "" // 🔥 empty = normal list
+        );
 
-        setList(prev =>
+        setList((prev) =>
           isRefresh ? res : [...prev, ...res]
         );
 
@@ -80,7 +108,15 @@ const UnlistedShares = () => {
 
   useFocusEffect(
     useCallback(() => {
-      onRefresh();
+      searchRef.current = "";
+      setSearch("");
+      onRefresh(false);
+
+       return () => {
+      // 👇 screen se jaate time
+      Keyboard.dismiss();
+      inputRef.current?.blur();
+    };
     }, [])
   );
 
@@ -88,9 +124,9 @@ const UnlistedShares = () => {
 
   const renderEmpty = () => (
     <View style={styles.emptyContainer}>
-      <Animatable.View animation="bounceInDown">
+      <View>
         <Entypo name="new" size={90} color={COLORS.secondaryColor} />
-      </Animatable.View>
+      </View>
       <Animatable.Text
         animation="pulse"
         iterationCount="infinite"
@@ -119,72 +155,9 @@ const UnlistedShares = () => {
 
   /* ================= CARD ================= */
 
-  const renderItem = ({ item, index }) => (
-    <Animatable.View
-      animation="fadeInUp"
-      // delay={index * 60}
-      style={styles.card}
-    >
-      <View style={styles.headerRow}>
-        <View style={styles.companyRow}>
-          <View style={styles.logoWrapper}>
-            <Image
-              source={
-                item.company_logo
-                  ? { uri: IMAGE_BASE_URL + item.company_logo }
-                  : require("../../assets/images/placeholder.jpg")
-              }
-              style={styles.logo}
-              contentFit="contain"
-            />
-          </View>
-
-          <View style={{ flex: 1 }}>
-            <Text style={styles.companyName} numberOfLines={1}>
-              {item.company_name}
-            </Text>
-            <Text style={styles.subText}>Unlisted Equity</Text>
-          </View>
-        </View>
-
-        <View style={styles.priceBadge}>
-          <Text style={styles.price}>₹ {item.current_price}</Text>
-        </View>
-      </View>
-
-      <View style={styles.statsRow}>
-        <View style={styles.statBox}>
-          <Text style={styles.lightText}>Market Cap (in cr)</Text>
-          <Text style={styles.boldText}>
-            {item.market_cap || "-"}
-          </Text>
-        </View>
-
-        <View style={styles.statBox}>
-          <Text style={styles.lightText}>PE Ratio</Text>
-          <Text style={styles.boldText}>
-            {item.stock_pe_ratio || "-"}
-          </Text>
-        </View>
-
-        <View style={styles.statBox}>
-          <Text style={styles.lightText}>Rating</Text>
-          <Text style={styles.boldText}>
-            {item.rating || "-"} ⭐
-          </Text>
-        </View>
-      </View>
-
-      <TouchableOpacity
-        style={styles.callButton}
-        onPress={handleCall}
-        activeOpacity={0.85}
-      >
-        <Ionicons name="call" size={18} color={COLORS.fontWhite} />
-        <Text style={styles.callText}>Buy</Text>
-      </TouchableOpacity>
-    </Animatable.View>
-  );
+ const renderItem = ({ item }) => (
+  <UnlistedShareCard item={item} key={item.id} />
+);
 
   /* ================= UI ================= */
 
@@ -194,6 +167,23 @@ const UnlistedShares = () => {
 
       <Header title="Unlisted Shares" showBackButton />
 
+      {/* 🔍 SEARCH BAR */}
+      <TouchableOpacity
+        activeOpacity={1}
+        onPress={() => inputRef.current?.focus()}
+        style={styles.searchContainer}
+      >
+        <Ionicons name="search" size={18} color={COLORS.lightGray} />
+        <TextInput
+          ref={inputRef}
+          placeholder="Search company..."
+          placeholderTextColor={COLORS.lightGray}
+          value={search}
+          onChangeText={handleSearch}
+          style={styles.searchInput}
+        />
+      </TouchableOpacity>
+
       <FlatList
         data={list}
         keyExtractor={(item) => item.id.toString()}
@@ -201,13 +191,10 @@ const UnlistedShares = () => {
         ListEmptyComponent={!loading && renderEmpty}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ padding: 20, paddingBottom: 40 }}
-
         onEndReached={onEndReached}
         onEndReachedThreshold={0.4}
-
         refreshing={refreshing}
         onRefresh={onRefresh}
-
         ListFooterComponent={renderFooter}
       />
     </SafeAreaView>
@@ -217,6 +204,23 @@ const UnlistedShares = () => {
 /* ================= STYLES ================= */
 
 const styles = StyleSheet.create({
+  searchContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: COLORS.cardColor,
+    marginHorizontal: 20,
+    marginTop: 20,
+    marginBottom: 5,
+    paddingHorizontal: 14,
+    borderRadius: 14,
+    height: 60,
+  },
+  searchInput: {
+    flex: 1,
+    marginLeft: 10,
+    color: COLORS.fontWhite,
+    fontSize: 14,
+  },
   card: {
     backgroundColor: COLORS.cardColor,
     borderRadius: 16,

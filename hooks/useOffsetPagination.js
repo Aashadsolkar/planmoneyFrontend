@@ -42,8 +42,8 @@ export default function useOffsetPagination({
     [offset, limit, hasMore, loading]
   );
 
-  const onRefresh = async () => {
-    setRefreshing(true);
+  const onRefresh = async (showloader =true) => {
+    setRefreshing(showloader);
     setHasMore(true);
     setOffset(initialOffset);
     return fetchData({ isRefresh: true });

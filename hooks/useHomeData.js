@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from 'react';
-import { getProfileData, customerService, news, optionstocks, getAdvertisementData } from '../utils/apiCaller'; 
+import { getProfileData, customerService, news, optionstocks, getAdvertisementData, getUnlistedShares } from '../utils/apiCaller'; 
 import { useAuth } from '@context/useAuth'; 
 import { useRouter } from 'expo-router';
 import { showToast } from "@components/CustomToast/ToastService";
@@ -21,7 +21,8 @@ export const useHomeData = () => {
         setIsProfileLoading,
         setIsQuestionerFillderByAdvisor,
         setAdvertisement,
-        logout
+        logout,
+        setUnlistedShares
     } = useAuth();
 
     const [isLoading, setIsLoading] = useState(false);
@@ -123,13 +124,14 @@ export const useHomeData = () => {
 
     const fetchNews = async () => {
         try {
-            const response = await news(token);
+            const response = await getUnlistedShares(0, 5, "");
             setNewsData(response?.data?.latest_news || []);
+            setUnlistedShares(response || []);
         } catch (error) {
             showToast({
                 type: "error",
                 title: `Something went wrong! 😥`,
-                message: `${error?.message || "Failed to get news"}`,
+                message: `${error?.message || "Failed to get unlisted share"}`,
                 // redirectPath: "home",
             });
         }

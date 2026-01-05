@@ -35,6 +35,7 @@ const AuthProvider = ({ children }) => {
   const [digiLockerRequestId, setDigiLockerRequestId] = useState(false);
   const [advertisement, setAdvertisement] = useState([]);
   const [isNewArrivalsNotOpen, setIsNewArrivalsNotOpen] = useState(true);
+  const [unlistedShares, setUnlistedShares] = useState([]);
 
   const logoutTimer = useRef(null);
   useEffect(() => {
@@ -245,6 +246,8 @@ const AuthProvider = ({ children }) => {
         advertisement,
         isNewArrivalsNotOpen,
         setIsNewArrivalsNotOpen,
+        setUnlistedShares,
+        unlistedShares
       }}
     >
       {children}

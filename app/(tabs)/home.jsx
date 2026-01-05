@@ -29,6 +29,7 @@ import QuestionerModal from "@components/QuestionerModal";
 import { Image } from "expo-image";
 import { formatDateToDDMMYYYY, formatIndianNumber } from "../../utils/commonFunctions";
 import { FastlaneIcon, PSIcon } from "../../assets/images/SVG";
+import UnlistedShareCard from "../../components/UnlistedShareCard";
 
 const { height, width } = Dimensions.get("window");
 
@@ -79,8 +80,10 @@ export default function Home() {
     profileData,
     advertisement,
     isNewArrivalsNotOpen,
-    customerServiceData
+    customerServiceData,
+    unlistedShares
   } = useAuth();
+  
   const navigation = useNavigation();
   const { isLoading, refreshing, onRefresh } = useHomeData();
 
@@ -343,24 +346,18 @@ export default function Home() {
   };
 
   const renderNews = () => {
-    if (newsData == null || newsData.length == 0) {
+    if (unlistedShares == null || unlistedShares.length == 0) {
       return (
         <Text
           style={{ textAlign: "center", fontSize: 16, color: COLORS.fontWhite }}
         >
-          No News Available.
+          No Unlisted share Available.
         </Text>
       );
     }
-    return newsData.slice(0, 4).map((item) => {
+    return unlistedShares.map((item,) => {
       return (
-        <NewsCard
-          title={item?.title}
-          summary={item?.summary}
-          id={item?.id}
-          link={item?.link}
-          key={`news/${item?.id}`}
-        />
+        <UnlistedShareCard item={item} key={item.id}/>
       );
     });
   };
@@ -605,10 +602,10 @@ export default function Home() {
         {/* Latest News Section */}
         <View style={styles.newsContainer}>
           <View style={styles.newsHeader}>
-            <Text style={styles.newsTitle}>Latest News</Text>
+            <Text style={styles.newsTitle}>Unlisted Shares</Text>
             <TouchableOpacity
               style={styles.viewMoreButton}
-              onPress={() => router.push("news")}
+              onPress={() => router.push("unlistedShares")}
             >
               <Text style={styles.viewMoreText}>View More</Text>
               <AntDesign name="right" size={12} color="#FFA500" />
@@ -780,7 +777,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 8,
+    marginBottom: 15,
   },
   newsTitle: {
     color: "white",

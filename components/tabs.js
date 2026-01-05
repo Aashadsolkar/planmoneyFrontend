@@ -34,11 +34,11 @@ export default function ProtectedTabs() {
       />
 
       <Tabs.Screen
-        name="unlistedShares"
+        name="bonds"
         options={{
-          title: "Unlisted Shares",
+          title: "Bonds",
           tabBarIcon: ({ color }) => (
-            <Foundation name="graph-trend" size={28} color={color} />
+            <Foundation name="shield" size={28} color={color} />
           ),
         }}
       />

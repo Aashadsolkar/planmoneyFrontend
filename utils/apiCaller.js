@@ -869,11 +869,11 @@ export const exitCallList = async (token, serviceID) => {
   }
 };
 
-export const getUnlistedShares = async (offset, limit) => {
+export const getUnlistedShares = async (offset, limit, search) => {
   try {
     const response = await axios({
       method: "GET",
-      url: `https://planmoney.in/unlistedSharesApi.php/?limit=${limit}&offset=${offset}`,
+      url: `https://planmoney.in/unlistedSharesApi.php/?limit=${limit}&offset=${offset}&search=${search}`,
       headers: {
         'Content-Type': 'application/json',
         // 'Authorization': `Bearer${token}`
