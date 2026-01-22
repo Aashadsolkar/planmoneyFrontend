@@ -301,7 +301,7 @@ const PremiumResearch = () => {
                     <TouchableOpacity
                         style={styles.buyButton}
                         onPress={() => {
-                            setSelectedService({ new_arrival_id: service?.id, name: service?.stock?.company_name, offer_price: service?.amount, id: newArrivalsPlan?.id, billing_cycle: "yearly", serviceId: "6" })
+                            setSelectedService({ new_arrival_id: service?.id, name: service?.title, offer_price: service?.amount, id: newArrivalsPlan?.id, billing_cycle: "yearly", serviceId: "6" })
                             router.push("checkout")
                         }}
                     >
