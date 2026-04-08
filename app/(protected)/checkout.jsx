@@ -106,9 +106,8 @@ export default function Checkout() {
       showToast({
         type: "error",
         title: `Order Failed! 😥`,
-        message: `${
-          error?.error || error?.message || "Failed to generate payment"
-        }`,
+        message: `${error?.error || error?.message || "Failed to generate payment"
+          }`,
         redirectPath: "home",
         sessionExired:
           error?.error == "Another session is active." ? true : false,
@@ -483,7 +482,7 @@ export default function Checkout() {
           <Text style={{ color: COLORS.fontWhite, fontSize: 16, }}>
             Got any questions
           </Text>
-          <TouchableOpacity  onPress={() => Linking.openURL("tel:8108181602")}>
+          <TouchableOpacity onPress={() => Linking.openURL("tel:8108181602")}>
             <Text
               style={{
                 color: COLORS.fontWhite,
@@ -491,9 +490,9 @@ export default function Checkout() {
                 fontWeight: "bold",
                 marginLeft: 4,
                 backgroundColor: COLORS.secondaryColor,
-                padding:8,
-                marginTop:5,
-                borderRadius:8,
+                padding: 8,
+                marginTop: 5,
+                borderRadius: 8,
               }}
             >
               Speak to our Experts
@@ -543,9 +542,31 @@ export default function Checkout() {
             <View style={styles.noteContent}>
               <Text style={styles.noteItemTitle}>Agreement</Text>
               <Text style={styles.noteItemText}>
-                - By Proceeding, you agree to Fintorneary's{" "}
-                <Text style={styles.linkText}>Term & Conditions</Text> and{" "}
-                <Text style={styles.linkText}>Privacy Policy</Text>
+                - By proceeding, you agree to Fintorneary's{" "}
+
+                <Text
+                  style={styles.linkText}
+                  onPress={() => router.push("/termsandconditions")}
+                >
+                  Terms & Conditions
+                </Text>
+                ,{" "}
+
+                <Text
+                  style={styles.linkText}
+                  onPress={() => router.push("/privacyPolicy")}
+                >
+                  Privacy Policy
+                </Text>
+                {" "}and{" "}
+
+                <Text
+                  style={styles.linkText}
+                  onPress={() => router.push("/privacyPolicy")}
+                >
+                  Refund Policy
+                </Text>
+                .
               </Text>
             </View>
           </View>

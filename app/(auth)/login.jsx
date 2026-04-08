@@ -27,19 +27,26 @@ import { getExpoPushToken } from "../../push-notification/notificationService";
 
 const { width, height } = Dimensions.get("window");
 
+// ─── Helper ────────────────────────────────────────────────────────────────────
+const detectInputType = (value) => {
+  if (/^[6-9]\d{9}$/.test(value)) return "phone";
+  if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) return "email";
+  return null;
+};
+
+const isValidPhone = (v) => /^[6-9]\d{9}$/.test(v.trim());
+const isValidEmail = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
+
+// ─── OTP Input ─────────────────────────────────────────────────────────────────
 const OtpInput = ({ length = 4, value, setValue }) => {
   const inputs = useRef([]);
 
   const handleChange = (text, index) => {
-    const digit = text.replace(/[^0-9]/g, ""); // allow only numbers
+    const digit = text.replace(/[^0-9]/g, "");
     let newValue = value.split("");
     newValue[index] = digit;
-    const updatedValue = newValue.join("").trim();
-    setValue(updatedValue);
-
-    if (digit && index < length - 1) {
-      inputs.current[index + 1].focus();
-    }
+    setValue(newValue.join("").trim());
+    if (digit && index < length - 1) inputs.current[index + 1].focus();
   };
 
   const handleKeyPress = (e, index) => {
@@ -68,8 +75,10 @@ const OtpInput = ({ length = 4, value, setValue }) => {
   );
 };
 
+// ─── Login Screen ──────────────────────────────────────────────────────────────
 const Login = () => {
-  const [phone, setPhone] = useState("");
+  const [identifier, setIdentifier] = useState(""); // email or phone
+  const [inputType, setInputType] = useState(null);  // "email" | "phone" | null
   const [otp, setOtp] = useState("");
   const [errors, setErrors] = useState({});
   const [loginApiError, setLoginApiError] = useState("");
@@ -81,12 +90,48 @@ const Login = () => {
 
   const { storeUserData } = useAuth();
 
-  const handleSendOtp = async () => {
-    const trimmedPhone = phone.trim();
-    if (!/^[6-9]\d{9}$/.test(trimmedPhone)) {
-      setErrors({ phone: "Enter a valid 10-digit mobile number" });
-      return;
+  // ── Input change handler ──
+  const handleIdentifierChange = (text) => {
+    // For phone: allow only digits; for email/mixed: allow everything
+    const looksLikePhone = /^\d+$/.test(text.replace(/\s/g, ""));
+    const cleaned = looksLikePhone
+      ? text.replace(/[^0-9]/g, "").trim()
+      : text.trim();
+
+    setIdentifier(cleaned);
+    setErrors({});
+    setLoginApiError("");
+
+    // Live detect so keyboard type can update hint text
+    setInputType(detectInputType(cleaned));
+  };
+
+  // ── Validate before sending OTP ──
+  const validateIdentifier = () => {
+    const v = identifier.trim();
+    if (!v) {
+      setErrors({ identifier: "Please enter your mobile number or email" });
+      return false;
     }
+    if (/^\d+$/.test(v)) {
+      // Looks like a phone attempt
+      if (!isValidPhone(v)) {
+        setErrors({ identifier: "Enter a valid 10-digit mobile number" });
+        return false;
+      }
+    } else {
+      // Assume email attempt
+      if (!isValidEmail(v)) {
+        setErrors({ identifier: "Enter a valid email address" });
+        return false;
+      }
+    }
+    return true;
+  };
+
+  // ── Send / Resend OTP ──
+  const handleSendOtp = async () => {
+    if (!validateIdentifier()) return;
     if (resendCount >= 3) {
       setLoginApiError("You have reached maximum OTP resend attempts.");
       return;
@@ -96,21 +141,18 @@ const Login = () => {
     setLoginApiError("");
 
     try {
-      const res = await login({ email_or_phone: trimmedPhone });
+      const res = await login({ email_or_phone: identifier.trim() });
 
-      if (res?.data.customer_id) {
+      if (res?.data?.customer_id) {
         setOtpSent(true);
-        setCustomerId(res?.data.customer_id);
+        setCustomerId(res.data.customer_id);
         setResendCount((prev) => prev + 1);
         setTimer(30);
         setOtp("");
 
         const countdown = setInterval(() => {
           setTimer((prev) => {
-            if (prev <= 1) {
-              clearInterval(countdown);
-              return 0;
-            }
+            if (prev <= 1) { clearInterval(countdown); return 0; }
             return prev - 1;
           });
         }, 1000);
@@ -119,22 +161,21 @@ const Login = () => {
       }
     } catch (err) {
       const apiMessage =
-        err?.response?.data?.message || // server message
-        err?.response?.data?.errors?.[0]?.message || // first error in array
-        err?.message || // fallback JS error
+        err?.response?.data?.message ||
+        err?.response?.data?.errors?.[0]?.message ||
+        err?.message ||
         "Network error. Please try again.";
-
       setLoginApiError(apiMessage);
-      // setLoginApiError("Network error. Please try again.");
     } finally {
       setIsLoading(false);
     }
   };
 
+  // ── Verify OTP ──
   const handleVerifyOtp = async () => {
     const trimmedOtp = otp.trim();
     if (trimmedOtp.length !== 4) {
-      setErrors({ otp: "Enter a valid 4 digit OTP" });
+      setErrors({ otp: "Enter a valid 4-digit OTP" });
       return;
     }
 
@@ -154,26 +195,29 @@ const Login = () => {
         setLoginApiError(res?.message || "Invalid OTP. Try again.");
       }
     } catch (err) {
-        console.log("Full API Error:", err);
-    // Check if it's an Axios-style error with response data
-    const apiMessage =
-      err?.response?.data?.message || // server message
-      err?.response?.data?.errors?.[0]?.message || // first error in array
-      err?.message || // fallback JS error
-      "Network error. Please try again.";
-
-    setLoginApiError(apiMessage);
+      const apiMessage =
+        err?.response?.data?.message ||
+        err?.response?.data?.errors?.[0]?.message ||
+        err?.message ||
+        "Network error. Please try again.";
+      setLoginApiError(apiMessage);
     } finally {
       setIsLoading(false);
     }
   };
 
+  // ── Derived hint for placeholder / label ──
+  const getInputHint = () => {
+    if (inputType === "phone") return "Mobile number detected ✓";
+    if (inputType === "email") return "Email detected ✓";
+    return null;
+  };
+
+  const hint = getInputHint();
+
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar
-        barStyle="light-content"
-        backgroundColor={COLORS.primaryColor}
-      />
+      <StatusBar barStyle="light-content" backgroundColor={COLORS.primaryColor} />
 
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -186,11 +230,7 @@ const Login = () => {
               keyboardShouldPersistTaps="handled"
               showsVerticalScrollIndicator={false}
             >
-              <Animatable.View
-                animation="fadeInDown"
-                duration={600}
-                style={styles.header}
-              >
+              <Animatable.View animation="fadeInDown" duration={600} style={styles.header}>
                 <LogoSVG style={styles.logo} />
               </Animatable.View>
 
@@ -202,58 +242,69 @@ const Login = () => {
                 />
               </Animatable.View>
 
-              <Animatable.View
-                animation="fadeInUp"
-                delay={300}
-                style={styles.formCard}
-              >
+              <Animatable.View animation="fadeInUp" delay={300} style={styles.formCard}>
                 <View>
                   <Text style={styles.formTitle}>
                     {otpSent ? "Enter OTP" : "Welcome Back, Login!"}
                   </Text>
                   <Text style={styles.formSubtitle}>
                     {otpSent
-                      ? "We’ve sent a 4-digit OTP to your mobile number."
-                      : "Enter your mobile number to receive OTP."}
+                      ? `OTP sent to ${identifier.trim()}`
+                      : "Enter your mobile number or email to receive OTP."}
                   </Text>
                 </View>
 
+                {/* ── Identifier Input ── */}
                 {!otpSent && (
-                  <Input
-                    label="Mobile Number"
-                    value={phone}
-                    onChangeText={(value) => {
-                      setPhone(value.replace(/[^0-9]/g, "").trim());
-                      setErrors({});
-                    }}
-                    error={!!errors?.phone}
-                    errorMessage={errors?.phone}
-                    isNumberOnly
-                    maxLength={10}
-                    keyboardType="number-pad"
-                    placeholder="Enter 10-digit mobile number"
-                  />
+                  <>
+                    <Input
+                      label="Mobile Number or Email"
+                      value={identifier}
+                      onChangeText={handleIdentifierChange}
+                      error={!!errors?.identifier}
+                      errorMessage={errors?.identifier}
+                      keyboardType={
+                        // start with numeric; switches automatically as user types
+                        identifier === "" || /^\d+$/.test(identifier)
+                          ? "phone-pad"
+                          : "email-address"
+                      }
+                      autoCapitalize="none"
+                      autoCorrect={false}
+                      placeholder="Mobile number or email"
+                      maxLength={inputType === "phone" ? 10 : undefined}
+                    />
+
+                    {/* Live detection hint */}
+                    {hint && !errors?.identifier && (
+                      <Text style={styles.hintText}>{hint}</Text>
+                    )}
+                  </>
                 )}
 
+                {/* ── OTP Input ── */}
                 {otpSent && (
                   <>
-                    <Text
-                      style={{ color: "#fff", marginBottom: 8, fontSize: 16 }}
+                    {/* Change identifier — let user go back */}
+                    <TouchableOpacity
+                      onPress={() => {
+                        setOtpSent(false);
+                        setOtp("");
+                        setErrors({});
+                        setLoginApiError("");
+                      }}
+                      style={styles.changeIdentifierRow}
                     >
-                      Enter OTP
-                    </Text>
+                      <Text style={styles.changeIdentifierText}>
+                        ← Change {inputType === "email" ? "email" : "number"}
+                      </Text>
+                    </TouchableOpacity>
+
+                    <Text style={styles.otpLabel}>Enter OTP</Text>
                     <OtpInput length={4} value={otp} setValue={setOtp} />
 
                     {errors?.otp && (
-                      <Text
-                        style={{
-                          color: "red",
-                          fontSize: 13,
-                          textAlign: "center",
-                        }}
-                      >
-                        {errors?.otp}
-                      </Text>
+                      <Text style={styles.otpError}>{errors.otp}</Text>
                     )}
 
                     <View style={styles.resendContainer}>
@@ -265,7 +316,7 @@ const Login = () => {
                           <Text
                             style={[
                               styles.resendText,
-                              (timer > 0 || isLoading) && { opacity: 0.6 },
+                              (timer > 0 || isLoading) && { opacity: 0.5 },
                             ]}
                           >
                             {timer > 0 ? `Resend in ${timer}s` : "Resend OTP"}
@@ -280,6 +331,7 @@ const Login = () => {
                   </>
                 )}
 
+                {/* ── API Error ── */}
                 {loginApiError ? (
                   <Text style={styles.errorText}>{loginApiError}</Text>
                 ) : null}
@@ -291,14 +343,16 @@ const Login = () => {
                   label={otpSent ? "Login" : "Get OTP"}
                   gradientColor={["#D36C32", "#F68F00"]}
                   disabled={
-                    otpSent ? otp.trim().length !== 4 || isLoading : isLoading
+                    otpSent
+                      ? otp.trim().length !== 4 || isLoading
+                      : isLoading
                   }
                 />
               </Animatable.View>
             </ScrollView>
 
             <View style={styles.bottomContainer}>
-              <Text style={styles.signupText}>Don’t have an account?</Text>
+              <Text style={styles.signupText}>Don't have an account?</Text>
               <TouchableOpacity onPress={() => router.push("/register")}>
                 <Text style={styles.signupLink}> Sign Up</Text>
               </TouchableOpacity>
@@ -329,26 +383,21 @@ const styles = StyleSheet.create({
     marginTop: 30,
     gap: 5,
   },
-  formTitle: {
-    fontSize: 24,
-    fontWeight: "800",
-    marginBottom: 5,
-    color: "#ffffffff",
+  formTitle: { fontSize: 24, fontWeight: "800", marginBottom: 5, color: "#fff" },
+  formSubtitle: { fontSize: 16, color: "#bebebe", marginBottom: 16 },
+  hintText: { color: "#4CAF50", fontSize: 12, marginTop: -2, marginLeft: 2 },
+  otpLabel: { color: "#fff", marginBottom: 8, fontSize: 16 },
+  otpError: { color: "red", fontSize: 13, textAlign: "center" },
+  changeIdentifierRow: { marginBottom: 12, alignSelf: "flex-start" },
+  changeIdentifierText: {
+    color: COLORS.secondaryColor,
+    fontSize: 13,
+    fontWeight: "600",
   },
-  formSubtitle: { fontSize: 16, color: "#bebebeff", marginBottom: 16 },
-  resendContainer: {
-    alignItems: "flex-end",
-    marginBottom: 10,
-    marginRight: 20,
-  },
+  resendContainer: { alignItems: "flex-end", marginBottom: 10, marginRight: 20 },
   resendText: { color: COLORS.secondaryColor, fontSize: 14, fontWeight: "500" },
   resendLimit: { color: "#FFB300", fontSize: 13, fontWeight: "600" },
-  errorText: {
-    color: "#FF4444",
-    marginTop: 12,
-    fontSize: 13,
-    textAlign: "center",
-  },
+  errorText: { color: "#FF4444", marginTop: 12, fontSize: 13, textAlign: "center" },
   bottomContainer: {
     flexDirection: "row",
     justifyContent: "center",

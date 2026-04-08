@@ -73,7 +73,7 @@ const NotificationItem = ({ item }) => (
 
 const Header = ({
   showBackButton = false,
-  backButtonText = () => {},
+  backButtonText = () => { },
   webUrl = null, // optional: current webview url
   disableSidebar = false,
 }) => {
@@ -146,11 +146,11 @@ const Header = ({
   };
   const versionCode = "2.2.2";
 
-//drawer band karne ke liye
+  //drawer band karne ke liye
   useFocusEffect(
     React.useCallback(() => {
       // Jab screen focus me aaye to drawer band karo
-    closeProfileDrawer()
+      closeProfileDrawer()
     }, [])
   );
   return (
@@ -408,7 +408,7 @@ const Header = ({
                   borderRadius: 12,
                   backgroundColor: "transparent",
                 }}
-                onPress={() => {router.push(item.route);  closeProfileDrawer()} }
+                onPress={() => { router.push(item.route); closeProfileDrawer() }}
                 activeOpacity={0.7}
               >
                 <View
@@ -756,8 +756,8 @@ const Header = ({
                 { label: "BSE Membership No", value: "Under Process" },
                 { label: "SEBI Reg No", value: "Under Process" },
                 { label: "ARN Number", value: "337712" },
-                { label: "Principal Officer", value: "Ovesh Khatri" },
-                { label: "Email", value: "po-cio@planmoney.in / 8108181604" },
+                // { label: "Principal Officer", value: "Ovesh Khatri" },
+                { label: "Email", value: "po-cio@planmoney.in" },
                 { label: "Compliance Officer", value: "Aishwarya Shinde" },
                 { label: "Email", value: "services@planmoney.in / 8108181602" },
               ].map((item, index) => (

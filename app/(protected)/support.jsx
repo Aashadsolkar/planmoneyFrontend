@@ -20,8 +20,8 @@ export default function Support() {
         { label: "BSE Membership No", value: "Under Process" },
         { label: "SEBI Reg No", value: "Under Process" },
         { label: "ARN Number", value: "337712" },
-        { label: "Principal Officer", value: "Ovesh Khatri" },
-        { label: "Email", value: "po-cio@planmoney.in / 8108181604" },
+        // { label: "Principal Officer", value: "Ovesh Khatri" },
+        { label: "Email", value: "po-cio@planmoney.in" },
         { label: "Compliance Officer", value: "Aishwarya Shinde" },
         { label: "Email", value: "services@planmoney.in / 8108181602" },
     ];
@@ -86,19 +86,19 @@ export default function Support() {
                 {/* Company Info Section */}
                 <View style={[styles.card, { flexDirection: "column", alignItems: "flex-start" }]}>
                     <Text style={styles.label}>Company Information</Text>
-                   <View style={{paddingTop: 10}}>
-                     {companyInfo.map((item, index) => (
-                        <View key={index} style={{ flexDirection: "row", marginBottom: 12, flexWrap: "wrap" }}>
-                            {/* Label */}
-                            <Text style={styles.infoLabel}>{item.label}: </Text>
+                    <View style={{ paddingTop: 10 }}>
+                        {companyInfo.map((item, index) => (
+                            <View key={index} style={{ flexDirection: "row", marginBottom: 12, flexWrap: "wrap" }}>
+                                {/* Label */}
+                                <Text style={styles.infoLabel}>{item.label}: </Text>
 
-                            {/* Value (clickable if phone/email) */}
-                            <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
-                                {renderValue(item.value)}
+                                {/* Value (clickable if phone/email) */}
+                                <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
+                                    {renderValue(item.value)}
+                                </View>
                             </View>
-                        </View>
-                    ))}
-                   </View>
+                        ))}
+                    </View>
 
                 </View>
             </ScrollView>
@@ -158,20 +158,20 @@ const styles = StyleSheet.create({
         marginTop: 4,
     },
     infoLabel: {
-  fontSize: 14,
-  color: "#ccc",
-  fontWeight: "500",
-},
-link: {
-  fontSize: 14,
-  fontWeight: "600",
-  color: COLORS.secondaryColor,
-  marginRight: 8,
-},
-normalText: {
-  fontSize: 14,
-  color: COLORS.fontWhite,
-  marginRight: 8,
-},
+        fontSize: 14,
+        color: "#ccc",
+        fontWeight: "500",
+    },
+    link: {
+        fontSize: 14,
+        fontWeight: "600",
+        color: COLORS.secondaryColor,
+        marginRight: 8,
+    },
+    normalText: {
+        fontSize: 14,
+        color: COLORS.fontWhite,
+        marginRight: 8,
+    },
 
 });
