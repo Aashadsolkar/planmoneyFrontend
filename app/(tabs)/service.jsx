@@ -4,7 +4,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import ServiceCard from '@components/ServiceCard';
 import { useAuth } from '@context/useAuth';
 import Header from '@components/Header';
-import { COLORS } from '../constants';
+import { COLORS } from '../../constants.js';
 import { service } from '@utils/apiCaller';
 import { router, useNavigation } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
@@ -36,11 +36,11 @@ const icon = {
         name="burst-new"
         size={50}
         style={{ transform: [{ rotate: "30deg" }] }}
-        color="#FFA500"
+        color={COLORS.secondaryColor}
     />,
     6: () => <PSIcon height={40} width={40} />,
-    101: () => <Foundation name="graph-trend" size={32} color="#FFA500" />,
-    102: () => <Foundation name="shield" size={32} color="#FFA500" />
+    101: () => <Foundation name="graph-trend" size={32} color={COLORS.secondaryColor} />,
+    102: () => <Foundation name="shield" size={32} color={COLORS.secondaryColor} />
 }
 
 const Service = () => {
@@ -186,7 +186,7 @@ const Service = () => {
     };
 
     const headerText = () => {
-        return <Text allowFontScaling={false} style={{ color: COLORS.fontWhite, fontWeight: 600, fontSize: 18 }}>Services</Text>
+        return <Text allowFontScaling={false} style={{ color: COLORS.secondaryColor, fontWeight: 600, fontSize: 18 }}>Services</Text>
     }
 
     const renderServiceList = () => {
@@ -218,7 +218,7 @@ const styles = StyleSheet.create({
     header: { marginBottom: 24 },
     greeting: { fontSize: 18, color: '#FFFFFF' },
     name: { color: '#FF9800', fontWeight: 'bold' },
-    sectionTitle: { fontSize: 18, fontWeight: 'bold', color: '#FFFFFF', marginBottom: 16 },
+    sectionTitle: { fontSize: 18, fontWeight: 'bold', color: COLORS.secondaryColor, marginBottom: 16 },
 });
 
 export default Service;

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { StyleSheet, Text, View, ScrollView, StatusBar } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Header from "@components/Header"
-import { COLORS } from "../../constants"
+import { COLORS } from "../../../constants.js";
 import { singleNews } from "@utils/apiCaller"
 import { useAuth } from "@context/useAuth"
 import { Link, useLocalSearchParams } from "expo-router"

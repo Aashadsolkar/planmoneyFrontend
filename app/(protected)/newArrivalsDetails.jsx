@@ -11,7 +11,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from '@expo/vector-icons';
 import Header from '@components/Header';
-import { COLORS } from '../constants';
+import { COLORS } from '../../constants';
 import { useAuth } from '@context/useAuth';
 import RenderHTML from 'react-native-render-html';
 import { router } from 'expo-router';
@@ -201,7 +201,7 @@ const styles = StyleSheet.create({
   serviceTitle: {
     fontSize: 20,
     fontWeight: '700',
-    color: '#fff',
+    color: COLORS.fontWhite,
   },
   serviceDetails: {
     flexDirection: 'row',
@@ -210,12 +210,12 @@ const styles = StyleSheet.create({
   },
   detailLabel: {
     fontSize: 12,
-    color: '#8aa0b8',
+    color: COLORS.lightGray,
     marginBottom: 4,
   },
   detailValue: {
     fontSize: 14,
-    color: '#fff',
+    color: COLORS.fontWhite,
     fontWeight: '500',
   },
   riskTag: {

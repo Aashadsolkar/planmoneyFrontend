@@ -1,6 +1,6 @@
 import { FontAwesome, FontAwesome6, Foundation, MaterialIcons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
-import { COLORS } from "../app/constants";
+import { COLORS } from "../constants.js";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function ProtectedTabs() {

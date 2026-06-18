@@ -4,7 +4,7 @@ import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import Button from '@components/Button';
 import { router, useNavigation } from 'expo-router';
 import SelectBox from '@components/Select';
-import { COLORS } from '../../constants';
+import { COLORS } from '../../../constants.js';
 import { useAuth } from '@context/useAuth';
 import { Ionicons } from '@expo/vector-icons';
 

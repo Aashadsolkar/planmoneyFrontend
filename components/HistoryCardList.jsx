@@ -4,7 +4,7 @@ import { Image } from "expo-image";
 import * as Animatable from "react-native-animatable";
 import Entypo from "@expo/vector-icons/Entypo";
 import { MaterialIcons } from "@expo/vector-icons";
-import { COLORS } from "../app/constants";
+import { COLORS } from "../constants.js";
 import { formatDateToDDMMYYYY } from '../utils/commonFunctions';
 import Foundation from "@expo/vector-icons/Foundation";
 
@@ -57,7 +57,7 @@ const HistoryCardList = ({ dataList = [], status = "active", }) => {
                             name="burst-new"
                             size={30}
                             style={{ transform: [{ rotate: "30deg" }] }}
-                            color="#FFA500"
+                            color={COLORS.orangeColor}
                         />
                        </View>
                         }
@@ -161,22 +161,24 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         marginBottom: 10,
         elevation: 2,
-        position: "relative"
+        position: "relative",
+        boxShadow: COLORS.boxShadow,
+        marginHorizontal: 15,
     },
     cardSections: {
         flexDirection: "row",
         justifyContent: "space-between",
         marginBottom: 8,
         borderBottomWidth: 1,
-        borderBottomColor: COLORS.primaryColor,
+        borderBottomColor: "#ccc",
         paddingVertical: 10
     },
     boldText: {
         fontWeight: "bold",
-        color: "white",
+        color: COLORS.fontWhite,
     },
     lightText: {
-        color: "#ccc",
+        color: COLORS.lightGray,
     },
     greenText: {
         color: COLORS.profitColor,

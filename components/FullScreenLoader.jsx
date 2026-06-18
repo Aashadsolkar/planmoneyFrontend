@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, ActivityIndicator, StyleSheet, Modal } from 'react-native';
-import { COLORS } from '../app/constants';
+import { COLORS } from '../constants.js';
 
 const FullScreenLoader = ({ visible = true }) => {
   return (

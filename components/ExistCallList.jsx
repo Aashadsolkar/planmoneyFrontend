@@ -4,7 +4,7 @@ import { Image } from "expo-image";
 import * as Animatable from "react-native-animatable";
 import Entypo from "@expo/vector-icons/Entypo";
 import { MaterialIcons } from "@expo/vector-icons";
-import { COLORS } from "../app/constants";
+import { COLORS } from "../constants.js";
 import { formatDateToDDMMYYYY } from '../utils/commonFunctions';
 import Foundation from "@expo/vector-icons/Foundation";
 

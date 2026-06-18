@@ -13,7 +13,7 @@ import {
 } from "react-native";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { router } from "expo-router"
-import { COLORS } from '../../constants'
+import { COLORS } from '../../../constants.js'
 import Button from "@components/Button"
 import { useAuth } from "@context/useAuth"
 

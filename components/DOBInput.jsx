@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Platform } from 'react-native';
 import DateTimePicker, { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
 import { Ionicons } from '@expo/vector-icons';
-import { COLORS } from '../app/constants';
+import { COLORS } from '../constants.js';
 
 const DOBInput = ({ onDateChange, onError }) => {
   const [dob, setDob] = useState(null);

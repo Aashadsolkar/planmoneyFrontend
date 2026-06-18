@@ -2,7 +2,7 @@ import { View, Text, useWindowDimensions, ScrollView } from 'react-native'
 import { SafeAreaView } from "react-native-safe-area-context";
 import React from 'react'
 import RenderHTML from 'react-native-render-html';
-import { COLORS } from '../constants';
+import { COLORS } from '../../constants.js';
 import { useLocalSearchParams } from 'expo-router';
 import Header from '@components/Header';
 

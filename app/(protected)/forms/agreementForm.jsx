@@ -1,7 +1,7 @@
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView, BackHandler, StatusBar } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import React, { useEffect, useState } from 'react';
-import { COLORS } from '../../constants';
+import { COLORS } from '../../../constants.js';
 import Button from '@components/Button';
 import Input from '@components/Input';
 import { router, useNavigation } from 'expo-router';

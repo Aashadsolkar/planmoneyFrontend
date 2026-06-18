@@ -18,7 +18,7 @@ import { router } from "expo-router";
 import { useAuth } from "@context/useAuth";
 import Input from "@components/Input";
 import Button from "@components/Button";
-import { COLORS } from "../constants";
+import { COLORS } from "../../constants.js";
 import LogoSVG from "@components/LogoSVG";
 import * as Animatable from "react-native-animatable";
 import { login, RegisterPushNotificationToken } from "@utils/apiCaller";
@@ -231,12 +231,13 @@ const Login = () => {
               showsVerticalScrollIndicator={false}
             >
               <Animatable.View animation="fadeInDown" duration={600} style={styles.header}>
-                <LogoSVG style={styles.logo} />
+                <Image source={require("../../assets/images/new_logo.png")} style={styles.logo} />
+                
               </Animatable.View>
 
               <Animatable.View animation="zoomIn" delay={200}>
                 <Image
-                  source={require("../../assets/images/login-bg.png")}
+                  source={require("../../assets/images/login-bg (2).png")}
                   style={styles.illustration}
                   contentFit="contain"
                 />
@@ -341,7 +342,7 @@ const Login = () => {
                   isLoading={isLoading}
                   style={{ marginTop: 20 }}
                   label={otpSent ? "Login" : "Get OTP"}
-                  gradientColor={["#D36C32", "#F68F00"]}
+                  gradientColor={["#ff9f19", "#ff9f19"]}
                   disabled={
                     otpSent
                       ? otp.trim().length !== 4 || isLoading
@@ -369,10 +370,10 @@ const styles = StyleSheet.create({
   flexContainer: { flex: 1 },
   scrollContent: { alignItems: "center", paddingBottom: 40 },
   header: { alignItems: "center", marginTop: 20 },
-  logo: { width: 80, height: 80 },
+  logo: { width: 350, height: 80 },
   illustration: { width: width * 0.9, height: height * 0.3, marginTop: 10 },
   formCard: {
-    backgroundColor: "#093658",
+    backgroundColor: COLORS.primaryColor,
     width: "90%",
     borderRadius: 16,
     padding: 20,
@@ -382,11 +383,12 @@ const styles = StyleSheet.create({
     elevation: 4,
     marginTop: 30,
     gap: 5,
+    boxShadow: COLORS.boxShadow,
   },
-  formTitle: { fontSize: 24, fontWeight: "800", marginBottom: 5, color: "#fff" },
-  formSubtitle: { fontSize: 16, color: "#bebebe", marginBottom: 16 },
+  formTitle: { fontSize: 24, fontWeight: "800", marginBottom: 5, color: COLORS.secondaryIconColor },
+  formSubtitle: { fontSize: 16, color: COLORS.lightGray, marginBottom: 16 },
   hintText: { color: "#4CAF50", fontSize: 12, marginTop: -2, marginLeft: 2 },
-  otpLabel: { color: "#fff", marginBottom: 8, fontSize: 16 },
+  otpLabel: { color: COLORS.secondaryIconColor, marginBottom: 8, fontSize: 16 },
   otpError: { color: "red", fontSize: 13, textAlign: "center" },
   changeIdentifierRow: { marginBottom: 12, alignSelf: "flex-start" },
   changeIdentifierText: {
@@ -405,8 +407,8 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: "rgba(255,255,255,0.2)",
   },
-  signupText: { color: "#FFF", fontSize: 14 },
-  signupLink: { color: "#D87129", fontWeight: "700", fontSize: 14 },
+  signupText: { color: COLORS.lightGray, fontSize: 14 },
+  signupLink: { color: COLORS.orangeColor, fontWeight: "700", fontSize: 14 },
   otpContainer: {
     flexDirection: "row",
     justifyContent: "space-evenly",
@@ -420,11 +422,11 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 20,
     fontWeight: "600",
-    color: "#fff",
+    color: COLORS.primaryColor,
     borderColor: COLORS.secondaryColor,
     backgroundColor: "rgba(255,255,255,0.05)",
   },
-  otpBoxFilled: { borderColor: "#fff" },
+  otpBoxFilled: {  color: COLORS.secondaryIconColor },
 });
 
 export default Login;

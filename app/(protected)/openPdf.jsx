@@ -3,7 +3,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { StyleSheet, View, ActivityIndicator, Dimensions } from "react-native";
 import PDF from "react-native-pdf";
 import Header from "@components/Header";
-import { COLORS } from "../constants";
+import { COLORS } from "../../constants.js";
 import { useLocalSearchParams } from "expo-router";
 
 export default function PdfViewer() {

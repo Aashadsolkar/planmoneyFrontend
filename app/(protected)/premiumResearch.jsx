@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, StatusBar } from 'react-native';
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
-import { COLORS } from '../constants';
+import { COLORS } from '../../constants.js';
 import Header from '@components/Header';
 import { router } from 'expo-router';
 import { useAuth } from '@context/useAuth';
@@ -414,7 +414,7 @@ const styles = StyleSheet.create({
     scrollView: {
         flex: 1,
         padding: 16,
-        paddingHorizontal: 20
+        // paddingHorizontal: 20
     },
     serviceCard: {
         backgroundColor: COLORS.cardColor,
@@ -423,6 +423,7 @@ const styles = StyleSheet.create({
         borderColor: '#ffaa00',
         marginBottom: 16,
         padding: 16,
+        boxShadow: COLORS.boxShadow,
     },
     serviceHeader: {
         flexDirection: 'row',
@@ -433,7 +434,7 @@ const styles = StyleSheet.create({
     serviceTitle: {
         fontSize: 16,
         fontWeight: '600',
-        color: COLORS.secondaryColor,
+        color: COLORS.fontWhite,
         flex: 1,
         paddingRight: 8,
     },
@@ -470,17 +471,17 @@ const styles = StyleSheet.create({
     },
     detailValue: {
         fontSize: 14,
-        color: '#fff',
+        color: COLORS.fontWhite,
         fontWeight: '500',
     },
     buyButton: {
-        backgroundColor: COLORS.secondaryColor,
+        backgroundColor: COLORS.orangeColor,
         paddingHorizontal: 10,
         paddingVertical: 5,
         borderRadius: 20,
     },
     buyButtonText: {
-        color: '#fff',
+        color: COLORS.fontWhite,
         fontWeight: '600',
         fontSize: 12,
     },
@@ -503,6 +504,7 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         margin: 16,
         overflow: "hidden",
+        boxShadow: COLORS.boxShadow,
     },
     tab: {
         flex: 1,
@@ -528,6 +530,7 @@ const styles = StyleSheet.create({
         marginBottom: 20,
         borderLeftWidth: 3,
         borderLeftColor: COLORS.secondaryColor,
+        boxShadow: COLORS.boxShadow,
     },
     cardSections: {
         padding: 15,

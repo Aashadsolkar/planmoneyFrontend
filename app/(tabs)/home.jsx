@@ -14,7 +14,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons, AntDesign, FontAwesome6 } from "@expo/vector-icons";
 import Header from "@components/Header";
 import { LinearGradient } from "expo-linear-gradient";
-import { COLORS } from "../constants";
+import { COLORS } from "../../constants.js";
 import { useAuth } from "@context/useAuth";
 import { Link, router, useNavigation } from "expo-router";
 import Button from "@components/Button";
@@ -514,7 +514,7 @@ export default function Home() {
               style={{ alignItems: "center" }}
             >
               <View style={styles.linkIconContainer}>
-                <FastlaneIcon height={50} width={50} />
+                <FastlaneIcon height={45} width={45} />
                 {/* <Ionicons name="calculator" size={40} color="#FFA500" /> */}
               </View>
               <Text style={styles.linkText}>FastLane</Text>
@@ -534,7 +534,7 @@ export default function Home() {
                 style={{
                   width: 10,
                   height: 10,
-                  backgroundColor: "red",
+                  backgroundColor: COLORS.orangeColor,
                   borderRadius: "50%",
                   position: "absolute",
                   top: 13,
@@ -550,9 +550,9 @@ export default function Home() {
               <View style={styles.linkIconContainer}>
                 <Foundation
                   name="burst-new"
-                  size={50}
+                  size={45}
                   style={{ transform: [{ rotate: "30deg" }] }}
-                  color="#FFA500"
+                  color={COLORS.secondaryIconColor}
                 />
               </View>
               <Text style={styles.linkText}>New Arrivals</Text>
@@ -571,7 +571,7 @@ export default function Home() {
               onPress={() => router.push("premiumResearch")}
             >
               <View style={styles.linkIconContainer}>
-                <PSIcon height={40} width={40} />
+                <PSIcon height={35} width={35} />
               </View>
               <Text style={styles.linkText}>Premium Research</Text>
             </TouchableOpacity>
@@ -589,9 +589,9 @@ export default function Home() {
             >
               <View style={styles.linkIconContainer}>
                 <FontAwesome6
-                  size={35}
+                  size={30}
                   name="chart-pie"
-                  color={COLORS.secondaryColor}
+                  color={COLORS.secondaryIconColor}
                 />
               </View>
               <Text allowFontScaling={false} style={styles.linkText}>History</Text>
@@ -608,7 +608,7 @@ export default function Home() {
               onPress={() => router.push("unlistedShares")}
             >
               <Text style={styles.viewMoreText}>View More</Text>
-              <AntDesign name="right" size={12} color="#FFA500" />
+              <AntDesign color={COLORS.secondaryIconColor} name="right" size={12} />
             </TouchableOpacity>
           </View>
 
@@ -753,11 +753,15 @@ const styles = StyleSheet.create({
   },
   linkItem: {
     alignItems: "center",
-    width: "25%",
+    width: "22.5%",
+    boxShadow: '0px 0px 10px 0px rgba(87, 27, 140, 0.2)',
+    borderRadius: 12,
+    padding: 5,
+    
   },
   linkIconContainer: {
     width: 70,
-    height: 65,
+    height: 50,
     borderRadius: 8,
     backgroundColor: COLORS.cardColor,
     justifyContent: "center",
@@ -768,6 +772,7 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 11,
     textAlign: "center",
+    color: COLORS.fontWhite,
   },
   newsContainer: {
     paddingHorizontal: 20,
@@ -783,13 +788,14 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 16,
     fontWeight: "bold",
+    color: COLORS.fontWhite,
   },
   viewMoreButton: {
     flexDirection: "row",
     alignItems: "center",
   },
   viewMoreText: {
-    color: "#FFA500",
+    color: COLORS.secondaryColor,
     fontSize: 12,
     marginRight: 5,
   },

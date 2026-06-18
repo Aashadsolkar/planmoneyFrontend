@@ -12,7 +12,7 @@ import {
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { useAuth } from "@context/useAuth";
 import { verifyKYCApi } from "@utils/apiCaller";
-import { COLORS } from "../constants";
+import { COLORS } from "../../constants.js";
 import Header from "@components/Header";
 import Button from "@components/Button";
 import { CheckCircle } from "lucide-react-native";

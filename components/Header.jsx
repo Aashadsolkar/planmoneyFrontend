@@ -13,9 +13,10 @@ import {
   StatusBar,
   ScrollView,
   Alert,
+  Image,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { COLORS } from "../app/constants";
+import { COLORS } from "../constants.js";
 import { router, useNavigation } from "expo-router";
 import { useAuth } from "@context/useAuth";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
@@ -37,7 +38,7 @@ const menuItems = [
   // { icon: "time-outline", label: "History", route: "history" },
   { icon: "calculator", label: "SIP Calculator", route: "sip" },
   { icon: "person", label: "Account", route: "profile" },
-  { icon: "help-circle", label: "Contact us", route: "support" },
+  { icon: "help-circle-outline", label: "Contact us", route: "support" },
 ];
 
 const getInitials = (fullName) => {
@@ -167,7 +168,7 @@ const Header = ({
                   onPress={() => router.back()}
                   activeOpacity={0.7}
                 >
-                  <Ionicons name="arrow-back" size={24} color="#ffffff" />
+                  <Ionicons name="arrow-back" size={24} color={COLORS.secondaryColor} />
                 </TouchableOpacity>
                 <View>{backButtonText()}</View>
               </View>
@@ -176,25 +177,17 @@ const Header = ({
                 style={{ flexDirection: "row", alignItems: "center", gap: 15 }}
               >
                 <TouchableOpacity onPress={() => setIsInfomodalOpen(true)}>
-                  <View
-                    style={{
-                      backgroundColor: "#004B8869",
-                      borderRadius: "50%",
-                      height: 45,
-                      width: 45,
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }}
-                  >
-                    <IconSVG />
-                  </View>
+                  
+                    <Image source={require("../assets/images/new_logo.png")} style={styles.logo} />
+                    {/* <IconSVG /> */}
+                  
                 </TouchableOpacity>
-                <Text style={styles.title}>
+                <View style={styles.title}>
                   {isProfileLoading ? (
                     <ShimmerSkeleton height={23} width={180} />
                   ) : (
                     <>
-                      Hi{" "}
+                      <Text style={{fontSize: 10, color: COLORS.fontWhite, fontWeight: "600"}}>Welcome back, </Text>
                       <Text style={styles.highlightedName}>
                         {profileData?.name?.length > 18
                           ? `${profileData.name.slice(0, 18)}...`
@@ -202,7 +195,7 @@ const Header = ({
                       </Text>
                     </>
                   )}
-                </Text>
+                </View>
               </View>
             )}
           </View>
@@ -246,7 +239,7 @@ const Header = ({
           right: 0,
           height: "100%",
           width: "70%",
-          backgroundColor: "#093557ff",
+          backgroundColor: COLORS.primaryColor,
           transform: [{ translateX: drawerAnimation }],
           shadowColor: "#000",
           shadowOffset: { width: 2, height: 0 },
@@ -258,7 +251,7 @@ const Header = ({
       >
         {/* Header with Gradient */}
         <LinearGradient
-          colors={["#093658", "#052b47ff"]}
+          colors={[COLORS.secondaryColor, COLORS.secondaryIconColor]}
           style={{
             paddingTop: StatusBar.currentHeight + 20,
             paddingHorizontal: 20,
@@ -324,7 +317,7 @@ const Header = ({
                 style={{
                   fontSize: 18,
                   fontWeight: "600",
-                  color: "#ffffff",
+                  color: COLORS.primaryColor,
                   marginBottom: 4,
                 }}
               >
@@ -416,25 +409,25 @@ const Header = ({
                     width: 40,
                     height: 40,
                     borderRadius: 10,
-                    backgroundColor: "rgba(255,255,255,0.08)",
+                    backgroundColor: "rgba(240, 215, 245, 0.8)",
                     justifyContent: "center",
                     alignItems: "center",
                     marginRight: 15,
                   }}
                 >
-                  <Ionicons name={item.icon} size={20} color="#a0a0b8" />
+                  <Ionicons name={item.icon} size={20} color={COLORS.secondaryIconColor} />
                 </View>
                 <Text
                   style={{
                     fontSize: 16,
-                    color: "#ffffff",
+                    color: COLORS.secondaryColor,
                     fontWeight: "500",
                     flex: 1,
                   }}
                 >
                   {item.label}
                 </Text>
-                <Ionicons name="chevron-forward" size={16} color="#a0a0b8" />
+                <Ionicons name="chevron-forward" size={16} color={COLORS.secondaryIconColor} />
               </TouchableOpacity>
             ))}
 
@@ -485,13 +478,13 @@ const Header = ({
             paddingHorizontal: 20,
             paddingVertical: 15,
             borderTopWidth: 1,
-            borderTopColor: "rgba(255,255,255,0.1)",
+            borderTopColor: "rgba(118, 95, 95, 0.1)",
           }}
         >
           <Text
             style={{
               fontSize: 12,
-              color: "#bdbdd0ff",
+              color: COLORS.lightGray,
               textAlign: "center",
               opacity: 0.6,
             }}
@@ -514,14 +507,14 @@ const Header = ({
             flex: 1,
             justifyContent: "center",
             alignItems: "center",
-            backgroundColor: "rgba(0,0,0,0.5)",
+            backgroundColor: "rgba(225, 182, 228, 0.5)",
           }}
         >
           <View
             style={{
               width: "85%",
               maxWidth: 320,
-              backgroundColor: "#0b2b43ff",
+              backgroundColor: COLORS.primaryColor,
               borderRadius: 20,
               overflow: "hidden",
               shadowColor: "#000",
@@ -533,7 +526,7 @@ const Header = ({
           >
             {/* Modal Header */}
             <LinearGradient
-              colors={["#093658", "#112637ff"]}
+              colors={[COLORS.secondaryColor, COLORS.secondaryIconColor]}
               style={{
                 flexDirection: "row",
                 justifyContent: "space-between",
@@ -541,14 +534,14 @@ const Header = ({
                 paddingHorizontal: 20,
                 paddingVertical: 18,
                 borderBottomWidth: 1,
-                borderBottomColor: "rgba(255,255,255,0.1)",
+                borderBottomColor: "rgba(118, 95, 95, 0.1)",
               }}
             >
               <Text
                 style={{
                   fontSize: 20,
                   fontWeight: "600",
-                  color: "#ffffff",
+                  color: COLORS.primaryColor,
                 }}
               >
                 Confirm Logout
@@ -594,7 +587,7 @@ const Header = ({
               <Text
                 style={{
                   fontSize: 16,
-                  color: "#ffffff",
+                  color: COLORS.secondaryColor,
                   fontWeight: "500",
                   textAlign: "center",
                   marginBottom: 8,
@@ -606,7 +599,7 @@ const Header = ({
               <Text
                 style={{
                   fontSize: 14,
-                  color: "#a0a0b8",
+                  color: COLORS.lightGray,
                   textAlign: "center",
                   marginBottom: 25,
                   lineHeight: 20,
@@ -628,7 +621,7 @@ const Header = ({
                     flex: 1,
                     paddingVertical: 14,
                     borderRadius: 12,
-                    backgroundColor: "rgba(255,255,255,0.1)",
+                    backgroundColor: COLORS.secondaryColor,
                     alignItems: "center",
                   }}
                   onPress={() => setIsLogoutModalOpen(false)}
@@ -638,7 +631,7 @@ const Header = ({
                     style={{
                       fontSize: 16,
                       fontWeight: "600",
-                      color: "#ffffff",
+                      color: COLORS.primaryColor,
                     }}
                   >
                     Cancel
@@ -695,14 +688,14 @@ const Header = ({
             flex: 1,
             justifyContent: "center",
             alignItems: "center",
-            backgroundColor: "rgba(0,0,0,0.5)",
+            backgroundColor: "rgba(172, 144, 188, 0.5)",
           }}
         >
           <View
             style={{
               width: "85%",
               maxWidth: 320,
-              backgroundColor: "#0b2b43ff",
+              backgroundColor: COLORS.cardColor,
               borderRadius: 20,
               overflow: "hidden",
               shadowColor: "#000",
@@ -714,7 +707,7 @@ const Header = ({
           >
             {/* Modal Header */}
             <LinearGradient
-              colors={["#093658", "#112637ff"]}
+              colors={[COLORS.secondaryColor, COLORS.secondaryIconColor]}
               style={{
                 flexDirection: "row",
                 justifyContent: "space-between",
@@ -732,7 +725,7 @@ const Header = ({
                   color: "#ffffff",
                 }}
               >
-                PlanMoney
+                Econexx Wealth
               </Text>
               <TouchableOpacity
                 onPress={() => setIsInfomodalOpen(false)}
@@ -767,7 +760,7 @@ const Header = ({
                     style={{
                       fontSize: 14,
                       fontWeight: "500",
-                      color: "#ccc",
+                      color: COLORS.lightGray,
                       marginBottom: 2,
                     }}
                   >
@@ -775,7 +768,7 @@ const Header = ({
                   </Text>
 
                   {/* Value */}
-                  <Text style={{ fontSize: 14, color: "#fff" }}>
+                  <Text style={{ fontSize: 14, color: COLORS.fontWhite }}>
                     {item.value}
                   </Text>
                 </View>
@@ -793,6 +786,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.cardColor,
     zIndex: 10,
     width: "100%",
+    boxShadow: COLORS.boxShadow,
   },
   header: {
     flexDirection: "row",
@@ -811,15 +805,15 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   title: {
-    color: "white",
-    fontSize: 18,
-    fontWeight: "600",
+    flexDirection: "column",
+    alignItems: "flex-start",
   },
   highlightedName: {
-    color: "#FFA500",
+    color: COLORS.secondaryColor,
     fontWeight: "600",
     textTransform: "capitalize",
     width: 201,
+    fontSize: 13,
   },
   iconButton: {
     marginRight: 16,
@@ -841,14 +835,17 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: "50%",
-    backgroundColor: "#890E49",
+    backgroundColor: "#fff",
     justifyContent: "center",
     alignItems: "center",
+    borderWidth: 1,
+    borderColor: COLORS.secondaryColor,
   },
   profileInitial: {
     color: "#fff",
     fontSize: 16,
     fontWeight: "bold",
+    color: COLORS.fontWhite,
   },
   backIcon: {
     fontSize: 20,
@@ -1017,6 +1014,11 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
     fontSize: 18,
     fontWeight: "bold",
+  },
+  logo: {
+    width: 150,
+    height: 40,
+    // borderRadius: 20,
   },
 });
 

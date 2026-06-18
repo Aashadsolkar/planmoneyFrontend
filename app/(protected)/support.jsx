@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View, StatusBar, TouchableOpacity, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Header from "@components/Header"
-import { COLORS } from "../constants"
+import { COLORS } from "../../constants.js"
 import * as Linking from "expo-linking";
 import { Ionicons } from "@expo/vector-icons";
 

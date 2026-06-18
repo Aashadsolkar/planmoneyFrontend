@@ -6,7 +6,7 @@ import { useAuth } from '@context/useAuth';
 import { router, useLocalSearchParams } from "expo-router";
 import { useNavigation } from "@react-navigation/native";
 import * as Linking from 'expo-linking';
-import { COLORS } from "../constants";
+import { COLORS } from "../../constants.js";
 
 export default function CheckoutWebView(props) {
   const { sessionId, orderId } = useLocalSearchParams();

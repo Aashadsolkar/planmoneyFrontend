@@ -19,7 +19,7 @@ import { router } from "expo-router";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { Image } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { COLORS } from "../constants";
+import { COLORS } from "../../constants.js";
 import PassWordInput from '@components/Password';
 import Input from '@components/Input';
 import Button from '@components/Button';

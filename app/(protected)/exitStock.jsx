@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, TextInput, TouchableOpacity, ScrollView, Status
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons"
 import Header from "@components/Header"
-import { COLORS } from "../constants"
+import { COLORS } from "../../constants.js"
 import Button from "@components/Button"
 import { useAuth } from '@context/useAuth';
 import { BuyStocks } from "@utils/apiCaller"

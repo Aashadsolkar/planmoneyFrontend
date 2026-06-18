@@ -3,7 +3,7 @@ import { useState, useEffect } from "react"
 import { View, Text, StyleSheet, ScrollView, BackHandler } from "react-native";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { useAuth } from '@context/useAuth';
-import { COLORS } from "../constants";
+import { COLORS } from "../../constants.js";
 import Header from "@components/Header";
 import Button from "@components/Button";
 import { router, useNavigation } from "expo-router";

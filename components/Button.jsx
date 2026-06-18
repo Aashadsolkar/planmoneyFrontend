@@ -1,6 +1,6 @@
 import { LinearGradient } from "expo-linear-gradient";
 import { ActivityIndicator, Text, TouchableOpacity } from "react-native";
-import { COLORS, util_style } from "../app/constants";
+import { COLORS, util_style } from "../constants";
 
 const Button = ({
   label,

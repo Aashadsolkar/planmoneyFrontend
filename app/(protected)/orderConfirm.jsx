@@ -3,7 +3,7 @@ import { View, Text, Image, ActivityIndicator, StyleSheet, ScrollView, Touchable
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useEffect, useState } from "react"
 import Button from "@components/Button"
-import { COLORS } from "../constants"
+import { COLORS } from "../../constants.js"
 import { useAuth } from '@context/useAuth';
 import { buySubscription, pgVerifyOrder } from "@utils/apiCaller"
 import { useNavigation, useRoute } from "@react-navigation/native"

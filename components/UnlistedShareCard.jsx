@@ -11,7 +11,7 @@ import {
 import { Image } from "expo-image";
 import * as Animatable from "react-native-animatable";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { COLORS } from "../app/constants";
+import { COLORS } from "../constants.js";
 import { useAuth } from "@context/useAuth";
 import Button from "@components/Button";
 import { showToast } from "@components/CustomToast/ToastService";
@@ -162,7 +162,7 @@ const UnlistedShareCard = ({ item }) => {
                   setErrors({});
                 }}
               >
-                <Ionicons name="close" size={24} color="#fff" />
+                <Ionicons name="close" size={24} color={COLORS.secondaryIconColor} />
               </TouchableOpacity>
             </View>
 
@@ -244,6 +244,7 @@ const styles = StyleSheet.create({
     padding: 14,
     marginBottom: 20,
     elevation: 6,
+    boxShadow: COLORS.boxShadow,
   },
   headerRow: {
     flexDirection: "row",
@@ -323,10 +324,11 @@ const styles = StyleSheet.create({
   callText: {
     color: COLORS.fontWhite,
     fontWeight: "700",
+    color: "white",
   },
   modalOverlay: {
     flex: 1,
-    backgroundColor: "rgba(0,0,0,0.5)",
+    backgroundColor: "rgba(224, 213, 228, 0.5)",
     justifyContent: "center",
   },
   modalContent: {
@@ -336,6 +338,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     maxHeight: height * 0.7,
     paddingBottom: 20,
+    boxShadow: COLORS.boxShadow,
   },
   modalHeader: {
     flexDirection: "row",

@@ -2,7 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import React, { useState } from 'react';
 import { Dimensions, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Button from './Button';
-import { COLORS } from '../app/constants';
+import { COLORS } from '../constants.js';
 import { useAuth } from '@context/useAuth';
 import { verifyQuestioner } from '@utils/apiCaller';
 import { router } from 'expo-router';

@@ -18,7 +18,7 @@ import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import DateTimePicker from "@react-native-community/datetimepicker"
 import { Ionicons } from "@expo/vector-icons"
 import { LinearGradient } from "expo-linear-gradient"
-import { COLORS } from '../../constants'
+import { COLORS } from '../../../constants.js'
 import Header from "@components/Header"
 import Button from "@components/Button"
 import { router } from "expo-router"

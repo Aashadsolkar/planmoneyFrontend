@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, TouchableOpacity, StatusBar, FlatList } from "r
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons"
 import Header from "@components/Header"
-import { COLORS } from "../constants"
+import { COLORS } from "../../constants.js"
 import { news } from "@utils/apiCaller"
 import { useAuth } from "@context/useAuth"
 import SkeletonList from '@components/ListSkeleton';

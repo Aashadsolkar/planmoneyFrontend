@@ -1,5 +1,6 @@
 import React from 'react';
 import Svg, { Path, Defs, LinearGradient, Stop, Rect } from 'react-native-svg';
+import { COLORS } from '../../constants.js';
 
 export const FastlaneIcon = ({ width = 44, height = 44 }) => (
     <Svg
@@ -10,24 +11,24 @@ export const FastlaneIcon = ({ width = 44, height = 44 }) => (
     >
         <Defs>
             <LinearGradient id="paint0_linear" x1="22.125" y1="7" x2="22.125" y2="28.25" gradientUnits="userSpaceOnUse">
-                <Stop stopColor="#F68F00" />
-                <Stop offset="1" stopColor="#D36C32" />
+                <Stop stopColor={COLORS.orangeColor} />
+                <Stop offset="1" stopColor={COLORS.orangeColor} />
             </LinearGradient>
             <LinearGradient id="paint1_linear" x1="34.6252" y1="15.75" x2="34.6252" y2="37" gradientUnits="userSpaceOnUse">
-                <Stop stopColor="#F68F00" />
-                <Stop offset="1" stopColor="#D36C32" />
+                <Stop stopColor={COLORS.secondaryIconColor} />
+                <Stop offset="1" stopColor={COLORS.secondaryIconColor} />
             </LinearGradient>
             <LinearGradient id="paint2_linear" x1="24.625" y1="24.5" x2="24.625" y2="37" gradientUnits="userSpaceOnUse">
-                <Stop stopColor="#F68F00" />
-                <Stop offset="1" stopColor="#D36C32" />
+                <Stop stopColor={COLORS.secondaryIconColor} />
+                <Stop offset="1" stopColor={COLORS.secondaryIconColor} />
             </LinearGradient>
             <LinearGradient id="paint3_linear" x1="15.8752" y1="28.25" x2="15.8752" y2="37" gradientUnits="userSpaceOnUse">
-                <Stop stopColor="#F68F00" />
-                <Stop offset="1" stopColor="#D36C32" />
+                <Stop stopColor={COLORS.secondaryIconColor} />
+                <Stop offset="1" stopColor={COLORS.secondaryIconColor} />
             </LinearGradient>
             <LinearGradient id="paint4_linear" x1="8.375" y1="28.25" x2="8.375" y2="37" gradientUnits="userSpaceOnUse">
-                <Stop stopColor="#F68F00" />
-                <Stop offset="1" stopColor="#D36C32" />
+                <Stop stopColor={COLORS.secondaryIconColor} />
+                <Stop offset="1" stopColor={COLORS.secondaryIconColor} />
             </LinearGradient>
         </Defs>
 
@@ -75,12 +76,12 @@ export function PSIcon({ width = 44, height = 44 }) {
             />
             <Defs>
                 <LinearGradient id="paint0_linear" x1="22.3805" y1="26.3381" x2="22.3805" y2="39.0115" gradientUnits="userSpaceOnUse">
-                    <Stop stopColor="#F68F00" />
-                    <Stop offset="1" stopColor="#BA730F" />
+                    <Stop stopColor={COLORS.secondaryIconColor} />
+                    <Stop offset="1" stopColor={COLORS.secondaryIconColor} />
                 </LinearGradient>
                 <LinearGradient id="paint1_linear" x1="5.3278" y1="2.96262" x2="21.1712" y2="24.2037" gradientUnits="userSpaceOnUse">
-                    <Stop stopColor="#F68F00" />
-                    <Stop offset="1" stopColor="#BA730F" />
+                    <Stop stopColor={COLORS.secondaryIconColor} />
+                    <Stop offset="1" stopColor={COLORS.secondaryIconColor} />
                 </LinearGradient>
             </Defs>
         </Svg>

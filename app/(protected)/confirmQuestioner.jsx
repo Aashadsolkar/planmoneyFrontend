@@ -7,7 +7,7 @@ import {
   BackHandler,
 } from "react-native";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
-import { COLORS } from "../constants";
+import { COLORS } from "../../constants.js";
 import Button from "@components/Button";
 import { router, useNavigation } from "expo-router";
 import { useEffect } from "react";

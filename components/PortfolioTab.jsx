@@ -5,7 +5,7 @@ import { TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Alert } from 'react-native';
 import { useAuth } from '@context/useAuth';
-import { COLORS, serviceInfo } from '../app/constants';
+import { COLORS, serviceInfo } from '../constants.js';
 import { getCmpStock, portfolio, exitCallList } from '@utils/apiCaller';
 import { router } from 'expo-router';
 import { showToast } from "@components/CustomToast/ToastService";

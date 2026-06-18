@@ -1,14 +1,17 @@
 export const COLORS = {
-    primaryColor: '#012744',
-    secondaryColor: "#F68F00",
-    cardColor: "#093658",
-    lightGray: "#DBDBDB",
-    fontWhite: "#FFFFFF",
-    orangeGradiantColor: ['#D36C32', '#F68F00'],
+    primaryColor: '#fff',
+    secondaryColor: "#452166",
+    cardColor: "#fff",
+    lightGray: "#000",
+    fontWhite: "#452166",
+    orangeColor: "#ff9f19",
+    secondaryIconColor: "#5919A6",
+    orangeGradiantColor: ['#ff9f19', '#ffc26e'],
     blueGradiantColor: ['#157594', '#039EDC'],
     errorColor: "#DA4E55",
     profitColor: "#3CCA3C",
-    lossColor: "#F85255"
+    lossColor: "#F85255",
+    boxShadow: "0px 0px 10px 0px rgba(87, 27, 140, 0.3)"
 }
 
 export const util_style = {

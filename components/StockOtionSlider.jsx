@@ -1,6 +1,6 @@
 import React from 'react';
 import { FlatList, Text, View, StyleSheet, Dimensions } from 'react-native';
-import { COLORS } from '../app/constants';
+import { COLORS } from '../constants.js';
 import { formatIndianNumber } from '../utils/commonFunctions';
 
 const { width } = Dimensions.get('window');
@@ -35,6 +35,7 @@ export default StockOptionSlider;
 const styles = StyleSheet.create({
     listContainer: {
         paddingHorizontal: 18,
+        paddingVertical:8,
     },
     card: {
         width: CARD_WIDTH,
@@ -45,6 +46,7 @@ const styles = StyleSheet.create({
         borderBottomWidth:0.4,
         borderBottomColor:COLORS.secondaryColor,
         borderLeftColor: COLORS.secondaryColor,
+        boxShadow: COLORS.boxShadow,
     },
     title: {
         fontSize: 15,

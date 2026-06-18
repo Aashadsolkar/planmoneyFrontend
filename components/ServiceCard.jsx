@@ -5,7 +5,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { useAuth } from '@context/useAuth';
 import { router, useNavigation } from 'expo-router';
-import { COLORS, serviceInfo } from '../app/constants';
+import { COLORS, serviceInfo } from '../constants';
 import { Ionicons } from '@expo/vector-icons';
 import Button from '@components/Button';
 import { leads } from '@utils/apiCaller';
@@ -145,7 +145,7 @@ const ServiceCard = ({
         <TouchableOpacity onPress={onToggle}>
           <View style={styles.details}>
             <Text style={styles.detailsText}>View Details</Text>
-            <MaterialIcons name="chevron-right" size={16} color="#FF9800" />
+            <MaterialIcons name="chevron-right" size={16} color={COLORS.secondaryColor} />
           </View>
         </TouchableOpacity>
       )
@@ -206,7 +206,7 @@ const ServiceCard = ({
     return (
       <View style={styles.priceContainer}>
         <TouchableOpacity onPress={() => handleOpen()}>
-          <Text style={{ color: COLORS.fontWhite, backgroundColor: COLORS.secondaryColor, paddingHorizontal: 8, paddingVertical: 5, borderRadius: 8, fontWeight: 600 }}>
+          <Text style={{ color: COLORS.primaryColor, backgroundColor: COLORS.secondaryColor, paddingHorizontal: 8, paddingVertical: 5, borderRadius: 8, fontWeight: 600 }}>
             Open
           </Text>
         </TouchableOpacity>
@@ -358,6 +358,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 16,
     marginBottom: 16,
+    boxShadow: COLORS.boxShadow,
   },
   header: {
     flexDirection: 'row',
@@ -376,7 +377,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   name: {
-    color: '#FFFFFF',
+    color: COLORS.fontWhite,
     fontWeight: 'bold',
     fontSize: 16,
     marginBottom: 4,
@@ -386,7 +387,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   detailsText: {
-    color: '#FF9800',
+    color: COLORS.secondaryColor,
     fontSize: 14,
     marginRight: 4,
   },
@@ -394,7 +395,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
   },
   priceLabel: {
-    color: '#AAAAAA',
+    color: '#000',
     fontSize: 12,
   },
   price: {
@@ -430,6 +431,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     position: 'relative',
     marginBottom: 12,
+    borderWidth: 1,
+    borderColor: COLORS.secondaryIconColor,
   },
   bestValueCard: {
     borderColor: '#FF9800',
@@ -449,7 +452,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   duration: {
-    color: '#FFF',
+    color: COLORS.fontWhite,
     fontSize: 14,
     marginBottom: 8,
     textTransform: "capitalize",

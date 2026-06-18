@@ -16,7 +16,7 @@ import {
 } from "react-native";
 
 import { Ionicons } from "@expo/vector-icons";
-import { COLORS } from "../constants";
+import { COLORS } from "../../constants.js";
 import Header from "@components/Header";
 import { router } from "expo-router";
 import { useAuth } from "@context/useAuth";
@@ -301,7 +301,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: width * 0.045,
     fontWeight: "600",
-    color: "#fff",
+    color: COLORS.secondaryColor,
     marginBottom: height * 0.04,
     textAlign: "left",
   },
@@ -312,6 +312,7 @@ const styles = StyleSheet.create({
     marginBottom: height * 0.025,
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.2)",
+    boxShadow: COLORS.boxShadow,
   },
   cardHeader: {
     flexDirection: "row",
@@ -351,7 +352,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   verifiedText: {
-    color: "#00ff88",
+    color: COLORS.secondaryColor,
     fontSize: width * 0.032,
     fontWeight: "600",
     marginLeft: 5,

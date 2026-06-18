@@ -8,7 +8,7 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { COLORS } from "../../constants";
+import { COLORS } from "../../../constants.js";
 import { getFastlaneData, getFastlaneHistoryData } from "@utils/apiCaller";
 import { useAuth } from "@context/useAuth";
 import { FontAwesome, MaterialIcons } from "@expo/vector-icons";

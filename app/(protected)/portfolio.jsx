@@ -12,7 +12,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import Header from '@components/Header';
 import PortfolioTab from '@components/PortfolioTab';
-import { COLORS } from '../constants';
+import { COLORS } from '../../constants.js';
 import { pisPortfolio, pmsPortfolio, quantomPortfolio } from '@utils/apiCaller';
 import { useAuth } from '@context/useAuth';
 import { useLocalSearchParams } from 'expo-router';

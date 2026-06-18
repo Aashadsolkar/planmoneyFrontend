@@ -21,7 +21,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import Header from "@components/Header";
 import { showToast } from "@components/CustomToast/ToastService";
 import { useAuth } from "@context/useAuth";
-import { COLORS } from "../constants";
+import { COLORS } from "../../constants.js";
 import { getUnlistedShares } from "../../utils/apiCaller";
 import useOffsetPagination from "../../hooks/useOffsetPagination";
 import UnlistedShareCard from "../../components/UnlistedShareCard";
@@ -165,7 +165,7 @@ const UnlistedShares = () => {
     <SafeAreaView edges={[]} style={{ flex: 1, backgroundColor: COLORS.primaryColor }}>
       <StatusBar barStyle="light-content" />
 
-      <Header title="Unlisted Shares" showBackButton />
+      <Header  showBackButton backButtonText={() => <Text style={{ color: COLORS.secondaryColor, fontWeight: 600, fontSize: 18 }}>Unlisted Shares</Text>} />
 
       {/* 🔍 SEARCH BAR */}
       <TouchableOpacity
@@ -214,6 +214,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     borderRadius: 14,
     height: 60,
+    boxShadow: COLORS.boxShadow,
   },
   searchInput: {
     flex: 1,

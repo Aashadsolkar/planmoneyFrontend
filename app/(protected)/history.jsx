@@ -12,7 +12,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { getFastlaneHistoryData } from "@utils/apiCaller";
 import { useAuth } from "@context/useAuth";
 import { showToast } from "@components/CustomToast/ToastService";
-import { COLORS } from "../constants";
+import { COLORS } from "../../constants";
 import Header from "@components/Header";
 import { router } from "expo-router";
 import HistoryCardList from "@components/HistoryCardList";
@@ -90,14 +90,18 @@ export default function App() {
   useEffect(() => {
     callFastlaneHistoryApi(activeTab.serviceID);
   }, [activeTab]);
+
+  const headerText = () => {
+    return <Text allowFontScaling={false} style={{ color: COLORS.secondaryColor, fontWeight: 600, fontSize: 18 }}>History</Text>
+}
   return (
     <SafeAreaView edges={[]} style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor={COLORS.cardColor} />
-      <Header showBackButton={true} />
+      <Header showBackButton={true} backButtonText={headerText}/>
 
       <View style={styles.innerContainer}>
         {/* Title */}
-        <Text style={styles.label}>History</Text>
+        
 
         {/* Tabs Slider */}
         <ScrollView
@@ -148,12 +152,13 @@ export default function App() {
 
 const styles = StyleSheet.create({
   container: { backgroundColor: COLORS.primaryColor, flex: 1 },
-  innerContainer: { flex: 1, paddingHorizontal: 15, paddingTop: 10 },
+  innerContainer: { flex: 1,  paddingTop: 15 },
 
   // ✅ Fixed: Tabs only take their content height
   tabContainer: {
     flexGrow: 0,
-    marginBottom: 15,
+    marginBottom: 10,
+    paddingHorizontal: 20,
   },
   tab: {
     paddingVertical: 10,
@@ -179,7 +184,8 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "600",
     marginBottom: 10,
-    color: "white",
+    color: COLORS.fontWhite,
+    marginHorizontal: 20,
   },
   card: {
     backgroundColor: COLORS.cardColor || "#fff",

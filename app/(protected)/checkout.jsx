@@ -14,7 +14,7 @@ import {
 } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import Header from "@components/Header";
-import { COLORS } from "../constants";
+import { COLORS } from "../../constants.js";
 import { LinearGradient } from "expo-linear-gradient";
 import Button from "@components/Button";
 import { useAuth } from "@context/useAuth";
@@ -226,7 +226,7 @@ export default function Checkout() {
             styles.subscriptionPrice,
             {
               fontWeight: 400,
-              color: COLORS.lightGray,
+              color: COLORS.secondaryColor,
               textDecorationLine: "line-through",
             },
           ]}
@@ -243,7 +243,7 @@ export default function Checkout() {
   return (
     <SafeAreaView edges={["left", "right"]} style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor={COLORS.cardColor} />
-      <Header showBackButton={true} />
+      <Header  showBackButton backButtonText={() => <Text style={{ color: COLORS.secondaryColor, fontWeight: 600, fontSize: 18 }}>Checkout</Text>} />
       <ScrollView style={{ backgroundColor: COLORS.primaryColor }}>
         {/* Coupon Section */}
         {!showCouponDiscount ? (
@@ -274,7 +274,7 @@ export default function Checkout() {
           <View style={styles.appliedCouponContainer}>
             <View style={styles.savedContainer}>
               <Text style={styles.discountAmount}>Coupon applied.</Text>
-              <Text style={[styles.discountAmount, { fontSize: 17 }]}>
+              <Text style={[styles.discountAmount, { fontSize: 17, color: COLORS.orangeColor }]}>
                 CODE: {couponCode}
               </Text>
               <Text style={styles.savedText}>Saved: ₹{discount}</Text>
@@ -300,7 +300,7 @@ export default function Checkout() {
           <View
             style={{
               borderBottomWidth: 1,
-              borderBlockColor: COLORS.primaryColor,
+              borderBlockColor: COLORS.secondaryIconColor,
               paddingBottom: 10,
               marginBottom: 10,
             }}
@@ -342,9 +342,11 @@ export default function Checkout() {
             style={[
               styles.expiryText,
               {
-                backgroundColor: COLORS.primaryColor,
+                backgroundColor: COLORS.secondaryColor,
                 padding: 10,
                 fontSize: 10,
+                color: COLORS.primaryColor,
+                borderRadius: 10,
               },
             ]}
           >
@@ -356,13 +358,13 @@ export default function Checkout() {
             <View
               style={{
                 borderTopWidth: 1,
-                borderBlockColor: COLORS.primaryColor,
+                borderBlockColor: COLORS.secondaryIconColor,
                 paddingTop: 10,
                 marginTop: 10,
               }}
             >
               <View style={[styles.subscriptionHeader]}>
-                <Text style={{ color: "#fff" }}>Coupon Discount</Text>
+                <Text style={{ color: COLORS.fontWhite }}>Coupon Discount</Text>
                 <Text style={styles.discountValue}>
                   You saved <Text style={styles.greenText}>-₹{discount}</Text>
                 </Text>
@@ -433,13 +435,13 @@ export default function Checkout() {
           <View
             style={{
               borderTopWidth: 1,
-              borderBlockColor: COLORS.primaryColor,
+              borderBlockColor: COLORS.secondaryColor,
               paddingTop: 10,
               marginTop: 10,
             }}
           >
             <View style={[styles.subscriptionHeader]}>
-              <Text style={{ color: "#fff" }}>Grand Total</Text>
+              <Text style={{ color: COLORS.fontWhite }}>Grand Total</Text>
               <View>
                 <Text
                   style={[
@@ -456,7 +458,7 @@ export default function Checkout() {
         </View>
 
         {/* Referral section */}
-        <View style={{ marginHorizontal: 20 }}>
+        <View style={{ marginHorizontal:12, }}>
           <Input
             label={"Refferal Code"}
             value={referral}
@@ -489,7 +491,7 @@ export default function Checkout() {
                 fontSize: 10,
                 fontWeight: "bold",
                 marginLeft: 4,
-                backgroundColor: COLORS.secondaryColor,
+                backgroundColor: COLORS.orangeColor,
                 padding: 8,
                 marginTop: 5,
                 borderRadius: 8,
@@ -600,22 +602,24 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     marginHorizontal: 12,
     marginTop: 0,
-    backgroundColor: "#1E1E1E",
+    backgroundColor: COLORS.primaryColor,
     borderRadius: 25,
     overflow: "hidden",
     borderWidth: 1,
     borderColor: "#333",
     marginTop: 10,
+    boxShadow: COLORS.boxShadow,
   },
   couponInput: {
     flex: 1,
-    color: "white",
+    color: COLORS.fontWhite,
     paddingHorizontal: 16,
     paddingVertical: 12,
     height: 60,
+    backgroundColor: COLORS.primaryColor,
   },
   applyButton: {
-    backgroundColor: "#FF9500",
+    backgroundColor: COLORS.secondaryColor,
     paddingHorizontal: 20,
     justifyContent: "center",
     borderRadius: 25,
@@ -624,31 +628,32 @@ const styles = StyleSheet.create({
     marginEnd: 10,
   },
   applyButtonText: {
-    color: "white",
+    color: COLORS.primaryColor,
     fontWeight: "600",
   },
   appliedCouponContainer: {
     margin: 12,
-    backgroundColor: "#1E1E1E",
+    backgroundColor: COLORS.primaryColor,
     borderRadius: 8,
     padding: 12,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
     borderWidth: 1,
-    borderColor: "#333",
+    borderColor: COLORS.secondaryIconColor,
+    boxShadow: COLORS.boxShadow,
   },
   savedContainer: {
     // flexDirection: "row",
     // alignItems: "center",
   },
   savedText: {
-    color: "white",
+    color: COLORS.lightGray,
     marginRight: 4,
   },
   discountAmount: {
     fontSize: 14,
-    color: "#4CAF50",
+    color: COLORS.secondaryColor,
     fontWeight: "bold",
   },
   withCouponText: {
@@ -656,7 +661,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   appliedBadge: {
-    backgroundColor: "red",
+    backgroundColor: COLORS.errorColor,
     paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: 12,
@@ -672,6 +677,9 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.cardColor,
     borderRadius: 8,
     padding: 16,
+    borderWidth: 1,
+    borderColor: COLORS.secondaryIconColor,
+    boxShadow: COLORS.boxShadow,
   },
   subscriptionHeader: {
     flexDirection: "row",
@@ -680,34 +688,34 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   subscriptionTitle: {
-    color: "white",
+    color: COLORS.fontWhite,
     fontWeight: "bold",
     fontSize: 14,
   },
   subscriptionDuration: {
-    color: "#ccc",
+    color: COLORS.lightGray,
     fontSize: 12,
     textTransform: "capitalize",
     fontWeight: "bold",
     textAlign: "right",
   },
   subscriptionPrice: {
-    color: "white",
+    color: COLORS.orangeColor,
     fontWeight: "bold",
     fontSize: 16,
     marginLeft: "auto",
   },
   expiryText: {
-    color: "#CCC",
+    color: COLORS.lightGray,
     fontSize: 10,
   },
   policyText: {
-    color: "white",
+    color: COLORS.fontWhite,
     fontSize: 12,
     marginBottom: 4,
   },
   noteText: {
-    color: "#888",
+    color: COLORS.lightGray,
     fontSize: 10,
   },
   totalSection: {
@@ -728,7 +736,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   greenText: {
-    color: "#4CAF50",
+    color: COLORS.profitColor,
   },
   grandTotalRow: {
     flexDirection: "row",
@@ -795,7 +803,7 @@ const styles = StyleSheet.create({
     marginTop: 0,
   },
   notesTitle: {
-    color: "white",
+    color: COLORS.fontWhite,
     fontSize: 16,
     fontWeight: "bold",
     marginBottom: 12,
@@ -808,7 +816,7 @@ const styles = StyleSheet.create({
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: "#FF9500",
+    backgroundColor: COLORS.orangeColor,
     marginTop: 6,
     marginRight: 8,
   },
@@ -816,12 +824,12 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   noteItemTitle: {
-    color: "white",
+    color: COLORS.fontWhite,
     fontWeight: 600,
     fontSize: 12,
   },
   noteItemText: {
-    color: "#CCC",
+    color: COLORS.lightGray,
     fontSize: 12,
     lineHeight: 18,
   },

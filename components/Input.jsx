@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, Text } from 'react-native';
 import { TextInput } from 'react-native-paper';
+import { COLORS } from '../constants.js';
 
 const CustomTextInput = ({ label, value, onChangeText, error, errorMessage, isNumberOnly }) => {
   const [isFocused, setIsFocused] = useState(false);
@@ -9,7 +10,7 @@ const CustomTextInput = ({ label, value, onChangeText, error, errorMessage, isNu
     <View style={styles.container}>
       <TextInput
         mode="outlined"
-        label={<Text allowFontScaling={false} style={{ fontSize: 14,color: error ? "red" :isFocused ? 'orange' : '#ccc' }}>{label}</Text>}
+        label={<Text allowFontScaling={false} style={{ fontSize: 14,color: error ? "red" :isFocused ? COLORS.orangeColor : COLORS.lightGray }}>{label}</Text>}
         value={value}
         onChangeText={onChangeText}
         onFocus={() => setIsFocused(true)}
@@ -17,12 +18,12 @@ const CustomTextInput = ({ label, value, onChangeText, error, errorMessage, isNu
         onBlur={() => setIsFocused(false)}
         error={!!error}
         style={[styles.input, error && styles.inputError]}
-        outlineColor={error ? 'red' : '#ccc'}
-        activeOutlineColor={error ? 'red' : 'orange'}
+        outlineColor={error ? 'red' : COLORS.secondaryIconColor}
+        activeOutlineColor={error ? 'red' : COLORS.secondaryColor}
         theme={{
           roundness: 10,
         }}
-        contentStyle={{ color: 'white' }}
+        contentStyle={{ color: COLORS.secondaryColor, }}
         keyboardType={isNumberOnly ? "number-pad":"default"}
       />
       {error && errorMessage ? (
@@ -37,8 +38,9 @@ const styles = StyleSheet.create({
     marginVertical: 8,
   },
   input: {
-    backgroundColor: '#012744',
-    height: 60
+    backgroundColor: COLORS.primaryColor,
+    height: 60,
+    color: COLORS.secondaryColor,
   },
   inputError: {
     borderColor: 'red',

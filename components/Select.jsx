@@ -9,7 +9,7 @@ import {
   TouchableWithoutFeedback,
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
-import { COLORS } from "../app/constants";
+import { COLORS } from "../constants.js";
 
 const SelectBox = ({ label, options = [], selected, setSelected, placeHolder, error }) => {
   const [visible, setVisible] = useState(false);
