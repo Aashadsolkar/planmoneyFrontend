@@ -10,7 +10,7 @@ export default function ProtectedTabs() {
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: COLORS.secondaryColor,
+        tabBarActiveTintColor: COLORS.secondaryIconColor,
         tabBarStyle: {
           backgroundColor: COLORS.primaryColor,
           paddingTop: 10,

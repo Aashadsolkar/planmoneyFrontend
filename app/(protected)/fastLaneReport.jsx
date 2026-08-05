@@ -36,7 +36,7 @@ const FastLane = () => {
                         <Text style={[styles.boldText, styles.greenText]}>{data?.upside}%</Text>
                     </View>
                 </View>
-                <View style={[styles.cardSections, { borderBottomColor: COLORS.cardColor }]}>
+                <View style={[styles.cardSections, { borderBottomColor: COLORS.secondaryColor }]}>
                     <View style={{ flex: 1 }}>
                         <Text style={styles.lightText}>Stop Loss</Text>
                         <Text style={[styles.boldText, styles.redText, styles.font12]}>₹{data?.stop_loss_price}</Text>
@@ -182,12 +182,13 @@ const styles = StyleSheet.create({
         padding: 8,
         borderRadius: 10,
         backgroundColor: COLORS.cardColor,
-        marginBottom: 20
+        marginBottom: 20,
+        boxShadow: COLORS.boxShadow,
     },
     cardSections: {
         padding: 15,
-        borderBottomWidth: 2,
-        borderBottomColor: COLORS.primaryColor,
+        borderBottomWidth: .5,
+        borderBottomColor: COLORS.secondaryColor,
         flexDirection: "row",
         justifyContent: "space-between"
     },

@@ -74,7 +74,7 @@ export default function PersonalDetailsForm() {
                             <TextInput
                                 style={styles.textInput}
                                 placeholder="Investment Amount"
-                                placeholderTextColor="#8B9DC3"
+                                placeholderTextColor={COLORS.lightGray}
                                 value={formData.capital_amount}
                                 onChangeText={(text) => {
                                     setFormData((prev) => ({ ...prev, capital_amount: text }))
@@ -157,7 +157,7 @@ const styles = StyleSheet.create({
         borderColor: COLORS.fontWhite,
         borderRadius: 12,
         padding: 16,
-        color: "#FFFFFF",
+        color: COLORS.secondaryColor,
         fontSize: 16,
         minHeight: 56,
         textAlignVertical: "top",

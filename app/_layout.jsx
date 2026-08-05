@@ -145,14 +145,14 @@ const RootLayout = () => {
   }, []);
 
   useEffect(() => {
-    if (splashAssetsReady && isAppReady && authPassed) {
+    if (splashAssetsReady && isAppReady) {
       const timer = setTimeout(() => {
         setShowCustomSplash(false);
       }, 3500);
 
       return () => clearTimeout(timer);
     }
-  }, [splashAssetsReady, isAppReady, authPassed]);
+  }, [splashAssetsReady, isAppReady]);
 
   // Internet connection check (unchanged)
   useEffect(() => {
@@ -180,17 +180,17 @@ const RootLayout = () => {
       try {
         const loggedIn = await isUserLoggedIn();
         const biometric = await isBiometricEnabled();
-
-        if (loggedIn && biometric) {
-          setAuthPassed(false); // trigger biometric prompt
+        console.log("loggedIn", loggedIn);
+        if (loggedIn) {
+          setAuthPassed(true); // trigger biometric prompt
         } else {
-          setAuthPassed(true); // skip biometric
+          setAuthPassed(false); // skip biometric
         }
 
         setIsAppReady(true);
       } catch (error) {
         console.warn("Auth check error:", error);
-        setAuthPassed(true);
+        setAuthPassed(false);
         setIsAppReady(true);
       }
     };
@@ -206,8 +206,10 @@ const RootLayout = () => {
   if (!isConnected) return <NoInternetScreen />;
 
   // 🔐 If biometric needed but not passed, show BiometricAuth
-  if (!authPassed) {
-    return <BiometricAuth onSuccess={() => setAuthPassed(true)} />;
+  if (authPassed) {
+    return <BiometricAuth onSuccess={() => {
+      setAuthPassed(false);
+    }} />;
   }
 
   return (

@@ -22,7 +22,7 @@ const Button = ({
       <LinearGradient
         start={{ x: 1, y: 0 }}
         end={{ x: 0, y: 0 }}
-        colors={gradientColor}
+        colors={[COLORS.orangeColor, COLORS.orangeColor]}
         style={{
           padding: small ? 10 : 15, // ✅ smaller padding for "Send OTP" buttons
           borderRadius: 50,

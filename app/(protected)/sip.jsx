@@ -433,7 +433,7 @@ const styles = StyleSheet.create({
   inputLabel: {
     fontSize: 18,
     fontWeight: "600",
-    color: "#fff",
+    color: COLORS.secondaryColor,
     marginLeft: 8,
   },
   inputContainer: {
@@ -445,7 +445,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     marginBottom: 15,
     borderWidth: 1,
-    borderColor: "#e5e7eb",
+    borderColor: COLORS.secondaryColor,
   },
   currencySymbol: {
     fontSize: 18,
@@ -463,7 +463,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 18,
     fontWeight: "600",
-    color: "#fff",
+    color: COLORS.secondaryColor,
   },
   slider: {
     width: "100%",
@@ -525,7 +525,7 @@ const styles = StyleSheet.create({
   },
   sliderLabel: {
     fontSize: 12,
-    color: "#ccc",
+    color: COLORS.fontWhite,
     fontWeight: "500",
   },
   resultsContainer: {

@@ -253,7 +253,7 @@ const Header = ({
         <LinearGradient
           colors={[COLORS.secondaryColor, COLORS.secondaryIconColor]}
           style={{
-            paddingTop: StatusBar.currentHeight + 20,
+            paddingTop: StatusBar.currentHeight + 55,
             paddingHorizontal: 20,
             paddingBottom: 25,
             borderBottomWidth: 1,
@@ -786,7 +786,8 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.cardColor,
     zIndex: 10,
     width: "100%",
-    boxShadow: COLORS.boxShadow,
+    // boxShadow: COLORS.boxShadow,
+    boxShadow: "0 4px 2px -2px #ccc"
   },
   header: {
     flexDirection: "row",
@@ -795,7 +796,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 8,
     backgroundColor: COLORS.cardColor,
-    elevation: 5,
+    // elevation: 5,
   },
   leftSection: {
     flex: 1,

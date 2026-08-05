@@ -18,10 +18,11 @@ import banner4 from "../../assets/images/intro3.jpeg";
 import banner1 from "../../assets/images/intro4.jpeg";
 import { COLORS } from "../../constants";
 
-const { width: SCREEN_WIDTH } = Dimensions.get("window");
+const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
 
 const RegisterScreen = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [sliderHeight, setSliderHeight] = useState(0);
   const scrollViewRef = useRef(null);
   const insets = useSafeAreaInsets();
 
@@ -84,37 +85,46 @@ const RegisterScreen = () => {
           </Text>
         </TouchableOpacity>
 
-        {/* Banner Slider — takes remaining space */}
-        <ScrollView
-          ref={scrollViewRef}
-          horizontal
-          pagingEnabled
-          showsHorizontalScrollIndicator={false}
-          onScroll={handleScroll}
-          scrollEventThrottle={16}
-          style={styles.scrollView}
-          contentContainerStyle={{ flexGrow: 1 }}
+        {/* Banner Slider */}
+        <View
+          style={styles.sliderWrapper}
+          onLayout={(e) => setSliderHeight(e.nativeEvent.layout.height)}
         >
-          {banners.map((banner) => (
-            <View
-              key={banner.id}
-              style={[
-                styles.bannerSlide,
-                { width: SCREEN_WIDTH, backgroundColor: banner.backgroundColor },
-              ]}
-            >
-              <View style={styles.imageContainer}>
-                <Image
-                  source={banner.image}
-                  style={styles.bannerImage}
-                  resizeMode="contain"
-                />
+          <ScrollView
+            ref={scrollViewRef}
+            horizontal
+            pagingEnabled
+            showsHorizontalScrollIndicator={false}
+            onScroll={handleScroll}
+            scrollEventThrottle={16}
+            style={{ flex: 1 }}
+            contentContainerStyle={{ alignItems: "center" }}
+          >
+            {banners.map((banner) => (
+              <View
+                key={banner.id}
+                style={[
+                  styles.bannerSlide,
+                  {
+                    width: SCREEN_WIDTH,
+                    height: sliderHeight,
+                    backgroundColor: banner.backgroundColor,
+                  },
+                ]}
+              >
+                <View style={styles.imageContainer}>
+                  <Image
+                    source={banner.image}
+                    style={styles.bannerImage}
+                    resizeMode="cover"
+                  />
+                </View>
               </View>
-            </View>
-          ))}
-        </ScrollView>
+            ))}
+          </ScrollView>
+        </View>
 
-        {/* Bottom Controls — sits below slider, not overlapping */}
+        {/* Bottom Controls */}
         <View
           style={[
             styles.bottomContainer,
@@ -161,32 +171,34 @@ const styles = StyleSheet.create({
     marginTop: 16,
     paddingHorizontal: 16,
     paddingVertical: 6,
-    backgroundColor: COLORS.secondaryColor,
+    backgroundColor: COLORS.secondaryIconColor,
     borderRadius: 24,
     zIndex: 10,
   },
-  scrollView: {
-    flex: 1,
+  skipText: {
+    fontWeight: "500",
+    color: COLORS.primaryColor,
+  },
+  sliderWrapper: {
+    flex: 1,               // baaki sara space le lo
+    overflow: "hidden",
   },
   bannerSlide: {
-    flex: 1,
+    paddingHorizontal: 20,
+    paddingVertical: 16,
     justifyContent: "center",
     alignItems: "center",
-    paddingHorizontal: 24,
-    paddingVertical: 20,
   },
   imageContainer: {
     flex: 1,
     width: "100%",
     borderRadius: 20,
     overflow: "hidden",
-    // ✅ React Native valid shadow
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.18,
     shadowRadius: 12,
     elevation: 8,
-    boxShadow: COLORS.boxShadow,
   },
   bannerImage: {
     width: "100%",
@@ -228,17 +240,12 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.15,
     shadowRadius: 12,
     elevation: 8,
-    boxShadow: COLORS.boxShadow,
   },
   nextButtonText: {
     fontSize: 17,
     fontWeight: "700",
     color: "#1a1a1a",
     letterSpacing: 0.5,
-  },
-  skipText: {
-    fontWeight: "500",
-    color: COLORS.primaryColor,
   },
 });
 

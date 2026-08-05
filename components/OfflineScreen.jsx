@@ -1,5 +1,6 @@
 import { View, Text, StyleSheet } from "react-native";
 import LottieView from "lottie-react-native";
+import { COLORS } from "../constants";
 
 const NoInternetScreen = () => {
   return (
@@ -24,7 +25,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#093658",
+    backgroundColor: COLORS.primaryColor,
     paddingHorizontal: 20,
   },
   animation: {
@@ -34,12 +35,12 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: "700",
-    color: "#ffff",
+    color: COLORS.secondaryColor,
     marginTop: 20,
   },
   message: {
     fontSize: 16,
-    color: "#ffff",
+    color: COLORS.secondaryColor,
     textAlign: "center",
     marginTop: 5,
   },

@@ -36,11 +36,11 @@ const icon = {
         name="burst-new"
         size={50}
         style={{ transform: [{ rotate: "30deg" }] }}
-        color={COLORS.secondaryColor}
+        color={COLORS.secondaryIconColor}
     />,
     6: () => <PSIcon height={40} width={40} />,
-    101: () => <Foundation name="graph-trend" size={32} color={COLORS.secondaryColor} />,
-    102: () => <Foundation name="shield" size={32} color={COLORS.secondaryColor} />
+    101: () => <Foundation name="graph-trend" size={32} color={COLORS.secondaryIconColor} />,
+    102: () => <Foundation name="shield" size={32} color={COLORS.secondaryIconColor} />
 }
 
 const Service = () => {

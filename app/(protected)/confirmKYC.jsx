@@ -20,6 +20,8 @@ import { Image } from "expo-image";
 import { showToast } from "@components/CustomToast/ToastService";
 
 export default function VerifySuccess() {
+  console.log("VerifySuccess___________");
+  
   const { txnId } = useLocalSearchParams();
   const [loading, setLoading] = useState(true);
   const [result, setResult] = useState(null);
@@ -232,6 +234,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     marginHorizontal: 50,
     alignItems: "center",
+    boxShadow: COLORS.boxShadow
   },
   successText: {
     fontSize: 20,

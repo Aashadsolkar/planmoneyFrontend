@@ -25,6 +25,8 @@ export default function BiometricAuth({ onSuccess }) {
       });
 
       if (result.success) {
+        console.log("result___________", result);
+        
         onSuccess();
       } else {
         setError('Authentication failed or cancelled');

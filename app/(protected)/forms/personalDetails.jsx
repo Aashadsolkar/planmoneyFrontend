@@ -54,7 +54,7 @@ const SearchableDropdown = ({ data, value, placeholder, onSelect, searchKey, dis
                         <View style={styles.modalHeader}>
                             <Text style={styles.modalTitle}>{placeholder}</Text>
                             <TouchableOpacity onPress={() => setIsVisible(false)}>
-                                <Ionicons name="close" size={24} color="#fff" />
+                                <Ionicons name="close" size={24} color={COLORS.fontWhite} />
                             </TouchableOpacity>
                         </View>
 
@@ -287,7 +287,7 @@ const insets = useSafeAreaInsets();
 
 
     return (
-        <SafeAreaView  edges={['right','left']} style={styles.container}>
+        <SafeAreaView  edges={['right','left', 'bottom','top']} style={styles.container}>
             <StatusBar barStyle="light-content" backgroundColor={COLORS.primaryColor} />
             <KeyboardAvoidingView
                 behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -545,7 +545,7 @@ const styles = StyleSheet.create({
         borderBottomColor: "rgba(255, 255, 255, 0.1)",
     },
     modalTitle: {
-        color: "#FFFFFF",
+        color: COLORS.secondaryColor,
         fontSize: 18,
         fontWeight: "bold",
     },
@@ -556,7 +556,7 @@ const styles = StyleSheet.create({
         borderRadius: 12,
         padding: 16,
         margin: 20,
-        color: "#FFFFFF",
+        color: COLORS.secondaryColor,
         fontSize: 16,
     },
     dropdownItem: {

@@ -81,6 +81,7 @@ export default function Checkout() {
         customer_phone: profileData?.phone?.replace(/\D/g, ""),
         app_return_url: `https://planmoney.in/payment.html?order_id={order_id}&return_url=${userReturnURL}`,
       };
+      console.log("payload", payload);
       const response = await pgCreateOrder(token, payload);
       setIsLoading(false);
       let prePaymentDetails = {

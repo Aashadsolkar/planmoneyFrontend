@@ -20,7 +20,7 @@ const FullScreenLoader = ({ visible = true }) => {
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: '#012744', // #012744 with 80% opacity
+    backgroundColor: COLORS.primaryColor,
     justifyContent: 'center',
     alignItems: 'center',
   },

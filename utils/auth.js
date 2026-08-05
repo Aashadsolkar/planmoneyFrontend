@@ -1,8 +1,8 @@
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import * as SecureStore from "expo-secure-store";
 export async function isUserLoggedIn() {
-  const token = await AsyncStorage.getItem('token');
+  const token = await SecureStore.getItem('token');
   return !!token;
 }
 
@@ -10,10 +10,10 @@ export async function isUserLoggedIn() {
 
 
 export async function isBiometricEnabled() {
-  const enabled = await AsyncStorage.getItem('biometricEnabled');
+  const enabled = await SecureStore.getItem('biometricEnabled');
   return enabled === 'true';
 }
 
 export async function setBiometricEnabled(value) {
-  await AsyncStorage.setItem('biometricEnabled', value ? 'true' : 'false');
+  await SecureStore.setItem('biometricEnabled', value ? 'true' : 'false');
 }

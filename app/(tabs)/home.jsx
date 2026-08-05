@@ -451,7 +451,7 @@ export default function Home() {
       );
     }
   };
-
+  console.log("isLoading", isLoading);
   const renderContent = () => {
     if (isLoading) {
       return (
@@ -644,9 +644,9 @@ export default function Home() {
               direction="alternate"
               style={{ transform: [{ translateY: 0 }] }}
             >
-              <Ionicons name="arrow-down" size={22} color="#ccc" />
+              <Ionicons name="arrow-down" size={22} color={COLORS.fontWhite} />
             </Animatable.View>
-            <Text style={{ color: "#ccc", fontSize: 13, marginTop: 5 }}>
+            <Text style={{ color: COLORS.fontWhite, fontSize: 13, marginTop: 5 }}>
               Pull down to refresh
             </Text>
           </Animatable.View>

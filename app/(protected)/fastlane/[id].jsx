@@ -237,6 +237,7 @@ const styles = StyleSheet.create({
         marginBottom: 20,
         borderLeftWidth: 3,
         borderLeftColor: COLORS.secondaryColor,
+        boxShadow: COLORS.boxShadow,
     },
     cardSections: {
         padding: 15,

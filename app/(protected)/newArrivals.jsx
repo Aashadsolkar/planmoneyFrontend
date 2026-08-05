@@ -222,10 +222,14 @@ const HomeScreen = () => {
     ))
   }
 
+  const headerText = () => {
+    return <Text allowFontScaling={false} style={{ color: COLORS.secondaryColor, fontWeight: 600, fontSize: 18 }}>New Arrivals</Text>
+}
+
   return (
     <SafeAreaView edges={['left', 'right','bottom']} style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#003366" />
-      <Header showBackButton={true} />
+      <Header showBackButton={true} backButtonText={headerText} />
 
       <ScrollView   style={styles.scrollView}>
         {renderStockList()}

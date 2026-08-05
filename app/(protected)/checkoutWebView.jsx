@@ -48,7 +48,7 @@ export default function CheckoutWebView(props) {
   };
 
   return (
-    <SafeAreaView style={styles.container} edges={[ 'left', 'right']}>
+    <SafeAreaView style={styles.container} edges={[ 'top', 'left', 'right','bottom']}>
       <StatusBar 
         barStyle="light-content" 
         backgroundColor={COLORS.primaryColor || "#FFFFFF"}

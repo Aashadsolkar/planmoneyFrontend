@@ -11,10 +11,13 @@ import Header from "@components/Header";
 import { COLORS } from "../../constants.js";
 
 export default function TermsAndConditions() {
+  const headerText = () => {
+    return <Text allowFontScaling={false} style={{ color: COLORS.secondaryColor, fontWeight: 600, fontSize: 18 }}>Terms & Conditions</Text>
+  }
   return (
     <SafeAreaView edges={[]} style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor={COLORS.cardColor} />
-      <Header showBackButton />
+      <StatusBar barStyle="light-dark" backgroundColor={COLORS.cardColor} />
+      <Header showBackButton={true} backButtonText={headerText} />
 
       <ScrollView
         style={{ backgroundColor: COLORS.primaryColor }}
@@ -234,13 +237,13 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    color: "#fff",
+    color: COLORS.fontWhite,
     fontWeight: "700",
     marginBottom: 16,
   },
   heading: {
     fontSize: 16,
-    color: "#fff",
+    color: COLORS.fontWhite,
     fontWeight: "700",
     marginTop: 20,
     marginBottom: 8,
@@ -253,7 +256,7 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 13,
-    color: "#AAA",
+    color: COLORS.lightGray,
     lineHeight: 20,
     marginBottom: 10,
   },

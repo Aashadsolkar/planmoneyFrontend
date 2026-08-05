@@ -206,7 +206,7 @@ const ServiceCard = ({
     return (
       <View style={styles.priceContainer}>
         <TouchableOpacity onPress={() => handleOpen()}>
-          <Text style={{ color: COLORS.primaryColor, backgroundColor: COLORS.secondaryColor, paddingHorizontal: 8, paddingVertical: 5, borderRadius: 8, fontWeight: 600 }}>
+          <Text style={{ color: COLORS.primaryColor, backgroundColor: COLORS.secondaryIconColor, paddingHorizontal: 8, paddingVertical: 5, borderRadius: 8, fontWeight: 600 }}>
             Open
           </Text>
         </TouchableOpacity>
@@ -282,7 +282,7 @@ const ServiceCard = ({
                       setIsLeadGenerated(false);
                       setIsVisible(false)
                     }}>
-                      <Ionicons name="close" size={24} color="#fff" />
+                      <Ionicons name="close" size={24} color={COLORS.fontWhite} />
                     </TouchableOpacity>
                   </View>
                   <View>
@@ -307,7 +307,7 @@ const ServiceCard = ({
                           </Text>
 
                           <TouchableOpacity onPress={() => Linking.openURL("tel:8108181602")}>
-                            <Text style={{ color: COLORS.secondaryColor, fontSize: 14, textDecorationLine: "underline", marginLeft: 4 }}>
+                            <Text style={{ color: COLORS.orangeColor, fontSize: 14, textDecorationLine: "underline", marginLeft: 4 }}>
                               Call Here
                             </Text>
                           </TouchableOpacity>
@@ -326,7 +326,7 @@ const ServiceCard = ({
                   <View style={styles.modalHeader}>
                     <Text style={styles.modalTitle}>Know More</Text>
                     <TouchableOpacity onPress={() => setIsVisible(false)}>
-                      <Ionicons name="close" size={24} color="#fff" />
+                      <Ionicons name="close" size={24} color={COLORS.fontWhite} />
                     </TouchableOpacity>
                   </View>
                   <Text style={{ marginHorizontal: 20, fontSize: 18, color: COLORS.secondaryColor }}>About {name}</Text>
@@ -501,7 +501,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   modalTitle: {
-    color: "#FFFFFF",
+    color: COLORS.fontWhite,
     fontSize: 18,
     fontWeight: "bold",
   },
@@ -512,7 +512,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 16,
     margin: 20,
-    color: "#FFFFFF",
+    color: COLORS.fontWhite,
     fontSize: 16,
     height: 100
   },

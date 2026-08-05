@@ -68,7 +68,7 @@ const OrderConfirm = () => {
             type: "error",
             title: `Something went wrong! 😥`,
             message: `${error?.error || error?.message || "Failed to chanage password!"}`,
-            redirectPath: "home",
+            redirectPath: "/home",
             sessionExired: error?.error == "Another session is active." ? true : false,
             logout: logout
           });
@@ -85,16 +85,18 @@ const OrderConfirm = () => {
       setLoading(true)
       try {
         const response = await pgVerifyOrder(token, orderId)
-
+        console.log("response_________________", response)
         if (response?.data?.length > 0) {
           setOrderDetails(response.data)
           setVerifyComplete(true)
-          buyService(response.data)
+          await buyService(response.data)
         } else {
           setError("Failed to verify your payment. Please contact support.")
         }
       } catch (error) {
         setError("Failed to verify your payment. Please contact support.")
+      }finally{
+        setLoading(false)
       }
     }
 
@@ -105,7 +107,7 @@ const OrderConfirm = () => {
 
   const renderLoadingState = () => (
     <Animatable.View animation="fadeIn" style={styles.centerContent}>
-      <ActivityIndicator size="large" color="#D87129" />
+      <ActivityIndicator size="large" color={COLORS.secondaryColor} />
       <Text style={styles.loadingText}>Verifying your payment...</Text>
       <Text style={styles.subText}>Please wait while we confirm your order</Text>
     </Animatable.View>
@@ -114,11 +116,11 @@ const OrderConfirm = () => {
   const renderVerifyComplete = () => (
     <Animatable.View animation="fadeIn" style={styles.centerContent}>
       <Animatable.View animation="bounceIn">
-        <CheckCircle color="#D87129" size={60} />
+        <CheckCircle color={COLORS.secondaryColor} size={60} />
       </Animatable.View>
       <Text style={styles.successTitle}>Payment Verified!</Text>
       <Text style={styles.subText}>Now activating your subscription...</Text>
-      <ActivityIndicator size="small" color="#D87129" style={styles.smallLoader} />
+      <ActivityIndicator size="small" color={COLORS.secondaryColor} style={styles.smallLoader} />
     </Animatable.View>
   )
 
@@ -126,7 +128,7 @@ const OrderConfirm = () => {
     <Animatable.View animation="fadeIn" style={styles.centerContent}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <Animatable.View animation="bounceIn">
-          <CheckCircle color="#D87129" size={80} />
+          <CheckCircle color={COLORS.secondaryColor} size={80} />
         </Animatable.View>
         <Text style={styles.successTitle}>Payment Successful!</Text>
         <Text style={styles.subText}>Your subscription has been activated</Text>
@@ -165,7 +167,7 @@ const OrderConfirm = () => {
 
   const renderErrorState = () => (
     <Animatable.View animation="fadeIn" style={styles.centerContent}>
-      <Clock color="#D87129" size={60} />
+      <Clock color={COLORS.secondaryColor} size={60} />
       <Text style={styles.errorTitle}>Something went wrong</Text>
       <Text style={styles.errorText}>{error}</Text>
     </Animatable.View>
@@ -190,7 +192,7 @@ const OrderConfirm = () => {
 
           <View style={styles.detailRow}>
             <Text style={styles.detailLabel}>Status:</Text>
-            <Text style={[styles.detailValue, { color: "red", textTransform: "capitalize" }]}>
+            <Text style={[styles.detailValue, { color: COLORS.lossColor, textTransform: "capitalize" }]}>
               Failed
             </Text>
           </View>
@@ -214,6 +216,12 @@ const OrderConfirm = () => {
       </ScrollView>
     </Animatable.View>
   )
+  console.log("orderDetails", orderDetails);
+  console.log("paymentFailed", paymentFailed);
+  console.log("verifyComplete", verifyComplete);
+  console.log("subscriptionComplete", subscriptionComplete);
+  console.log("error", error);
+  console.log("loading", loading);
 
 
   const renderContent = () => {
@@ -243,7 +251,8 @@ const OrderConfirm = () => {
   return (
     <SafeAreaView edges={[]} style={styles.container}>
       <View style={styles.logoContainer}>
-       <LogoSVG  />
+       {/* <LogoSVG  /> */}
+       <Image source={require("../../assets/images/new_logo.png")} style={styles.logo} />
       </View>
 
       {renderContent()}
@@ -252,7 +261,7 @@ const OrderConfirm = () => {
           label={subscriptionComplete ? "Done" : "Back To Home"}
           gradientColor={["#D36C32", "#F68F00"]}
           // onPress={() => navigation.navigate("/screens/home")}
-          onClick={() => router.push("home")}
+          onClick={() => router.push("/home")}
           isLoading={loading}
         />
       </View>
@@ -271,15 +280,12 @@ const styles = StyleSheet.create({
     marginTop: 40,
     marginBottom: 20,
   },
-  logo: {
-    width: 200,
-    height: 80
-  },
   centerContent: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 20,
+    boxShadow: COLORS.shadow,
   },
   scrollContent: {
     flexGrow: 1,
@@ -345,7 +351,7 @@ const styles = StyleSheet.create({
     color: COLORS.fontWhite,
   },
   statusText: {
-    color: "#D87129",
+    color: COLORS.secondaryColor,
     textTransform: "capitalize",
   },
   buttonContainer: {
@@ -369,6 +375,7 @@ const styles = StyleSheet.create({
     opacity: 0.8,
     maxWidth: 300,
   },
+  logo: { width: 350, height: 80 },
 })
 
 export default OrderConfirm

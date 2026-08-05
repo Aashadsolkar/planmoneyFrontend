@@ -143,7 +143,7 @@ const UnlistedShareCard = ({ item }) => {
           activeOpacity={0.85}
         >
           <Text style={styles.callText}>I am Intrested</Text>
-          <Ionicons name="cart" size={18} color={COLORS.fontWhite} />
+          <Ionicons name="cart" size={18} color={COLORS.orangeColor} />
         </TouchableOpacity>
       </Animatable.View>
 
@@ -316,7 +316,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     gap: 8,
-    backgroundColor: COLORS.secondaryColor,
+    backgroundColor: COLORS.secondaryIconColor,
     paddingVertical: 12,
     borderRadius: 30,
     paddingHorizontal: 20

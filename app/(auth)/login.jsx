@@ -131,6 +131,7 @@ const Login = () => {
 
   // ── Send / Resend OTP ──
   const handleSendOtp = async () => {
+    console.log("identifier", identifier);
     if (!validateIdentifier()) return;
     if (resendCount >= 3) {
       setLoginApiError("You have reached maximum OTP resend attempts.");
@@ -139,10 +140,10 @@ const Login = () => {
 
     setIsLoading(true);
     setLoginApiError("");
-
+    console.log("identifier", identifier);
     try {
       const res = await login({ email_or_phone: identifier.trim() });
-
+      console.log("res", res);
       if (res?.data?.customer_id) {
         setOtpSent(true);
         setCustomerId(res.data.customer_id);
@@ -173,6 +174,7 @@ const Login = () => {
 
   // ── Verify OTP ──
   const handleVerifyOtp = async () => {
+    console.log("otp", otp);
     const trimmedOtp = otp.trim();
     if (trimmedOtp.length !== 4) {
       setErrors({ otp: "Enter a valid 4-digit OTP" });
@@ -183,7 +185,10 @@ const Login = () => {
     setLoginApiError("");
 
     try {
+      console.log("customerId", customerId);
       const res = await login({ customer_id: customerId, otp: trimmedOtp });
+      console.log("res", res);
+      console.log("res", res);
       if (res?.data?.token) {
         storeUserData(res.data.user, res.data.token);
         const deviceToken = await getExpoPushToken();

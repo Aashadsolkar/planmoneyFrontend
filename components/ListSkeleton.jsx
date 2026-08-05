@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
   },
   skeletonBox: {
     height: 60,
-    backgroundColor: COLORS.cardColor,
+    backgroundColor: "rgb(228, 228, 228)",
     overflow: 'hidden',
   },
   shimmerOverlay: {
